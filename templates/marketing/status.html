@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}System-Status | Mandari{% endblock %}
+
+{% block meta_description %}Aktueller Betriebsstatus aller Mandari-Dienste, Verfügbarkeit, Vorfälle und Wartungsfenster in Echtzeit.{% endblock %}
+
+{% block content %}
+<section class="py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Hero -->
+        <header class="mb-10">
+            <p class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide mb-3">
+                Betriebsstatus
+            </p>
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                System-Status
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
+                Hier siehst du in Echtzeit, wie verfügbar die Mandari-Dienste sind: Insight-Portal,
+                Work-Portal, Verwaltungs-RIS, OParl-Ingestor und API.
+            </p>
+        </header>
+
+        {% if kener and kener.available %}
+            {# ─────────────── Live Kener data ─────────────── #}
+
+            {% if kener.overall == "UP" %}
+                {% with bar_bg="bg-green-50 dark:bg-green-900/20" bar_border="border-green-300 dark:border-green-800" dot="bg-green-500" txt="text-green-800 dark:text-green-200" label="Alle Systeme laufen" %}
+                <div class="rounded-xl border {{ bar_border }} {{ bar_bg }} p-6 mb-8 flex items-center gap-4">
+                    <span class="w-4 h-4 rounded-full {{ dot }} flex-none" aria-hidden="true"></span>
+                    <div class="flex-1">
+                        <p class="font-semibold {{ txt }} text-lg">{{ label }}</p>
+                        <p class="text-sm {{ txt }} opacity-80 mt-0.5">
+                            {{ kener.summary.up }} von {{ kener.monitors|length }} Komponenten verfügbar
+                        </p>
+                    </div>
+                    {% if kener.uptime_pct %}
+                    <div class="hidden sm:block text-right border-l {{ bar_border }} pl-6">
+                        <p class="text-2xl font-bold tabular-nums {{ txt }}">{{ kener.uptime_pct|floatformat:2 }}%</p>
+                        <p class="text-xs {{ txt }} opacity-70 uppercase tracking-wide mt-0.5">Verfügbarkeit · {{ kener.uptime_window_hours }} h</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endwith %}
+            {% elif kener.overall == "DEGRADED" %}
+                <div class="rounded-xl border border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 p-6 mb-8 flex items-center gap-4">
+                    <span class="w-4 h-4 rounded-full bg-yellow-500 flex-none" aria-hidden="true"></span>
+                    <div class="flex-1">
+                        <p class="font-semibold text-yellow-800 dark:text-yellow-200 text-lg">Eingeschränkter Betrieb</p>
+                        <p class="text-sm text-yellow-800 dark:text-yellow-200 opacity-80 mt-0.5">
+                            {{ kener.summary.degraded }} Komponente{{ kener.summary.degraded|pluralize:"n" }} mit reduzierter Leistung
+                        </p>
+                    </div>
+                    {% if kener.uptime_pct %}
+                    <div class="hidden sm:block text-right border-l border-yellow-300 dark:border-yellow-800 pl-6">
+                        <p class="text-2xl font-bold tabular-nums text-yellow-800 dark:text-yellow-200">{{ kener.uptime_pct|floatformat:2 }}%</p>
+                        <p class="text-xs text-yellow-800 dark:text-yellow-200 opacity-70 uppercase tracking-wide mt-0.5">Verfügbarkeit · {{ kener.uptime_window_hours }} h</p>
+                    </div>
+                    {% endif %}
+                </div>
+            {% elif kener.overall == "DOWN" %}
+                <div class="rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6 mb-8 flex items-center gap-4">
+                    <span class="w-4 h-4 rounded-full bg-red-500 flex-none" aria-hidden="true"></span>
+                    <div class="flex-1">
+                        <p class="font-semibold text-red-800 dark:text-red-200 text-lg">Ausfall</p>
+                        <p class="text-sm text-red-800 dark:text-red-200 opacity-80 mt-0.5">
+                            {{ kener.summary.down }} Komponente{{ kener.summary.down|pluralize:"n" }} nicht erreichbar
+                        </p>
+                    </div>
+                    {% if kener.uptime_pct %}
+                    <div class="hidden sm:block text-right border-l border-red-300 dark:border-red-800 pl-6">
+                        <p class="text-2xl font-bold tabular-nums text-red-800 dark:text-red-200">{{ kener.uptime_pct|floatformat:2 }}%</p>
+                        <p class="text-xs text-red-800 dark:text-red-200 opacity-70 uppercase tracking-wide mt-0.5">Verfügbarkeit · {{ kener.uptime_window_hours }} h</p>
+                    </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-6 mb-8 flex items-center gap-4">
+                    <span class="w-4 h-4 rounded-full bg-gray-400 flex-none" aria-hidden="true"></span>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-800 dark:text-gray-200 text-lg">Status unbekannt</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                            Daten werden gesammelt, bitte später erneut versuchen.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Per-monitor list -->
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Komponenten</h2>
+            <ul class="rounded-xl border border-gray-200 dark:border-gray-800 divide-y divide-gray-200 dark:divide-gray-800 bg-white dark:bg-gray-900 overflow-hidden mb-8" role="list">
+                {% for monitor in kener.monitors %}
+                <li class="px-5 py-4 flex items-center gap-4">
+                    {% if monitor.status == "UP" %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-500 flex-none" aria-hidden="true" title="Aktuell verfügbar"></span>
+                    {% elif monitor.status == "DEGRADED" or monitor.status == "WARN" or monitor.status == "WARNING" %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-500 flex-none" aria-hidden="true" title="Eingeschränkt"></span>
+                    {% elif monitor.status == "DOWN" %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 flex-none" aria-hidden="true" title="Ausfall"></span>
+                    {% else %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-gray-400 flex-none" aria-hidden="true" title="Unbekannt"></span>
+                    {% endif %}
+                    <span class="flex-1 text-gray-900 dark:text-white font-medium">{{ monitor.name }}</span>
+                    {% if monitor.uptime_pct %}
+                        <span class="text-sm font-semibold tabular-nums
+                            {% if monitor.uptime_pct >= 99.9 %}text-green-700 dark:text-green-400
+                            {% elif monitor.uptime_pct >= 99 %}text-green-600 dark:text-green-400
+                            {% elif monitor.uptime_pct >= 95 %}text-yellow-700 dark:text-yellow-400
+                            {% else %}text-red-700 dark:text-red-400{% endif %}"
+                              title="Verfügbarkeit der letzten {{ kener.uptime_window_hours }} h ({{ monitor.sample_count }} Messpunkte)">
+                            {{ monitor.uptime_pct|floatformat:2 }}%
+                        </span>
+                    {% else %}
+                        <span class="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide" title="Noch keine Daten">—</span>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <li class="px-5 py-6 text-sm text-gray-500 dark:text-gray-400 text-center">
+                    Noch keine Monitore konfiguriert.
+                </li>
+                {% endfor %}
+            </ul>
+
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-12">
+                Aktualisiert alle 60 Sekunden · Verfügbarkeit über {{ kener.uptime_window_hours }} h ·
+                <a href="{{ STATUS_PAGE_URL }}" target="_blank" rel="noopener" class="text-primary-600 dark:text-primary-400 hover:underline">
+                    Vollständige Historie auf der Statusseite öffnen
+                </a>
+            </p>
+
+        {% else %}
+            {# ─────────────── Fallback (no token / Kener unreachable) ─────────────── #}
+
+            <div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 mb-12 text-center">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary-100 dark:bg-primary-900/30 mb-4">
+                    <i data-lucide="activity" class="w-7 h-7 text-primary-600 dark:text-primary-400" aria-hidden="true"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Live-Statusseite öffnen</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-xl mx-auto">
+                    Aktueller Betriebsstatus, Vorfälle und Wartungsfenster werden auf der dedizierten
+                    Statusseite angezeigt.
+                </p>
+                <a href="{{ STATUS_PAGE_URL }}"
+                   target="_blank"
+                   rel="noopener"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    Statusseite öffnen
+                    <i data-lucide="external-link" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- What we monitor -->
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Was wir überwachen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+            <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-gray-900">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Insight-Portal</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Öffentliches Bürger-Portal mit Suche, Karten und KI-Zusammenfassungen.
+                </p>
+            </div>
+            <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-gray-900">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Work-Portal</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Geschützter Arbeitsbereich für Fraktionen und politische Organisationen.
+                </p>
+            </div>
+            <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-gray-900">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Verwaltungs-RIS</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Sitzungs- und Antragsverwaltung für Kommunen.
+                </p>
+            </div>
+            <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-gray-900">
+                <h3 class="font-semibold text-gray-900 dark:text-white mb-2">OParl-Ingestor &amp; API</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Datensynchronisation aus OParl-Quellen und öffentliche API.
+                </p>
+            </div>
+        </div>
+
+        <!-- Help -->
+        <div class="p-6 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Du hast eine Störung gemeldet?</h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Falls du ein Problem siehst, das hier nicht aufgeführt ist, freuen wir uns über deine
+                Meldung, so können wir schneller reagieren.
+            </p>
+            <a href="/kontakt/"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors">
+                Störung melden
+                <i data-lucide="arrow-right" class="w-4 h-4" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

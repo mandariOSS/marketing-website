@@ -1,0 +1,199 @@
+# =============================================================================
+# Mandari Marketing Website - Local Docker Stack
+# =============================================================================
+# Self-contained stack for local development and testing.
+# Runs the Wagtail CMS on http://localhost:6500 with its own PostgreSQL DB.
+#
+# Quick start:
+#   cp .env.example .env       # (optional, defaults are fine for local)
+#   docker compose up -d --build
+#   docker compose exec website python manage.py createsuperuser
+#   open http://localhost:6500
+#
+# Wagtail admin: http://localhost:6500/cms-admin/
+# Django admin:  http://localhost:6500/admin/
+#
+# Useful commands:
+#   docker compose logs -f website        # follow app logs
+#   docker compose exec website bash      # shell inside the container
+#   docker compose down                   # stop (keeps data)
+#   docker compose down -v                # stop and wipe DB + media
+# =============================================================================
+
+name: mandari-marketing-website
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # ===========================================================================
+  # PostgreSQL - dedicated DB for the marketing website
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: marketing-website-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mandari}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mandari_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-mandari_website}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - marketing
+    # No host port mapping by default — DB is internal only.
+    # Uncomment to expose for external tooling (e.g. DBeaver):
+    # ports:
+    #   - "6532:5432"
+    mem_limit: 256m
+    security_opt:
+      - no-new-privileges:true
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mandari} -d ${POSTGRES_DB:-mandari_website}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  # ===========================================================================
+  # Marketing Website (Wagtail CMS)
+  # ===========================================================================
+  website:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mandari-marketing-website:dev
+    container_name: marketing-website
+    restart: unless-stopped
+    ports:
+      - "${WEBSITE_PORT:-6500}:8001"
+    environment:
+      # Database — points at the postgres service above
+      WEBSITE_DATABASE_URL: postgresql://${POSTGRES_USER:-mandari}:${POSTGRES_PASSWORD:-mandari_dev}@postgres:5432/${POSTGRES_DB:-mandari_website}
+      # Django / Wagtail
+      WEBSITE_SECRET_KEY: ${WEBSITE_SECRET_KEY:-dev-only-insecure-change-me-when-deploying}
+      DEBUG: ${DEBUG:-True}
+      SITE_URL: ${SITE_URL:-http://localhost:6500}
+      # "website" allows Kener (and any other intra-network service) to call
+      # /health/ via the Docker service name. localhost/127.0.0.1 cover host access.
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,website}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:6500,http://127.0.0.1:6500}
+      # Cross-service link (not required for the website to render)
+      MANDARI_API_URL: ${MANDARI_API_URL:-http://localhost:8000/api}
+      # Status page — public link target shown on /status/
+      STATUS_PAGE_URL: ${STATUS_PAGE_URL:-http://localhost:6501}
+      # Internal URL the website backend uses to call Kener's REST API
+      KENER_INTERNAL_URL: ${KENER_INTERNAL_URL:-http://kener:3000}
+      # API token (generate in Kener admin → Settings → API Keys)
+      KENER_API_TOKEN: ${KENER_API_TOKEN:-}
+      # Booking URL for "Call buchen" CTAs. Default = internal contact-page anchor.
+      # Override only if migrating to an external booking tool.
+      BOOKING_URL: ${BOOKING_URL:-/kontakt/#termin-buchen}
+      # Altcha (DSGVO-konformer Captcha-Ersatz). HMAC-Key signiert Challenges.
+      # Production: `openssl rand -hex 32` und in .env eintragen.
+      ALTCHA_HMAC_KEY: ${ALTCHA_HMAC_KEY:-dev-only-altcha-secret-please-replace-in-production}
+      ALTCHA_MAX_NUMBER: ${ALTCHA_MAX_NUMBER:-100000}
+      # Locale
+      TZ: ${TZ:-Europe/Berlin}
+    volumes:
+      # Persist user-uploaded media (Wagtail images/documents) across restarts
+      - website_media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - marketing
+    mem_limit: 512m
+    security_opt:
+      - no-new-privileges:true
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8001/health/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ===========================================================================
+  # Redis — required by Kener for monitor scheduling and queues
+  # ===========================================================================
+  kener-redis:
+    image: redis:7-alpine
+    container_name: marketing-website-kener-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - kener_redis_data:/data
+    networks:
+      - marketing
+    mem_limit: 128m
+    security_opt:
+      - no-new-privileges:true
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ===========================================================================
+  # Kener — self-hosted status page (https://github.com/rajnandan1/kener)
+  # ===========================================================================
+  # Public status page:  http://localhost:${KENER_PORT:-6501}/
+  # Admin UI:            http://localhost:${KENER_PORT:-6501}/manage
+  #   Default credentials are created on first startup; check container logs:
+  #     docker compose logs kener | grep -i "password\|admin"
+  # ===========================================================================
+  kener:
+    image: rajnandan1/kener:latest
+    container_name: marketing-website-kener
+    restart: unless-stopped
+    ports:
+      - "${KENER_PORT:-6501}:3000"
+    environment:
+      KENER_SECRET_KEY: ${KENER_SECRET_KEY:-dev-only-kener-secret-change-me}
+      ORIGIN: ${KENER_ORIGIN:-http://localhost:6501}
+      REDIS_URL: redis://kener-redis:6379
+      TZ: ${TZ:-Europe/Berlin}
+    volumes:
+      - kener_data:/app/database
+    depends_on:
+      kener-redis:
+        condition: service_healthy
+    networks:
+      - marketing
+    mem_limit: 512m
+    security_opt:
+      - no-new-privileges:true
+    logging: *default-logging
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/ > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+# =============================================================================
+# Volumes (persistent data)
+# =============================================================================
+volumes:
+  postgres_data:
+    name: marketing_website_postgres_data
+  website_media:
+    name: marketing_website_media
+  kener_data:
+    name: marketing_website_kener_data
+  kener_redis_data:
+    name: marketing_website_kener_redis_data
+
+# =============================================================================
+# Network (isolated from the main mandari stack)
+# =============================================================================
+networks:
+  marketing:
+    name: marketing-website
+    driver: bridge

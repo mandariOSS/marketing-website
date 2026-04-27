@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+
+{% block title %}Responsible Disclosure{% endblock %}
+
+{% block meta_description %}Mandari Responsible Disclosure Policy nach RFC 9116. Wie du Sicherheitslücken meldest, was wir versprechen, PGP-Key und Hall of Fame der Sicherheitsforscher:innen.{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================================
+     HERO (linksbündig, klare Einladung)
+     ==================================================================== -->
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-sm font-medium mb-6">
+            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+            Responsible Disclosure · RFC 9116
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Sicherheitslücke gefunden? <span class="text-primary-600 dark:text-primary-400">Erzähl es uns.</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
+            Sicherheitsforschung an Open Source ist ein Geschenk. Wir nehmen jede
+            Meldung ernst, antworten <strong>binnen 48 Stunden</strong>, und behandeln dich mit Respekt —
+            keine Anwälte, keine Drohungen, keine Verzögerung.
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">
+            Diese Policy gilt für alle Mandari-Domains, das GitHub-Repo
+            <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-sm">mandariOSS/mandari</code>
+            sowie selbst gehostete Mandari-Instanzen.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="mailto:security@mandari.de" class="inline-flex items-center px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                security@mandari.de
+            </a>
+            <a href="/static/security/mandari-pgp-key.asc" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="key" class="w-5 h-5"></i>
+                PGP-Key (asc)
+            </a>
+            <a href="/.well-known/security.txt" class="inline-flex items-center gap-2 px-6 py-3 bg-transparent hover:bg-rose-50 dark:hover:bg-gray-800 text-rose-700 dark:text-rose-300 font-medium rounded-xl border border-rose-200 dark:border-rose-800 transition-colors">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                security.txt
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     TRUST-BANNER (rose, Versprechen)
+     ==================================================================== -->
+<section class="py-8 bg-rose-50 dark:bg-rose-900/20 border-y border-rose-200 dark:border-rose-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="zap" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Antwort</strong> binnen 48 h</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="calendar-clock" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Disclosure-Zeitraum:</strong> 90 Tage</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="shield-check" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Safe Harbor</strong> für gutgläubige Forschung</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="award" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Hall of Fame</strong> &amp; Anerkennung</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     SCOPE, was im Bereich liegt, was nicht
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-12 max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="crosshair" class="w-4 h-4"></i>
+                Scope
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Was du testen darfst, und was nicht
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Klare Grenzen schützen alle: dich, uns und unsere Nutzer:innen.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+
+            <!-- In Scope -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-green-200 dark:border-green-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="check-check" class="w-7 h-7 text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">In Scope</h3>
+                            <p class="text-sm text-green-600 dark:text-green-400 font-medium">Diese Bereiche darfst du prüfen</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="globe" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">mandari.de</code> &amp; alle Subdomains</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="github" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Source-Code im <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">mandariOSS/mandari</code> Repo</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="container" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Docker-Images aus dem Mandari-Registry</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="package" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Selbst gehostete Mandari-Instanzen <em>mit Erlaubnis der Betreiber</em></span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="lock" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Authentifizierung, Session-Management, RBAC</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="database" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">SQL-Injection, XSS, CSRF, IDOR</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Out of Scope -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-rose-200 dark:border-rose-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-rose-100 dark:bg-rose-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/50 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="ban" class="w-7 h-7 text-rose-600 dark:text-rose-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Out of Scope</h3>
+                            <p class="text-sm text-rose-600 dark:text-rose-400 font-medium">Bitte nicht, wir können nicht entgegnen</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>DoS / DDoS</strong> jeglicher Art</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Social Engineering gegen Founder oder Nutzer:innen</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Physische Angriffe auf Hosting-Standorte</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">OParl-Quellsysteme der Kommunen (nicht unser System)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Drittanbieter-Dienste (Hetzner, Postmark, …)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Automatisierte Scanner ohne Rückprüfung der Treffer</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Echte Nutzer-Daten, bitte nur eigene Test-Accounts</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     PROZESS, 4-Schritte mit Zeitachse
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="route" class="w-4 h-4"></i>
+                So läuft's
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Vom Befund zur behobenen Lücke
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Vier Schritte, klare Zeiten, Standard nach <strong>ISO/IEC 29147</strong>.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+
+            <!-- Step 1 -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl font-bold text-primary-200 dark:text-primary-800 leading-none">01</span>
+                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="mail-plus" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Meldung</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                    Du schreibst an <code class="text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">security@mandari.de</code>
+                   , gerne PGP-verschlüsselt. Beschreibung, PoC, betroffene URL.
+                </p>
+                <span class="text-xs font-medium text-primary-600 dark:text-primary-400">Tag 0</span>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl font-bold text-green-200 dark:text-green-800 leading-none">02</span>
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="message-square-reply" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                    </div>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Bestätigung</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                    Wir antworten persönlich, bestätigen den Eingang und ordnen den Schweregrad
+                    nach <strong>CVSS 3.1</strong> ein.
+                </p>
+                <span class="text-xs font-medium text-green-600 dark:text-green-400">≤ 48 h</span>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl font-bold text-amber-200 dark:text-amber-800 leading-none">03</span>
+                    <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="hammer" class="w-5 h-5 text-amber-600 dark:text-amber-400"></i>
+                    </div>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Behebung</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                    Patch wird entwickelt, getestet und ausgerollt. Bei kritischen Lücken
+                    Notfall-Release binnen 7 Tagen.
+                </p>
+                <span class="text-xs font-medium text-amber-600 dark:text-amber-400">≤ 90 Tage</span>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl font-bold text-blue-200 dark:text-blue-800 leading-none">04</span>
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="megaphone" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
+                    </div>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Disclosure</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                    Nach dem Patch: Security-Advisory mit CVE, Erwähnung in der Hall of Fame
+                    (sofern gewünscht), Post-Mortem im Blog.
+                </p>
+                <span class="text-xs font-medium text-blue-600 dark:text-blue-400">+14 Tage</span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     SAFE HARBOR + WAS WIR VERSPRECHEN
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-12 max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="handshake" class="w-4 h-4"></i>
+                Unsere Zusagen an dich
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Safe Harbor für gutgläubige Forschung
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Solange du dich an diese Policy hältst, garantieren wir:
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Keine rechtlichen Schritte</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    Wir verzichten auf zivil- oder strafrechtliche Verfolgung
+                    bei gutgläubiger Forschung, kein Hackerparagraph 202c StGB-Drohbrief.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="user-check" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Persönliche Antwort</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    Kein Ticket-Bot, kein Auto-Responder. Du redest direkt mit dem Founder
+                    oder mit der Person, die das Issue tatsächlich behebt.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mb-4">
+                    <i data-lucide="award" class="w-5 h-5 text-amber-600 dark:text-amber-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Anerkennung</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    Erwähnung in Hall of Fame &amp; Security-Advisory.
+                    Auf Wunsch persönliches Empfehlungs­schreiben.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     HALL OF FAME (ehrlich leer mit Einladung)
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-sm font-medium mb-4">
+                <i data-lucide="trophy" class="w-4 h-4"></i>
+                Hall of Fame
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Sicherheitsforscher:innen, denen wir danken
+            </h2>
+        </div>
+
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-dashed border-amber-300 dark:border-amber-700 text-center">
+            <i data-lucide="sparkles" class="w-10 h-10 text-amber-600 dark:text-amber-400 mx-auto mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                Hier ist noch viel Platz
+            </h3>
+            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                Mandari ist neu, bisher keine eingegangenen Sicherheitsmeldungen.
+                Du könntest <strong>die erste Person hier</strong> sein.
+                Wir versprechen ehrliche Anerkennung statt Marketing-Floskeln.
+            </p>
+            <a href="mailto:security@mandari.de" class="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="bug" class="w-5 h-5"></i>
+                Erste Meldung schicken
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     PGP-KEY + KONTAKT-INFOS (kompakter Block)
+     ==================================================================== -->
+<section class="py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-rose-200 dark:border-rose-800 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-rose-100 dark:bg-rose-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+            <div class="relative">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                    <i data-lucide="key-round" class="w-7 h-7 text-rose-600 dark:text-rose-400"></i>
+                    Verschlüsselt schreiben
+                </h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">
+                    Für vertrauliche Meldungen verwende bitte unseren PGP-Schlüssel.
+                    Fingerprint zur Verifikation:
+                </p>
+                <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6 overflow-x-auto">
+                    <code class="text-green-400 text-sm font-mono break-all">
+                        4096R/A1B2 C3D4 E5F6 0789 0ABC · DEF1 2345 6789 ABCD EF01
+                    </code>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                    Der echte Fingerprint wird mit dem ersten Release publiziert.
+                    Aktueller Stand: PGP-Setup ist in Vorbereitung.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="/static/security/mandari-pgp-key.asc" class="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        Public Key herunterladen
+                    </a>
+                    <a href="/.well-known/security.txt" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        security.txt ansehen
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FINAL CTA
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Du hast was gefunden?</h2>
+            <p class="text-xl text-white/90 mb-10">
+                Schreib uns, wir bestätigen binnen 48 Stunden, koordinieren mit dir
+                und behandeln deine Meldung mit dem Respekt, den sie verdient.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="mailto:security@mandari.de" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-primary-700 font-medium rounded-xl transition-colors text-lg">
+                    <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                    security@mandari.de
+                </a>
+                <a href="https://github.com/mandariOSS/mandari/security/advisories/new" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    GitHub Advisory
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

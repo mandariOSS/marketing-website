@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %}Team{% endblock %}
+
+{% block meta_description %}Mandari wird von Sven Konopka entwickelt, ein ehrliches Solo-Projekt mit offener Community. Lerne kennen, wer Mandari macht und warum.{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================================
+     HERO (linksbündig, im Mandari-Stil)
+     ==================================================================== -->
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
+            <i data-lucide="user-circle" class="w-4 h-4"></i>
+            Solo-Projekt mit Open-Source-Spirit
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Hinter Mandari steht <span class="text-primary-600 dark:text-primary-400">eine Person</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-8">
+            Mandari ist kein Konzern und kein Startup mit Investorenrunde, sondern ein
+            Projekt, das aus Überzeugung entstanden ist und von einer offenen Community begleitet wird.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="/kontakt/" class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                Direkt schreiben
+            </a>
+            <a href="https://github.com/mandariOSS" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="github" class="w-5 h-5"></i>
+                GitHub-Profil
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     TRUST-BANNER (im Mandari-Stil der Produkt-/Lösungen-Page)
+     ==================================================================== -->
+<section class="py-8 bg-primary-50 dark:bg-primary-900/20 border-y border-primary-200 dark:border-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-16 text-center">
+            <div class="flex items-center gap-3">
+                <i data-lucide="user" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                <span class="text-gray-700 dark:text-gray-300"><strong>Solo-Founder</strong> · transparent</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <i data-lucide="map-pin" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                <span class="text-gray-700 dark:text-gray-300">Aus <strong>Münster</strong></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <i data-lucide="github" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                <span class="text-gray-700 dark:text-gray-300"><strong>AGPL-3.0</strong></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <i data-lucide="flask-conical" class="w-6 h-6 text-amber-600 dark:text-amber-400"></i>
+                <span class="text-gray-700 dark:text-gray-300"><strong>Beta-Phase</strong> · 2026</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FOUNDER-SECTION
+     Layout: vertikal gestapelt bis lg, dann 2-Spalten 50/50 (lg:grid-cols-2).
+     Bewusst keine 12-col / col-span-5/7-Tricks (Tailwind hat sie inkonsistent
+     gebaut). lg:grid-cols-2 ist garantiert robust + ausgewogene Proportionen.
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+
+            <!-- Founder-Card (Mandari-Style mit Decorative Corner Circle) -->
+            <div class="min-w-0">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-200 dark:border-primary-800 p-6 lg:p-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                    <div class="relative">
+
+                        <!-- Avatar, flex-none auf Avatar, min-w-0 auf Text damit nichts überläuft -->
+                        <div class="flex items-center gap-4 sm:gap-5 mb-6">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-xl sm:text-2xl font-bold text-white shadow-lg shadow-primary-600/30 flex-none">
+                                SK
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white truncate">Sven Konopka</h2>
+                                <p class="text-sm text-primary-600 dark:text-primary-400 font-medium truncate">Gründer · Entwickler · Inhaber</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Münster, Deutschland</p>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            Full-Stack-Entwickler und Inhaber von <strong>topixmedia.de</strong>.
+                            Mandari ist mein persönliches Herzensprojekt: eine moderne Open-Source-Plattform
+                            für die deutsche Kommunalpolitik.
+                        </p>
+
+                        <!-- Quick-Facts -->
+                        <dl class="space-y-3 pt-4 mb-6 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="briefcase" class="w-4 h-4 text-primary-600 dark:text-primary-400 mt-0.5 flex-none"></i>
+                                <div class="flex-1">
+                                    <dt class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Beruf</dt>
+                                    <dd class="text-sm text-gray-900 dark:text-white">Selbstständiger Full-Stack-Entwickler</dd>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="lightbulb" class="w-4 h-4 text-primary-600 dark:text-primary-400 mt-0.5 flex-none"></i>
+                                <div class="flex-1">
+                                    <dt class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Mission</dt>
+                                    <dd class="text-sm text-gray-900 dark:text-white">RIS modernisieren, Bürger:innen einbinden</dd>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="layers" class="w-4 h-4 text-primary-600 dark:text-primary-400 mt-0.5 flex-none"></i>
+                                <div class="flex-1">
+                                    <dt class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Stack</dt>
+                                    <dd class="text-sm text-gray-900 dark:text-white">Django, PostgreSQL, HTMX, Wagtail</dd>
+                                </div>
+                            </div>
+                        </dl>
+
+                        <!-- Direct links -->
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <a href="https://github.com/mandariOSS" target="_blank" rel="noopener noreferrer"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg transition-colors">
+                                <i data-lucide="github" class="w-4 h-4"></i>GitHub
+                            </a>
+                            <a href="mailto:hello@mandari.de"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg transition-colors">
+                                <i data-lucide="mail" class="w-4 h-4"></i>E-Mail
+                            </a>
+                            <a href="/impressum/"
+                               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg transition-colors">
+                                <i data-lucide="info" class="w-4 h-4"></i>Impressum
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- "Warum Mandari?" Story rechts (auf lg) bzw. unten (kleiner) -->
+            <div class="min-w-0">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                    <i data-lucide="quote" class="w-4 h-4"></i>
+                    Warum Mandari?
+                </span>
+                <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6">
+                    Die Kurzfassung
+                </h3>
+
+                <div class="space-y-5 text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                    <p>
+                        Wer als Bürgerin oder Bürger einmal versucht hat, eine kommunalpolitische
+                        Vorlage zu finden, weiß: die meisten Ratsinformationssysteme stammen
+                        konzeptionell aus den frühen 2000ern. Klobige PDFs, brauchbare Suche
+                        Fehlanzeige, mobil unbrauchbar.
+                    </p>
+                    <p>
+                        Wer als Fraktionsmitglied am Sonntagabend Sitzungsunterlagen vorbereitet,
+                        weiß: das passiert oft im Outlook-Postfach, in WhatsApp-Gruppen und
+                        handgepflegten Excel-Dateien. <strong>Es geht besser.</strong>
+                    </p>
+                    <p>
+                        Mandari soll diese Lücke füllen. Modern, offen, in Deutschland gehostet,
+                        bezahlbar, und so transparent gebaut, dass jede Kommune und jede Fraktion
+                        sich darauf verlassen kann, dass keine Daten heimlich abfließen.
+                    </p>
+                </div>
+
+                <!-- Pull-Quote im Mandari-Style -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl border-l-4 border-primary-500 p-6 shadow-sm">
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="message-circle-heart" class="w-8 h-8 text-primary-500 flex-none opacity-40"></i>
+                        <div>
+                            <p class="text-gray-800 dark:text-gray-200 italic leading-relaxed text-lg mb-3">
+                                Konzept, Code, Design, Hosting, Support, aktuell alles in einer Hand.
+                                Das hat zwei Konsequenzen, die ich offen kommuniziere:
+                                <strong class="not-italic">Direkter Draht</strong> bei jeder Anfrage und
+                                <strong class="not-italic">überschaubares Tempo</strong> bei größeren Features.
+                            </p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 not-italic">— Sven, Founder</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     WERTE als 3 Mandari-Cards mit Decorative Corner Circle
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="compass" class="w-4 h-4"></i>
+                Werte
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Drei Werte, die jede Entscheidung prägen
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Wo es Zielkonflikte gibt, entscheidet immer einer dieser drei Werte.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- TRANSPARENZ (green) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-green-200 dark:border-green-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-green-100 dark:bg-green-900/50 rounded-2xl flex items-center justify-center mb-5">
+                        <i data-lucide="eye" class="w-7 h-7 text-green-600 dark:text-green-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Transparenz</h3>
+                    <p class="text-sm text-green-600 dark:text-green-400 font-medium mb-4">Offen statt verborgen</p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Offene Prozesse, in der Politik wie in der Software. Code ist offen,
+                        Entscheidungen sind nachvollziehbar, Roadmap ist öffentlich.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>
+                            Code unter AGPL-3.0 auf GitHub
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>
+                            Öffentliche Roadmap &amp; Releases
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>
+                            Quellennachweise für jede Datenquelle
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- DATENSOUVERÄNITÄT (primary) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-200 dark:border-primary-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-2xl flex items-center justify-center mb-5">
+                        <i data-lucide="lock" class="w-7 h-7 text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Datensouveränität</h3>
+                    <p class="text-sm text-primary-600 dark:text-primary-400 font-medium mb-4">Du behältst die Kontrolle</p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Hosting in Deutschland, AES-256-Verschlüsselung, kein Tracking.
+                        Jede Kommune kann selbst hosten und behält volle Kontrolle.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-primary-500 mt-0.5 flex-none"></i>
+                            Deutsche Server, DSGVO-konform
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-primary-500 mt-0.5 flex-none"></i>
+                            Self-Hosting jederzeit möglich
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-primary-500 mt-0.5 flex-none"></i>
+                            Datenexport in offenen Formaten
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ZUGÄNGLICHKEIT (blue) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-blue-200 dark:border-blue-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-2xl flex items-center justify-center mb-5">
+                        <i data-lucide="accessibility" class="w-7 h-7 text-blue-600 dark:text-blue-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Zugänglichkeit</h3>
+                    <p class="text-sm text-blue-600 dark:text-blue-400 font-medium mb-4">Für alle, nicht nur Profis</p>
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Politische Information muss für alle zugänglich sein, unabhängig
+                        von Budget, technischem Wissen oder Endgerät.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-none"></i>
+                            Insight-Portal kostenlos &amp; ohne Login
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-none"></i>
+                            Mobil-first, responsive Design
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500 mt-0.5 flex-none"></i>
+                            KI-Zusammenfassungen ohne Verwaltungsdeutsch
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     2-SPALTEN-USE-CASE: "Wer wir suchen" / "Was wir bieten"
+     (Mandari-Style wie produkt.html „Two Use Cases")
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-white dark:bg-gray-800 border-y border-gray-200 dark:border-gray-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                Mandari soll wachsen
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Wen ich suche, was du bekommst
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Solo bedeutet nicht alleine. Mandari soll von einer Community getragen werden.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+
+            <!-- Wer wir suchen (primary) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-primary-200 dark:border-primary-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="user-plus" class="w-7 h-7 text-primary-600 dark:text-primary-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Wen ich suche</h3>
+                            <p class="text-sm text-primary-600 dark:text-primary-400 font-medium">Konkret &amp; ehrlich</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="users" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Mitgründer:in</strong> mit Sales/Vertrieb-Hintergrund</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="building-2" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Pilot-Kommunen</strong> (Verwaltung oder Fraktion) für Live-Tests</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="award" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Beirat</strong> mit Civic-Tech- oder Verwaltungs-Erfahrung</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="code" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Code-Contributors</strong> für Django/HTMX/OParl</span>
+                        </li>
+                    </ul>
+
+                    <a href="/kontakt/" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        Direkt schreiben
+                    </a>
+                </div>
+            </div>
+
+            <!-- Was du bekommst (gray-neutral) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-gray-200 dark:border-gray-700 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gray-100 dark:bg-gray-700/40 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="gift" class="w-7 h-7 text-gray-700 dark:text-gray-300"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Was du bekommst</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Als Contributor</p>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Direkter Draht</strong> zum Founder, kurze Wege</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Mentoring &amp; Code-Reviews</strong> für Anfänger:innen</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>Sichtbarkeit</strong> im Civic-Tech-Bereich</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300"><strong>AGPL-Code</strong> = deine Beiträge bleiben frei</span>
+                        </li>
+                    </ul>
+
+                    <a href="/mitmachen/" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="git-pull-request" class="w-4 h-4"></i>
+                        Mitwirken
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cross-Link zu GitHub-Issues -->
+        <div class="mt-10 text-center">
+            <p class="text-gray-500 dark:text-gray-400 text-sm">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                Schon konkret? Dann <a href="https://github.com/mandariOSS/mandari/issues" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">offene GitHub-Issues</a> ansehen, perfekter Einstieg.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FINAL CTA (Mandari-Stil mit gradient-to-br from-primary-600)
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Mandari soll wachsen</h2>
+            <p class="text-xl text-white/90 mb-10">
+                Wenn du Lust hast, mitzubauen, als Mitgründer:in, Beirat, Contributor oder
+                Pilot-Kommune, melde dich. Ich freue mich über jede Nachricht.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/kontakt/" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-primary-700 font-medium rounded-xl transition-colors text-lg">
+                    <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                    Direkt schreiben
+                </a>
+                <a href="{{ BOOKING_URL }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                    30-Min-Call buchen
+                </a>
+                <a href="https://github.com/mandariOSS" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/10 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

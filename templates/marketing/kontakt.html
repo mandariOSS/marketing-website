@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kontakt | Mandari{% endblock %}
+
+{% block extra_head %}
+<!-- Altcha: DSGVO-konformer Captcha-Ersatz, lokal gehostet -->
+<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+            Kontakt
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Lassen Sie uns sprechen
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-8">
+            Haben Sie Fragen zu Mandari? Möchten Sie eine Demo vereinbaren oder über individuelle Lösungen sprechen?
+            Buchen Sie direkt einen 30-Min-Termin oder schreiben Sie uns, Antwort innerhalb von 1 Werktag.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="#termin-buchen" class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="calendar" class="w-5 h-5 mr-2"></i>
+                30-Min-Termin buchen
+            </a>
+            <a href="mailto:kontakt@mandari.de" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="mail" class="w-5 h-5"></i>
+                Direkt E-Mail
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     ZWEI FORMS NEBENEINANDER auf lg+ Screens, links Termin buchen,
+     rechts Nachricht senden. Beide im Mandari-Card-Stil mit Decorative
+     Corner Circle, color-differenziert (primary vs. neutral) damit klar
+     ist: zwei gleichwertige Wege.
+     Anker = termin-buchen (für Cross-Page-Links auf die Booking-Form).
+     ==================================================================== -->
+<section class="py-12 lg:py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Display messages above the forms (success/error after POST) -->
+        {% if messages %}
+        <div class="max-w-3xl mx-auto mb-8 space-y-3">
+            {% for message in messages %}
+            <div class="p-4 rounded-xl flex items-center gap-3 {% if message.tags == 'success' %}bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300{% else %}bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300{% endif %}">
+                <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="w-5 h-5 flex-shrink-0"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- 2-column grid: Termin links, Nachricht rechts. Stacks on < lg. -->
+        <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+            <!-- ──────────────────────────────────────────────────────────
+                 LINKE SPALTE, TERMIN BUCHEN (primary-coded, mit Anker)
+                 ────────────────────────────────────────────────────────── -->
+            <div id="termin-buchen"
+                 class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-200 dark:border-primary-800 p-6 lg:p-8 relative overflow-hidden scroll-mt-20">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+
+                    <!-- Header (kompakt für 2-col Layout) -->
+                    <div class="mb-6">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-3">
+                            <i data-lucide="calendar-clock" class="w-4 h-4"></i>
+                            30 Minuten · kostenlos
+                        </span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            Termin buchen
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Wunschtermin auswählen, wir bestätigen innerhalb von 1 Werktag per E-Mail.
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" action="/kontakt/" class="space-y-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="subject" value="termin-anfrage">
+
+                        <!-- Date + Time (bleibt 2-col innerhalb der Card, Werte sind kompakt) -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="termin_datum" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                    Wunschdatum *
+                                </label>
+                                <input type="date" name="termin_datum" id="termin_datum" required
+                                       class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors tabular-nums text-sm">
+                            </div>
+                            <div>
+                                <label for="termin_zeit" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                                    Wunschzeit *
+                                </label>
+                                <select name="termin_zeit" id="termin_zeit" required
+                                        class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors tabular-nums text-sm">
+                                    <option value="">wählen…</option>
+                                    <option value="09:00">09:00</option>
+                                    <option value="10:00">10:00</option>
+                                    <option value="11:00">11:00</option>
+                                    <option value="14:00">14:00</option>
+                                    <option value="15:00">15:00</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="17:00">17:00</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 -mt-2">Mo–Fr · andere Zeit? Im Themenfeld erwähnen.</p>
+
+                        <!-- Single-column für besser Lesbarkeit in schmaler Spalte -->
+                        <div>
+                            <label for="booking_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Ihr Name *</label>
+                            <input type="text" name="name" id="booking_name" required
+                                   class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                   placeholder="Max Mustermann">
+                        </div>
+
+                        <div>
+                            <label for="booking_email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">E-Mail-Adresse *</label>
+                            <input type="email" name="email" id="booking_email" required
+                                   class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                   placeholder="ihre@email.de">
+                        </div>
+
+                        <div>
+                            <label for="booking_organization" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Organisation</label>
+                            <input type="text" name="organization" id="booking_organization"
+                                   class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                   placeholder="Fraktion / Verwaltung / Initiative">
+                        </div>
+
+                        <div>
+                            <label for="booking_message" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Worum soll es gehen? *</label>
+                            <textarea name="message" id="booking_message" rows="4" required
+                                      class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none text-sm"
+                                      placeholder="Anbindungs-Frage, Demo, Pilot-Kommune, …"></textarea>
+                        </div>
+
+                        <!-- Privacy -->
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" name="privacy" id="booking_privacy" required
+                                   class="mt-1 w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500">
+                            <label for="booking_privacy" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Ich habe die <a href="/datenschutz/" class="text-primary-600 dark:text-primary-400 hover:underline">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten zur Terminkoordination einverstanden. *
+                            </label>
+                        </div>
+
+                        <!-- Altcha (im Hintergrund, off-screen) -->
+                        <altcha-widget challengeurl="{{ ALTCHA_CHALLENGE_URL }}"
+                                       auto="onload"
+                                       hidefooter
+                                       hidelogo
+                                       style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
+                                       aria-hidden="true"
+                                       strings='{"label":"Spam-Schutz","verifying":"Prüfe…","verified":"OK","error":"Fehler"}'></altcha-widget>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/40 hover:-translate-y-0.5 transition-all">
+                            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+                            Terminanfrage senden
+                        </button>
+
+                        <!-- Trust footer -->
+                        <p class="text-xs text-gray-500 dark:text-gray-400 inline-flex items-center gap-1.5 justify-center w-full"
+                           title="Spam-Schutz durch Altcha, proof-of-work, datenschutzfreundlich, lokal gehostet">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-500"></i>
+                            DSGVO-konform · self-hosted · spam-geschützt
+                        </p>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- ──────────────────────────────────────────────────────────
+                 RECHTE SPALTE, NACHRICHT SENDEN (neutral-coded)
+                 ────────────────────────────────────────────────────────── -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 p-6 lg:p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-gray-700/40 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+
+                    <!-- Header (parallel zur Termin-Card aufgebaut) -->
+                    <div class="mb-6">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium mb-3">
+                            <i data-lucide="message-square" class="w-4 h-4"></i>
+                            Antwort in 1 Werktag
+                        </span>
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            Nachricht senden
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-300 text-sm">
+                            Längere Anfragen, Demo-Wünsche oder schriftliche Themen, schreib uns direkt.
+                        </p>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" action="/kontakt/" class="space-y-4">
+                        {% csrf_token %}
+
+                        <div>
+                            <label for="name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Ihr Name *</label>
+                            <input type="text" name="name" id="name" required
+                                   class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                   placeholder="Max Mustermann">
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">E-Mail-Adresse *</label>
+                            <input type="email" name="email" id="email" required
+                                   class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                   placeholder="ihre@email.de">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="organization" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Organisation</label>
+                                <input type="text" name="organization" id="organization"
+                                       class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                                       placeholder="optional">
+                            </div>
+                            <div>
+                                <label for="subject" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Betreff *</label>
+                                <select name="subject" id="subject" required
+                                        class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm">
+                                    <option value="">wählen…</option>
+                                    <option value="demo">Demo anfragen</option>
+                                    <option value="preise">Preisanfrage</option>
+                                    <option value="support">Support</option>
+                                    <option value="datenschutz">Datenschutz</option>
+                                    <option value="sonstiges">Sonstiges</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="message" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Ihre Nachricht *</label>
+                            <textarea name="message" id="message" rows="6" required
+                                      class="w-full px-3 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-y text-sm"
+                                      placeholder="Wie können wir Ihnen helfen?"></textarea>
+                        </div>
+
+                        <!-- Privacy -->
+                        <div class="flex items-start gap-3">
+                            <input type="checkbox" name="privacy" id="privacy" required
+                                   class="mt-1 w-4 h-4 text-primary-600 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500">
+                            <label for="privacy" class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                Ich habe die <a href="/datenschutz/" class="text-primary-600 dark:text-primary-400 hover:underline">Datenschutzerklärung</a> gelesen und bin mit der Verarbeitung meiner Daten einverstanden. *
+                            </label>
+                        </div>
+
+                        <!-- Altcha (im Hintergrund, off-screen) -->
+                        <altcha-widget challengeurl="{{ ALTCHA_CHALLENGE_URL }}"
+                                       auto="onload"
+                                       hidefooter
+                                       hidelogo
+                                       style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"
+                                       aria-hidden="true"
+                                       strings='{"label":"Spam-Schutz","verifying":"Prüfe…","verified":"OK","error":"Fehler"}'></altcha-widget>
+
+                        <!-- Submit -->
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-semibold rounded-xl shadow-lg hover:-translate-y-0.5 transition-all">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                            Nachricht senden
+                        </button>
+
+                        <!-- Trust footer (parallel zur Termin-Card) -->
+                        <p class="text-xs text-gray-500 dark:text-gray-400 inline-flex items-center gap-1.5 justify-center w-full"
+                           title="Spam-Schutz durch Altcha, proof-of-work, datenschutzfreundlich, lokal gehostet">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-green-500"></i>
+                            DSGVO-konform · self-hosted · spam-geschützt
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     E-MAIL-DIREKTKONTAKT (3 Cards horizontal, statt Sidebar)
+     ==================================================================== -->
+<section class="py-12 lg:py-16 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-3">
+                <i data-lucide="at-sign" class="w-4 h-4"></i>
+                Direkt per E-Mail
+            </span>
+            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                Lieber direkt Mailen?
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+            <a href="mailto:kontakt@mandari.de"
+               class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg transition-all">
+                <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <i data-lucide="mail" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Allgemein</p>
+                <p class="font-bold text-gray-900 dark:text-white mb-1 break-all">kontakt@mandari.de</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Anfragen aller Art, Sales, Demo</p>
+            </a>
+
+            <a href="mailto:support@mandari.de"
+               class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:border-green-300 dark:hover:border-green-700 hover:shadow-lg transition-all">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <i data-lucide="life-buoy" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
+                </div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Support</p>
+                <p class="font-bold text-gray-900 dark:text-white mb-1 break-all">support@mandari.de</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Probleme, Bugs, technische Fragen</p>
+            </a>
+
+            <a href="mailto:datenschutz@mandari.de"
+               class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 hover:border-purple-300 dark:hover:border-purple-700 hover:shadow-lg transition-all">
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                    <i data-lucide="shield" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
+                </div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">Datenschutz</p>
+                <p class="font-bold text-gray-900 dark:text-white mb-1 break-all">datenschutz@mandari.de</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">DSGVO-Anfragen, Auskunft, Löschung</p>
+            </a>
+
+        </div>
+
+        <!-- GitHub Hinweis kompakt -->
+        <div class="mt-10 max-w-3xl mx-auto bg-gray-900 dark:bg-gray-950 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="github" class="w-6 h-6"></i>
+            </div>
+            <div class="flex-1">
+                <p class="font-semibold mb-1">Bug oder Feature-Wunsch?</p>
+                <p class="text-sm text-gray-300">
+                    Open-Source-Issues bitte direkt auf GitHub melden, schneller als per E-Mail.
+                </p>
+            </div>
+            <a href="https://github.com/mandariOSS/mandari/issues" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white text-sm font-medium rounded-xl border border-white/20 transition-colors whitespace-nowrap">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                Issue eröffnen
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     ALLGEMEINE FAQ (zuvor /faq/, hier integriert), id="faq"
+     ==================================================================== -->
+<section id="faq" class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50 scroll-mt-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                Häufige Fragen
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Vielleicht ist die Antwort schon hier
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                Konkret zu Preisen siehe <a href="/preise/#faq" class="text-primary-600 dark:text-primary-400 hover:underline">Preise-FAQ</a>,
+                zu Migration siehe <a href="/migration/" class="text-primary-600 dark:text-primary-400 hover:underline">Migration</a>.
+            </p>
+        </div>
+
+        <div class="space-y-3" x-data="{ open: 1 }">
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 1 ? null : 1" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Was ist Mandari?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 1 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 1" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Mandari ist ein modernes, Open-Source-basiertes Ratsinformations­system für deutsche Kommunen.
+                        Drei Module: <strong>Insight</strong> (kostenlos für Bürger:innen),
+                        <strong>Work</strong> (für Fraktionen &amp; Mandatsträger:innen) und
+                        <strong>Session</strong> (Verwaltungs-RIS).
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 2 ? null : 2" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Was ist OParl?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 2 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 2" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        <strong>OParl</strong> ist ein offener Standard für maschinen­lesbare Ratsinformationen.
+                        Er definiert ein API-Schema (REST + JSON), mit dem Kommunen Sitzungen, Vorlagen, Beschlüsse
+                        und Mandatsträger:innen-Daten strukturiert bereitstellen können. Mandari unterstützt OParl 1.1
+                        vollständig, siehe <a href="https://oparl.org/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">oparl.org</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 3 ? null : 3" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Welche Kommunen sind dabei?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 3 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 3" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Aktueller Stand siehe <a href="/kommunen/" class="text-primary-600 dark:text-primary-400 hover:underline">Kommunen-Liste</a>.
+                        Wir sind in der Pilot-Phase 2026, falls deine Kommune dabei sein möchte, sprich uns an.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 4 ? null : 4" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Kann ich Mandari selbst hosten?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 4 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 4" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Ja, Mandari ist <strong>AGPL-3.0</strong>, siehe <a href="/open-source/" class="text-primary-600 dark:text-primary-400 hover:underline">Open Source</a>.
+                        Docker-Compose-Stack auf jedem Linux-Server, Anleitung im GitHub-Repo.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 5 ? null : 5" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Wo werden meine Daten gespeichert?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 5 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 5" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Auf Servern der <strong>Hetzner Online GmbH</strong> in Nürnberg und Falkenstein
+                        (Deutschland), ISO 27001 zertifiziert. Komplette Stack-Details und Subprocessor-Liste
+                        im <a href="/trust/" class="text-primary-600 dark:text-primary-400 hover:underline">Trust Center</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 6 ? null : 6" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Nutzt Mandari Tracker oder Analytics?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 6 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 6" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Nein. Kein Google Analytics, kein Facebook Pixel, kein Hotjar.
+                        Aggregierte Reichweiten ziehen wir aus Server-Logs nach IP-Anonymisierung.
+                        Details in der <a href="/datenschutz/#tracking" class="text-primary-600 dark:text-primary-400 hover:underline">Datenschutzerklärung</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 7 ? null : 7" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Ist der KI-Assistent DSGVO-konform?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 7 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 7" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Primäre Inferenz läuft auf eigenen GPUs in Hetzner DE. Komplexere Anfragen
+                        können optional an EU-basierte Anbieter (z.&nbsp;B. Mistral La&nbsp;Plateforme) weitergeleitet
+                        werden, nur nach Opt-in pro Kommune. Details siehe
+                        <a href="/trust/#subprocessors" class="text-primary-600 dark:text-primary-400 hover:underline">Subprocessor-Liste</a>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 8 ? null : 8" class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Wie kann ich beitragen?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 8 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 8" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Code, Übersetzung, Doku, Tests, Verbreitung, alle Wege auf
+                        <a href="/mitmachen/" class="text-primary-600 dark:text-primary-400 hover:underline">/mitmachen/</a>.
+                        Organisationen (Pilot-Kommunen, Förderer, NGOs) finden Modelle auf
+                        <a href="/partner/" class="text-primary-600 dark:text-primary-400 hover:underline">/partner/</a>.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-8 text-center">
+            <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+            Frage hier nicht dabei? Schreib uns, Antwort binnen 24h.
+        </p>
+    </div>
+</section>
+{% endblock %}

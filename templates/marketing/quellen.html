@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Quellennachweise & OParl-Quellenverzeichnis | Mandari{% endblock %}
+
+{% block meta_description %}Übersicht aller Datenquellen, die Mandari nutzt: OParl-Schnittstellen deutscher Kommunen, OpenStreetMap, Nominatim und weitere.{% endblock %}
+
+{% block content %}
+<section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto">
+
+        <!-- Hero -->
+        <header class="mb-12">
+            <p class="text-sm font-semibold text-primary-600 dark:text-primary-400 uppercase tracking-wide mb-3">
+                Transparenz über Transparenz
+            </p>
+            <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+                Quellennachweise &amp; OParl-Quellenverzeichnis
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                Mandari aggregiert öffentliche Daten aus Ratsinformationssystemen deutscher Kommunen
+                und ergänzt sie um Karten-, Geokodierungs- und KI-Komponenten. Hier findest du eine
+                vollständige Übersicht aller Datenquellen, ihrer Lizenzen und der eingesetzten Standards.
+            </p>
+        </header>
+
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+
+            <!-- OParl-Daten der Kommunen -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                Ratsinformationen aus OParl-Schnittstellen
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Mandari nutzt den offenen Standard <a href="https://oparl.org/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">OParl</a>
+                (Versionen 1.0 und 1.1), um Daten aus den Ratsinformationssystemen deutscher Kommunen
+                strukturiert abzurufen. Es werden ausschließlich öffentlich zugängliche Daten verarbeitet —
+                also Sitzungen, Tagesordnungen, Vorlagen, Beschlüsse, Mitglieder und veröffentlichte Dokumente.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Die jeweilige Kommune bleibt rechtlich verantwortliche Stelle für die bereitgestellten
+                Inhalte. Mandari nimmt keine inhaltlichen Veränderungen an den Originaldaten vor und
+                verlinkt grundsätzlich auf die Originalquelle.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                <a href="/kommunen/" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">
+                    → Liste aller aktuell aggregierten Kommunen
+                </a>
+            </p>
+
+            <!-- Lizenz der Daten -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                Lizenz der Ratsinformationen
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Die meisten Kommunen stellen ihre OParl-Daten unter einer der folgenden Lizenzen bereit:
+            </p>
+            <ul class="text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+                <li>
+                    <strong class="text-gray-900 dark:text-white">Datenlizenz Deutschland – Zero – Version 2.0</strong>
+                    (<a href="https://www.govdata.de/dl-de/zero-2-0" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">DL-DE-Zero-2.0</a>)
+                    – freie Nutzung ohne Auflagen.
+                </li>
+                <li>
+                    <strong class="text-gray-900 dark:text-white">Datenlizenz Deutschland – Namensnennung – Version 2.0</strong>
+                    (<a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">DL-DE-BY-2.0</a>)
+                    – mit Namensnennung der Quelle.
+                </li>
+                <li>
+                    <strong class="text-gray-900 dark:text-white">Creative Commons CC-BY 4.0</strong>
+                    – mit Namensnennung.
+                </li>
+            </ul>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Die konkrete Lizenz pro Kommune ist in den Detailansichten der jeweiligen Kommune
+                ausgewiesen. Bei Unklarheiten gilt im Zweifel die strengere Lizenz.
+            </p>
+
+            <!-- Karten -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                Karten- und Geodaten
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Karten und Geokoordinaten stammen aus dem Projekt
+                <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">OpenStreetMap</a>
+                und werden gemäß der Lizenz
+                <a href="https://opendatacommons.org/licenses/odbl/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Open Database License (ODbL) 1.0</a>
+                genutzt.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Adressen und Standortbezeichnungen werden über
+                <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Nominatim</a>
+                in Koordinaten übersetzt. Wir folgen dabei der
+                <a href="https://operations.osmfoundation.org/policies/nominatim/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Nominatim Usage Policy</a>
+                der OpenStreetMap Foundation.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Stadtteil- und Stadtbezirksgrenzen für einzelne Kommunen entstammen den jeweiligen
+                Open-Data-Portalen der Kommunen oder OpenStreetMap-Auszügen.
+            </p>
+
+            <!-- KI -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                KI-gestützte Inhalte
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Zusammenfassungen, semantische Suche und der Chat-Assistent werden mit Large-Language-Modellen
+                generiert. Eingesetzt werden unter anderem:
+            </p>
+            <ul class="text-gray-700 dark:text-gray-300 mb-4 space-y-2">
+                <li>
+                    <strong class="text-gray-900 dark:text-white">Kimi K2 Thinking</strong> &amp;
+                    <strong class="text-gray-900 dark:text-white">GLM-4.5</strong>
+                    – Sprachmodelle für Zusammenfassungen und RAG-Chat,
+                    bereitgestellt über
+                    <a href="https://nebius.com/" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Nebius TokenFactory</a>
+                    (EU-Hosting).
+                </li>
+                <li>
+                    <strong class="text-gray-900 dark:text-white">BAAI/bge-m3</strong>
+                    – mehrsprachiges Embedding-Modell für Vektorsuche
+                    (Apache-2.0-Lizenz).
+                </li>
+                <li>
+                    <strong class="text-gray-900 dark:text-white">Mistral Pixtral / Tesseract</strong>
+                    – OCR und Vision-Modelle zur Textextraktion aus PDF-Dokumenten.
+                </li>
+            </ul>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                KI-generierte Inhalte sind in der Oberfläche entsprechend gekennzeichnet. Die Originaldokumente
+                bleiben jederzeit als verbindliche Quelle abrufbar.
+            </p>
+
+            <!-- Open-Source-Stack -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                Eingesetzte Open-Source-Software
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Mandari ist selbst Open Source unter der
+                <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">GNU AGPL-3.0</a>
+                und basiert auf zahlreichen freien Komponenten – darunter Django, Wagtail, PostgreSQL,
+                Redis, Meilisearch, HTMX, Alpine.js, Tailwind CSS, Lucide Icons und viele weitere.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Eine vollständige Liste der direkten Abhängigkeiten findest du in der
+                <a href="https://github.com/mandariOSS/mandari" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">README im GitHub-Repository</a>.
+            </p>
+
+            <!-- Hinweise & Korrekturen -->
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4">
+                Hinweise auf fehlende oder fehlerhafte Quellen
+            </h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                Sollten Quellen unvollständig ausgewiesen sein oder hier ein Verweis fehlen, melde dich
+                gern: <a href="mailto:hello@mandari.de" class="text-primary-600 dark:text-primary-400 hover:underline">hello@mandari.de</a>.
+                Korrekturen an Originaldaten bitte direkt an die jeweils zuständige Kommune richten —
+                Mandari spiegelt nur, was die Kommune veröffentlicht.
+            </p>
+
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-12">
+                Stand: {% now "F Y" %}
+            </p>
+        </div>
+      </div>
+    </div>
+</section>
+{% endblock %}

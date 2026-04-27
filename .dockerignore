@@ -1,0 +1,53 @@
+# =============================================================================
+# Build context exclusions — keep the Docker build small and reproducible.
+# =============================================================================
+
+# Git
+.git
+.gitignore
+
+# Local env (passed in via docker-compose.yml `environment:` block instead)
+.env
+.env.local
+.env.*.local
+
+# Python caches & build artefacts
+__pycache__
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.mypy_cache/
+.pytest_cache/
+.coverage
+.ruff_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Node — re-installed inside the build via `npm install`
+node_modules/
+
+# Generated assets — re-built inside the build via `npm run build:css`
+# and `collectstatic`
+static/css/styles.css
+staticfiles/
+
+# Runtime user data — persisted via volume, never baked into image
+media/
+db.sqlite3
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local docker-compose state
+docker-compose.override.yml

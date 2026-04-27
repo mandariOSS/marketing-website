@@ -1,0 +1,549 @@
+{% extends "base.html" %}
+
+{% block title %}Transparenzbericht 2026{% endblock %}
+
+{% block meta_description %}Mandari Transparenzbericht 2026: Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Finanztransparenz vom Solo-Founder, Open-Source-Beiträge zurück an die Community.{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================================
+     HERO (linksbündig)
+     ==================================================================== -->
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
+            <i data-lucide="eye" class="w-4 h-4"></i>
+            Transparenzbericht · jährlich
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Transparenzbericht <span class="text-primary-600 dark:text-primary-400">2026</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
+            Was andere SaaS gerne verstecken, legen wir offen: Behördenanfragen,
+            Sicherheits­vorfälle, Finanzlage, Hosting-Realität, Open-Source-Beiträge.
+        </p>
+        <p class="text-base text-gray-500 dark:text-gray-400 max-w-3xl">
+            Berichtszeitraum: 1. Januar bis 31. Dezember 2026 ·
+            Veröffentlicht: 26. April 2026 (1. Quartalsupdate) ·
+            Nächste Aktualisierung: Juli 2026
+        </p>
+    </div>
+</section>
+
+<!-- ====================================================================
+     TRUST-BANNER (4 Kennzahlen-Highlights)
+     ==================================================================== -->
+<section class="py-8 bg-primary-50 dark:bg-primary-900/20 border-y border-primary-200 dark:border-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="gavel" class="w-5 h-5 text-primary-600 dark:text-primary-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>0</strong> Behörden­anfragen</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="shield-check" class="w-5 h-5 text-primary-600 dark:text-primary-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>0</strong> Sicherheits­vorfälle</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="user" class="w-5 h-5 text-primary-600 dark:text-primary-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>1</strong> Solo-Founder</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="git-pull-request" class="w-5 h-5 text-primary-600 dark:text-primary-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>100 %</strong> Code offen</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     1) BEHÖRDENANFRAGEN
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 text-sm font-medium mb-3">
+                <span class="font-bold">01</span>
+                <i data-lucide="gavel" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Behördenanfragen
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Auskunfts­ersuchen, Beschlagnahmungen, Auskunfts­anordnungen, alles, was rechtlich an uns herangetragen wurde.
+            </p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-blue-200 dark:border-blue-800 relative overflow-hidden mb-6">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+            <div class="relative">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <p class="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">0</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Strafverfolgung</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">0</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Geheimdienste</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">0</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Zivilrechtlich</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">0</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Datenheraus­gaben</p>
+                    </div>
+                </div>
+                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                        <strong>Stand 26.04.2026:</strong> Mandari hat im Berichtszeitraum keine
+                        Anfragen von Strafverfolgungsbehörden, Geheim­diensten oder zivilrechtlichen
+                        Gegenparteien erhalten. Es wurden keine Nutzer­daten herausgegeben.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                        Sollte sich das ändern, dokumentieren wir jede Anfrage hier, anonymisiert,
+                        aber nachvollziehbar (Anzahl, Behörde, betroffener Datensatz, Reaktion).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warrant Canary -->
+        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+            <h4 class="font-bold text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
+                <i data-lucide="bird" class="w-5 h-5"></i>
+                Warrant Canary
+            </h4>
+            <p class="text-sm text-amber-900 dark:text-amber-100">
+                Stand <strong>26.04.2026</strong>: Mandari wurde nicht durch eine
+                Geheim­halte­anordnung (z.&nbsp;B. nach § 95 GWB oder § 100b StPO) verpflichtet,
+                Auskünfte unter Geheimhaltung zu erteilen. Diese Erklärung wird
+                vierteljährlich aktualisiert. Sollte sie verschwinden oder veralten —
+                interpretiere das entsprechend.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     2) SICHERHEITSVORFÄLLE
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200 text-sm font-medium mb-3">
+                <span class="font-bold">02</span>
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Sicherheitsvorfälle
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Daten­schutz­vorfälle, Sicherheits­lücken, Downtime mit Datenrelevanz.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 text-center">
+                <p class="text-4xl font-bold text-green-600 dark:text-green-400 tabular-nums">0</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Datenschutz­vorfälle</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 text-center">
+                <p class="text-4xl font-bold text-green-600 dark:text-green-400 tabular-nums">0</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Gemeldete CVEs</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 text-center">
+                <p class="text-4xl font-bold text-green-600 dark:text-green-400 tabular-nums">0</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">DSGVO-Meldungen</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
+            <p class="text-gray-700 dark:text-gray-300 mb-3">
+                Im Berichtszeitraum gab es <strong>keine bekannten Sicherheits­vorfälle</strong>
+                mit Auswirkung auf personenbezogene Daten. Auch keine Pflicht­meldung
+                an die Aufsichts­behörde nach Art. 33 DSGVO.
+            </p>
+            <p class="text-gray-700 dark:text-gray-300 mb-3">
+                Sicherheitsforscher:innen können Lücken via
+                <a href="/sicherheit/disclosure/" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">Responsible Disclosure</a>
+                melden. Aktuell sind keine offenen Meldungen vorhanden.
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                Bei einem zukünftigen Vorfall: vollständiger Post-Mortem im Blog
+                binnen 14 Tagen nach Behebung, mit zeitlicher Abfolge,
+                Ursache und Gegenmaßnahmen.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     3) AKTIVE NUTZUNG (anonymisiert)
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 text-sm font-medium mb-3">
+                <span class="font-bold">03</span>
+                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Nutzung &amp; Reichweite
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Anonymisierte Aggregate, keine individuellen Profile, keine Tracker.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-green-200 dark:border-green-800 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-4 -mt-4" aria-hidden="true"></div>
+                <div class="relative">
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">0</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Pilot-Kommunen live</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-amber-200 dark:border-amber-800 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-bl-full -mr-4 -mt-4" aria-hidden="true"></div>
+                <div class="relative">
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">~12</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Erstgespräche geführt</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-primary-200 dark:border-primary-800 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-4 -mt-4" aria-hidden="true"></div>
+                <div class="relative">
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">~3 k</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">Insight-Aufrufe / Mon</p>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-blue-200 dark:border-blue-800 text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-4 -mt-4" aria-hidden="true"></div>
+                <div class="relative">
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white tabular-nums">2</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">OParl-Quellen indiziert</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+            <p class="text-sm text-amber-900 dark:text-amber-100">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                <strong>Reality Check:</strong> Wir sind in der Beta-Phase.
+                Diese Zahlen sind klein, und genau deshalb veröffentlichen wir sie.
+                Wir gewinnen nichts, indem wir uns größer machen, als wir sind.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     4) FINANZTRANSPARENZ (Solo-Founder-Vorteil)
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-800 dark:text-teal-200 text-sm font-medium mb-3">
+                <span class="font-bold">04</span>
+                <i data-lucide="banknote" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Finanztransparenz
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Solo-Founder-Vorteil: ich kann offen zeigen, wie das Geld fließt.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <!-- Einnahmen -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-green-200 dark:border-green-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Einnahmen 2026</h3>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1 tabular-nums">~ 0 €</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Beta-Phase, noch keine Lizenzeinnahmen.</p>
+                    <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <li class="flex items-start gap-2"><i data-lucide="circle-dot" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>Work-Lizenzen: noch nicht aktiv</li>
+                        <li class="flex items-start gap-2"><i data-lucide="circle-dot" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>Spenden: 0 € (Konzept in Vorbereitung)</li>
+                        <li class="flex items-start gap-2"><i data-lucide="circle-dot" class="w-4 h-4 text-green-500 mt-0.5 flex-none"></i>Fördermittel: in Beantragung</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Ausgaben -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-rose-200 dark:border-rose-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-rose-100 dark:bg-rose-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/50 rounded-xl flex items-center justify-center">
+                            <i data-lucide="trending-down" class="w-6 h-6 text-rose-600 dark:text-rose-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Ausgaben 2026</h3>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white mb-1 tabular-nums">~ 1.200 €</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">Hochgerechnet auf das Jahr (laufende Kosten).</p>
+                    <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        <li class="flex items-start gap-2"><i data-lucide="server" class="w-4 h-4 text-rose-500 mt-0.5 flex-none"></i>Hosting (Hetzner): ~ 60 €/Mon</li>
+                        <li class="flex items-start gap-2"><i data-lucide="globe" class="w-4 h-4 text-rose-500 mt-0.5 flex-none"></i>Domain &amp; DNS: ~ 30 €/Jahr</li>
+                        <li class="flex items-start gap-2"><i data-lucide="briefcase" class="w-4 h-4 text-rose-500 mt-0.5 flex-none"></i>Tools &amp; Buchhaltung: ~ 40 €/Mon</li>
+                        <li class="flex items-start gap-2"><i data-lucide="brain" class="w-4 h-4 text-rose-500 mt-0.5 flex-none"></i>KI-Inferenz Tests: ~ 20 €/Mon</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+            <h4 class="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <i data-lucide="clock" class="w-5 h-5 text-primary-500"></i>
+                Aufwand-Schätzung Founder
+            </h4>
+            <p class="text-gray-700 dark:text-gray-300 mb-2">
+                Stand April 2026: <strong>~ 800 Stunden</strong> investiert seit Projektstart
+                (entspricht ~ 5 Personenmonate Vollzeit).
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+                Bezahlt aus Eigenmitteln + Nebentätigkeit. Wenn die Pilot-Phase klappt,
+                wird Mandari ab 2027 zur Hauptbeschäftigung.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     5) OPEN-SOURCE-BEITRÄGE ZURÜCK
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-3">
+                <span class="font-bold">05</span>
+                <i data-lucide="git-pull-request" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Was wir der Community zurückgegeben haben
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Wir nutzen viel Open Source, also geben wir auch zurück. Hier die konkreten Beiträge.
+            </p>
+        </div>
+
+        <div class="space-y-3">
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="git-pull-request" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">OParl-Standard: Vendor-Extension-Vorschläge</h3>
+                            <span class="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs font-medium rounded">in Arbeit</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Erweiterungen für KI-Zusammenfassungen und semantische Suche werden der OParl-Working-Group vorgeschlagen.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="github" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">Mandari als Open Source (AGPL-3.0)</h3>
+                            <span class="px-2 py-0.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs font-medium rounded">live seit Tag 1</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Kompletter Quellcode öffentlich auf GitHub, jede Kommune kann Mandari selbst hosten, forken, anpassen.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="book-open" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">Doku &amp; Tutorials (Public Domain)</h3>
+                            <span class="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-xs font-medium rounded">in Aufbau</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Self-Hosting-Guides, OParl-Adapter-Dokumentation, Verwaltungs-IT-Wissen, alles unter CC0 verfügbar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 rounded-lg flex items-center justify-center flex-none">
+                        <i data-lucide="circle-dashed" class="w-5 h-5 text-rose-600 dark:text-rose-400"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 class="font-bold text-gray-900 dark:text-white">PRs an Wagtail / Django / OParl-py</h3>
+                            <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded">geplant</span>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">Bug-Fixes &amp; kleine Features fließen in die Upstream-Projekte zurück, sobald sie sich aus unserer Arbeit ergeben.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     6) ARCHIV
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-3">
+                <span class="font-bold">06</span>
+                <i data-lucide="archive" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Archiv</h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">Frühere Berichte zum Vergleich.</p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 text-center">
+            <i data-lucide="archive" class="w-10 h-10 text-gray-400 mx-auto mb-4"></i>
+            <p class="text-gray-700 dark:text-gray-300 mb-2">
+                <strong>2026 ist das erste Berichtsjahr.</strong>
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Frühere Berichte erscheinen hier ab 2027 als PDF zum Download.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     7) SO KANNST DU UNTERSTÜTZEN
+     (Multi-Channel-Hub, knüpft direkt an Sektion 4 Finanztransparenz an)
+     ==================================================================== -->
+<section id="unterstuetzen" class="py-16 lg:py-20 scroll-mt-20">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-10">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 text-sm font-medium mb-3">
+                <span class="font-bold">07</span>
+                <i data-lucide="hand-heart" class="w-4 h-4"></i>
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                So kannst du beitragen
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Wenn dir Mandari etwas wert ist: hier sind vier Wege, das Projekt
+                finanziell mitzutragen. Jede Zahl oben in der Finanztransparenz
+                ist die ehrliche Antwort, was damit passiert.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
+            <!-- GitHub Sponsors -->
+            <a href="https://github.com/sponsors/mandariOSS" target="_blank" rel="noopener noreferrer"
+               class="group bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-primary-200 dark:border-primary-800 hover:border-primary-400 dark:hover:border-primary-600 hover:shadow-md transition-all">
+                <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="github" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-1">GitHub Sponsors</h3>
+                <p class="text-xs text-primary-600 dark:text-primary-400 font-medium mb-2">0 % Plattform­gebühr</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300">
+                    Für Devs und Tech-Community. Monatlich oder einmalig.
+                </p>
+            </a>
+
+            <!-- Ko-fi -->
+            <a href="https://ko-fi.com/mandari" target="_blank" rel="noopener noreferrer"
+               class="group bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 hover:shadow-md transition-all">
+                <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="coffee" class="w-5 h-5 text-amber-600 dark:text-amber-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-1">Ko-fi</h3>
+                <p class="text-xs text-amber-600 dark:text-amber-400 font-medium mb-2">3 € reicht schon</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300">
+                    Niedrigschwellig. „Spendier dem Founder einen Kaffee."
+                </p>
+            </a>
+
+            <!-- Buy Me a Coffee -->
+            <a href="https://buymeacoffee.com/mandari" target="_blank" rel="noopener noreferrer"
+               class="group bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600 hover:shadow-md transition-all">
+                <div class="w-10 h-10 bg-rose-100 dark:bg-rose-900/50 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="cookie" class="w-5 h-5 text-rose-600 dark:text-rose-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-1">Buy Me a Coffee</h3>
+                <p class="text-xs text-rose-600 dark:text-rose-400 font-medium mb-2">Ein-Klick-Tip</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300">
+                    Ohne Account, ohne Hürde. PayPal oder Karte.
+                </p>
+            </a>
+
+            <!-- SEPA Direkt -->
+            <a href="/kontakt/?subject=SEPA-Spende-Bankdaten"
+               class="group bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600 hover:shadow-md transition-all">
+                <div class="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <i data-lucide="banknote" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-1">SEPA-Direkt</h3>
+                <p class="text-xs text-green-600 dark:text-green-400 font-medium mb-2">0 % Gebühren</p>
+                <p class="text-xs text-gray-600 dark:text-gray-300">
+                    Für Kommunen, Stiftungen, Großspender. Bankdaten auf Anfrage.
+                </p>
+            </a>
+
+        </div>
+
+        <!-- Ehrlicher Steuer-Hinweis -->
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-5 border border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+                <i data-lucide="info" class="w-4 h-4 inline mr-1 text-primary-500"></i>
+                <strong>Ehrlich gesagt:</strong> Spenden sind aktuell <em>nicht</em> steuerlich
+                absetzbar, da Mandari als Einzelunternehmen aufgestellt ist. Eine Überführung in
+                eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V.,
+                Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir für 2027,
+                sobald die Pilot-Phase Fahrt aufnimmt.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FINAL CTA
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Vermisst du eine Zahl?</h2>
+            <p class="text-xl text-white/90 mb-10">
+                Wenn du etwas spezifisches sehen möchtest, Energie­verbrauch,
+                CO₂-Bilanz, Code-Qualitäts­metriken, sag Bescheid. Wir nehmen es auf.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/kontakt/?subject=Transparenzbericht-Vorschlag" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-primary-700 font-medium rounded-xl transition-colors text-lg">
+                    <i data-lucide="message-square" class="w-5 h-5 mr-2"></i>
+                    Vorschlag einreichen
+                </a>
+                <a href="/blog/feed/" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="rss" class="w-5 h-5"></i>
+                    Updates abonnieren
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

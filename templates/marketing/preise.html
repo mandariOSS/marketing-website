@@ -1,0 +1,781 @@
+{% extends "base.html" %}
+
+{% block title %}Preise{% endblock %}
+
+{% block meta_description %}Mandari-Preise: Insight kostenlos für Bürger:innen, Work ab 33,25 €/Monat (399 €/Jahr) oder 39,90 € monatlich, Session auf Anfrage. Open Source AGPL-3.0, Hosting in Deutschland, keine versteckten Kosten.{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================================
+     HERO (linksbündig, sofort transparent)
+     ==================================================================== -->
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
+            <i data-lucide="receipt-text" class="w-4 h-4"></i>
+            Transparent · Open Source · Hosting in Deutschland
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Faire Preise für <span class="text-primary-600 dark:text-primary-400">faire Demokratie.</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
+            <strong>Insight</strong> ist und bleibt kostenlos für Bürger:innen.
+            <strong>Work</strong> kostet so viel, wie eine Person zum Bauen braucht.
+            <strong>Session</strong> verhandeln wir individuell mit der Kommune.
+        </p>
+        <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">
+            Keine versteckten Kosten, keine „Enterprise pricing on request"-Tricks,
+            kein Lock-in. Du kannst alles auch selbst hosten.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="/kontakt/?subject=Beta-Zugang-Work" class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="zap" class="w-5 h-5 mr-2"></i>
+                Beta-Zugang anfragen
+            </a>
+            {% if BOOKING_URL %}
+            <a href="{{ BOOKING_URL }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                30-Min-Call buchen
+            </a>
+            {% endif %}
+            <a href="#faq" class="inline-flex items-center gap-2 px-6 py-3 bg-transparent hover:bg-primary-50 dark:hover:bg-gray-800 text-primary-700 dark:text-primary-300 font-medium rounded-xl border border-primary-200 dark:border-primary-800 transition-colors">
+                <i data-lucide="help-circle" class="w-5 h-5"></i>
+                Häufige Fragen
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     TRUST-BANNER (green)
+     ==================================================================== -->
+<section class="py-8 bg-green-50 dark:bg-green-900/20 border-y border-green-200 dark:border-green-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="shield-check" class="w-5 h-5 text-green-600 dark:text-green-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>30 Tage</strong> rückerstattbar</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="eye" class="w-5 h-5 text-green-600 dark:text-green-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Keine</strong> versteckten Kosten</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="github" class="w-5 h-5 text-green-600 dark:text-green-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Code immer</strong> offen (AGPL-3.0)</span>
+            </div>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="server" class="w-5 h-5 text-green-600 dark:text-green-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Hosting</strong> in Deutschland</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     PRICING TOGGLE + 3 CARDS
+     ==================================================================== -->
+<section class="py-16 lg:py-20" x-data="{ billing: 'yearly' }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Section heading -->
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                Drei Produkte, klare Preise
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Was Mandari kostet
+            </h2>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                Wechsle den Abrechnungszeitraum, um den Jahresrabatt zu sehen.
+                Alle Preise inkl. 19 % MwSt.
+            </p>
+        </div>
+
+        <!-- Billing Toggle (affects only Mandari Work) -->
+        <div class="flex justify-center mb-12">
+            <div class="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 border border-gray-200 dark:border-gray-700"
+                 role="tablist"
+                 aria-label="Abrechnungszeitraum">
+                <button @click="billing = 'monthly'"
+                        :class="billing === 'monthly' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
+                        class="px-5 py-2 rounded-lg text-sm font-medium transition-all"
+                        role="tab"
+                        :aria-selected="billing === 'monthly'">
+                    Monatlich
+                </button>
+                <button @click="billing = 'yearly'"
+                        :class="billing === 'yearly' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'"
+                        class="px-5 py-2 rounded-lg text-sm font-medium transition-all inline-flex items-center gap-2"
+                        role="tab"
+                        :aria-selected="billing === 'yearly'">
+                    Jährlich
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300">
+                        −17%
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <!-- 1. INSIGHT (green) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-green-200 dark:border-green-800 p-8 relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative flex flex-col flex-1">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="inline-block px-3 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-xs font-semibold rounded-full">
+                            Immer kostenlos
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Insight</h3>
+                    <p class="text-sm text-green-600 dark:text-green-400 font-medium mb-6">Bürger:innen-Portal</p>
+
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-5xl font-bold text-gray-900 dark:text-white tabular-nums">0 €</span>
+                            <span class="text-gray-500 dark:text-gray-400">für immer</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Quer­finanziert über Work &amp; Session</p>
+                    </div>
+
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Öffentlicher Zugang zu Ratsinformationen, ohne Anmeldung, ohne Tracker, ohne Limit.
+                    </p>
+
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Volltextsuche &amp; Karten­ansicht</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">KI-Zusammen­fassungen &amp; Chat</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Abstimmungs­verhalten einsehen</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Keine Anmeldung nötig</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Selbst-Hosting möglich</span>
+                        </li>
+                    </ul>
+
+                    <a href="https://insight.mandari.de" target="_blank" rel="noopener noreferrer" class="mt-auto block w-full py-3 bg-green-600 hover:bg-green-700 text-white text-center font-medium rounded-xl transition-colors">
+                        Insight öffnen
+                    </a>
+
+                    <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Open Source (AGPL-3.0)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. WORK (primary, hervorgehoben) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-500 dark:border-primary-500 p-8 relative overflow-hidden flex flex-col shadow-xl lg:-mt-4 lg:mb-4">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <!-- "Empfohlen"-Sticker -->
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-600 text-white text-xs font-semibold rounded-full shadow-md">
+                        <i data-lucide="star" class="w-3 h-3"></i>
+                        Empfohlen
+                    </span>
+                </div>
+                <div class="relative flex flex-col flex-1 pt-3">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="inline-block px-3 py-1 bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded-full">
+                            Beta-Phase
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Work</h3>
+                    <p class="text-sm text-primary-600 dark:text-primary-400 font-medium mb-6">Fraktions- &amp; Mandatsträger:innen-Plattform</p>
+
+                    <!-- Monthly billing -->
+                    <div class="mb-6" x-show="billing === 'monthly'" x-cloak>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-5xl font-bold text-gray-900 dark:text-white tabular-nums">39,90 €</span>
+                            <span class="text-gray-500 dark:text-gray-400">/Monat</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">inkl. MwSt. · monatlich kündbar</p>
+                    </div>
+
+                    <!-- Yearly billing -->
+                    <div class="mb-6" x-show="billing === 'yearly'">
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-5xl font-bold text-gray-900 dark:text-white tabular-nums">399 €</span>
+                            <span class="text-gray-500 dark:text-gray-400">/Jahr</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            <span class="tabular-nums">≈ 33,25 €/Monat</span> · inkl. MwSt.
+                        </p>
+                        <p class="text-xs text-green-700 dark:text-green-400 font-semibold mt-1.5 inline-flex items-center gap-1">
+                            <i data-lucide="gift" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                            2 Monate gratis (79,80 € sparen)
+                        </p>
+                    </div>
+
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Professionelle Sitzungs­vorbereitung mit Team, KI und Antrags­datenbank.
+                    </p>
+
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Alles aus Insight</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Team-Workspaces &amp; Notizen</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Antrags­datenbank &amp; Vorlagen</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Interne Abstimmungen &amp; Termine</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">KI-gestützte Recherche</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm"><strong>Unbegrenzte Nutzer:innen</strong> pro Fraktion &amp; Gruppe</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Prioritäts-Support per E-Mail</span>
+                        </li>
+                    </ul>
+
+                    <a href="/kontakt/?subject=Beta-Zugang-Work" class="mt-auto block w-full py-3 bg-primary-600 hover:bg-primary-700 text-white text-center font-medium rounded-xl transition-colors">
+                        Beta-Zugang anfragen
+                    </a>
+
+                    <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Open Source (AGPL-3.0)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SESSION (blue) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-blue-200 dark:border-blue-800 p-8 relative overflow-hidden flex flex-col">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative flex flex-col flex-1">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded-full">
+                            Auf Anfrage
+                        </span>
+                        <span class="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-semibold rounded-full">
+                            In Entwicklung
+                        </span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Session</h3>
+                    <p class="text-sm text-blue-600 dark:text-blue-400 font-medium mb-6">Verwaltungs-RIS</p>
+
+                    <div class="mb-6">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-bold text-gray-900 dark:text-white">Individuell</span>
+                        </div>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Pro Kommune kalkuliert · faire Skalierung</p>
+                    </div>
+
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Vollständiges Sitzungs­management für Verwaltungen, die moderne Alternative zu proprietären RIS.
+                    </p>
+
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="calendar-clock" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Sitzungs­planung &amp; Tagesordnung</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Einladungen (digital &amp; print)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="file-text" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Vorlagen­pflege &amp; Protokollierung</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="banknote" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Sitzungs­geld &amp; Aufwands­entschädigung</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="file-json" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">OParl-Export (maschinen­lesbar)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="users" class="w-5 h-5 text-blue-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300 text-sm">Migration vom Alt-RIS</span>
+                        </li>
+                    </ul>
+
+                    <a href="/kontakt/?subject=Session-Angebot" class="mt-auto block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-center font-medium rounded-xl transition-colors">
+                        Angebot anfragen
+                    </a>
+
+                    <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            Wird Open Source (AGPL-3.0)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     PILOT-KONDITIONEN-BRÜCKE (amber, dezent)
+     ==================================================================== -->
+<section class="py-12 bg-amber-50 dark:bg-amber-900/20 border-y border-amber-200 dark:border-amber-800">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div class="w-14 h-14 bg-amber-100 dark:bg-amber-900/50 rounded-2xl flex items-center justify-center flex-none">
+                <i data-lucide="rocket" class="w-7 h-7 text-amber-600 dark:text-amber-400"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    Pilot-Phase 2026: Konditionen verhandelbar
+                </h3>
+                <p class="text-gray-700 dark:text-gray-300 mb-4">
+                    Für die <strong>ersten Pilot-Kommunen</strong> bauen wir individuelle
+                    Konditionen, günstigere Lizenzen, längere Laufzeiten, Pilot-Rabatt
+                    auf Session. Dafür: echtes Feedback und Bereitschaft zur Referenz.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="/partner/?subject=Pilot-Kommune" class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="hand-heart" class="w-4 h-4"></i>
+                        Pilot-Kommune werden
+                    </a>
+                    <a href="/partner/" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-200 font-medium rounded-xl border border-amber-300 dark:border-amber-700 transition-colors text-sm">
+                        Alle Partner-Modelle
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     SELF-HOSTING vs MANAGED (2-Spalten Use-Case auf bg-gray-50)
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12 max-w-3xl mx-auto">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="git-branch" class="w-4 h-4"></i>
+                Du wählst, wie Mandari läuft
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Selbst hosten oder uns lassen
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Open Source heißt: Du hast die Wahl. Beide Wege führen zum gleichen Mandari.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+
+            <!-- Self-Hosting (green) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-green-200 dark:border-green-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="server" class="w-7 h-7 text-green-600 dark:text-green-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Selbst-Hosting</h3>
+                            <p class="text-sm text-green-600 dark:text-green-400 font-medium">Kostenlos · volle Kontrolle</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Lade dir den Stack runter, starte <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-sm">docker compose up</code>
+                        und du bist fertig. Voll funktionsfähig, ohne Lizenzkosten.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Volle Kontrolle über Daten &amp; Infrastruktur</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Docker-Compose-Stack für jeden Linux-Server</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Community-Support via GitHub Discussions</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-green-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Dokumentation auf GitHub</span>
+                        </li>
+                    </ul>
+                    <a href="https://github.com/mandariOSS/mandari" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                        Repo öffnen
+                    </a>
+                </div>
+            </div>
+
+            <!-- Managed Service (primary) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-primary-200 dark:border-primary-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-xl flex items-center justify-center flex-none">
+                            <i data-lucide="cloud" class="w-7 h-7 text-primary-600 dark:text-primary-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Managed Service</h3>
+                            <p class="text-sm text-primary-600 dark:text-primary-400 font-medium">Wir hosten, du nutzt</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 mb-6">
+                        Wir übernehmen Server, Backups, Updates, Monitoring und Support, du
+                        loggst dich ein und arbeitest. Hosting ausschließlich in Deutschland.
+                    </p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Kein Server-Management auf eurer Seite</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Automatische Updates &amp; Sicherheits­patches</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Hosting in Deutschland (Hetzner / IONOS)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="check" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Daten­export jederzeit, kein Lock-in</span>
+                        </li>
+                    </ul>
+                    <a href="/kontakt/?subject=Managed-Service" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors text-sm">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        Managed Service anfragen
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     WARUM DIESE PREISE (3-Spalten, Solo-Founder-Realität, Hosting, Demokratie)
+     (DER DIFFERENTIATOR, andere Pricing-Pages erklären das nicht)
+     ==================================================================== -->
+<section class="py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="mb-12 max-w-3xl">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-800 dark:text-teal-200 text-sm font-medium mb-4">
+                <i data-lucide="message-square-quote" class="w-4 h-4"></i>
+                Offener Brief vom Founder
+            </span>
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Warum genau diese Preise?
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Andere SaaS verstecken ihre Kalkulation hinter Marketing-Sprache.
+                Wir nicht. Hier ist, woraus sich 39,90 € zusammensetzen.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- 1. Solo-Founder-Realität (rose) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-rose-200 dark:border-rose-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-rose-100 dark:bg-rose-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-rose-100 dark:bg-rose-900/50 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="user" class="w-7 h-7 text-rose-600 dark:text-rose-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Solo-Founder-Realität</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Mandari wird von <strong>einer Person</strong> gebaut, kein
+                        VC-Geld, keine 30-köpfige Sales-Abteilung. Damit das nachhaltig
+                        bleibt, müssen die Lizenzen die Entwicklungs­zeit decken.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1 text-rose-500"></i>
+                        Kein Burnout, keine plötzliche Insolvenz, fairer Stunden­satz statt Heldensein.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. Hosting kostet (primary) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-200 dark:border-primary-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-primary-100 dark:bg-primary-900/50 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="server-cog" class="w-7 h-7 text-primary-600 dark:text-primary-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Infrastruktur kostet</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Server, Backups, Monitoring, TLS, Datenbank-Cluster,
+                        KI-Inferenz: ein paar 100&nbsp;€/Monat allein für die Infrastruktur.
+                        Davon fließt jeder Cent an deutsche Hosting-Partner.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1 text-primary-500"></i>
+                        Hetzner, IONOS &amp; Co., kein Hyperscaler, keine US-Cloud, kein DSGVO-Risiko.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. Demokratie-Bonus (teal) -->
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-teal-200 dark:border-teal-800 p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-teal-100 dark:bg-teal-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-14 h-14 bg-teal-100 dark:bg-teal-900/50 rounded-2xl flex items-center justify-center mb-4">
+                        <i data-lucide="vote" class="w-7 h-7 text-teal-600 dark:text-teal-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Demokratie-Bonus</h3>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Schulen, Universitäten, NGOs, gemeinnützige Initiativen,
+                        Studierende, wer Demokratie stärkt, soll keine kommerziellen
+                        Preise zahlen. Dafür gibt es Vergünstigungen auf Anfrage.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <i data-lucide="info" class="w-4 h-4 inline mr-1 text-teal-500"></i>
+                        Schreib uns mit deinem Use-Case, wir finden eine Lösung.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FAQ (8 ehrliche Fragen)
+     ==================================================================== -->
+<section id="faq" class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50 scroll-mt-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center mb-12">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="help-circle" class="w-4 h-4"></i>
+                Häufige Fragen
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Was du sonst noch wissen solltest
+            </h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300">
+                Falls deine Frage hier nicht steht, schreib uns einfach.
+            </p>
+        </div>
+
+        <div class="space-y-3" x-data="{ open: 1 }">
+
+            <!-- FAQ 1 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 1 ? null : 1"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Warum ist Insight kostenlos?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 1 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 1" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Zugang zu kommunalpolitischen Informationen ist ein Grundrecht, nicht
+                        ein Premium-Feature. Insight finanziert sich quer über Work und Session
+                        für professionelle Nutzer:innen. So bleibt der Bürger:innen-Zugang dauerhaft frei.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 2 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 2 ? null : 2"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Wie viele Nutzer:innen sind in einer Lizenz enthalten?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 2 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 2" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300 mb-3">
+                        <strong>Unbegrenzt viele.</strong> Eine Mandari-Work-Lizenz gilt pauschal
+                        <strong>pro Organisation</strong> (Fraktion, Gruppe, Mandatsträger:innen-Büro)
+                        und hat <strong>kein Nutzer-Limit</strong>.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Egal ob ihr 3 oder 30 Mandatsträger:innen seid, plus Büro­mitarbeitende
+                        und sachkundige Bürger:innen, der Pauschalpreis bleibt gleich.
+                        Keine Mengenstaffel, keine Per-Seat-Abrechnung, keine Überraschung am Monatsende.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 3 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 3 ? null : 3"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Sind die Preise inkl. MwSt.?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 3 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 3" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Ja, alle hier genannten Preise verstehen sich <strong>inkl. 19 % deutscher
+                        Mehrwertsteuer</strong>. Auf der Rechnung wird die MwSt. ausgewiesen.
+                        Für gemeinnützige Organisationen mit Steuerbefreiung erstellen wir entsprechend angepasste Rechnungen.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 4 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 4 ? null : 4"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Gibt es Rabatte für Studierende, Schulen oder NGOs?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 4 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 4" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Ja. Studierende, Schulen, Universitäten, gemeinnützige Vereine und
+                        NGOs bekommen <strong>vergünstigte Konditionen</strong>, bis hin zu
+                        kostenfreien Lizenzen für die Lehre. Schick uns kurz dein Anliegen
+                        per E-Mail mit einem Nachweis (Studi-Ausweis, Vereinsregister, etc.),
+                        wir machen den Rest.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 5 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 5 ? null : 5"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Was passiert mit meinen Daten bei Kündigung?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 5 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 5" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300 mb-3">
+                        Du bekommst <strong>vor</strong> Kündigung einen vollständigen Export
+                        deiner Daten, JSON oder CSV, wahlweise auch im OParl-Format.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Nach Vertrags­ende behalten wir die Daten 30 Tage als Backup,
+                        danach werden sie unwiderruflich gelöscht (DSGVO Art. 17).
+                        Auf Wunsch löschen wir sofort.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 6 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 6 ? null : 6"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Kann ich Mandari komplett selbst hosten?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 6 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 6" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300 mb-3">
+                        Ja, Mandari ist <strong>AGPL-3.0</strong> lizenziert. Lade dir den
+                        Code von GitHub, starte den Docker-Compose-Stack auf deinem Server,
+                        fertig. Kostenlos, ohne Lizenzkosten, mit voller Kontrolle.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Wenn du beim Setup Hilfe brauchst, bieten wir auch <strong>einmalige
+                        Setup-Pakete</strong> oder laufenden technischen Support an.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 7 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 7 ? null : 7"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Wie wechsle ich zwischen monatlich und jährlich?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 7 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 7" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Im Account zu jedem Zeitpunkt, bei <strong>monatlich → jährlich</strong>
+                        wird der bereits gezahlte Monat anteilig gutgeschrieben. Bei
+                        <strong>jährlich → monatlich</strong> bleibt der Jahreszugang bis zum
+                        Ende der Laufzeit aktiv, dann startet die monatliche Abrechnung.
+                        Kein Telefonat mit dem Vertrieb nötig.
+                    </p>
+                </div>
+            </div>
+
+            <!-- FAQ 8 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <button @click="open = open === 8 ? null : 8"
+                        class="w-full px-6 py-4 flex items-center justify-between text-left">
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">Was kostet Mandari Session und wann ist es verfügbar?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === 8 ? 'rotate-180' : ''"></i>
+                </button>
+                <div x-show="open === 8" x-collapse class="px-6 pb-5">
+                    <p class="text-gray-600 dark:text-gray-300 mb-3">
+                        <strong>Session</strong> richtet sich an Verwaltungen und wird pro Kommune
+                        individuell kalkuliert, abhängig von Einwohnerzahl, Anzahl der Gremien
+                        und Migrationsumfang. Konzeptionell deutlich günstiger als etablierte
+                        proprietäre RIS-Anbieter.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Verfügbar ab <strong>Q3-Q4 2026</strong> für die ersten Pilot-Kommunen.
+                        Sprich uns früh an, Pilot-Konditionen sind verhandelbar.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================
+     FINAL CTA (gradient, warm einladend)
+     ==================================================================== -->
+<section class="py-16 lg:py-20 bg-gradient-to-br from-primary-600 to-primary-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">
+                Probier's einfach aus.
+            </h2>
+            <p class="text-xl text-white/90 mb-10">
+                Beta-Zugang zu Mandari Work ist kostenfrei für die ersten 14 Tage —
+                keine Kreditkarte nötig. Oder buch direkt einen 30-Min-Call.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/kontakt/?subject=Beta-Zugang-Work" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-primary-700 font-medium rounded-xl transition-colors text-lg">
+                    <i data-lucide="zap" class="w-5 h-5 mr-2"></i>
+                    Beta-Zugang anfragen
+                </a>
+                {% if BOOKING_URL %}
+                <a href="{{ BOOKING_URL }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                    30-Min-Call buchen
+                </a>
+                {% endif %}
+                <a href="https://github.com/mandariOSS/mandari" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/10 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    Selbst hosten
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

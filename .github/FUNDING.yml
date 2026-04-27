@@ -1,0 +1,17 @@
+# Mandari Sponsor-Konfiguration für GitHub
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+#
+# Diese Datei zeigt im Repo-Header einen "Sponsor"-Button mit den unten
+# konfigurierten Plattformen. Identisch in allen Mandari-Repos einsetzbar.
+
+# GitHub Sponsors (primär — 0 % Plattformgebühr)
+github: [mandariOSS]
+
+# Drittanbieter-Plattformen (zusätzliche Buttons im Dropdown)
+ko_fi: mandari
+buy_me_a_coffee: mandari
+
+# Custom-Links (Reihenfolge bestimmt UI-Reihenfolge)
+custom:
+  - "https://mandari.de/transparenz/#unterstuetzen"
+  - "https://mandari.de/partner/#mittragen"

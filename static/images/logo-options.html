@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Mandari Logo — Iteration 2</title>
+<style>
+  :root {
+    --bg: #fafafa;
+    --bg-dark: #0f172a;
+    --card: #ffffff;
+    --card-dark: #1e293b;
+    --ink: #0f172a;
+    --ink-dark: #f1f5f9;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --border-dark: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    margin: 0;
+    padding: 40px 20px;
+  }
+  .header { max-width: 1280px; margin: 0 auto 32px; }
+  h1 { font-size: 28px; margin: 0 0 8px; font-weight: 700; }
+  h2 { font-size: 17px; margin: 0 0 4px; font-weight: 600; }
+  .lead { color: var(--muted); margin: 0 0 32px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card .label {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #4338ca;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .card.demo .label { color: var(--muted); }
+  .card h2 { margin-top: 0; }
+  .card .meaning {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 6px 0 18px;
+    line-height: 1.55;
+  }
+  .sizes {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 14px;
+    padding: 18px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 10px;
+  }
+  .size {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .size span { font-size: 10px; color: var(--muted); font-family: ui-monospace, monospace; }
+  .navbar-mock, .dark-mock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .navbar-mock {
+    background: white;
+    border: 1px solid var(--border);
+  }
+  .navbar-mock .brand {
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .dark-mock {
+    background: #0f172a;
+  }
+  .dark-mock .brand {
+    color: #f1f5f9;
+    font-weight: 700;
+    font-size: 17px;
+  }
+  .footer { color: var(--muted); font-size: 13px; max-width: 1280px; margin: 32px auto; padding: 24px; border-top: 1px solid var(--border); }
+  code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4338ca;
+  }
+  .demo {
+    background: #fef3c7;
+    border: 1px dashed #d97706;
+  }
+  .demo .label { color: #92400e !important; }
+  .demo h2 { color: #78350f; }
+  .section-title {
+    max-width: 1280px;
+    margin: 36px auto 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Reusable defs */
+  .grad-light { fill: url(#mandariGradient); }
+  .grad-dark  { fill: url(#mandariGradientDark); }
+
+  body.dark { background: var(--bg-dark); color: var(--ink-dark); }
+  body.dark .card { background: var(--card-dark); border-color: var(--border-dark); }
+  body.dark .lead, body.dark .footer, body.dark .section-title { color: #94a3b8; }
+  body.dark code { background: #1e293b; color: #a5b4fc; }
+  body.dark .sizes { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
+  body.dark .size span { color: #94a3b8; }
+  body.dark .navbar-mock { background: #1e293b; border-color: #334155; }
+  body.dark .navbar-mock .brand { color: #f1f5f9; }
+  body.dark .demo { background: #422006; border-color: #d97706; }
+  body.dark .demo h2 { color: #fde68a; }
+</style>
+</head>
+<body>
+
+<!-- Shared SVG defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="mandariGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+    <linearGradient id="mandariGradientDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="header">
+  <h1>Mandari Logo — Iteration 2</h1>
+  <p class="lead">
+    Drei neue Konzepte: <strong>seriös, modern, wiedererkennbar, nicht 0815</strong>.
+    <a href="#" onclick="event.preventDefault(); document.body.classList.toggle('dark')">Dark/Light testen</a>
+  </p>
+</div>
+
+<div class="section-title">Neue Vorschläge</div>
+
+<div class="grid">
+
+  <!-- ========== D — Negative-Space M (Smart Brand) ========== -->
+  <div class="card">
+    <div class="label">Option D · Mein Top-Pick</div>
+    <h2>Negative-Space M</h2>
+    <p class="meaning">
+      Indigo-Quadrat, das M entsteht durch zwei weiße Aussparungen oben
+      (zwei „Höcker") und einen V-Schnitt unten. Vom richtigen M hier auch
+      <strong>tatsächlich richtig herum</strong>: V-Spitze zeigt nach unten.
+      Smart, „erfordert zweimal hinschauen" — sehr brand-tauglich.
+    </p>
+
+    <div class="sizes">
+      <div class="size">
+        <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <!-- Negative-Space M: zwei Halbkreise oben, V unten -->
+          <path d="M 6 6
+                   L 6 26
+                   L 10 26
+                   L 10 14
+                   L 14 22
+                   L 16 22
+                   L 18 22
+                   L 22 14
+                   L 22 26
+                   L 26 26
+                   L 26 6
+                   L 22 6
+                   L 16 18
+                   L 10 6
+                   Z"
+                fill="white" fill-rule="evenodd"/>
+        </svg>
+        <span>64 px</span>
+      </div>
+      <div class="size">
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 6 6 L 6 26 L 10 26 L 10 14 L 14 22 L 16 22 L 18 22 L 22 14 L 22 26 L 26 26 L 26 6 L 22 6 L 16 18 L 10 6 Z" fill="white" fill-rule="evenodd"/>
+        </svg>
+        <span>32 px</span>
+      </div>
+      <div class="size">
+        <svg width="16" height="16" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 6 6 L 6 26 L 10 26 L 10 14 L 14 22 L 16 22 L 18 22 L 22 14 L 22 26 L 26 26 L 26 6 L 22 6 L 16 18 L 10 6 Z" fill="white" fill-rule="evenodd"/>
+        </svg>
+        <span>16 px</span>
+      </div>
+    </div>
+    <div class="navbar-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-light"/>
+        <path d="M 6 6 L 6 26 L 10 26 L 10 14 L 14 22 L 16 22 L 18 22 L 22 14 L 22 26 L 26 26 L 26 6 L 22 6 L 16 18 L 10 6 Z" fill="white" fill-rule="evenodd"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+    <div class="dark-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-dark"/>
+        <path d="M 6 6 L 6 26 L 10 26 L 10 14 L 14 22 L 16 22 L 18 22 L 22 14 L 22 26 L 26 26 L 26 6 L 22 6 L 16 18 L 10 6 Z" fill="white" fill-rule="evenodd"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+  </div>
+
+
+  <!-- ========== E — Forum (Amphitheater) ========== -->
+  <div class="card">
+    <div class="label">Option E</div>
+    <h2>Forum</h2>
+    <p class="meaning">
+      Halbkreis-Bogen wie das Dach eines Amphitheaters / einer Versammlungshalle,
+      darunter drei Datenpunkte (Bürger, Vorlagen, Sitzungen). Bedeutung
+      transportiert: <strong>öffentlicher Raum + dokumentierte Inhalte</strong>.
+      Klar abgegrenzt von Säulen-Klischee.
+    </p>
+    <div class="sizes">
+      <div class="size">
+        <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <!-- Bogen / Dach -->
+          <path d="M 5 18 Q 16 5 27 18" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <!-- Boden-Linie -->
+          <line x1="5" y1="22" x2="27" y2="22" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+          <!-- Drei Punkte zwischen Dach und Boden -->
+          <circle cx="11" cy="20" r="1.5" fill="white"/>
+          <circle cx="16" cy="20" r="1.5" fill="white"/>
+          <circle cx="21" cy="20" r="1.5" fill="white"/>
+        </svg>
+        <span>64 px</span>
+      </div>
+      <div class="size">
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 5 18 Q 16 5 27 18" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+          <line x1="5" y1="22" x2="27" y2="22" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="11" cy="20" r="1.5" fill="white"/>
+          <circle cx="16" cy="20" r="1.5" fill="white"/>
+          <circle cx="21" cy="20" r="1.5" fill="white"/>
+        </svg>
+        <span>32 px</span>
+      </div>
+      <div class="size">
+        <svg width="16" height="16" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 5 18 Q 16 5 27 18" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <line x1="5" y1="22" x2="27" y2="22" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+        <span>16 px</span>
+      </div>
+    </div>
+    <div class="navbar-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-light"/>
+        <path d="M 5 18 Q 16 5 27 18" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <line x1="5" y1="22" x2="27" y2="22" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="11" cy="20" r="1.5" fill="white"/>
+        <circle cx="16" cy="20" r="1.5" fill="white"/>
+        <circle cx="21" cy="20" r="1.5" fill="white"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+    <div class="dark-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-dark"/>
+        <path d="M 5 18 Q 16 5 27 18" stroke="white" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <line x1="5" y1="22" x2="27" y2="22" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="11" cy="20" r="1.5" fill="white"/>
+        <circle cx="16" cy="20" r="1.5" fill="white"/>
+        <circle cx="21" cy="20" r="1.5" fill="white"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+  </div>
+
+
+  <!-- ========== F — Drei aufsteigende Bögen ========== -->
+  <div class="card">
+    <div class="label">Option F</div>
+    <h2>Drei Welle</h2>
+    <p class="meaning">
+      Drei aufsteigende Halbkreise — Wachstum, Konsens, Beteiligung.
+      Sehr minimal, gut wiedererkennbar in jeder Größe, kein direkter
+      Kommunal-Bezug aber „<strong>steht für Entwicklung</strong>".
+      Vergleichbar mit Linear's Ästhetik.
+    </p>
+    <div class="sizes">
+      <div class="size">
+        <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <!-- Drei Halbkreise aufsteigend -->
+          <path d="M 6 22 A 3 3 0 0 1 12 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 11 22 A 4 4 0 0 1 19 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 18 22 A 5 5 0 0 1 28 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <line x1="5" y1="22" x2="29" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+        <span>64 px</span>
+      </div>
+      <div class="size">
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 6 22 A 3 3 0 0 1 12 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 11 22 A 4 4 0 0 1 19 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 18 22 A 5 5 0 0 1 28 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <line x1="5" y1="22" x2="29" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+        </svg>
+        <span>32 px</span>
+      </div>
+      <div class="size">
+        <svg width="16" height="16" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 6 22 A 3 3 0 0 1 12 22" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M 11 22 A 4 4 0 0 1 19 22" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M 18 22 A 5 5 0 0 1 28 22" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>16 px</span>
+      </div>
+    </div>
+    <div class="navbar-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-light"/>
+        <path d="M 6 22 A 3 3 0 0 1 12 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 11 22 A 4 4 0 0 1 19 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 18 22 A 5 5 0 0 1 28 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="5" y1="22" x2="29" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+    <div class="dark-mock">
+      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="7" class="grad-dark"/>
+        <path d="M 6 22 A 3 3 0 0 1 12 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 11 22 A 4 4 0 0 1 19 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M 18 22 A 5 5 0 0 1 28 22" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <line x1="5" y1="22" x2="29" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+      </svg>
+      <span class="brand">Mandari</span>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="section-title">Bug-Fix der alten Option B (zur Demo, KEIN Hauptkandidat)</div>
+
+<div class="grid">
+  <div class="card demo">
+    <div class="label">Vorher · Pfad-Bug = W</div>
+    <h2>So sah es aus</h2>
+    <p class="meaning">
+      Der Pfad ging <code>top-left → bottom-left → mitte-OBEN → bottom-right → top-right</code>
+      — das zeichnet ein W. M wurde es nie.
+    </p>
+    <div class="sizes">
+      <div class="size">
+        <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 8 10 L 8 22 L 16 15 L 24 22 L 24 10" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+          <g fill="white">
+            <circle cx="8" cy="10" r="2.3"/>
+            <circle cx="8" cy="22" r="2.3"/>
+            <circle cx="16" cy="15" r="2.3"/>
+            <circle cx="24" cy="10" r="2.3"/>
+            <circle cx="24" cy="22" r="2.3"/>
+          </g>
+        </svg>
+        <span>64 px (W)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card demo">
+    <div class="label">Nachher · Korrektes M</div>
+    <h2>So hätte es sein müssen</h2>
+    <p class="meaning">
+      Pfad <code>bottom-left → top-left → mitte-UNTEN → top-right → bottom-right</code>.
+      Mittelpunkt ist nun unter der Mitte (y=18 statt 15), V-Spitze zeigt nach
+      unten — jetzt ein M. Trotzdem nicht im Hauptrennen, weil zu nah am
+      generischen „Tech-Mesh"-Look.
+    </p>
+    <div class="sizes">
+      <div class="size">
+        <svg width="64" height="64" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="7" class="grad-light"/>
+          <path d="M 8 22 L 8 10 L 16 18 L 24 10 L 24 22" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+          <g fill="white">
+            <circle cx="8" cy="10" r="2.3"/>
+            <circle cx="8" cy="22" r="2.3"/>
+            <circle cx="16" cy="18" r="2.3"/>
+            <circle cx="24" cy="10" r="2.3"/>
+            <circle cx="24" cy="22" r="2.3"/>
+          </g>
+        </svg>
+        <span>64 px (M)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="footer">
+  Alle Optionen sind reines SVG, basieren auf <code>viewBox="0 0 32 32"</code>,
+  funktionieren von 16 px bis ∞, sind dark-mode-aware (Dark-Mock zeigt eine
+  hellere Indigo-Variante).
+  <br><br>
+  Wenn keine dieser drei Optionen passt, nenne mir bitte ein konkretes
+  Logo (URL oder Beschreibung) das dir gefällt — dann adaptiere ich die
+  visuelle Sprache.
+</div>
+
+</body>
+</html>
