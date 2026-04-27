@@ -1,0 +1,22 @@
+{% load wagtailcore_tags %}
+{# E-Mail-Verzeichnis-Tabelle — RFC 2142 Style #}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <table class="w-full">
+                <thead class="bg-gray-50 dark:bg-gray-700/40 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    <tr><th class="text-left px-6 py-3">E-Mail</th><th class="text-left px-6 py-3">Wofür</th></tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                    {% for e in self.entries %}
+                    <tr>
+                        <td class="px-6 py-3"><a href="mailto:{{ e.value.address }}" class="font-mono text-{{ e.value.color|default:'primary' }}-600 dark:text-{{ e.value.color|default:'primary' }}-400 hover:underline">{{ e.value.address }}</a></td>
+                        <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ e.value.purpose }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,14 @@
+{# Warrant-Canary-Box für Transparenzbericht #}
+<section class="py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+            <h4 class="font-bold text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
+                <i data-lucide="bird" class="w-5 h-5"></i>Warrant Canary
+            </h4>
+            <div class="text-sm text-amber-900 dark:text-amber-100 prose prose-sm dark:prose-invert max-w-none">
+                <p><strong>Stand {{ self.date }}</strong></p>
+                {{ self.body|safe }}
+            </div>
+        </div>
+    </div>
+</section>

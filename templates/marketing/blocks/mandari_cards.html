@@ -1,0 +1,10 @@
+{% load wagtailcore_tags %}
+{# 3- oder 6-Spalten-Grid mit Mandari-Cards #}
+<section class="py-16 lg:py-20{% if self.background == 'gray' %} bg-gray-50 dark:bg-gray-800/50{% endif %}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+        <div class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% elif self.columns == '6' %}lg:grid-cols-3{% else %}lg:grid-cols-3{% endif %} gap-8">
+            {% for card in self.cards %}{% include "marketing/blocks/_mandari_card.html" with card=card %}{% endfor %}
+        </div>
+    </div>
+</section>

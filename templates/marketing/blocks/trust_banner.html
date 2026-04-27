@@ -1,0 +1,13 @@
+{# Trust-Banner — 3-5 Icon+Label-Items #}
+<section class="py-8 bg-{{ self.color|default:'primary' }}-50 dark:bg-{{ self.color|default:'primary' }}-900/20 border-y border-{{ self.color|default:'primary' }}-200 dark:border-{{ self.color|default:'primary' }}-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
+            {% for item in self.items %}
+            <div class="flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="{{ item.value.icon }}" class="w-5 h-5 text-{{ self.color|default:'primary' }}-600 dark:text-{{ self.color|default:'primary' }}-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>{{ item.value.label_bold }}</strong>{% if item.value.label_normal %} {{ item.value.label_normal }}{% endif %}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,11 @@
+{# Hinweis-Box mit Icon + RichText #}
+<section class="py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-{{ self.color|default:'gray' }}-50 dark:bg-{{ self.color|default:'gray' }}-900/20 rounded-xl p-5 border border-{{ self.color|default:'gray' }}-200 dark:border-{{ self.color|default:'gray' }}-800">
+            <div class="flex items-start gap-3">
+                <i data-lucide="{{ self.icon|default:'info' }}" class="w-5 h-5 text-{{ self.color|default:'gray' }}-600 dark:text-{{ self.color|default:'gray' }}-400 mt-0.5 flex-none"></i>
+                <div class="flex-1 text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">{{ self.body|safe }}</div>
+            </div>
+        </div>
+    </div>
+</section>

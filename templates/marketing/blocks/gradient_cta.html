@@ -1,0 +1,24 @@
+{# Final-CTA mit Gradient-Background #}
+<section class="py-16 lg:py-20 bg-gradient-to-br from-{{ self.gradient_from|default:'primary' }}-600 to-{{ self.gradient_from|default:'primary' }}-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">{{ self.title }}</h2>
+            {% if self.subline %}<p class="text-xl text-white/90 mb-10">{{ self.subline }}</p>{% endif %}
+            <div class="flex flex-wrap justify-center gap-4">
+                {% for cta in self.ctas %}
+                {% if forloop.first %}
+                <a href="{{ cta.value.url }}" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-{{ self.gradient_from|default:'primary' }}-700 font-medium rounded-xl transition-colors text-lg">
+                    {% if cta.value.icon %}<i data-lucide="{{ cta.value.icon }}" class="w-5 h-5 mr-2"></i>{% endif %}
+                    {{ cta.value.label }}
+                </a>
+                {% else %}
+                <a href="{{ cta.value.url }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    {% if cta.value.icon %}<i data-lucide="{{ cta.value.icon }}" class="w-5 h-5"></i>{% endif %}
+                    {{ cta.value.label }}
+                </a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

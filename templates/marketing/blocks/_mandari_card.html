@@ -1,0 +1,32 @@
+{# Single Mandari card — used by mandari_cards & two_column_use_case #}
+{% with card=card.value|default:card %}
+<div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-{{ card.color|default:'primary' }}-200 dark:border-{{ card.color|default:'primary' }}-800 p-8 relative overflow-hidden flex flex-col">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+    <div class="relative flex flex-col flex-1">
+        {% if card.badge %}
+        <div class="flex flex-wrap gap-2 mb-4">
+            <span class="inline-block px-3 py-1 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/50 text-{{ card.color|default:'primary' }}-700 dark:text-{{ card.color|default:'primary' }}-300 text-xs font-semibold rounded-full">{{ card.badge }}</span>
+        </div>
+        {% endif %}
+        <div class="w-14 h-14 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/50 rounded-2xl flex items-center justify-center mb-4">
+            <i data-lucide="{{ card.icon }}" class="w-7 h-7 text-{{ card.color|default:'primary' }}-600 dark:text-{{ card.color|default:'primary' }}-400"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ card.title }}</h3>
+        {% if card.subtitle %}<p class="text-sm text-{{ card.color|default:'primary' }}-600 dark:text-{{ card.color|default:'primary' }}-400 font-medium mb-4">{{ card.subtitle }}</p>{% endif %}
+        {% if card.description %}<p class="text-gray-700 dark:text-gray-300 mb-6">{{ card.description }}</p>{% endif %}
+        {% if card.bullets %}
+        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300 mb-6">
+            {% for bullet in card.bullets %}
+            <li class="flex items-start gap-2"><i data-lucide="{{ bullet.value.icon|default:'check' }}" class="w-4 h-4 text-{{ card.color|default:'primary' }}-500 mt-0.5 flex-none"></i>{{ bullet.value.text }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if card.cta_label and card.cta_url %}
+        <a href="{{ card.cta_url }}" class="mt-auto inline-flex items-center gap-2 px-5 py-2.5 bg-{{ card.color|default:'primary' }}-600 hover:bg-{{ card.color|default:'primary' }}-700 text-white font-medium rounded-xl transition-colors text-sm w-full justify-center">
+            {% if card.cta_icon %}<i data-lucide="{{ card.cta_icon }}" class="w-4 h-4"></i>{% endif %}
+            {{ card.cta_label }}
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endwith %}

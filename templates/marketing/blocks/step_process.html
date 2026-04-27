@@ -1,0 +1,30 @@
+{% load wagtailcore_tags %}
+{# Numerierte Schritte 3 oder 4 — z.B. „So läuft's" #}
+<section class="py-16 lg:py-20{% if self.background == 'gray' %} bg-gray-50 dark:bg-gray-800/50{% endif %}">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+        <div class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% else %}lg:grid-cols-3{% endif %} gap-6 max-w-6xl mx-auto">
+            {% for step in self.steps %}
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-{{ step.value.color|default:'primary' }}-200 dark:border-{{ step.value.color|default:'primary' }}-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-{{ step.value.color|default:'primary' }}-100 dark:bg-{{ step.value.color|default:'primary' }}-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-4xl font-bold text-{{ step.value.color|default:'primary' }}-200 dark:text-{{ step.value.color|default:'primary' }}-800 leading-none">{{ step.value.number }}</span>
+                        <div class="w-10 h-10 bg-{{ step.value.color|default:'primary' }}-100 dark:bg-{{ step.value.color|default:'primary' }}-900/50 rounded-lg flex items-center justify-center flex-none">
+                            <i data-lucide="{{ step.value.icon }}" class="w-5 h-5 text-{{ step.value.color|default:'primary' }}-600 dark:text-{{ step.value.color|default:'primary' }}-400"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ step.value.title }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ step.value.description }}</p>
+                    {% if step.value.duration %}
+                    <div class="flex items-center gap-2 text-xs">
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-{{ step.value.color|default:'primary' }}-500"></i>
+                        <span class="text-{{ step.value.color|default:'primary' }}-600 dark:text-{{ step.value.color|default:'primary' }}-400 font-medium">{{ step.value.duration }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

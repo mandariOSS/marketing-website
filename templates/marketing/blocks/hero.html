@@ -1,45 +1,21 @@
-{% load wagtailcore_tags %}
-<section class="py-20 lg:py-32 bg-gradient-to-br from-primary-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-200/30 dark:bg-primary-900/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl"></div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="text-center max-w-4xl mx-auto">
-            {% if value.badge_text %}
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-sm font-medium mb-6">
-                {% if value.badge_icon %}<i data-lucide="{{ value.badge_icon }}" class="w-4 h-4"></i>{% endif %}
-                {{ value.badge_text }}
-            </span>
-            {% endif %}
-
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                {{ value.title }}
-            </h1>
-
-            {% if value.subtitle %}
-            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
-                {{ value.subtitle }}
-            </p>
-            {% endif %}
-
-            {% if value.primary_cta_text or value.secondary_cta_text %}
-            <div class="flex flex-wrap justify-center gap-4 mb-12">
-                {% if value.primary_cta_text %}
-                <a href="{{ value.primary_cta_url }}"
-                   class="inline-flex items-center gap-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors text-lg shadow-lg shadow-primary-500/25">
-                    {{ value.primary_cta_text }}
-                </a>
-                {% endif %}
-                {% if value.secondary_cta_text %}
-                <a href="{{ value.secondary_cta_url }}"
-                   class="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-xl transition-colors text-lg border border-gray-200 dark:border-gray-600">
-                    {{ value.secondary_cta_text }}
-                </a>
-                {% endif %}
-            </div>
-            {% endif %}
+{# Mandari Hero — linksbündig, Badge + H1 + Subline + CTAs #}
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-{{ self.background_color|default:'primary' }}-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.badge_text %}
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-{{ self.badge_color|default:'primary' }}-100 dark:bg-{{ self.badge_color|default:'primary' }}-900/50 text-{{ self.badge_color|default:'primary' }}-700 dark:text-{{ self.badge_color|default:'primary' }}-300 text-sm font-medium mb-6">
+            {% if self.badge_icon %}<i data-lucide="{{ self.badge_icon }}" class="w-4 h-4"></i>{% endif %}
+            {{ self.badge_text }}
+        </span>
+        {% endif %}
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            {{ self.title }}{% if self.title_highlight %} <span class="text-primary-600 dark:text-primary-400">{{ self.title_highlight }}</span>{% endif %}
+        </h1>
+        {% if self.subline %}<p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">{{ self.subline }}</p>{% endif %}
+        {% if self.subline_secondary %}<p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">{{ self.subline_secondary }}</p>{% endif %}
+        {% if self.ctas %}
+        <div class="flex flex-wrap gap-4">
+            {% for cta in self.ctas %}{% include "marketing/blocks/_cta_button.html" with cta=cta.value %}{% endfor %}
         </div>
+        {% endif %}
     </div>
 </section>

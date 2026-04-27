@@ -1,0 +1,11 @@
+{# Wiederverwendbarer Sektions-Header (Badge + H2 + Subline) #}
+<div class="{% if self.align == 'center' %}text-center max-w-3xl mx-auto{% else %}max-w-3xl{% endif %} mb-12">
+    {% if self.badge_text %}
+    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-{{ self.badge_color|default:'primary' }}-100 dark:bg-{{ self.badge_color|default:'primary' }}-900/50 text-{{ self.badge_color|default:'primary' }}-700 dark:text-{{ self.badge_color|default:'primary' }}-300 text-sm font-medium mb-4">
+        {% if self.badge_icon %}<i data-lucide="{{ self.badge_icon }}" class="w-4 h-4"></i>{% endif %}
+        {{ self.badge_text }}
+    </span>
+    {% endif %}
+    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">{{ self.title }}</h2>
+    {% if self.subline %}<p class="text-xl text-gray-600 dark:text-gray-300">{{ self.subline }}</p>{% endif %}
+</div>
