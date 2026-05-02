@@ -93,12 +93,34 @@ class CardBulletBlock(StructBlock):
         icon = "tick"
 
 
+class StatusBadgeBlock(StructBlock):
+    """Small status pill displayed at the top of a Mandari card."""
+
+    text = CharBlock(required=True, help_text="Badge-Text, z.B. 'Offen ab sofort'")
+    icon = CharBlock(required=False, help_text="Optionales Lucide-Icon (z.B. 'rocket')")
+    color = ChoiceBlock(
+        choices=COLOR_CHOICES + [("auto", "Wie Card-Farbe (auto)")],
+        default="auto",
+        help_text="Badge-Farbe — 'auto' folgt der Card-Akzentfarbe",
+    )
+
+    class Meta:
+        icon = "tag"
+        label = "Status-Badge"
+
+
 class MandariCardBlock(StructBlock):
     """One card in a 3- or 6-column Mandari card grid."""
 
     color = ChoiceBlock(choices=COLOR_CHOICES, default="primary", help_text="Card-Akzentfarbe")
     icon = CharBlock(required=True, help_text="Lucide-Icon im Header")
-    badge = CharBlock(required=False, help_text="Optionales Badge oben links (z.B. 'Top-Priorität')")
+    badge = CharBlock(required=False, help_text="DEPRECATED: nutze status_badges statt dessen")
+    status_badges = ListBlock(
+        StatusBadgeBlock(),
+        required=False,
+        default=[],
+        help_text="0-3 kleine Status-Pills oben (z.B. 'Offen ab sofort', 'Pilot-Konditionen')",
+    )
     title = CharBlock(required=True)
     subtitle = CharBlock(required=False, help_text="Kleiner farbiger Text unter dem Titel")
     description = TextBlock(required=False)
@@ -121,6 +143,10 @@ class StepBlock(StructBlock):
     title = CharBlock(required=True)
     description = TextBlock(required=True)
     duration = CharBlock(required=False, help_text="z.B. '≤ 24 h' oder '1–2 Wochen'")
+    meta_text = CharBlock(
+        required=False,
+        help_text="Optionale Zusatzzeile unter Beschreibung (z.B. 'kostenlos · unverbindlich')",
+    )
 
     class Meta:
         icon = "ordered-list"
@@ -276,6 +302,11 @@ class StepProcessBlock(StructBlock):
     background = ChoiceBlock(
         choices=[("white", "Weiß"), ("gray", "Hellgrau (gray-50)")],
         default="gray",
+    )
+    note_html = RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Optionaler Hinweis unter den Schritten (z.B. Solo-Founder-Realität)",
     )
 
     class Meta:

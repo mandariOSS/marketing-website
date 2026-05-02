@@ -3,7 +3,24 @@
 <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-{{ card.color|default:'primary' }}-200 dark:border-{{ card.color|default:'primary' }}-800 p-8 relative overflow-hidden flex flex-col">
     <div class="absolute top-0 right-0 w-32 h-32 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
     <div class="relative flex flex-col flex-1">
-        {% if card.badge %}
+        {# Status-Badges (neue, mehrere Pills) ODER Legacy single badge #}
+        {% if card.status_badges %}
+        <div class="flex flex-wrap gap-2 mb-4">
+            {% for sb in card.status_badges %}
+                {% with bcolor=sb.value.color|default:'auto' %}
+                {% if bcolor == 'auto' %}
+                <span class="inline-block px-3 py-1 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/50 text-{{ card.color|default:'primary' }}-700 dark:text-{{ card.color|default:'primary' }}-300 text-xs font-medium rounded-full">
+                    {% if sb.value.icon %}<i data-lucide="{{ sb.value.icon }}" class="w-3 h-3 inline -mt-0.5"></i> {% endif %}{{ sb.value.text }}
+                </span>
+                {% else %}
+                <span class="inline-block px-3 py-1 bg-{{ bcolor }}-100 dark:bg-{{ bcolor }}-900/50 text-{{ bcolor }}-700 dark:text-{{ bcolor }}-300 text-xs font-medium rounded-full">
+                    {% if sb.value.icon %}<i data-lucide="{{ sb.value.icon }}" class="w-3 h-3 inline -mt-0.5"></i> {% endif %}{{ sb.value.text }}
+                </span>
+                {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+        {% elif card.badge %}
         <div class="flex flex-wrap gap-2 mb-4">
             <span class="inline-block px-3 py-1 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/50 text-{{ card.color|default:'primary' }}-700 dark:text-{{ card.color|default:'primary' }}-300 text-xs font-semibold rounded-full">{{ card.badge }}</span>
         </div>

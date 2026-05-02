@@ -22,9 +22,18 @@
                         <span class="text-{{ step.value.color|default:'primary' }}-600 dark:text-{{ step.value.color|default:'primary' }}-400 font-medium">{{ step.value.duration }}</span>
                     </div>
                     {% endif %}
+                    {% if step.value.meta_text %}
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3 font-medium">{{ step.value.meta_text }}</p>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% if self.note_html %}
+        <div class="max-w-3xl mx-auto mt-10 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 flex items-start gap-3">
+            <i data-lucide="info" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
+            <div class="text-sm text-gray-600 dark:text-gray-400">{{ self.note_html|richtext }}</div>
+        </div>
+        {% endif %}
     </div>
 </section>

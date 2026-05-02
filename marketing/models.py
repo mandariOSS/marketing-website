@@ -99,9 +99,19 @@ class ContactPage(Page):
 
 
 class LegalPage(Page):
-    """Impressum, Datenschutz, AGB."""
+    """Impressum, Datenschutz, AGB, Quellen — StreamField-basiert."""
 
-    body = RichTextField()
+    # Legacy RichText (vorher das einzige Feld). Nur noch für Rückwärts-
+    # Kompatibilität — neue Inhalte gehören in body_stream.
+    body = RichTextField(blank=True, help_text="Legacy-Feld, nutze body_stream für neue Inhalte.")
+
+    # Neuer StreamField — gleiches Block-Set wie MarketingPage
+    body_stream = StreamField(
+        MarketingStreamBlock(),
+        blank=True,
+        use_json_field=True,
+        help_text="Strukturierter Inhalt aus Mandari-Design-System-Blöcken",
+    )
 
     # Allow a custom template override per page
     custom_template = models.CharField(
@@ -111,6 +121,7 @@ class LegalPage(Page):
     )
 
     content_panels = Page.content_panels + [
+        FieldPanel("body_stream"),
         FieldPanel("body"),
     ]
 
@@ -127,6 +138,9 @@ class LegalPage(Page):
     def get_template(self, request, *args, **kwargs):
         if self.custom_template:
             return self.custom_template
+        # If body_stream has content, use the universal streamfield template
+        if self.body_stream:
+            return "marketing/legal_streamfield_page.html"
         return "marketing/legal_page.html"
 
     class Meta:
