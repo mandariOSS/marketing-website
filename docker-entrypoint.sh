@@ -12,7 +12,7 @@ wait_for_db() {
 import os, sys
 try:
     import psycopg
-    url = os.environ.get('WEBSITE_DATABASE_URL', '')
+    url = os.environ.get('WEBSITE_DATABASE_URL') or os.environ.get('DATABASE_URL', '')
     conn = psycopg.connect(url, connect_timeout=5)
     conn.close()
     sys.exit(0)
@@ -43,6 +43,12 @@ python manage.py migrate --noinput
 # Create initial page structure (idempotent)
 echo "Setting up pages..."
 python manage.py setup_initial_pages
+
+# Seed StreamField content for marketing + legal pages (idempotent — skips
+# every page whose body already has blocks, so CMS edits are never
+# overwritten; use --force manually to re-seed)
+echo "Seeding StreamField content..."
+python manage.py migrate_pages_to_streamfield
 
 # Collect static files
 echo "Collecting static files..."

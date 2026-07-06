@@ -215,15 +215,15 @@ def get_marketing_definitions() -> dict:
                                   bullet("Abstimmungsverhalten einsehen"), bullet("Keine Anmeldung nötig"),
                                   bullet("Selbst-Hosting möglich")],
                      "is_highlighted": False, "cta_label": "Insight öffnen", "cta_url": "https://insight.mandari.de"},
-                    {"color": "primary", "name": "Mandari Work", "subtitle": "Fraktions-Plattform · Pauschale ohne Userlimit",
-                     "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat",
-                     "price_note": "Oder 399 €/Jahr (≈ 33,25 €/Mon, 17 % Rabatt)",
+                    {"color": "primary", "name": "Mandari Work", "subtitle": "Für Fraktionen · Pauschale ohne Userlimit",
+                     "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
+                     "price_note": "Beta-Kunden erhalten dauerhaft vergünstigte Konditionen",
                      "description": "Professionelle Sitzungsvorbereitung mit Team, KI und Antragsdatenbank.",
                      "features": [bullet("Alles aus Insight"), bullet("Team-Workspaces & Notizen"),
                                   bullet("Antragsdatenbank & Vorlagen"), bullet("Interne Abstimmungen & Termine"),
                                   bullet("KI-gestützte Recherche"), bullet("Unbegrenzte Nutzer:innen pro Fraktion & Gruppe"),
                                   bullet("Prioritäts-Support per E-Mail")],
-                     "is_highlighted": True, "cta_label": "Beta-Zugang anfragen", "cta_url": "/kontakt/?subject=Beta-Zugang-Work"},
+                     "is_highlighted": True, "cta_label": "Jetzt buchen", "cta_url": "https://portal.mandari.de/buchen/"},
                     {"color": "blue", "name": "Mandari Session", "subtitle": "Verwaltungs-RIS",
                      "badge": "Auf Anfrage · In Entwicklung", "price_main": "Individuell",
                      "price_note": "Pro Kommune kalkuliert · faire Skalierung",
@@ -1210,197 +1210,13 @@ def get_legal_definitions() -> dict:
     """Legal-Pages (LegalPage Model) → body_stream StreamField."""
 
     return {
-        # ════════════════════════════════════════════════════════════
-        # /impressum/
-        # ════════════════════════════════════════════════════════════
-        "impressum": [
-            ("hero", {
-                "badge_text": "Anbieterkennzeichnung nach § 5 TMG", "badge_icon": "info", "badge_color": "primary",
-                "title": "Impressum", "title_highlight": "",
-                "subline": "Wer betreibt mandari.de — vollständige Anbieterkennzeichnung, Kontakt, USt-ID, Verantwortlichkeiten.",
-                "ctas": [], "background_color": "primary",
-            }),
-            ("richtext_section", {
-                "header": hdr(title="Anbieter"),
-                "background": "white",
-                "body": "<p><strong>topixmedia.de</strong><br>Einzelunternehmen · Inhaber Sven Konopka<br>Aegidiistraße 61/62<br>48143 Münster<br>Deutschland</p><h3>Kontakt</h3><ul><li><strong>Allgemein:</strong> <a href=\"mailto:hi@mandari.de\">hi@mandari.de</a></li><li><strong>Datenschutz:</strong> <a href=\"mailto:privacy@mandari.de\">privacy@mandari.de</a></li><li><strong>Sicherheit:</strong> <a href=\"mailto:security@mandari.de\">security@mandari.de</a></li><li><strong>USt-IdNr. (§ 27a UStG):</strong> DE353231778</li></ul>",
-            }),
-            ("numbered_article", {
-                "number": "1", "anchor": "verantwortlich",
-                "title": "Inhaltlich Verantwortlicher nach § 18 Abs. 2 MStV",
-                "body": "<p>Sven Konopka<br>Aegidiistraße 61/62<br>48143 Münster</p>",
-            }),
-            ("numbered_article", {
-                "number": "2", "anchor": "eu-streit",
-                "title": "EU-Streitbeilegung",
-                "body": "<p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href=\"https://ec.europa.eu/consumers/odr/\" target=\"_blank\" rel=\"noopener\">https://ec.europa.eu/consumers/odr/</a>.</p><p><strong>Verbraucherstreitbeilegung:</strong> Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>",
-            }),
-            ("numbered_article", {
-                "number": "3", "anchor": "haftung-inhalte",
-                "title": "Haftung für Inhalte",
-                "body": "<p>Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen.</p><p>Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir die Inhalte umgehend entfernen, siehe <a href=\"/abuse/\">Missbrauch melden</a>.</p>",
-            }),
-            ("numbered_article", {
-                "number": "4", "anchor": "haftung-links",
-                "title": "Haftung für Links",
-                "body": "<p>Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber verantwortlich.</p>",
-            }),
-            ("numbered_article", {
-                "number": "5", "anchor": "urheberrecht",
-                "title": "Urheberrecht",
-                "body": "<p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.</p><p><strong>Mandari-eigener Code</strong> steht unter der <a href=\"https://www.gnu.org/licenses/agpl-3.0.html\" target=\"_blank\" rel=\"noopener\">AGPL-3.0</a> — siehe <a href=\"/open-source/\">Open Source</a>.</p>",
-            }),
-            ("disclaimer_box", {
-                "icon": "info", "color": "gray",
-                "body": "<p>Stand: <strong>26. April 2026</strong>.</p>",
-            }),
-        ],
-
-        # ════════════════════════════════════════════════════════════
-        # /datenschutz/
-        # ════════════════════════════════════════════════════════════
-        "datenschutz": [
-            ("hero", {
-                "badge_text": "Pflichttext nach Art. 13 DSGVO", "badge_icon": "lock", "badge_color": "primary",
-                "title": "Datenschutz", "title_highlight": "erklärung",
-                "subline": "Welche Daten wir wann verarbeiten, wer zuständig ist und welche Rechte du hast. Klar formuliert, ohne Juristen-Deutsch.",
-                "subline_secondary": "Diese Erklärung gilt für mandari.de. Für die SaaS-Produkte gelten zusätzliche Datenschutzbestimmungen, siehe Trust Center. Stand: 26. April 2026.",
-                "ctas": [], "background_color": "primary",
-            }),
-            ("trust_banner", {"color": "green", "items": [
-                trust_item("server", "Hosting", "in Deutschland"),
-                trust_item("cookie-off", "Keine", "Tracker"),
-                trust_item("lock", "TLS 1.3", "AES-256"),
-                trust_item("user-check", "Datenschutz", "by Design"),
-            ]}),
-            ("table_of_contents", {
-                "title": "Inhalt",
-                "items": [
-                    {"number": "1.", "text": "Datenschutz auf einen Blick", "anchor": "auf-einen-blick"},
-                    {"number": "2.", "text": "Verantwortliche Stelle", "anchor": "verantwortlich"},
-                    {"number": "3.", "text": "Deine Rechte", "anchor": "rechte"},
-                    {"number": "4.", "text": "Hosting & Server-Logs", "anchor": "hosting"},
-                    {"number": "5.", "text": "Kontaktformular & E-Mail", "anchor": "kontakt"},
-                    {"number": "6.", "text": "Tracking, Cookies, Analyse", "anchor": "tracking"},
-                    {"number": "7.", "text": "Sicherheitsmaßnahmen", "anchor": "tom"},
-                    {"number": "8.", "text": "Änderungen", "anchor": "aenderungen"},
-                ],
-            }),
-            ("numbered_article", {
-                "number": "1", "anchor": "auf-einen-blick", "title": "Datenschutz auf einen Blick",
-                "body": "<p>Diese Hinweise geben einen einfachen Überblick darüber, was mit deinen personenbezogenen Daten passiert, wenn du diese Website besuchst.</p><p>Auf <strong>mandari.de</strong> erheben wir Daten nur dort, wo es technisch nötig ist (z.&nbsp;B. Server-Logs) oder wo du sie uns aktiv mitteilst. Es gibt <strong>keine Tracker</strong>, kein Google Analytics, kein Facebook Pixel.</p>",
-            }),
-            ("numbered_article", {
-                "number": "2", "anchor": "verantwortlich", "title": "Verantwortliche Stelle",
-                "body": "<p>Verantwortlich ist <strong>topixmedia.de — Sven Konopka</strong>, Aegidiistraße 61/62, 48143 Münster. E-Mail: <a href=\"mailto:privacy@mandari.de\">privacy@mandari.de</a>.</p><p>Vollständige Anbieterkennzeichnung siehe <a href=\"/impressum/\">Impressum</a>.</p>",
-            }),
-            ("numbered_article", {
-                "number": "3", "anchor": "rechte", "title": "Deine Rechte",
-                "body": "<p>Nach DSGVO hast du folgende Rechte. E-Mail an <a href=\"mailto:privacy@mandari.de\">privacy@mandari.de</a> reicht — Antwort innerhalb von 30 Tagen.</p><ul><li><strong>Auskunft</strong> (Art. 15)</li><li><strong>Berichtigung</strong> (Art. 16)</li><li><strong>Löschung</strong> (Art. 17) — „Recht auf Vergessenwerden\"</li><li><strong>Einschränkung</strong> (Art. 18)</li><li><strong>Datenübertragbarkeit</strong> (Art. 20)</li><li><strong>Widerspruch</strong> (Art. 21)</li><li><strong>Beschwerde</strong> bei der LDI NRW (Art. 77)</li></ul>",
-            }),
-            ("numbered_article", {
-                "number": "4", "anchor": "hosting", "title": "Hosting & Server-Logs",
-                "body": "<p>Wir hosten <strong>mandari.de</strong> bei der <strong>Hetzner Online GmbH</strong> in Nürnberg/Falkenstein (Deutschland), ISO 27001 zertifiziert.</p><p>Beim Aufruf werden technische Server-Logs erstellt (IP anonymisiert nach 7 Tagen, Datum, URL, Statuscode, User-Agent). Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Speicherdauer: 14 Tage.</p>",
-            }),
-            ("numbered_article", {
-                "number": "5", "anchor": "kontakt", "title": "Kontaktformular & E-Mail",
-                "body": "<p>Wenn du uns über das <a href=\"/kontakt/\">Kontaktformular</a> oder per E-Mail erreichst, speichern wir deine Angaben zur Bearbeitung. Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO. Speicherdauer: bis zur Bearbeitung, längstens 2 Jahre.</p><p>Spam-Schutz via <strong>Altcha</strong> (selbst-gehostet, ohne Drittanbieter, ohne Tracker).</p>",
-            }),
-            ("numbered_article", {
-                "number": "6", "anchor": "tracking", "title": "Tracking, Cookies, Analyse",
-                "body": "<p><strong>Diese Website setzt keine Tracking- oder Analyse-Cookies.</strong> Kein Google Analytics, kein Facebook Pixel, kein Hotjar.</p><p>Im Browser gespeichert: Dark-Mode-Präferenz (localStorage), Session-Cookie nur bei Work-Login (verschlüsselt, HttpOnly, SameSite=Strict).</p>",
-            }),
-            ("numbered_article", {
-                "number": "7", "anchor": "tom", "title": "Technische & organisatorische Sicherheitsmaßnahmen",
-                "body": "<p>TOM nach Art. 32 DSGVO:</p><ul><li><strong>Verschlüsselung im Transport:</strong> TLS 1.3, HSTS preload, strikte CSP</li><li><strong>Verschlüsselung at rest:</strong> AES-256 (LUKS)</li><li><strong>Hosting:</strong> Hetzner Deutschland, ISO 27001</li><li><strong>Zugriffskontrolle:</strong> SSH-Keys mit Passphrase, 2-Faktor</li><li><strong>Backups:</strong> täglich, verschlüsselt, geo-redundant</li><li><strong>Updates:</strong> automatische Sicherheitsupdates, CVE-Monitoring</li></ul><p>Details, DPA-Vorlage und Subprocessor-Liste im <a href=\"/trust/\">Trust Center</a>.</p>",
-            }),
-            ("numbered_article", {
-                "number": "8", "anchor": "aenderungen", "title": "Änderungen dieser Erklärung",
-                "body": "<p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen. Wesentliche Änderungen kommunizieren wir aktiv per Banner und im Blog.</p><p>Stand: <strong>26. April 2026</strong>. Frühere Versionen auf Anfrage.</p>",
-            }),
-            ("disclaimer_box", {
-                "icon": "message-square", "color": "primary",
-                "body": "<p><strong>Frage zum Datenschutz?</strong> Schreib direkt an <a href=\"mailto:privacy@mandari.de\">privacy@mandari.de</a> — oder nutze die <a href=\"/abuse/\">Abuse-Meldestelle</a> bei DSGVO-Verstößen Dritter auf Mandari.</p>",
-            }),
-        ],
-
-        # ════════════════════════════════════════════════════════════
-        # /agb/
-        # ════════════════════════════════════════════════════════════
-        "agb": [
-            ("hero", {
-                "badge_text": "Vertragsbedingungen", "badge_icon": "file-text", "badge_color": "primary",
-                "title": "Allgemeine Geschäfts", "title_highlight": "bedingungen",
-                "subline": "Die rechtliche Grundlage zwischen dir und Mandari für die SaaS-Produkte Work und Session.",
-                "subline_secondary": "Open-Source-Selbst-Hosting (AGPL-3.0) ist davon nicht betroffen, siehe Open Source. Stand: 26. April 2026.",
-                "ctas": [], "background_color": "primary",
-            }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("shield-check", "30 Tage", "rückerstattbar"),
-                trust_item("calendar-x-2", "Monatlich kündbar", "möglich"),
-                trust_item("file-signature", "DPA", "nach Art. 28 DSGVO"),
-                trust_item("map-pin", "Recht der BRD", ""),
-            ]}),
-            ("table_of_contents", {
-                "title": "Inhalt",
-                "items": [
-                    {"number": "1.", "text": "Geltungsbereich", "anchor": "geltungsbereich"},
-                    {"number": "2.", "text": "Vertragsgegenstand", "anchor": "vertragsgegenstand"},
-                    {"number": "3.", "text": "Vertragsschluss & Laufzeit", "anchor": "vertragsschluss"},
-                    {"number": "4.", "text": "Vergütung & Zahlung", "anchor": "verguetung"},
-                    {"number": "5.", "text": "Pflichten des Anbieters", "anchor": "pflichten-anbieter"},
-                    {"number": "6.", "text": "Pflichten des Kunden", "anchor": "pflichten-kunde"},
-                    {"number": "7.", "text": "Datenschutz & AVV", "anchor": "datenschutz"},
-                    {"number": "8.", "text": "Kündigung", "anchor": "kuendigung"},
-                    {"number": "9.", "text": "Haftung", "anchor": "haftung"},
-                    {"number": "10.", "text": "Schlussbestimmungen", "anchor": "schluss"},
-                ],
-            }),
-            ("numbered_article", {
-                "number": "1", "anchor": "geltungsbereich", "title": "Geltungsbereich",
-                "body": "<p>Diese AGB gelten für alle Verträge über die Nutzung von <strong>Mandari Work</strong> und <strong>Mandari Session</strong> zwischen <strong>topixmedia.de (Sven Konopka)</strong> als Anbieter und dem Kunden.</p><p>Für die kostenfreie Nutzung von <strong>Mandari Insight</strong> sowie für das Selbst-Hosting des Open-Source-Codes (AGPL-3.0) gelten diese AGB <strong>nicht</strong>.</p>",
-            }),
-            ("numbered_article", {
-                "number": "2", "anchor": "vertragsgegenstand", "title": "Vertragsgegenstand",
-                "body": "<h3>2.1 Mandari Work (SaaS)</h3><p>Cloudbasierte Plattform für Sitzungsvorbereitung in Fraktionen, Mandatsträger:innen-Büros und sachkundigen Bürger:innen. Pauschal pro Organisation, ohne Nutzer-Limit.</p><ul><li>Mitgliederverwaltung & Rollen-Management</li><li>Persönliche Sitzungsübersichten und Benachrichtigungen</li><li>Vorlagen mit Notizen, Markups, internen Probeabstimmungen</li><li>KI-Zusammenfassungen (kontingentiert nach Tarif)</li><li>Antragsdatenbank, Terminplanung, Karten-Visualisierung</li><li>OParl-Integration aus angeschlossenen Kommunen</li></ul><h3>2.2 Mandari Session (RIS)</h3><p>Vollständiges Ratsinformationssystem für Verwaltungen. Vertrag wird pro Kommune individuell kalkuliert.</p>",
-            }),
-            ("numbered_article", {
-                "number": "3", "anchor": "vertragsschluss", "title": "Vertragsschluss & Laufzeit",
-                "body": "<p>Der Vertrag kommt durch Annahme des Angebots zustande. Laufzeit nach gewähltem Tarif:</p><ul><li><strong>Monatlich:</strong> Verlängerung um einen Monat, jederzeit kündbar zum Monatsende</li><li><strong>Jährlich:</strong> 12 Monate, automatische Verlängerung, Kündigungsfrist 30 Tage zum Vertragsende</li><li><strong>Individuell (Session):</strong> nach Vereinbarung mit der Kommune</li></ul>",
-            }),
-            ("numbered_article", {
-                "number": "4", "anchor": "verguetung", "title": "Vergütung & Zahlung",
-                "body": "<p>Aktuelle Preise auf der <a href=\"/preise/\">Preise-Seite</a>. Alle dort genannten Beträge inkl. 19 % MwSt.</p><p>Zahlung im Voraus per SEPA-Lastschrift oder Banküberweisung. KI-Zusammenfassungen kontingentiert nach Tarif.</p><p><strong>30-Tage-Geld-zurück:</strong> Bei jährlich abgeschlossenen Verträgen Rücktritt innerhalb von 30 Tagen ohne Angabe von Gründen möglich.</p>",
-            }),
-            ("numbered_article", {
-                "number": "5", "anchor": "pflichten-anbieter", "title": "Pflichten des Anbieters",
-                "body": "<p>Verfügbarkeit: Beta-Phase ≥ 99,5&nbsp;%, Produktiv ≥ 99,9&nbsp;% im Jahresmittel. Geplante Wartungsfenster werden mindestens 7 Tage im Voraus angekündigt.</p><p>DSGVO-Einhaltung — siehe <a href=\"/datenschutz/\">Datenschutzerklärung</a> und Auftragsverarbeitungsvertrag.</p>",
-            }),
-            ("numbered_article", {
-                "number": "6", "anchor": "pflichten-kunde", "title": "Pflichten des Kunden",
-                "body": "<p>Der Kunde stellt die technischen Voraussetzungen bereit und hält Zugangsdaten sicher.</p><p><strong>Verbot missbräuchlicher Nutzung:</strong></p><ul><li>Keine rechtswidrigen Inhalte hochladen oder verbreiten</li><li>Kein Spam, Phishing, Malware</li><li>Keine Sicherheitsmaßnahmen umgehen</li><li>Keine übermäßige Beanspruchung (DoS)</li><li>Kein Reverse-Engineering der gehosteten Komponenten</li></ul><p>Verstöße können zur sofortigen Sperrung führen. Missbrauch durch Dritte über <a href=\"/abuse/\">/abuse/</a> melden.</p>",
-            }),
-            ("numbered_article", {
-                "number": "7", "anchor": "datenschutz", "title": "Datenschutz & Auftragsverarbeitung",
-                "body": "<p>Verarbeitung personenbezogener Daten ausschließlich im Rahmen der DSGVO (siehe <a href=\"/datenschutz/\">Datenschutzerklärung</a>).</p><p>Ein <strong>Auftragsverarbeitungsvertrag (AVV/DPA)</strong> nach Art. 28 DSGVO ist Bestandteil jedes Kundenvertrags und steht im <a href=\"/trust/#dpa\">Trust Center</a> zum Download bereit.</p>",
-            }),
-            ("numbered_article", {
-                "number": "8", "anchor": "kuendigung", "title": "Kündigung",
-                "body": "<p>Beide Parteien können fristgerecht zum Ende der Laufzeit kündigen. Außerordentliche Kündigung aus wichtigem Grund bleibt unberührt.</p><p><strong>Daten nach Kündigung:</strong> Du erhältst vor Vertragsende einen vollständigen Datenexport (JSON/CSV/OParl). Nach 30 Tagen werden alle Daten unwiderruflich gelöscht. Auf Wunsch sofort.</p>",
-            }),
-            ("numbered_article", {
-                "number": "9", "anchor": "haftung", "title": "Haftung",
-                "body": "<p>Der Anbieter haftet für Vorsatz und grobe Fahrlässigkeit unbegrenzt. Für leichte Fahrlässigkeit nur bei Verletzung wesentlicher Vertragspflichten und beschränkt auf den vertragstypischen, vorhersehbaren Schaden.</p><p>Haftung für mittelbare Schäden, entgangenen Gewinn und Datenverluste über eigene Sicherungsmaßnahmen hinaus ist ausgeschlossen, soweit gesetzlich zulässig.</p>",
-            }),
-            ("numbered_article", {
-                "number": "10", "anchor": "schluss", "title": "Schlussbestimmungen",
-                "body": "<p><strong>Anwendbares Recht:</strong> Deutsches Recht unter Ausschluss des UN-Kaufrechts. <strong>Gerichtsstand</strong> Münster, sofern der Kunde Kaufmann oder juristische Person des öffentlichen Rechts ist.</p><p><strong>Salvatorische Klausel:</strong> Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit der übrigen unberührt.</p><p>Stand dieser AGB: <strong>26. April 2026</strong>.</p>",
-            }),
-            ("disclaimer_box", {
-                "icon": "message-square", "color": "primary",
-                "body": "<p><strong>Fragen zu den AGB?</strong> Schreib direkt an <a href=\"mailto:legal@mandari.de\">legal@mandari.de</a>.</p>",
-            }),
-        ],
+        # Note: impressum / datenschutz / agb werden hier bewusst NICHT mehr
+        # definiert. Die authoritative Fassung dieser Rechtstexte liegt in
+        # .legal-content/*.html und wird von `setup_initial_pages` in das
+        # RichText-Feld LegalPage.body geseedet (gerendert via
+        # marketing/legal_page.html). Ein body_stream-Seed wuerde das
+        # Template auf legal_streamfield_page.html umschalten und die
+        # authoritative Fassung verdecken.
 
         # ════════════════════════════════════════════════════════════
         # /quellen/ — Quellennachweise

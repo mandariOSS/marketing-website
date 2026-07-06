@@ -9,6 +9,8 @@ Usage:
 """
 
 from django.core.management.base import BaseCommand
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template as load_template
 from wagtail.models import Page, Site
 
 
@@ -17,6 +19,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         from blog.models import BlogIndexPage, ReleaseIndexPage
+        from marketing.legal_content import load_legal_content
         from marketing.models import ContactPage, HomePage, LegalPage, MarketingPage
 
         # Wagtail Root Page holen
@@ -76,35 +79,30 @@ class Command(BaseCommand):
             {
                 "title": "Produkt",
                 "slug": "produkt",
-                "custom_template": "marketing/produkt.html",
                 "seo_title": "Produkt – Mandari",
                 "search_description": "Drei Module für kommunalpolitische Transparenz: Insight, Work und Session.",
             },
             {
                 "title": "Preise",
                 "slug": "preise",
-                "custom_template": "marketing/preise.html",
                 "seo_title": "Preise – Mandari",
                 "search_description": "Transparente Preisgestaltung. Insight ist kostenlos, Work ab 39,90€/Monat.",
             },
             {
                 "title": "Kommunen",
                 "slug": "kommunen",
-                "custom_template": "marketing/kommunen.html",
                 "seo_title": "Verfügbare Kommunen – Mandari",
                 "search_description": "Kommunen, deren Ratsinformationen über Mandari verfügbar sind.",
             },
             {
                 "title": "Migration",
                 "slug": "migration",
-                "custom_template": "marketing/migration.html",
                 "seo_title": "Migration vom Alt-RIS – Mandari",
                 "search_description": "Wechsel von ALLRIS, regisafe oder Somacos zu Mandari Session. Vier-Schritte-Plan, was mitkommt, Pilot-Konditionen.",
             },
             {
                 "title": "Roadmap",
                 "slug": "roadmap",
-                "custom_template": "marketing/roadmap.html",
                 "seo_title": "Roadmap – Mandari",
                 "search_description": "Öffentliche Roadmap und geplante Features.",
             },
@@ -114,28 +112,24 @@ class Command(BaseCommand):
             {
                 "title": "Trust Center",
                 "slug": "trust",
-                "custom_template": "marketing/trust.html",
                 "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",
                 "search_description": "Komplette Sicherheits- & Vertrauensübersicht: DPA-Download, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
             },
             {
                 "title": "Transparenzbericht",
                 "slug": "transparenz",
-                "custom_template": "marketing/transparenz.html",
                 "seo_title": "Transparenzbericht 2026 – Mandari",
                 "search_description": "Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Finanztransparenz vom Solo-Founder, Open-Source-Beiträge.",
             },
             {
                 "title": "Barrierefreiheit",
                 "slug": "barrierefreiheit",
-                "custom_template": "marketing/barrierefreiheit.html",
                 "seo_title": "Erklärung zur Barrierefreiheit – Mandari",
                 "search_description": "Pflichterklärung nach BFSG, BITV 2.0, EN 301 549. Konformitätsstand, Feedback, Schlichtungsstelle.",
             },
             {
                 "title": "Missbrauch melden",
                 "slug": "abuse",
-                "custom_template": "marketing/abuse.html",
                 "seo_title": "Missbrauch melden – Abuse-Kontakte",
                 "search_description": "Abuse-Meldestelle für Spam, illegalen Content, Datenschutz, Urheberrecht, Belästigung. DSA- und NetzDG-konform.",
             },
@@ -144,14 +138,12 @@ class Command(BaseCommand):
             {
                 "title": "Open Source",
                 "slug": "open-source",
-                "custom_template": "marketing/open-source.html",
                 "seo_title": "Open Source – Mandari",
                 "search_description": "Mandari ist Open Source unter AGPL-3.0. Selbst-Hosting möglich.",
             },
             {
                 "title": "Mitmachen",
                 "slug": "mitmachen",
-                "custom_template": "marketing/mitmachen.html",
                 "seo_title": "Mitmachen – Mandari",
                 "search_description": "Werde Teil der Mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
             },
@@ -160,21 +152,18 @@ class Command(BaseCommand):
             {
                 "title": "Über uns",
                 "slug": "ueber-uns",
-                "custom_template": "marketing/ueber-uns.html",
                 "seo_title": "Über uns – Mission, Founder, Werte",
                 "search_description": "Mandari ist ein Solo-Projekt von Sven Konopka — Mission, Founder, Werte an einem Ort.",
             },
             {
                 "title": "Partner",
                 "slug": "partner",
-                "custom_template": "marketing/partner.html",
                 "seo_title": "Partner – Mandari",
                 "search_description": "Partnerschaften mit Kommunen, Fraktionen und zivilgesellschaftlichen Organisationen.",
             },
             {
                 "title": "Presse",
                 "slug": "presse",
-                "custom_template": "marketing/presse.html",
                 "seo_title": "Presse – Mandari",
                 "search_description": "Pressematerial und Kontakt für Journalist:innen.",
             },
@@ -199,9 +188,12 @@ class Command(BaseCommand):
                 page.delete()
                 self.stdout.write(self.style.WARNING(f"  {slug}/ entfernt (konsolidiert)"))
 
+        # Note: custom_template wird bewusst NICHT mehr geseedet — die alten
+        # Spezial-Templates (marketing/produkt.html, …) existieren in diesem
+        # Repo nicht. Inhalte kommen aus dem StreamField-Seed
+        # (`migrate_pages_to_streamfield`), gerendert über marketing_page.html.
         for page_data in marketing_pages:
             slug = page_data.pop("slug")
-            custom_template = page_data.pop("custom_template")
             show_in_menus = page_data.pop("show_in_menus", True)
 
             if MarketingPage.objects.filter(slug=slug).exists():
@@ -210,7 +202,6 @@ class Command(BaseCommand):
 
             page = MarketingPage(
                 slug=slug,
-                custom_template=custom_template,
                 show_in_menus=show_in_menus,
                 **page_data,
             )
@@ -237,45 +228,59 @@ class Command(BaseCommand):
             self.stdout.write("  Kontakt existiert bereits")
 
         # ── Rechtliche Seiten ─────────────────────────────────────────────
+        # Impressum / Datenschutz / AGB: Inhalte kommen aus .legal-content/
+        # (via marketing/legal_content.py) und landen im RichText-Feld `body`.
+        # Gerendert wird über das generische marketing/legal_page.html —
+        # kein custom_template, kein hardcodierter Rechtstext in Templates.
+        legal_content = load_legal_content()
 
         legal_pages = [
             {
                 "title": "Impressum",
                 "slug": "impressum",
-                "custom_template": "marketing/impressum.html",
-                "body": "<p>Angaben gemäß § 5 TMG — bitte im Wagtail-Admin vervollständigen.</p>",
+                "body": legal_content["impressum"],
             },
             {
                 "title": "Datenschutz",
                 "slug": "datenschutz",
-                "custom_template": "marketing/datenschutz.html",
-                "body": "<p>Datenschutzerklärung — bitte im Wagtail-Admin vervollständigen.</p>",
+                "body": legal_content["datenschutz"],
             },
             {
                 "title": "AGB",
                 "slug": "agb",
-                "custom_template": "marketing/agb.html",
-                "body": "<p>Allgemeine Geschäftsbedingungen — bitte im Wagtail-Admin vervollständigen.</p>",
+                "body": legal_content["agb"],
             },
             {
                 "title": "Quellennachweise",
                 "slug": "quellen",
-                "custom_template": "marketing/quellen.html",
-                "body": "<p>Quellennachweise und OParl-Quellenverzeichnis — Inhalt wird über das Template gerendert.</p>",
+                # Inhalt kommt als StreamField-Blöcke aus
+                # `migrate_pages_to_streamfield` (body_stream).
+                "body": "<p>Quellennachweise und OParl-Quellenverzeichnis.</p>",
             },
         ]
 
+        # Marker der alten Seed-Platzhalter — nur solche Inhalte werden bei
+        # bestehenden Seiten überschrieben. Im Wagtail-Admin gepflegte Texte
+        # bleiben unangetastet.
+        placeholder_marker = "bitte im Wagtail-Admin vervollständigen"
+
         for page_data in legal_pages:
             slug = page_data.pop("slug")
-            custom_template = page_data.pop("custom_template")
 
-            if LegalPage.objects.filter(slug=slug).exists():
-                self.stdout.write(f"  {page_data['title']} existiert bereits")
+            existing = LegalPage.objects.filter(slug=slug).first()
+            if existing:
+                new_body = page_data.get("body", "")
+                if new_body and (not existing.body or placeholder_marker in existing.body):
+                    existing.body = new_body
+                    existing.save()
+                    existing.save_revision().publish()
+                    self.stdout.write(self.style.SUCCESS(f"  {page_data['title']}: Platzhalter durch Inhalt ersetzt"))
+                else:
+                    self.stdout.write(f"  {page_data['title']} existiert bereits")
                 continue
 
             page = LegalPage(
                 slug=slug,
-                custom_template=custom_template,
                 show_in_menus=False,
                 **page_data,
             )
@@ -316,6 +321,25 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("  Releases erstellt"))
         else:
             self.stdout.write("  Releases existiert bereits")
+
+        # ── Reparatur: verwaiste custom_template-Verweise entfernen ──────
+        # Ältere Seed-Versionen setzten custom_template auf Spezial-Templates
+        # (z.B. marketing/impressum.html), die in diesem Repo nicht existieren.
+        # Solche Seiten würden beim Rendern mit TemplateDoesNotExist crashen —
+        # deshalb wird der Verweis idempotent entfernt, wenn das Template
+        # nicht auflösbar ist. Danach greifen die Standard-Templates
+        # (marketing_page.html / legal_page.html / legal_streamfield_page.html).
+        for model in (MarketingPage, LegalPage):
+            for page in model.objects.exclude(custom_template=""):
+                try:
+                    load_template(page.custom_template)
+                except TemplateDoesNotExist:
+                    self.stdout.write(self.style.WARNING(
+                        f"  {page.slug}/: custom_template '{page.custom_template}' fehlt → entfernt"
+                    ))
+                    page.custom_template = ""
+                    page.save()
+                    page.save_revision().publish()
 
         # ── Zusammenfassung ───────────────────────────────────────────────
 
