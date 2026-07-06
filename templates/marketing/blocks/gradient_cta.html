@@ -7,14 +7,14 @@
             <div class="flex flex-wrap justify-center gap-4">
                 {% for cta in self.ctas %}
                 {% if forloop.first %}
-                <a href="{{ cta.value.url }}" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-{{ self.gradient_from|default:'primary' }}-700 font-medium rounded-xl transition-colors text-lg">
-                    {% if cta.value.icon %}<i data-lucide="{{ cta.value.icon }}" class="w-5 h-5 mr-2"></i>{% endif %}
-                    {{ cta.value.label }}
+                <a href="{{ cta.url }}" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-{{ self.gradient_from|default:'primary' }}-700 font-medium rounded-xl transition-colors text-lg">
+                    {% if cta.icon %}<i data-lucide="{{ cta.icon }}" class="w-5 h-5 mr-2"></i>{% endif %}
+                    {{ cta.label }}
                 </a>
                 {% else %}
-                <a href="{{ cta.value.url }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
-                    {% if cta.value.icon %}<i data-lucide="{{ cta.value.icon }}" class="w-5 h-5"></i>{% endif %}
-                    {{ cta.value.label }}
+                <a href="{{ cta.url }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
+                    {% if cta.icon %}<i data-lucide="{{ cta.icon }}" class="w-5 h-5"></i>{% endif %}
+                    {{ cta.label }}
                 </a>
                 {% endif %}
                 {% endfor %}

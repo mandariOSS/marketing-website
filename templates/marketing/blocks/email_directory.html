@@ -11,8 +11,8 @@
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 text-sm">
                     {% for e in self.entries %}
                     <tr>
-                        <td class="px-6 py-3"><a href="mailto:{{ e.value.address }}" class="font-mono text-{{ e.value.color|default:'primary' }}-600 dark:text-{{ e.value.color|default:'primary' }}-400 hover:underline">{{ e.value.address }}</a></td>
-                        <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ e.value.purpose }}</td>
+                        <td class="px-6 py-3"><a href="mailto:{{ e.address }}" class="font-mono text-{{ e.color|default:'primary' }}-600 dark:text-{{ e.color|default:'primary' }}-400 hover:underline">{{ e.address }}</a></td>
+                        <td class="px-6 py-3 text-gray-700 dark:text-gray-300">{{ e.purpose }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

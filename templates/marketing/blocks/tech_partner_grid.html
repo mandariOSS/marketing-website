@@ -5,14 +5,14 @@
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {% for p in self.partners %}
-            <a {% if p.value.url %}href="{{ p.value.url }}" target="_blank" rel="noopener noreferrer"{% endif %} class="group bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:border-{{ p.value.color|default:'primary' }}-300 dark:hover:border-{{ p.value.color|default:'primary' }}-700 hover:shadow-md transition-all">
+            <a {% if p.url %}href="{{ p.url }}" target="_blank" rel="noopener noreferrer"{% endif %} class="group bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:border-{{ p.color|default:'primary' }}-300 dark:hover:border-{{ p.color|default:'primary' }}-700 hover:shadow-md transition-all">
                 <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-lg bg-{{ p.value.color|default:'primary' }}-100 dark:bg-{{ p.value.color|default:'primary' }}-900/50 flex items-center justify-center">
-                        <i data-lucide="{{ p.value.icon }}" class="w-5 h-5 text-{{ p.value.color|default:'primary' }}-700 dark:text-{{ p.value.color|default:'primary' }}-400"></i>
+                    <div class="w-10 h-10 rounded-lg bg-{{ p.color|default:'primary' }}-100 dark:bg-{{ p.color|default:'primary' }}-900/50 flex items-center justify-center">
+                        <i data-lucide="{{ p.icon }}" class="w-5 h-5 text-{{ p.color|default:'primary' }}-700 dark:text-{{ p.color|default:'primary' }}-400"></i>
                     </div>
-                    <p class="font-bold text-gray-900 dark:text-white">{{ p.value.name }}</p>
+                    <p class="font-bold text-gray-900 dark:text-white">{{ p.name }}</p>
                 </div>
-                {% if p.value.description %}<p class="text-xs text-gray-500 dark:text-gray-400">{{ p.value.description }}</p>{% endif %}
+                {% if p.description %}<p class="text-xs text-gray-500 dark:text-gray-400">{{ p.description }}</p>{% endif %}
             </a>
             {% endfor %}
         </div>

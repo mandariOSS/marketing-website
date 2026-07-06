@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="grid grid-cols-1 lg:grid-cols-{{ self.tiers|length }} gap-8 items-start">
-            {% for t in self.tiers %}{% with tier=t.value %}
+            {% for tier in self.tiers %}
             <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-{{ tier.color|default:'primary' }}-{% if tier.is_highlighted %}500 dark:border-{{ tier.color|default:'primary' }}-500{% else %}200 dark:border-{{ tier.color|default:'primary' }}-800{% endif %} p-8 relative overflow-hidden flex flex-col{% if tier.is_highlighted %} shadow-xl lg:-mt-4 lg:mb-4{% endif %}">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-{{ tier.color|default:'primary' }}-100 dark:bg-{{ tier.color|default:'primary' }}-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
                 {% if tier.is_highlighted %}
@@ -21,7 +21,7 @@
                     {% if tier.description %}<p class="text-gray-700 dark:text-gray-300 mb-6">{{ tier.description }}</p>{% endif %}
                     {% if tier.features %}
                     <ul class="space-y-3 mb-8">
-                        {% for f in tier.features %}<li class="flex items-start gap-3"><i data-lucide="{{ f.value.icon|default:'check' }}" class="w-5 h-5 text-{{ tier.color|default:'primary' }}-500 mt-0.5 flex-none"></i><span class="text-gray-700 dark:text-gray-300 text-sm">{{ f.value.text }}</span></li>{% endfor %}
+                        {% for f in tier.features %}<li class="flex items-start gap-3"><i data-lucide="{{ f.icon|default:'check' }}" class="w-5 h-5 text-{{ tier.color|default:'primary' }}-500 mt-0.5 flex-none"></i><span class="text-gray-700 dark:text-gray-300 text-sm">{{ f.text }}</span></li>{% endfor %}
                     </ul>
                     {% endif %}
                     {% if tier.cta_label and tier.cta_url %}
@@ -29,7 +29,7 @@
                     {% endif %}
                 </div>
             </div>
-            {% endwith %}{% endfor %}
+            {% endfor %}
         </div>
     </div>
 </section>

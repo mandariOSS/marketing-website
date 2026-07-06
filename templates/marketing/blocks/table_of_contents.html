@@ -7,7 +7,7 @@
             </h2>
             <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 {% for item in self.items %}
-                <li><a href="#{{ item.value.anchor }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ item.value.number }} {{ item.value.text }}</a></li>
+                <li><a href="#{{ item.anchor }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ item.number }} {{ item.text }}</a></li>
                 {% endfor %}
             </ol>
         </div>

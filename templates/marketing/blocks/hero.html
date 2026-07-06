@@ -14,7 +14,7 @@
         {% if self.subline_secondary %}<p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">{{ self.subline_secondary }}</p>{% endif %}
         {% if self.ctas %}
         <div class="flex flex-wrap gap-4">
-            {% for cta in self.ctas %}{% include "marketing/blocks/_cta_button.html" with cta=cta.value %}{% endfor %}
+            {% for cta in self.ctas %}{% include "marketing/blocks/_cta_button.html" with cta=cta %}{% endfor %}
         </div>
         {% endif %}
     </div>

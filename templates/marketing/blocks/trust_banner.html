@@ -4,8 +4,8 @@
         <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
             {% for item in self.items %}
             <div class="flex items-center gap-2 whitespace-nowrap">
-                <i data-lucide="{{ item.value.icon }}" class="w-5 h-5 text-{{ self.color|default:'primary' }}-600 dark:text-{{ self.color|default:'primary' }}-400 flex-none"></i>
-                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>{{ item.value.label_bold }}</strong>{% if item.value.label_normal %} {{ item.value.label_normal }}{% endif %}</span>
+                <i data-lucide="{{ item.icon }}" class="w-5 h-5 text-{{ self.color|default:'primary' }}-600 dark:text-{{ self.color|default:'primary' }}-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>{{ item.label_bold }}</strong>{% if item.label_normal %} {{ item.label_normal }}{% endif %}</span>
             </div>
             {% endfor %}
         </div>

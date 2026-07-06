@@ -8,8 +8,8 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-{{ self.border_color|default:'primary' }}-200 dark:border-{{ self.border_color|default:'primary' }}-800 text-center relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-16 h-16 bg-{{ self.border_color|default:'primary' }}-100 dark:bg-{{ self.border_color|default:'primary' }}-900/30 rounded-bl-full -mr-4 -mt-4" aria-hidden="true"></div>
                 <div class="relative">
-                    <p class="text-3xl lg:text-4xl font-bold text-{{ item.value.color|default:self.border_color|default:'primary' }}-600 dark:text-{{ item.value.color|default:self.border_color|default:'primary' }}-400 tabular-nums">{{ item.value.value }}</p>
-                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">{{ item.value.label }}</p>
+                    <p class="text-3xl lg:text-4xl font-bold text-{{ item.color|default:self.border_color|default:'primary' }}-600 dark:text-{{ item.color|default:self.border_color|default:'primary' }}-400 tabular-nums">{{ item.value }}</p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mt-1">{{ item.label }}</p>
                 </div>
             </div>
             {% endfor %}

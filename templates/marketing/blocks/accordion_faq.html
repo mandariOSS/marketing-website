@@ -7,10 +7,10 @@
             {% for item in self.items %}
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <button @click="open = open === {{ forloop.counter }} ? null : {{ forloop.counter }}" class="w-full px-6 py-4 flex items-center justify-between text-left">
-                    <span class="font-medium text-gray-900 dark:text-white pr-4">{{ item.value.question }}</span>
+                    <span class="font-medium text-gray-900 dark:text-white pr-4">{{ item.question }}</span>
                     <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === {{ forloop.counter }} ? 'rotate-180' : ''"></i>
                 </button>
-                <div x-show="open === {{ forloop.counter }}" x-collapse class="px-6 pb-5 text-gray-600 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">{{ item.value.answer|safe }}</div>
+                <div x-show="open === {{ forloop.counter }}" x-collapse class="px-6 pb-5 text-gray-600 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">{{ item.answer|safe }}</div>
             </div>
             {% endfor %}
         </div>

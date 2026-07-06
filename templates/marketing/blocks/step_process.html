@@ -5,25 +5,25 @@
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% else %}lg:grid-cols-3{% endif %} gap-6 max-w-6xl mx-auto">
             {% for step in self.steps %}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-{{ step.value.color|default:'primary' }}-200 dark:border-{{ step.value.color|default:'primary' }}-800 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-{{ step.value.color|default:'primary' }}-100 dark:bg-{{ step.value.color|default:'primary' }}-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-{{ step.color|default:'primary' }}-200 dark:border-{{ step.color|default:'primary' }}-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-{{ step.color|default:'primary' }}-100 dark:bg-{{ step.color|default:'primary' }}-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
                 <div class="relative">
                     <div class="flex items-center gap-3 mb-4">
-                        <span class="text-4xl font-bold text-{{ step.value.color|default:'primary' }}-200 dark:text-{{ step.value.color|default:'primary' }}-800 leading-none">{{ step.value.number }}</span>
-                        <div class="w-10 h-10 bg-{{ step.value.color|default:'primary' }}-100 dark:bg-{{ step.value.color|default:'primary' }}-900/50 rounded-lg flex items-center justify-center flex-none">
-                            <i data-lucide="{{ step.value.icon }}" class="w-5 h-5 text-{{ step.value.color|default:'primary' }}-600 dark:text-{{ step.value.color|default:'primary' }}-400"></i>
+                        <span class="text-4xl font-bold text-{{ step.color|default:'primary' }}-200 dark:text-{{ step.color|default:'primary' }}-800 leading-none">{{ step.number }}</span>
+                        <div class="w-10 h-10 bg-{{ step.color|default:'primary' }}-100 dark:bg-{{ step.color|default:'primary' }}-900/50 rounded-lg flex items-center justify-center flex-none">
+                            <i data-lucide="{{ step.icon }}" class="w-5 h-5 text-{{ step.color|default:'primary' }}-600 dark:text-{{ step.color|default:'primary' }}-400"></i>
                         </div>
                     </div>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ step.value.title }}</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ step.value.description }}</p>
-                    {% if step.value.duration %}
+                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ step.title }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ step.description }}</p>
+                    {% if step.duration %}
                     <div class="flex items-center gap-2 text-xs">
-                        <i data-lucide="clock" class="w-3.5 h-3.5 text-{{ step.value.color|default:'primary' }}-500"></i>
-                        <span class="text-{{ step.value.color|default:'primary' }}-600 dark:text-{{ step.value.color|default:'primary' }}-400 font-medium">{{ step.value.duration }}</span>
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-{{ step.color|default:'primary' }}-500"></i>
+                        <span class="text-{{ step.color|default:'primary' }}-600 dark:text-{{ step.color|default:'primary' }}-400 font-medium">{{ step.duration }}</span>
                     </div>
                     {% endif %}
-                    {% if step.value.meta_text %}
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3 font-medium">{{ step.value.meta_text }}</p>
+                    {% if step.meta_text %}
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3 font-medium">{{ step.meta_text }}</p>
                     {% endif %}
                 </div>
             </div>
