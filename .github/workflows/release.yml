@@ -28,11 +28,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
+        # PAT statt GITHUB_TOKEN: das 'website'-Package ist (historisch) mit
+        # dem mandari-Repo verknuepft; der Repo-scoped GITHUB_TOKEN darf dort
+        # nicht schreiben. GHCR_PAT (org-weit, write:packages) loest das.
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: mandariSoftware
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Compute image tags
         id: tags
