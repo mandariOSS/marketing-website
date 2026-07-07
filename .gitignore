@@ -86,3 +86,4 @@ postgres_data/
 *_temp.sh
 *_check.css
 _css.css
+scripts/.cache/

@@ -1275,7 +1275,7 @@ def get_marketing_definitions() -> dict:
                 "cards": [
                     card(color="primary", icon="image", title="Logos & Brand-Assets",
                          description="Wordmark, Icon, Farben — alles unter CC-BY frei verwendbar.",
-                         cta_label="Brand-Kit anfragen", cta_url="mailto:presse@mandari.de?subject=Brand-Kit", cta_icon="download"),
+                         cta_label="Downloads ansehen", cta_url="#logo-wortmarke", cta_icon="download"),
                     card(color="green", icon="user-circle", title="Founder-Interview",
                          description="Sven Konopka steht für Hintergrund-Gespräche zur Verfügung — Civic-Tech, Open Source, Demokratie & Software.",
                          cta_label="Termin anfragen", cta_url="/kontakt/?subject=Presse-Interview", cta_icon="calendar"),
@@ -1283,6 +1283,30 @@ def get_marketing_definitions() -> dict:
                          description="Aktuelle Releases, Pilot-Kommunen-Updates, Förder-Meilensteine — alle Mitteilungen im Blog mit RSS-Feed.",
                          cta_label="Blog ansehen", cta_url="/blog/", cta_icon="external-link"),
                 ],
+            }),
+            ("richtext_section", {
+                "header": hdr(badge_text="Brand", badge_icon="image", badge_color="primary",
+                              title="Logo & Wortmarke",
+                              subline="Die mandari-Wortmarke zum Download — SVG für Web und Druck, PNG für Präsentationen. Alle Dateien CC-BY.",
+                              anchor_id="logo-wortmarke"),
+                "background": "gray",
+                "body": (
+                    "<h3>Downloads</h3>"
+                    "<ul>"
+                    '<li><a href="/static/brand/mandari-logo.svg">Wortmarke als SVG — dunkel, für helle Hintergründe</a></li>'
+                    '<li><a href="/static/brand/mandari-logo-white.svg">Wortmarke als SVG — weiß, für dunkle Hintergründe</a></li>'
+                    '<li><a href="/static/brand/mandari-logo.png">Wortmarke als PNG — dunkel, 2400 px, transparent</a></li>'
+                    '<li><a href="/static/brand/mandari-logo-white.png">Wortmarke als PNG — weiß, 2400 px, transparent</a></li>'
+                    '<li><a href="/static/brand/favicon.svg">Bildmarke „m.“ als SVG — Favicon/Avatar</a></li>'
+                    "</ul>"
+                    "<h3>Nutzungshinweise</h3>"
+                    "<ul>"
+                    "<li><strong>Schutzraum:</strong> Rund um die Wortmarke mindestens die Breite des Punkts freihalten.</li>"
+                    "<li><strong>Keine Verzerrung:</strong> Nicht strecken, stauchen, drehen oder mit Effekten (Schatten, Kontur, Verlauf) versehen.</li>"
+                    "<li><strong>Keine Umfärbung:</strong> Der Punkt steht immer in Indigo (#4F46E5, auf dunklem Grund #818CF8); der Schriftzug in Grau-900 (#111827) bzw. Weiß.</li>"
+                    "<li><strong>Varianten:</strong> Dunkle Variante auf hellen, weiße Variante auf dunklen Hintergründen verwenden.</li>"
+                    "</ul>"
+                ),
             }),
             ("gradient_cta", {
                 "title": "Frage übrig?",
