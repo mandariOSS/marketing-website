@@ -261,6 +261,16 @@ class Command(BaseCommand):
                 "body": legal_content["avv"],
             },
             {
+                "title": "Kündigung & Widerruf",
+                "slug": "kuendigung",
+                "seo_title": "Vertrag kündigen – Mandari",
+                "search_description": (
+                    "Kündigungsbutton nach § 312k BGB: ordentliche und außerordentliche "
+                    "Kündigung sowie Widerruf für mandari work — direkt online kündigen."
+                ),
+                "body": legal_content["kuendigung"],
+            },
+            {
                 "title": "Quellennachweise",
                 "slug": "quellen",
                 # Inhalt kommt als StreamField-Blöcke aus

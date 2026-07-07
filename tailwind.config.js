@@ -4,6 +4,7 @@ module.exports = {
     "./templates/**/*.html",
     "./marketing/templates/**/*.html",
     "./blog/templates/**/*.html",
+    "./.legal-content/**/*.html",
   ],
   darkMode: 'class',
   theme: {

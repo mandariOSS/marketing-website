@@ -23,6 +23,7 @@ LEGAL_FILES = {
     "datenschutz": "datenschutz.html",
     "agb": "agb.html",
     "avv": "avv.html",
+    "kuendigung": "kuendigung.html",
 }
 
 

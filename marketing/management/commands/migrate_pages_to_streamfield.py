@@ -1394,7 +1394,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
                 "background": "white",
-                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source · Schultern, auf denen wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im GitHub-Repo: <a href=\"https://github.com/mandariOSS/mandari/blob/main/SBOM.md\" target=\"_blank\" rel=\"noopener\">SBOM.md</a>.</p>",
+                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source · Schultern, auf denen wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im GitHub-Repo: <a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/SBOM.md\" target=\"_blank\" rel=\"noopener\">docs/SBOM.md</a>.</p>",
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
