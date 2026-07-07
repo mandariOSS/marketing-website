@@ -1293,11 +1293,11 @@ def get_marketing_definitions() -> dict:
                 "body": (
                     "<h3>Downloads</h3>"
                     "<ul>"
-                    '<li><a href="/static/brand/mandari-logo.svg">Wortmarke als SVG — dunkel, für helle Hintergründe</a></li>'
-                    '<li><a href="/static/brand/mandari-logo-white.svg">Wortmarke als SVG — weiß, für dunkle Hintergründe</a></li>'
-                    '<li><a href="/static/brand/mandari-logo.png">Wortmarke als PNG — dunkel, 2400 px, transparent</a></li>'
-                    '<li><a href="/static/brand/mandari-logo-white.png">Wortmarke als PNG — weiß, 2400 px, transparent</a></li>'
-                    '<li><a href="/static/brand/favicon.svg">Bildmarke „m.“ als SVG — Favicon/Avatar</a></li>'
+                    '<li><a href="/wstatic/brand/mandari-logo.svg">Wortmarke als SVG — dunkel, für helle Hintergründe</a></li>'
+                    '<li><a href="/wstatic/brand/mandari-logo-white.svg">Wortmarke als SVG — weiß, für dunkle Hintergründe</a></li>'
+                    '<li><a href="/wstatic/brand/mandari-logo.png">Wortmarke als PNG — dunkel, 2400 px, transparent</a></li>'
+                    '<li><a href="/wstatic/brand/mandari-logo-white.png">Wortmarke als PNG — weiß, 2400 px, transparent</a></li>'
+                    '<li><a href="/wstatic/brand/favicon.svg">Bildmarke „m.“ als SVG — Favicon/Avatar</a></li>'
                     "</ul>"
                     "<h3>Nutzungshinweise</h3>"
                     "<ul>"
