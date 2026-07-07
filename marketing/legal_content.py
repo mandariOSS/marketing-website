@@ -22,6 +22,7 @@ LEGAL_FILES = {
     "impressum": "impressum.html",
     "datenschutz": "datenschutz.html",
     "agb": "agb.html",
+    "avv": "avv.html",
 }
 
 

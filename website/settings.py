@@ -26,9 +26,9 @@ SITE_URL = os.environ.get("SITE_URL", "http://localhost:8001")
 MANDARI_API_URL = os.environ.get("MANDARI_API_URL", "http://mandari:8000/api")
 
 # Public URL of the Kener status page — used as the "open status page directly"
-# fallback link and as the default for KENER_INTERNAL_URL when running locally
-# without Docker DNS.
-STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "http://localhost:6501")
+# fallback link. Default is the public production status page; the local
+# docker-compose stack overrides this with its bundled Kener instance.
+STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de")
 
 # Server-side URL the marketing-site backend uses to call Kener's REST API.
 # In Docker this is the internal service name; in local dev outside Docker

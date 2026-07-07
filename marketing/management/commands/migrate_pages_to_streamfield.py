@@ -54,11 +54,11 @@ def bullet(text, icon="check"):
 
 
 def hdr(*, badge_text="", badge_icon="", badge_color="primary",
-        title, subline="", align="left"):
+        title, subline="", align="left", anchor_id=""):
     return {
         "badge_text": badge_text, "badge_icon": badge_icon,
         "badge_color": badge_color, "title": title, "subline": subline,
-        "align": align,
+        "align": align, "anchor_id": anchor_id,
     }
 
 
@@ -152,7 +152,8 @@ def get_marketing_definitions() -> dict:
             ("mandari_cards", {
                 "header": hdr(badge_text="07 · So kannst du beitragen", badge_icon="hand-heart", badge_color="green",
                               title="So kannst du beitragen",
-                              subline="Wenn dir Mandari etwas wert ist: vier Wege, das Projekt finanziell mitzutragen."),
+                              subline="Wenn dir Mandari etwas wert ist: vier Wege, das Projekt finanziell mitzutragen.",
+                              anchor_id="unterstuetzen"),
                 "columns": "4", "background": "white",
                 "cards": [
                     card(color="primary", icon="github", title="GitHub Sponsors", subtitle="0 % Plattformgebühr",
@@ -214,7 +215,7 @@ def get_marketing_definitions() -> dict:
                      "features": [bullet("Volltextsuche & Kartenansicht"), bullet("KI-Zusammenfassungen & Chat (geplant)"),
                                   bullet("Abstimmungsverhalten einsehen"), bullet("Keine Anmeldung nötig"),
                                   bullet("Selbst-Hosting möglich")],
-                     "is_highlighted": False, "cta_label": "Insight öffnen", "cta_url": "https://insight.mandari.de"},
+                     "is_highlighted": False, "cta_label": "Insight öffnen", "cta_url": "/insight/"},
                     {"color": "primary", "name": "Mandari Work", "subtitle": "Für Fraktionen · Pauschale ohne Userlimit",
                      "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
                      "price_note": "Beta-Kunden erhalten dauerhaft vergünstigte Konditionen",
@@ -336,11 +337,12 @@ def get_marketing_definitions() -> dict:
                                   bullet("Geografische Karte (geplant)"), bullet("Abstimmungsverhalten einsehen"),
                                   bullet("KI-Zusammenfassungen")],
                          badge="Live"),
-                    card(color="primary", icon="briefcase", title="Mandari Work", subtitle="Fraktions-Plattform · ab 33,25 €/Mon",
+                    card(color="primary", icon="briefcase", title="Mandari Work", subtitle="Fraktions-Plattform · 39,90 €/Mon inkl. MwSt.",
                          description="Professionelle Kollaboration für das gesamte Team — pauschal pro Organisation, ohne Nutzer-Limit.",
                          bullets=[bullet("Sitzungsvorbereitung im Team"), bullet("Interne Abstimmungen & Notizen"),
                                   bullet("Antragsdatenbank & Vorlagen"), bullet("Terminplanung"),
                                   bullet("KI-gestützte Recherche")],
+                         cta_label="Jetzt buchen", cta_url="https://portal.mandari.de/buchen/", cta_icon="zap",
                          badge="Beta"),
                     card(color="blue", icon="building-2", title="Mandari Session", subtitle="Verwaltungs-RIS · Auf Anfrage",
                          description="Vollständiges Sitzungsmanagement für Kommunen — die moderne Alternative zu proprietären RIS.",
@@ -355,7 +357,8 @@ def get_marketing_definitions() -> dict:
             ("two_column_use_case", {
                 "header": hdr(badge_text="Flexibel einsetzbar", badge_icon="git-branch",
                               title="Mandari Work: Zwei Einsatzszenarien", align="center",
-                              subline="Egal ob eure Kommune Mandari Session nutzt oder ein anderes RIS — Mandari Work funktioniert immer."),
+                              subline="Egal ob eure Kommune Mandari Session nutzt oder ein anderes RIS — Mandari Work funktioniert immer.",
+                              anchor_id="zielgruppen"),
                 "left_card": card(color="blue", icon="link", title="Mit Mandari Session", subtitle="Volle Integration",
                                   description="Wenn eure Kommune Mandari Session als RIS nutzt, profitiert ihr von nahtloser Integration.",
                                   bullets=[bullet("Echtzeit-Synchronisation", "zap"),
@@ -373,6 +376,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Überzeugen Sie sich selbst",
                 "subline": "Vereinbaren Sie eine kostenlose Demo und sehen Sie Mandari in Aktion. Alle Produkte sind zu 100 % Open Source.",
                 "ctas": [cta("Jetzt Demo anfragen", "/kontakt/", "mail", "primary"),
+                         cta("Work jetzt buchen", "https://portal.mandari.de/buchen/", "zap", "outline"),
                          cta("Open Source", "/open-source/", "github", "outline")],
                 "gradient_from": "primary",
             }),
@@ -549,7 +553,8 @@ def get_marketing_definitions() -> dict:
             ("two_column_use_case", {
                 "header": hdr(badge_text="Finanziell mittragen", badge_icon="hand-heart",
                               title="Damit Mandari unabhängig bleiben kann", align="center",
-                              subline="Open Source ist kostenfrei, Open-Source-Entwicklung nicht. Hier siehst du, wie du das Projekt finanziell stärkst."),
+                              subline="Open Source ist kostenfrei, Open-Source-Entwicklung nicht. Hier siehst du, wie du das Projekt finanziell stärkst.",
+                              anchor_id="mittragen"),
                 "left_card": card(color="primary", icon="landmark", title="Institutionelle Förderung",
                                   subtitle="Stiftungen & Fördermittel",
                                   description="Wir bewerben uns auf passende Programme — wenn du dort Kontakte hast oder uns weiterempfehlen kannst, freuen wir uns:",
@@ -696,7 +701,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Trust Center:", "title_highlight": "alle Antworten an einem Ort.",
                 "subline": "Bevor du mit einem SaaS-Anbieter sprichst, willst du DPA, Subprocessor-Liste, Hosting-Stack und Backup-Strategie sehen. Hier sind sie, vorbereitet, unterschriftsreif.",
                 "subline_secondary": "Diese Seite richtet sich an Datenschutzbeauftragte, IT-Leiter:innen und Verwaltungs-Compliance.",
-                "ctas": [cta("DPA-Vorlage (PDF)", "/static/legal/mandari-dpa-vorlage.pdf", "file-text", "primary"),
+                "ctas": [cta("Muster-AVV ansehen", "/avv/", "file-signature", "primary"),
                          cta("Subprocessoren", "#subprocessors", "list-tree", "secondary"),
                          cta("Konkrete Frage stellen", "/kontakt/?subject=Trust-Center-Frage", "message-square", "outline")],
                 "background_color": "primary",
@@ -714,7 +719,7 @@ def get_marketing_definitions() -> dict:
                 "columns": "3", "background": "white",
                 "cards": [
                     card(color="primary", icon="file-signature", title="DPA / AVV",
-                         description="Vorgefertigter Auftragsverarbeitungsvertrag nach Art. 28 DSGVO, unterschriftsreif zum Download.",
+                         description="Auftragsverarbeitungsvertrag nach Art. 28 DSGVO — wir schließen ihn mit jeder Organisation, Muster online einsehbar.",
                          cta_label="Zum Abschnitt", cta_url="#dpa", cta_icon="arrow-right"),
                     card(color="blue", icon="list-tree", title="Subprocessoren",
                          description="Wer sonst noch Daten sieht — vollständige Liste mit Standort, Zweck und Status.",
@@ -732,6 +737,121 @@ def get_marketing_definitions() -> dict:
                          description="Was bereits geprüft wurde — und was wir bis Ende 2026 vorhaben.",
                          cta_label="Zum Abschnitt", cta_url="#audits", cta_icon="arrow-right"),
                 ],
+            }),
+            # ── 01 · AVV ─────────────────────────────────────────────
+            ("numbered_article", {
+                "number": "1", "anchor": "dpa",
+                "title": "Auftragsverarbeitung (AVV)",
+                "body": (
+                    "<p><strong>mandari work schließt mit jeder buchenden Organisation einen "
+                    "Auftragsverarbeitungsvertrag (AVV) nach Art. 28 DSGVO ab.</strong> Der Vertrag regelt "
+                    "Gegenstand und Dauer der Verarbeitung, Datenkategorien, Pflichten des Auftragsverarbeiters, "
+                    "Unterauftragsverhältnisse, Löschung nach Vertragsende und eure Kontrollrechte. "
+                    "Den vollständigen Mustertext könnt ihr vorab prüfen: "
+                    "<a href=\"/avv/\">Muster-AVV online lesen</a>.</p>"
+                    "<h3>Eingesetzte Subunternehmer</h3>"
+                    "<ul>"
+                    "<li><strong>Hetzner Online GmbH</strong> — Hosting, Rechenzentren in Deutschland</li>"
+                    "<li><strong>Mollie B.V.</strong> — Zahlungsabwicklung, Niederlande (EU)</li>"
+                    "<li><strong>Haufe-Lexware GmbH &amp; Co. KG</strong> — Buchhaltung (lexware office), Deutschland</li>"
+                    "</ul>"
+                    "<h3>Technische und organisatorische Maßnahmen (Kurzübersicht)</h3>"
+                    "<ul>"
+                    "<li>Verschlüsselung sensibler Inhalte mit AES-256-GCM, organisationsspezifische Schlüssel</li>"
+                    "<li>Transportverschlüsselung (TLS) für alle Verbindungen</li>"
+                    "<li>Tägliche Backups mit definierter Aufbewahrung</li>"
+                    "<li>Zugriffskontrolle über rollenbasiertes Berechtigungssystem (RBAC)</li>"
+                    "<li>Betrieb ausschließlich in deutschen Rechenzentren</li>"
+                    "</ul>"
+                ),
+            }),
+            ("disclaimer_box", {
+                "icon": "file-signature", "color": "primary",
+                "body": (
+                    "<p><strong>AVV anfordern:</strong> Schreib uns eine kurze Mail an "
+                    "<a href=\"mailto:hello@mandari.de?subject=AVV-Anfrage\">hello@mandari.de</a> "
+                    "mit dem Namen eurer Organisation — ihr bekommt den unterschriftsreifen AVV "
+                    "als Dokument zurück. Den Mustertext gibt es unter <a href=\"/avv/\">mandari.de/avv</a>.</p>"
+                ),
+            }),
+            # ── 02 · Subprocessoren ──────────────────────────────────
+            ("numbered_article", {
+                "number": "2", "anchor": "subprocessors",
+                "title": "Subprocessoren — wer sonst noch Daten sieht",
+                "body": (
+                    "<p>Vollständige Liste aller Unterauftragsverarbeiter. Es gibt keine weiteren — "
+                    "insbesondere keine Tracker, keine Analytics-Dienste und keine Anbieter außerhalb der EU.</p>"
+                    "<ul>"
+                    "<li><strong>Hetzner Online GmbH</strong>, Industriestr. 25, 91710 Gunzenhausen (DE) — "
+                    "Hosting aller Systeme in deutschen Rechenzentren. AVV nach Art. 28 DSGVO besteht.</li>"
+                    "<li><strong>Mollie B.V.</strong>, Keizersgracht 126, 1015 CW Amsterdam (NL/EU) — "
+                    "Zahlungsabwicklung für mandari work (Name, E-Mail, Zahlungs- und Mandatsdaten).</li>"
+                    "<li><strong>Haufe-Lexware GmbH &amp; Co. KG</strong>, Munzinger Str. 9, 79111 Freiburg (DE) — "
+                    "Rechnungsstellung und Buchhaltung (lexware office).</li>"
+                    "</ul>"
+                    "<p>Über geplante Änderungen an dieser Liste informieren wir vorab; ihr habt ein "
+                    "Widerspruchsrecht gegen neue Subunternehmer (Details im <a href=\"/avv/\">AVV, Ziff. 7</a>).</p>"
+                ),
+            }),
+            # ── 03 · Hosting ─────────────────────────────────────────
+            ("numbered_article", {
+                "number": "3", "anchor": "hosting",
+                "title": "Hosting-Stack",
+                "body": (
+                    "<p>Alle Systeme laufen bei der Hetzner Online GmbH in deutschen Rechenzentren "
+                    "(kein US-Cloud-Anbieter, kein CDN mit Drittland-Transfer).</p>"
+                    "<ul>"
+                    "<li>TLS-Verschlüsselung für alle Verbindungen (Caddy, automatische Zertifikate)</li>"
+                    "<li>Verschlüsselung sensibler Arbeitsinhalte at rest: AES-256-GCM mit organisationsspezifischen Schlüsseln</li>"
+                    "<li>PostgreSQL 16, Redis und Elasticsearch — alles self-hosted im selben Stack</li>"
+                    "<li>Kompletter Stack Open Source (AGPL-3.0) und damit auditierbar</li>"
+                    "</ul>"
+                ),
+            }),
+            # ── 04 · Backup ──────────────────────────────────────────
+            ("numbered_article", {
+                "number": "4", "anchor": "backup",
+                "title": "Backup & Recovery",
+                "body": (
+                    "<ul>"
+                    "<li><strong>Tägliche Backups</strong> aller Datenbanken, Aufbewahrung 30 Tage</li>"
+                    "<li>Backups liegen getrennt vom Produktivsystem, ebenfalls in Deutschland</li>"
+                    "<li>Wiederherstellungen werden regelmäßig getestet</li>"
+                    "<li>Nach Vertragsende: Datenexport auf Anfrage innerhalb von 30 Tagen, danach unwiderrufliche Löschung</li>"
+                    "</ul>"
+                ),
+            }),
+            # ── 05 · Verfügbarkeit ───────────────────────────────────
+            ("numbered_article", {
+                "number": "5", "anchor": "availability",
+                "title": "Verfügbarkeit & Status",
+                "body": (
+                    "<p>Ehrliche Beta-Ansage: Wir befinden uns in der Pilot-Phase und schulden vertraglich "
+                    "noch keine feste Verfügbarkeitsquote (siehe <a href=\"/agb/\">AGB Ziff. 6</a>). "
+                    "Was wir stattdessen bieten:</p>"
+                    "<ul>"
+                    "<li>Öffentliche Live-Statusseite: <a href=\"https://status.mandari.de\">status.mandari.de</a> "
+                    "(auch unter <a href=\"/status/\">/status/</a> eingebunden)</li>"
+                    "<li>Wartungsfenster werden vorab angekündigt</li>"
+                    "<li>Vorfälle werden transparent dokumentiert — siehe <a href=\"/transparenz/\">Transparenzbericht</a></li>"
+                    "</ul>"
+                ),
+            }),
+            # ── 06 · Audits ──────────────────────────────────────────
+            ("numbered_article", {
+                "number": "6", "anchor": "audits",
+                "title": "Audits & Zertifikate",
+                "body": (
+                    "<p>Auch hier keine Marketing-Übertreibung: Eine ISO-27001- oder BSI-Grundschutz-"
+                    "Zertifizierung ist für ein Solo-Projekt in der Beta-Phase nicht realistisch — "
+                    "und wir behaupten keine.</p>"
+                    "<ul>"
+                    "<li>Der gesamte Code ist Open Source (AGPL-3.0) und öffentlich auditierbar</li>"
+                    "<li>Responsible-Disclosure-Programm nach RFC 9116: <a href=\"/sicherheit/disclosure/\">/sicherheit/disclosure/</a></li>"
+                    "<li>Abhängigkeiten werden automatisiert auf bekannte Schwachstellen geprüft</li>"
+                    "<li>Externes Security-Audit ist für die General-Availability-Phase geplant</li>"
+                    "</ul>"
+                ),
             }),
             ("gradient_cta", {
                 "title": "Frage übrig?",
@@ -766,7 +886,8 @@ def get_marketing_definitions() -> dict:
             ("mandari_cards", {
                 "header": hdr(badge_text="Sechs Meldewege", badge_icon="list-checks",
                               title="Was möchtest du melden?",
-                              subline="Such die passende Kategorie, jede zeigt klar wer zuständig ist."),
+                              subline="Such die passende Kategorie, jede zeigt klar wer zuständig ist.",
+                              anchor_id="notfall"),
                 "columns": "3", "background": "white",
                 "cards": [
                     card(color="amber", icon="mail-warning", title="Spam & unerwünschte Mails", subtitle="Du bekommst Mails von @mandari.de",
@@ -893,7 +1014,8 @@ def get_marketing_definitions() -> dict:
             ("tech_partner_grid", {
                 "header": hdr(badge_text="Auf wessen Schultern wir stehen", badge_icon="package-open", badge_color="gray",
                               title="Unsere Tech-Partnerschaften", align="center",
-                              subline="Mandari wäre ohne diese Open-Source-Projekte nicht möglich. Sie verdienen Sichtbarkeit und Beiträge zurück."),
+                              subline="Mandari wäre ohne diese Open-Source-Projekte nicht möglich. Sie verdienen Sichtbarkeit und Beiträge zurück.",
+                              anchor_id="danke"),
                 "partners": [
                     {"name": "Python", "icon": "code-2", "color": "amber", "description": "Programmiersprache · PSF", "url": "https://www.python.org"},
                     {"name": "Django", "icon": "layout-template", "color": "green", "description": "Web-Framework · BSD-3", "url": "https://www.djangoproject.com/"},
@@ -951,6 +1073,25 @@ def get_marketing_definitions() -> dict:
                     step("04", "blue", "rocket", "Cutover",
                          "Definierter Termin für den Wechsel. Alt-RIS wird in Read-Only überführt.", "1 Tag"),
                 ],
+            }),
+            ("two_column_use_case", {
+                "header": hdr(badge_text="Migrations-Scope", badge_icon="list-checks",
+                              title="Was kommt mit — und was prüfen wir individuell?", align="center",
+                              subline="Ehrliche Antwort statt „alles, kein Problem\": Der OParl-Standard trägt das meiste, der Rest ist Handarbeit.",
+                              anchor_id="scope"),
+                "left_card": card(color="green", icon="check-circle", title="Das kommt mit", subtitle="Über den OParl-Standard",
+                                  description="Alles, was euer Alt-RIS über OParl bereitstellt, übernehmen wir strukturiert und verlustfrei:",
+                                  bullets=[bullet("Sitzungen, Tagesordnungen & TOPs", "calendar-clock"),
+                                           bullet("Vorlagen, Drucksachen & Beratungsfolgen", "file-text"),
+                                           bullet("Gremien, Personen & Mitgliedschaften", "users"),
+                                           bullet("Dokumente / PDFs inkl. Volltext-Indexierung", "file-search"),
+                                           bullet("Wahlperioden & Orte", "map-pin")]),
+                "right_card": card(color="amber", icon="search", title="Das prüfen wir individuell", subtitle="Bestandsaufnahme in Schritt 01",
+                                   description="Nicht alles liegt standardisiert vor — diese Punkte klären wir gemeinsam vor dem Cutover:",
+                                   bullets=[bullet("Anbieterspezifische Sonderfelder & Vermerke", "puzzle"),
+                                            bullet("Historische Daten ohne OParl-Export", "archive"),
+                                            bullet("Interne, nicht-öffentliche Vorlagen & Protokolle", "lock"),
+                                            bullet("Sitzungsgeld-Konfiguration & Abrechnungshistorie", "banknote")]),
             }),
             ("disclaimer_box", {
                 "icon": "hand-heart", "color": "amber",
@@ -1060,7 +1201,8 @@ def get_marketing_definitions() -> dict:
             ("two_column_use_case", {
                 "header": hdr(badge_text="Founder", badge_icon="user-circle",
                               title="Hinter Mandari steht eine Person",
-                              subline="Mandari ist kein Konzern und kein Startup mit Investorenrunde, sondern ein Projekt aus Überzeugung."),
+                              subline="Mandari ist kein Konzern und kein Startup mit Investorenrunde, sondern ein Projekt aus Überzeugung.",
+                              anchor_id="founder"),
                 "left_card": card(color="primary", icon="user-circle", title="Sven Konopka", subtitle="Gründer · Entwickler · Inhaber",
                                   description="Full-Stack-Entwickler und Inhaber von topixmedia.de aus Münster. Mandari ist sein persönliches Herzensprojekt.",
                                   bullets=[bullet("Beruf: Selbstständiger Full-Stack-Entwickler", "briefcase"),
@@ -1076,7 +1218,8 @@ def get_marketing_definitions() -> dict:
             ("mandari_cards", {
                 "header": hdr(badge_text="Werte", badge_icon="compass",
                               title="Drei Werte, die jede Entscheidung prägen", align="center",
-                              subline="Wo es Zielkonflikte gibt, entscheidet immer einer dieser drei Werte."),
+                              subline="Wo es Zielkonflikte gibt, entscheidet immer einer dieser drei Werte.",
+                              anchor_id="werte"),
                 "columns": "3", "background": "white",
                 "cards": [
                     card(color="green", icon="eye", title="Transparenz", subtitle="Offen statt verborgen",

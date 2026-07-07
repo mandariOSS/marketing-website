@@ -14,19 +14,46 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **24 Marketing-Pages** — Produkt, Preise, Kommunen, Migration, Trust Center,
-  Transparenzbericht, Barrierefreiheit, Abuse, Open Source, Mitmachen, Partner,
-  Über uns, Presse, Kontakt, FAQ, Blog, Releases, Impressum, Datenschutz, AGB,
-  Quellen + 2 Sub-Pages (Status, Disclosure)
-- **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen
+- **Marketing-Pages** — Startseite, Produkt, Preise, Kommunen, Migration,
+  Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
+  Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Blog, Releases
+- **Rechtliche Seiten** — Impressum, Datenschutz, AGB, AVV (Muster-Auftrags-
+  verarbeitungsvertrag nach Art. 28 DSGVO), Quellennachweise — Texte liegen
+  versioniert in `.legal-content/` (siehe unten)
+- **Django-Views** außerhalb von Wagtail — `/status/` (Live-Status via Kener-API)
+  und `/sicherheit/disclosure/` (Responsible Disclosure)
+- **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
+  alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
+  (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
+  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Gradient-CTA u. v. m.)
 - **Mandari Design System** — konsistentes UI mit Tailwind CSS, Hero-Banner,
   Trust-Banner, Border-2-Cards mit Decorative Corner Circles
 - **Discoverability** — `robots.txt`, `sitemap.xml`, RFC 8288 Link-Header,
   `.well-known/security.txt`
 - **Compliance** — DSGVO, BFSG, DSA, NetzDG, RFC 9116 (Responsible Disclosure)
-- **Status Page** via [Kener](https://github.com/rajnandan1/kener) (eingebunden)
+- **Status Page** via [Kener](https://github.com/rajnandan1/kener) — produktiv
+  unter <https://status.mandari.de>, lokal im Compose-Stack enthalten
 - **DSGVO-konformer Spam-Schutz** via [Altcha](https://altcha.org)
   (selbst-gehostet, kein Captcha, kein Tracking)
+
+## 📝 Content-Architektur: Seeds & Rechtstexte
+
+Die Website deployt gegen eine Datenbank, in der Seiten bereits existieren —
+alle Seeds sind deshalb **idempotent**:
+
+| Command | Zweck |
+|---|---|
+| `setup_initial_pages` | Erstellt den Wagtail-Page-Tree (überspringt vorhandene Seiten), seedet Rechtstexte aus `.legal-content/` |
+| `migrate_pages_to_streamfield` | Seedet die StreamField-Inhalte aller Marketing-/Legal-Pages (überspringt Seiten, die bereits Blöcke haben; `--force` überschreibt) |
+| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force` |
+
+**Rechtstexte** (Impressum, Datenschutz, AGB, AVV) werden **nicht** in
+Templates oder im Code gepflegt: Die authoritative Fassung liegt als HTML in
+`.legal-content/*.html`, wird über `marketing/legal_content.py` geladen und in
+das RichText-Feld `LegalPage.body` geseedet (gerendert via
+`marketing/legal_page.html`). Änderungen an Rechtstexten gehören in
+`.legal-content/` und werden auf laufenden Instanzen mit
+`refresh_seeded_page <slug> --force` ausgerollt.
 
 ## 🚀 Quickstart (Docker, empfohlen)
 
@@ -41,8 +68,9 @@ cp .env.example .env
 # 3. Stack starten (Postgres + Wagtail + Kener)
 docker compose up -d --build
 
-# 4. Initiale Wagtail-Seitenstruktur anlegen
+# 4. Initiale Wagtail-Seitenstruktur anlegen + Inhalte seeden
 docker compose exec website python manage.py setup_initial_pages
+docker compose exec website python manage.py migrate_pages_to_streamfield
 
 # 5. Admin-Account erstellen
 docker compose exec website python manage.py createsuperuser
@@ -72,6 +100,7 @@ npx tailwindcss -i static/css/input.css -o static/css/styles.css --watch
 # Postgres läuft separat — DATABASE_URL anpassen in .env
 python manage.py migrate
 python manage.py setup_initial_pages
+python manage.py migrate_pages_to_streamfield
 python manage.py runserver 8001
 ```
 
@@ -92,27 +121,64 @@ python manage.py runserver 8001
 
 ```
 marketing-website/
-├── website/                  # Django-Projekt (Settings, URLs, ASGI/WSGI)
+├── website/                  # Django-Projekt (Settings, URLs, WSGI)
 ├── marketing/                # App: Marketing-Pages (Wagtail-Models, Views, Middleware)
-│   ├── models.py             # MarketingPage, ContactPage, LegalPage, HomePage
+│   ├── models.py             # HomePage, MarketingPage, ContactPage, LegalPage
+│   ├── blocks.py             # StreamField-Blöcke des Mandari Design Systems
+│   ├── legal_content.py      # Lädt Rechtstexte aus .legal-content/
 │   ├── views.py              # status_view, security_txt, robots_txt, altcha
 │   ├── middleware.py         # LinkHeaderMiddleware (RFC 8288)
 │   └── management/commands/
-│       └── setup_initial_pages.py   # Idempotente Seitenstruktur
+│       ├── setup_initial_pages.py          # Idempotenter Page-Tree + Legal-Seeds
+│       ├── migrate_pages_to_streamfield.py # StreamField-Inhalte aller Seiten
+│       └── refresh_seeded_page.py          # Re-Seed einer Seite (Live-Update)
 ├── blog/                     # App: Blog + Releases (Wagtail BlogIndex)
+├── .legal-content/           # Authoritative Rechtstexte (impressum, datenschutz, agb, avv)
 ├── templates/
 │   ├── base.html             # Globales Layout
 │   ├── components/           # navbar, footer
-│   └── marketing/            # Page-Templates (produkt, preise, trust, ...)
+│   └── marketing/            # Page-Templates + blocks/ (StreamField-Block-Templates)
 ├── static/
 │   ├── css/                  # Tailwind input + compiled output
 │   ├── vendor/               # alpine, lucide, altcha (lokal gehostet)
-│   └── security/             # PGP-Key-Placeholder
+│   └── security/             # PGP-Key
 ├── scripts/                  # Kener-Bootstrap & Utilities
-├── docker-compose.yml        # Wagtail + Postgres + Kener + Redis
+├── .github/workflows/        # CI: Release-Build → ghcr.io/mandarioss/website
+├── docker-compose.yml        # Lokaler Stack: Wagtail + Postgres + Kener + Redis
 ├── Dockerfile
 └── tailwind.config.js
 ```
+
+## 🚢 CI & Deployment
+
+- **CI**: Jeder Push auf `main`/`dev` baut das Docker-Image und pusht es nach
+  **`ghcr.io/mandarioss/website`** (Tags: `<branch>` und `<branch>-<shortsha>`,
+  siehe `.github/workflows/release.yml`).
+- **Produktion**: Die Website läuft als `website`-Service im
+  Docker-Compose-Stack des Hauptrepos
+  [`mandariOSS/mandari`](https://github.com/mandariOSS/mandari) auf dem
+  Mandari-Server. Caddy routet dort auf **einer Domain**: `/insight/`, `/work/`,
+  `/session/`, `/api/`, … → Django-App; alles andere (inkl. `/`) → diese
+  Wagtail-Website. Die Statuspage läuft unter <https://status.mandari.de>.
+- **Deploys gegen bestehende DB**: Migrationen + idempotente Seeds laufen beim
+  Start; gezielte Inhalts-Updates per `refresh_seeded_page <slug> --force`.
+
+### Wichtige Umgebungsvariablen
+
+| Variable | Default | Zweck |
+|---|---|---|
+| `WEBSITE_SECRET_KEY` / `SECRET_KEY` | dev-Wert | Django Secret Key |
+| `DEBUG` | `True` | Debug-Modus (Production: `False`) |
+| `SITE_URL` | `http://localhost:8001` | Öffentliche Basis-URL (robots.txt, security.txt, CSRF) |
+| `ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` | localhost | Host-/Origin-Whitelist |
+| `WEBSITE_DATABASE_URL` / `DATABASE_URL` | lokaler Postgres | PostgreSQL-Verbindung |
+| `STATUS_PAGE_URL` | `https://status.mandari.de` | Öffentlicher Link zur Statuspage |
+| `KENER_INTERNAL_URL` | `http://kener:3000` | Interne Kener-API (für /status/) |
+| `KENER_API_TOKEN` | – | Token für die Kener-API (ohne: Fallback-Link) |
+| `MANDARI_API_URL` | `http://mandari:8000/api` | Stats-API der Haupt-App (Startseite) |
+| `BOOKING_URL` | `/kontakt/#termin-buchen` | Ziel der „Call buchen"-CTAs |
+| `ALTCHA_HMAC_KEY` | dev-Wert | HMAC-Secret für Altcha-Challenges |
+| `TZ` | `Europe/Berlin` | Zeitzone |
 
 ## 🎨 Mandari Design System
 

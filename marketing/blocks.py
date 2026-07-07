@@ -250,6 +250,10 @@ class SectionHeaderBlock(StructBlock):
         choices=[("left", "Linksbündig"), ("center", "Zentriert")],
         default="left",
     )
+    anchor_id = CharBlock(
+        required=False,
+        help_text="Optionale HTML-id für Anker-Links (ohne #, z.B. 'founder')",
+    )
 
     class Meta:
         template = "marketing/blocks/section_header.html"

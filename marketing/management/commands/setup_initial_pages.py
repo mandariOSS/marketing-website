@@ -113,7 +113,7 @@ class Command(BaseCommand):
                 "title": "Trust Center",
                 "slug": "trust",
                 "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",
-                "search_description": "Komplette Sicherheits- & Vertrauensübersicht: DPA-Download, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
+                "search_description": "Komplette Sicherheits- & Vertrauensübersicht: AVV nach Art. 28 DSGVO, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
             },
             {
                 "title": "Transparenzbericht",
@@ -249,6 +249,16 @@ class Command(BaseCommand):
                 "title": "AGB",
                 "slug": "agb",
                 "body": legal_content["agb"],
+            },
+            {
+                "title": "Auftragsverarbeitungsvertrag (AVV)",
+                "slug": "avv",
+                "seo_title": "Auftragsverarbeitungsvertrag (AVV) – Mandari",
+                "search_description": (
+                    "Muster-Auftragsverarbeitungsvertrag nach Art. 28 DSGVO für mandari work — "
+                    "TOMs, Subunternehmer, Löschung, Kontrollrechte."
+                ),
+                "body": legal_content["avv"],
             },
             {
                 "title": "Quellennachweise",
