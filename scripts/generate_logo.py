@@ -205,7 +205,8 @@ def render_favicon_png(ttf: Path, size: int, bg: str | None) -> Image.Image:
     img = Image.new("RGBA", (fsize * 4, fsize * 3), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     x, y = fsize, fsize
-    for ch, color in [("m", GRAY_900), (".", PRIMARY_600)]:
+    # Favicon bewusst NICHT in Schwarz: "m" in Indigo, Punkt heller abgesetzt.
+    for ch, color in [("m", PRIMARY_600), (".", PRIMARY_400)]:
         draw.text((x, y), ch, font=font, fill=color)
         x += font.getlength(ch) + tracking
     bbox = img.getbbox()
@@ -264,10 +265,10 @@ def main() -> int:
     (BRAND_DIR / "mandari-logo-white.svg").write_text(
         build_svg(wm, WHITE, PRIMARY_400, text_idx, dot_idx), encoding="utf-8")
 
-    # ── SVG: Favicon "m." ──
+    # ── SVG: Favicon "m." (nicht in Schwarz: Indigo + hellerer Punkt) ──
     fm = Wordmark(font, "m.")
     (BRAND_DIR / "favicon.svg").write_text(
-        build_svg(fm, GRAY_900, PRIMARY_600, [0], [1], square=True), encoding="utf-8")
+        build_svg(fm, PRIMARY_600, PRIMARY_400, [0], [1], square=True), encoding="utf-8")
 
     # ── PNGs: Wortmarke ──
     render_wordmark_png(ttf, GRAY_900, PRIMARY_600, 2400, None).save(
