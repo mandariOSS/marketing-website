@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DEBUG: "true"
+      WEBSITE_DATABASE_URL: "sqlite:///ci.sqlite3"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install .
+
+      - name: Django system check
+        run: python manage.py check
+
+      - name: Migrationen (frische SQLite)
+        run: python manage.py migrate --no-input
+
+      - name: Seiten-Seeds + Rechtstexte laden
+        run: |
+          python manage.py setup_initial_pages
+          python - <<'EOF'
+          from marketing.legal_content import load_legal_content
+          content = load_legal_content()
+          expected = {"impressum", "agb", "datenschutz", "avv", "kuendigung"}
+          missing = expected - set(content)
+          assert not missing, f"Rechtstexte fehlen: {missing}"
+          print(f"OK: {sorted(content)}")
+          EOF
