@@ -2,9 +2,9 @@
 
 ## Reporting a Vulnerability
 
-Mandari nimmt jede gutgläubige Sicherheitsmeldung ernst — wir antworten **binnen
-48 Stunden** und behandeln dich mit Respekt: keine Anwälte, keine Drohungen,
-kein Hacker-Paragraph-202c-Brief.
+Mandari nimmt jede gutgläubige Sicherheitsmeldung ernst — wir bestätigen den
+Eingang **innerhalb von 5 Werktagen** und behandeln dich mit Respekt: keine
+Anwälte, keine Drohungen, kein Hacker-Paragraph-202c-Brief.
 
 ### Wie melden?
 
@@ -14,7 +14,10 @@ Bevorzugte Wege (nach Reihenfolge):
    → <https://github.com/mandariOSS/marketing-website/security/advisories/new>
 
 2. **E-Mail** an [security@mandari.de](mailto:security@mandari.de)
-   (PGP-Key in Vorbereitung — siehe `static/security/mandari-pgp-key.asc`)
+   — gerne PGP-verschlüsselt. Public Key: `static/security/mandari-pgp-key.asc`
+   bzw. <https://mandari.de/static/security/mandari-pgp-key.asc>,
+   Fingerprint `5D06 A2BC B71C 6095 7A23 0BD8 7E96 93FD 0505 3234`
+   (gültig bis 07/2028)
 
 3. **`/.well-known/security.txt`** für maschinenlesbaren Kontakt
    → <https://mandari.de/.well-known/security.txt>
@@ -31,10 +34,11 @@ Vollständige Policy: <https://mandari.de/sicherheit/disclosure/>
 
 ### Was du erwarten kannst
 
-- **≤ 48 h**: Eingangsbestätigung durch den Founder persönlich
-- **1–7 Tage**: Triage und Schwere-Einstufung nach CVSS 3.1
-- **≤ 90 Tage**: Patch + Disclosure (kürzer bei kritischen Lücken)
-- **+14 Tage**: Security Advisory mit CVE, Erwähnung in der Hall of Fame
+- **≤ 5 Werktage**: persönliche Eingangsbestätigung
+- **≤ 14 Tage**: Erstbewertung und Schwere-Einstufung nach CVSS 3.1
+- **Behebung nach Schweregrad** — mit laufender Statusinformation an dich
+- **Koordinierte Veröffentlichung** in der Regel nach spätestens 90 Tagen:
+  Security Advisory, Erwähnung in der Hall of Fame (sofern gewünscht)
 
 ### Safe Harbor
 
@@ -53,7 +57,7 @@ verzichten wir auf zivil- oder strafrechtliche Verfolgung.
 ### Out of Scope
 
 - DoS / DDoS jeglicher Art
-- Social Engineering gegen Founder oder Nutzer:innen
+- Social Engineering gegen Mitwirkende oder Nutzer:innen
 - OParl-Quellsysteme der Kommunen (sind nicht unser System)
 - Drittanbieter-Dienste (Hetzner, Postmark, …)
 

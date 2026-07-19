@@ -20,8 +20,8 @@
         </h1>
         <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
             Sicherheitsforschung an Open Source ist ein Geschenk. Wir nehmen jede
-            Meldung ernst, antworten <strong>binnen 48 Stunden</strong>, und behandeln dich mit Respekt —
-            keine Anwälte, keine Drohungen, keine Verzögerung.
+            Meldung ernst, bestätigen den Eingang <strong>innerhalb von 5 Werktagen</strong>
+            und behandeln dich mit Respekt — keine Anwälte, keine Drohungen.
         </p>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">
             Diese Policy gilt für alle Mandari-Domains, das GitHub-Repo
@@ -52,12 +52,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
             <div class="flex items-center gap-2 whitespace-nowrap">
-                <i data-lucide="zap" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
-                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Antwort</strong> binnen 48 h</span>
+                <i data-lucide="mail-check" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Eingangsbestätigung</strong> ≤ 5 Werktage</span>
             </div>
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <i data-lucide="calendar-clock" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
-                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Disclosure-Zeitraum:</strong> 90 Tage</span>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Koordinierte Veröffentlichung:</strong> i.&nbsp;d.&nbsp;R. ≤ 90 Tage</span>
             </div>
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <i data-lucide="shield-check" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
@@ -154,7 +154,7 @@
                         </li>
                         <li class="flex items-start gap-3">
                             <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Social Engineering gegen Founder oder Nutzer:innen</span>
+                            <span class="text-gray-700 dark:text-gray-300">Social Engineering gegen Mitwirkende oder Nutzer:innen</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i data-lucide="x" class="w-5 h-5 text-rose-500 mt-0.5 flex-none"></i>
@@ -229,12 +229,13 @@
                         <i data-lucide="message-square-reply" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
                     </div>
                 </div>
-                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Bestätigung</h3>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Eingangsbestätigung</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    Wir antworten persönlich, bestätigen den Eingang und ordnen den Schweregrad
-                    nach <strong>CVSS 3.1</strong> ein.
+                    Wir bestätigen den Eingang deiner Meldung. Danach folgt die
+                    Erstbewertung mit Einordnung des Schweregrads nach <strong>CVSS 3.1</strong> —
+                    innerhalb von 14 Tagen.
                 </p>
-                <span class="text-xs font-medium text-green-600 dark:text-green-400">≤ 48 h</span>
+                <span class="text-xs font-medium text-green-600 dark:text-green-400">≤ 5 Werktage</span>
             </div>
 
             <!-- Step 3 -->
@@ -247,10 +248,10 @@
                 </div>
                 <h3 class="font-bold text-gray-900 dark:text-white mb-2">Behebung</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    Patch wird entwickelt, getestet und ausgerollt. Bei kritischen Lücken
-                    Notfall-Release binnen 7 Tagen.
+                    Patch wird entwickelt, getestet und ausgerollt — priorisiert nach
+                    Schweregrad. Du erhältst laufend Statusinformationen zum Fortschritt.
                 </p>
-                <span class="text-xs font-medium text-amber-600 dark:text-amber-400">≤ 90 Tage</span>
+                <span class="text-xs font-medium text-amber-600 dark:text-amber-400">nach Schweregrad</span>
             </div>
 
             <!-- Step 4 -->
@@ -261,12 +262,12 @@
                         <i data-lucide="megaphone" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
                     </div>
                 </div>
-                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Disclosure</h3>
+                <h3 class="font-bold text-gray-900 dark:text-white mb-2">Koordinierte Veröffentlichung</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    Nach dem Patch: Security-Advisory mit CVE, Erwähnung in der Hall of Fame
-                    (sofern gewünscht), Post-Mortem im Blog.
+                    Veröffentlichung stimmen wir mit dir ab — in der Regel nach spätestens
+                    90 Tagen: Security-Advisory, Erwähnung in der Hall of Fame (sofern gewünscht).
                 </p>
-                <span class="text-xs font-medium text-blue-600 dark:text-blue-400">+14 Tage</span>
+                <span class="text-xs font-medium text-blue-600 dark:text-blue-400">i. d. R. ≤ 90 Tage</span>
             </div>
 
         </div>
@@ -311,8 +312,8 @@
                 </div>
                 <h3 class="font-bold text-gray-900 dark:text-white mb-2">Persönliche Antwort</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300">
-                    Kein Ticket-Bot, kein Auto-Responder. Du redest direkt mit dem Founder
-                    oder mit der Person, die das Issue tatsächlich behebt.
+                    Kein Ticket-Bot, kein Auto-Responder. Du redest direkt mit den
+                    Menschen, die das Issue tatsächlich beheben.
                 </p>
             </div>
 
@@ -384,13 +385,14 @@
                 </p>
                 <div class="bg-gray-900 dark:bg-gray-950 rounded-lg p-4 mb-6 overflow-x-auto">
                     <code class="text-green-400 text-sm font-mono break-all">
-                        4096R/A1B2 C3D4 E5F6 0789 0ABC · DEF1 2345 6789 ABCD EF01
+                        5D06 A2BC B71C 6095 7A23&nbsp;&nbsp;0BD8 7E96 93FD 0505 3234
                     </code>
                 </div>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
                     <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
-                    Der echte Fingerprint wird mit dem ersten Release publiziert.
-                    Aktueller Stand: PGP-Setup ist in Vorbereitung.
+                    Schlüssel für <code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">security@mandari.de</code>,
+                    gültig bis Juli 2028. Auch referenziert in unserer
+                    <a href="/.well-known/security.txt" class="underline hover:text-gray-700 dark:hover:text-gray-300">security.txt</a> (RFC 9116).
                 </p>
                 <div class="flex flex-wrap gap-3">
                     <a href="/static/security/mandari-pgp-key.asc" class="inline-flex items-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-xl transition-colors text-sm">
@@ -415,8 +417,9 @@
         <div class="max-w-3xl mx-auto text-center">
             <h2 class="text-3xl font-bold text-white mb-6">Du hast was gefunden?</h2>
             <p class="text-xl text-white/90 mb-10">
-                Schreib uns, wir bestätigen binnen 48 Stunden, koordinieren mit dir
-                und behandeln deine Meldung mit dem Respekt, den sie verdient.
+                Schreib uns — wir bestätigen den Eingang innerhalb von 5 Werktagen,
+                koordinieren die Veröffentlichung mit dir und behandeln deine Meldung
+                mit dem Respekt, den sie verdient.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
                 <a href="mailto:security@mandari.de" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-primary-700 font-medium rounded-xl transition-colors text-lg">

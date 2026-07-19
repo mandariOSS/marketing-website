@@ -334,13 +334,9 @@ def security_txt(request):
     """
     site_url = (getattr(settings, "SITE_URL", "") or "https://mandari.de").rstrip("/")
 
-    # Expiration date — RFC 9116 requires this. We set it to one year out.
-    # When this is within 30 days of expiry, the file should be regenerated.
-    import datetime
-
-    expires = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=365)).strftime(
-        "%Y-%m-%dT%H:%M:%S.000Z"
-    )
+    # Expiration date — RFC 9116 requires this. Fixed date, aligned with the
+    # published PGP key (valid until 07/2028); regenerate before expiry.
+    expires = "2027-07-31T00:00:00.000Z"
 
     body = f"""# Mandari Security Disclosure
 # RFC 9116 — https://www.rfc-editor.org/rfc/rfc9116
@@ -354,9 +350,10 @@ Canonical: {site_url}/.well-known/security.txt
 Policy: {site_url}/sicherheit/disclosure/
 Acknowledgments: {site_url}/sicherheit/disclosure/#hall-of-fame
 
-# Wir antworten binnen 48 Stunden auf jede gutgläubige Sicherheitsmeldung.
-# Standard-Disclosure-Zeitraum: 90 Tage.
-# Safe-Harbor für gutgläubige Forschung — siehe Policy.
+# PGP-Fingerprint: 5D06 A2BC B71C 6095 7A23 0BD8 7E96 93FD 0505 3234
+# Eingangsbestätigung innerhalb von 5 Werktagen, Erstbewertung innerhalb
+# von 14 Tagen. Koordinierte Veröffentlichung in der Regel nach spätestens
+# 90 Tagen. Safe-Harbor für gutgläubige Forschung — siehe Policy.
 
 # Andere Meldewege (RFC 2142):
 #   abuse@mandari.de         — Spam, illegaler Content, Belästigung, Urheberrecht
