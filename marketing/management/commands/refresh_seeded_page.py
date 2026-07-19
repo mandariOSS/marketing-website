@@ -94,6 +94,17 @@ class Command(BaseCommand):
         # Seed-Definitionen werden über die Standard-Templates gerendert —
         # ein evtl. gesetztes custom_template würde sie verdecken.
         page.custom_template = ""
+
+        # Titel / SEO-Metadaten aus dem Seed mitziehen (Slug bleibt stabil) —
+        # sonst behalten Live-Seiten nach Umbenennungen den alten Titel.
+        from marketing.management.commands.setup_initial_pages import MARKETING_PAGE_META
+
+        meta = next((m for m in MARKETING_PAGE_META if m["slug"] == slug), None)
+        if meta:
+            page.title = meta.get("title", page.title)
+            page.seo_title = meta.get("seo_title", page.seo_title)
+            page.search_description = meta.get("search_description", page.search_description)
+
         page.save()
         page.save_revision().publish()
         self.stdout.write(self.style.SUCCESS(

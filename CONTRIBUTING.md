@@ -42,7 +42,7 @@ git checkout -b fix/short-description
    docs(readme): Quickstart aktualisiert
    ```
 4. **PR-Beschreibung**: was/warum, Screenshots bei UI-Änderungen
-5. **Review**: Founder reviewt persönlich, Reaktionszeit ≤ 24 h
+5. **Review**: Wir reviewen persönlich und zeitnah
 
 ## Mandari Design System einhalten
 
