@@ -344,7 +344,7 @@ def security_txt(request):
 Contact: mailto:security@mandari.de
 Contact: {site_url}/sicherheit/disclosure/
 Expires: {expires}
-Encryption: {site_url}/static/security/mandari-pgp-key.asc
+Encryption: {site_url}/wstatic/security/mandari-pgp-key.asc
 Preferred-Languages: de, en
 Canonical: {site_url}/.well-known/security.txt
 Policy: {site_url}/sicherheit/disclosure/
