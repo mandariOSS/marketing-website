@@ -30,6 +30,32 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      - name: Tailwind-CSS bauen (wie im Docker-Build)
+        run: |
+          npm ci
+          npm run build:css
+
+      - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS)
+        # Die Block-Templates setzen Farbklassen dynamisch zusammen
+        # (bg-{{ card.color }}-600 u. ä.) — dieser Check stellt sicher, dass
+        # der Tailwind-Build alle Palette-Klassen enthält und nicht wieder
+        # Klassen wegpurged (Safelist in tailwind.config.js).
+        run: |
+          python - <<'EOF'
+          css = open("static/css/styles.css", encoding="utf-8").read()
+          colors = ["primary", "green", "blue", "amber", "rose", "teal", "gray"]
+          needles = []
+          for c in colors:
+              needles += [
+                  f".bg-{c}-100", f".bg-{c}-600",
+                  f".hover\\:bg-{c}-700:hover",
+                  f".text-{c}-600", f".border-{c}-200",
+              ]
+          missing = [n for n in needles if n not in css]
+          assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
+          print(f"OK: {len(needles)} Klassen im CSS vorhanden")
+          EOF
+
       - name: Migrationen (frische SQLite)
         run: python manage.py migrate --no-input
 
@@ -66,10 +92,10 @@ jobs:
               "/migration/": ["Bestandsaufnahme"],
               "/roadmap/": ["Session-Pilot"],
               "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
-              "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0"],
-              "/vergleich/mandari-vs-allris/": ["ALLRIS"],
-              "/vergleich/mandari-vs-somacos/": ["SessionNet"],
-              "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat"],
+              "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium"],
+              "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
+              "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium"],
+              "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat", "Funktion / Kriterium"],
               "/releases/": ["mandari 0.9 (Beta)"],
               "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
               "/trust/": ["Subprocessoren"],
