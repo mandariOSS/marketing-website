@@ -304,8 +304,9 @@ Disallow: /altcha/
 Disallow: /work/
 Crawl-delay: 1
 
-# Sitemap (sitemaps.org)
+# Sitemaps (sitemaps.org)
 Sitemap: {site_url}/sitemap.xml
+Sitemap: {site_url}/sitemap-insight-index.xml
 """
     return HttpResponse(body, content_type="text/plain; charset=utf-8")
 
