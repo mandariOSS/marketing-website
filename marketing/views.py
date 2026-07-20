@@ -324,6 +324,15 @@ def security_disclosure_view(request):
     return render(request, "marketing/sicherheit_disclosure.html")
 
 
+def crawler_info_view(request):
+    """Render /crawler/ — Infoseite zum mandari-ingestor.
+
+    Der Crawler-User-Agent verweist auf diese Seite (Transparenz gegenüber
+    RIS-Betreibern); via Django-View vor dem Wagtail-Catch-all registriert.
+    """
+    return render(request, "marketing/crawler.html")
+
+
 @require_http_methods(["GET", "HEAD"])
 def security_txt(request):
     """Serves /.well-known/security.txt according to RFC 9116.

@@ -17,6 +17,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from blog.feeds import BlogFeed
 from marketing.views import (
     altcha_challenge,
+    crawler_info_view,
     robots_txt,
     security_disclosure_view,
     security_txt,
@@ -53,6 +54,8 @@ urlpatterns = [
     # Django-View statt Wagtail (Wagtail unterstützt Page-Nesting hier nicht
     # ohne Umbau der MarketingPage-Struktur).
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
+    # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
+    path("crawler/", crawler_info_view, name="crawler_info"),
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
     path("loesungen/", RedirectView.as_view(url="/produkt/#zielgruppen", permanent=True)),

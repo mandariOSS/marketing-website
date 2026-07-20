@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Über unseren Crawler{% endblock %}
+
+{% block meta_description %}Informationen zum mandari-ingestor: Wie mandari öffentliche Ratsinformationen abruft, welche Regeln der Crawler einhält und wie Kommunen Kontakt aufnehmen oder widersprechen können.{% endblock %}
+
+{% block content %}
+
+<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-primary-50 to-white dark:from-gray-800 dark:to-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
+            <i data-lucide="bot" class="w-4 h-4"></i>
+            mandari-ingestor
+        </span>
+        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            Über unseren <span class="text-primary-600 dark:text-primary-400">Crawler</span>
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
+            mandari macht öffentliche Ratsinformationen deutscher Kommunen zentral
+            durchsuchbar. Dafür ruft unser Dienst <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-sm">mandari-ingestor</code>
+            ausschließlich <strong>öffentlich zugängliche</strong> Seiten und Dokumente
+            von Ratsinformationssystemen ab &mdash; bevorzugt über die standardisierte
+            OParl-Schnittstelle, ersatzweise über die öffentlichen Webseiten.
+        </p>
+    </div>
+</section>
+
+<section class="py-12 bg-white dark:bg-gray-900">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Woran Sie uns erkennen</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-3">
+                Unsere Abrufe tragen immer diesen User-Agent:
+            </p>
+            <pre class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 text-sm text-gray-800 dark:text-gray-200 overflow-x-auto">mandari-ingestor (+https://mandari.de/crawler)</pre>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Regeln, die wir einhalten</h2>
+            <ul class="space-y-3 text-gray-600 dark:text-gray-300">
+                <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i><span><strong>Nur öffentliche Inhalte:</strong> Wir rufen ausschließlich Seiten und Dokumente ab, die ohne Anmeldung zugänglich sind. Nichtöffentliche Bereiche werden nicht angefasst.</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i><span><strong>robots.txt:</strong> Wir respektieren die Crawl-Direktiven Ihrer Website nach RFC 9309. Ein Disallow genügt, und wir bleiben fern.</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i><span><strong>Ressourcenschonend:</strong> Standardmäßig höchstens eine Anfrage alle zwei Sekunden pro Server, keine parallelen Zugriffe, Wiederholungsabrufe nur bei tatsächlichen Änderungen.</span></li>
+                <li class="flex gap-3"><i data-lucide="check" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i><span><strong>Transparent:</strong> Identifizierbarer User-Agent mit dieser Kontaktseite; auf Wunsch nennen wir Ihnen die abgerufenen Inhalte im Detail.</span></li>
+            </ul>
+        </div>
+
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Warum wir das tun</h2>
+            <p class="text-gray-600 dark:text-gray-300">
+                Ratsinformationen sind öffentliche Informationen. mandari stellt sie
+                Bürgerinnen und Bürgern zentral, barrierearm und durchsuchbar zur
+                Verfügung &mdash; als Open-Source-Projekt und als
+                OParl-konforme Schnittstelle unter
+                <a href="https://oparl.mandari.de" class="text-primary-600 dark:text-primary-400 hover:underline">oparl.mandari.de</a>.
+                Kommunen entsteht dadurch kein Aufwand; die Quelle wird auf allen
+                Detailseiten genannt und verlinkt.
+            </p>
+        </div>
+
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Kontakt &amp; Widerspruch</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                Sie betreiben ein Ratsinformationssystem und haben Fragen, möchten
+                die Abrufrate anpassen oder der Übernahme Ihrer Inhalte widersprechen?
+                Schreiben Sie uns &mdash; wir reagieren zeitnah und entfernen Inhalte
+                auf Wunsch der Kommune vollständig.
+            </p>
+            <a href="mailto:hello@mandari.de?subject=Crawler%20mandari-ingestor" class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                hello@mandari.de
+            </a>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+                Tipp: Noch besser als Scraping ist eine OParl-Schnittstelle &mdash;
+                viele RIS-Produkte bringen sie bereits mit. Gern unterstützen wir
+                bei der Aktivierung.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
