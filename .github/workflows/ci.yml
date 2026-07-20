@@ -44,3 +44,52 @@ jobs:
           assert not missing, f"Rechtstexte fehlen: {missing}"
           print(f"OK: {sorted(content)}")
           EOF
+
+      - name: StreamField-Seeds anwenden
+        run: python manage.py migrate_pages_to_streamfield
+
+      - name: Render-Smoke (alle Kernseiten liefern 200 mit Inhalt)
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          # URL -> Textbausteine, die im gerenderten HTML stehen muessen
+          checks = {
+              "/": ["Demo anfragen", "Zum RIS-Vergleich", "Ehrlich in Beta"],
+              "/produkt/": ["Mandari Insight"],
+              "/preise/": ["39,90"],
+              "/kommunen/": ["Ratsinformationssystem"],
+              "/migration/": ["Bestandsaufnahme"],
+              "/roadmap/": ["Session-Pilot"],
+              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
+              "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0"],
+              "/vergleich/mandari-vs-allris/": ["ALLRIS"],
+              "/vergleich/mandari-vs-somacos/": ["SessionNet"],
+              "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat"],
+              "/releases/": ["mandari 0.9 (Beta)"],
+              "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
+              "/trust/": ["Subprocessoren"],
+              "/transparenz/": ["Transparenzbericht"],
+              "/impressum/": ["Impressum"],
+              "/datenschutz/": ["Datenschutz"],
+              "/agb/": ["AGB"],
+              "/kontakt/": ["Kontakt"],
+              "/blog/": ["Blog"],
+          }
+          errors = []
+          for url, needles in checks.items():
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}")
+                  continue
+              body = r.content.decode("utf-8")
+              for n in needles:
+                  if n not in body:
+                      errors.append(f"{url}: '{n}' fehlt")
+          assert not errors, "Render-Smoke fehlgeschlagen: " + "; ".join(errors)
+          print(f"OK: {len(checks)} Seiten gerendert und geprueft")
+          EOF

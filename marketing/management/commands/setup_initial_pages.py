@@ -53,6 +53,63 @@ MARKETING_PAGE_META = [
         "search_description": "Öffentliche Roadmap und geplante Features.",
     },
 
+    # ── Vergleich (Übersicht + Unterseiten via "parent"-Key) ──────────
+    # Inhalte kommen aus migrate_pages_to_streamfield (_VERGLEICH_ANBIETER).
+    {
+        "title": "RIS-Vergleich",
+        "slug": "vergleich",
+        "show_in_menus": False,
+        "seo_title": "Ratsinformationssysteme im Vergleich – mandari vs. etablierte Anbieter",
+        "search_description": (
+            "mandari im sachlichen Vergleich mit Sternberg SD.NET, ALLRIS, Somacos Session "
+            "und regisafe — Open Source, Preistransparenz, OParl, Bürgerportal, Hosting."
+        ),
+    },
+    {
+        "title": "mandari vs. Sternberg SD.NET",
+        "slug": "mandari-vs-sternberg",
+        "parent": "vergleich",
+        "show_in_menus": False,
+        "seo_title": "mandari vs. Sternberg SD.NET – RIS-Vergleich",
+        "search_description": (
+            "mandari und Sternberg SD.NET im sachlichen Vergleich: Open Source, "
+            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+        ),
+    },
+    {
+        "title": "mandari vs. ALLRIS",
+        "slug": "mandari-vs-allris",
+        "parent": "vergleich",
+        "show_in_menus": False,
+        "seo_title": "mandari vs. ALLRIS (CC e-gov) – RIS-Vergleich",
+        "search_description": (
+            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: Open Source, "
+            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+        ),
+    },
+    {
+        "title": "mandari vs. Somacos Session",
+        "slug": "mandari-vs-somacos",
+        "parent": "vergleich",
+        "show_in_menus": False,
+        "seo_title": "mandari vs. Somacos Session – RIS-Vergleich",
+        "search_description": (
+            "mandari und Somacos Session im sachlichen Vergleich: Open Source, "
+            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+        ),
+    },
+    {
+        "title": "mandari vs. regisafe",
+        "slug": "mandari-vs-regisafe",
+        "parent": "vergleich",
+        "show_in_menus": False,
+        "seo_title": "mandari vs. regisafe – RIS-Vergleich",
+        "search_description": (
+            "mandari und regisafe im sachlichen Vergleich: Open Source, "
+            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+        ),
+    },
+
     # ── Vertrauen ─────────────────────────────────────────────────────
     # /sicherheit/ wurde in /trust/ integriert (komplette Doppelung)
     {
@@ -205,17 +262,30 @@ class Command(BaseCommand):
         for page_data in marketing_pages:
             slug = page_data.pop("slug")
             show_in_menus = page_data.pop("show_in_menus", True)
+            parent_slug = page_data.pop("parent", None)
 
             if MarketingPage.objects.filter(slug=slug).exists():
                 self.stdout.write(f"  {page_data['title']} existiert bereits")
                 continue
+
+            # Optionaler Parent-Slug (z.B. vergleich/mandari-vs-*) — der
+            # Parent steht in MARKETING_PAGE_META vor seinen Kindern und
+            # existiert an dieser Stelle bereits.
+            parent = home
+            if parent_slug:
+                parent = MarketingPage.objects.filter(slug=parent_slug).first()
+                if not parent:
+                    self.stderr.write(self.style.ERROR(
+                        f"  {slug}/: Parent '{parent_slug}' fehlt — übersprungen"
+                    ))
+                    continue
 
             page = MarketingPage(
                 slug=slug,
                 show_in_menus=show_in_menus,
                 **page_data,
             )
-            home.add_child(instance=page)
+            parent.add_child(instance=page)
             page.save_revision().publish()
             self.stdout.write(self.style.SUCCESS(f"  {page_data['title']} erstellt"))
 
@@ -352,6 +422,11 @@ class Command(BaseCommand):
         else:
             self.stdout.write("  Releases existiert bereits")
 
+        # ── Release-Einträge (aus get_release_definitions) ────────────────
+        # Idempotent: nur fehlende ReleasePages werden angelegt. Updates an
+        # bestehenden Releases via `refresh_seeded_page <slug> --force`.
+        self._seed_releases()
+
         # ── Reparatur: verwaiste custom_template-Verweise entfernen ──────
         # Ältere Seed-Versionen setzten custom_template auf Spezial-Templates
         # (z.B. marketing/impressum.html), die in diesem Repo nicht existieren.
@@ -376,3 +451,38 @@ class Command(BaseCommand):
         total = Page.objects.descendant_of(home).live().count()
         self.stdout.write("")
         self.stdout.write(self.style.SUCCESS(f"Seitenstruktur fertig: {total} Seiten unter /{home.slug}/"))
+
+    def _seed_releases(self):
+        """Legt fehlende ReleasePages aus get_release_definitions an (idempotent)."""
+        from datetime import date
+
+        from wagtail.blocks import StreamValue
+
+        from blog.models import ReleaseIndexPage, ReleasePage
+        from marketing.blocks import MarketingStreamBlock
+        from marketing.management.commands.migrate_pages_to_streamfield import (
+            get_release_definitions,
+        )
+
+        index = ReleaseIndexPage.objects.first()
+        if not index:
+            return
+
+        stream_block = MarketingStreamBlock()
+        for slug, definition in get_release_definitions().items():
+            if ReleasePage.objects.filter(slug=slug).exists():
+                self.stdout.write(f"  Release {slug} existiert bereits")
+                continue
+
+            meta = dict(definition["meta"])
+            release_date = date.fromisoformat(meta.pop("release_date"))
+            page = ReleasePage(
+                slug=slug,
+                release_date=release_date,
+                show_in_menus=False,
+                body=StreamValue(stream_block, definition["blocks"], is_lazy=False),
+                **meta,
+            )
+            index.add_child(instance=page)
+            page.save_revision().publish()
+            self.stdout.write(self.style.SUCCESS(f"  Release {meta['title']} erstellt"))

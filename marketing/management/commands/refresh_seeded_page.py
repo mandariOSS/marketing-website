@@ -44,6 +44,7 @@ class Command(BaseCommand):
         from marketing.management.commands.migrate_pages_to_streamfield import (
             get_legal_definitions,
             get_marketing_definitions,
+            get_release_definitions,
         )
         from marketing.models import LegalPage, MarketingPage
 
@@ -52,6 +53,7 @@ class Command(BaseCommand):
 
         marketing_defs = get_marketing_definitions()
         legal_defs = get_legal_definitions()
+        release_defs = get_release_definitions()
 
         if slug in marketing_defs:
             self._refresh_streamfield(
@@ -63,10 +65,14 @@ class Command(BaseCommand):
                 slug, legal_defs[slug], LegalPage, "body_stream",
                 MarketingStreamBlock(), force,
             )
+        elif slug in release_defs:
+            self._refresh_release(slug, release_defs[slug], force)
         elif slug in LEGAL_FILES:
             self._refresh_legal_richtext(slug, load_legal_content()[slug], LegalPage, force)
         else:
-            known = sorted(set(marketing_defs) | set(legal_defs) | set(LEGAL_FILES))
+            known = sorted(
+                set(marketing_defs) | set(legal_defs) | set(release_defs) | set(LEGAL_FILES)
+            )
             raise CommandError(
                 f"Keine Seed-Definition für Slug '{slug}' gefunden.\n"
                 f"Verfügbare Slugs: {', '.join(known)}"
@@ -109,6 +115,41 @@ class Command(BaseCommand):
         page.save_revision().publish()
         self.stdout.write(self.style.SUCCESS(
             f"  ✓ {slug}/ neu geseedet ({len(blocks_data)} Blöcke, veröffentlicht)"
+        ))
+
+    # ── Release-Seiten (blog.ReleasePage — Meta + body) ─────────────────
+
+    def _refresh_release(self, slug, definition, force):
+        from datetime import date
+
+        from wagtail.blocks import StreamValue
+
+        from blog.models import ReleasePage
+        from marketing.blocks import MarketingStreamBlock
+
+        page = ReleasePage.objects.filter(slug=slug).first()
+        if not page:
+            raise CommandError(
+                f"ReleasePage mit Slug '{slug}' existiert nicht in der DB — "
+                "zuerst `python manage.py setup_initial_pages` ausführen."
+            )
+
+        if page.body and len(list(page.body)) > 0 and not force:
+            self.stdout.write(self.style.WARNING(
+                f"  ◯ {slug}/ hat bereits {len(list(page.body))} Blöcke — "
+                "nutze --force, um die Seed-Definition erneut anzuwenden."
+            ))
+            return
+
+        meta = dict(definition["meta"])
+        page.release_date = date.fromisoformat(meta.pop("release_date"))
+        for field, value in meta.items():
+            setattr(page, field, value)
+        page.body = StreamValue(MarketingStreamBlock(), definition["blocks"], is_lazy=False)
+        page.save()
+        page.save_revision().publish()
+        self.stdout.write(self.style.SUCCESS(
+            f"  ✓ Release {slug}/ neu geseedet ({len(definition['blocks'])} Blöcke, veröffentlicht)"
         ))
 
     # ── Rechtstexte aus .legal-content/ (LegalPage.body, RichText) ──────

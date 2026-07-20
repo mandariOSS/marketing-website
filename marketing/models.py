@@ -65,8 +65,10 @@ class MarketingPage(Page):
         ),
     ]
 
-    parent_page_types = ["HomePage"]
-    subpage_types = []
+    # MarketingPage darf MarketingPage-Kinder haben — genutzt für die
+    # Vergleichsseiten unter /vergleich/mandari-vs-<anbieter>/.
+    parent_page_types = ["HomePage", "MarketingPage"]
+    subpage_types = ["MarketingPage"]
 
     def get_template(self, request, *args, **kwargs):
         if self.custom_template:

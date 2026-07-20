@@ -74,6 +74,291 @@ def stat(value, label, color="primary"):
 
 
 # ════════════════════════════════════════════════════════════════════════
+#  VERGLEICHSSEITEN — mandari vs. etablierte RIS-Anbieter
+#
+#  Rechtlicher Rahmen (vergleichende Werbung, § 6 UWG): ausschließlich
+#  objektiv nachprüfbare, öffentlich belegbare Aussagen; sachlicher Ton,
+#  keine Herabsetzung; fehlende Angaben werden als "keine öffentliche
+#  Angabe (Stand Juli 2026)" gekennzeichnet, NIE als Behauptung über den
+#  Anbieter. Quellen: Websites der Anbieter und oparl.org, abgerufen im
+#  Juli 2026. Korrekturhinweise an hello@mandari.de werden umgehend
+#  eingearbeitet.
+# ════════════════════════════════════════════════════════════════════════
+
+_VERGLEICH_STAND = "Juli 2026"
+
+# mandari-Seite der Vergleichsdimensionen — überall identisch, ehrlich inkl. Beta-Status.
+_MANDARI_DIMENSIONS = {
+    "open_source": "Ja — komplette Plattform unter AGPL-3.0, Quellcode öffentlich auf GitHub.",
+    "preis": "Preise öffentlich: Insight kostenlos, Work 39,90 €/Monat inkl. MwSt. (Pauschale ohne Nutzerlimit), Session individuell.",
+    "oparl": "OParl-Import aus bestehenden RIS und eigene OParl-1.1-API inklusive Tombstones (oparl.mandari.de).",
+    "portal": "Bürgerportal mandari Insight immer inklusive — kostenlos, ohne Anmeldung, ohne Tracking.",
+    "fraktion": "Eigener Fraktions-Arbeitsbereich (mandari work) mit Antragsdatenbank, Sitzungsvorbereitung und Gastzugängen.",
+    "kollab": "Kollaborativer Echtzeit-Editor mit Versionshistorie und Briefkopf-Export (Teil von 0.9 Beta).",
+    "hosting": "Managed Hosting in deutschen Rechenzentren (Hetzner) oder vollständiges Self-Hosting — freie Wahl.",
+    "vertrag": "mandari work: 3 Monate Mindestlaufzeit, danach monatlich kündbar; Online-Kündigung nach § 312k BGB.",
+}
+
+_DIMENSION_META = [
+    ("open_source", "Open Source", "unlock", "green"),
+    ("preis", "Preistransparenz", "receipt-text", "primary"),
+    ("oparl", "OParl-Standard", "plug", "blue"),
+    ("portal", "Bürgerportal", "eye", "green"),
+    ("fraktion", "Fraktions-Arbeitsbereich", "briefcase", "primary"),
+    ("kollab", "Kollaborative Bearbeitung", "users", "teal"),
+    ("hosting", "Hosting-Modell", "server", "blue"),
+    ("vertrag", "Vertragsbindung", "file-signature", "amber"),
+]
+
+# Öffentlich belegbare Fakten je Anbieter (Quellen: Anbieter-Websites + oparl.org,
+# abgerufen im Juli 2026). Eigenangaben der Anbieter sind als solche gekennzeichnet.
+_VERGLEICH_ANBIETER = {
+    "mandari-vs-sternberg": {
+        "kurzname": "Sternberg SD.NET",
+        "anbieter": "STERNBERG Software GmbH & Co. KG (Bielefeld)",
+        "produkt": "SD.NET (Sitzungsmanagement), Bürgerportal SD.NET RIM (ratsinfomanagement.net), Sitzungs-App „RICH“",
+        "kunden": "Über 900 Kunden (Eigenangabe; darunter auch Organisationen, die keine Kommunen sind).",
+        "website": "https://www.sitzungsdienst.net/",
+        "dims": {
+            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
+            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
+            "oparl": "Ja — Sternberg gehört zu den RIS-Anbietern mit OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben).",
+            "portal": "Bürgerinformation über SD.NET RIM (ratsinfomanagement.net), Teil der Produktfamilie.",
+            "fraktion": "Gremien- und Mandatsarbeit über die Sitzungs-App „RICH“ (Eigenangabe).",
+            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
+            "hosting": "Cloud-Angebot „S24“ aus Trusted-Cloud-zertifizierten Partner-Rechenzentren (Eigenangabe).",
+            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        },
+    },
+    "mandari-vs-allris": {
+        "kurzname": "ALLRIS (CC e-gov)",
+        "anbieter": "CC e-gov GmbH (Hamburg)",
+        "produkt": "ALLRIS (Sitzungsmanagement) mit Bürgerinformationssystem ALLRIS net",
+        "kunden": "Über 600 Kommunen (Eigenangabe).",
+        "website": "https://www.cc-egov.de/",
+        "dims": {
+            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
+            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
+            "oparl": "Ja — ALLRIS bietet eine OParl-Schnittstelle an (Quellen: oparl.org, Herstellerangaben).",
+            "portal": "Bürgerinformationssystem ALLRIS net, Teil der Produktfamilie.",
+            "fraktion": "Gremienarbeit und Mandatsträger-Zugänge sind Teil des Produkts (Eigenangabe).",
+            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
+            "hosting": "Hosting u. a. im Rechenzentrum Düsseldorf sowie über STACKIT (Eigenangabe).",
+            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        },
+    },
+    "mandari-vs-somacos": {
+        "kurzname": "Somacos Session",
+        "anbieter": "SOMACOS GmbH & Co. KG (Salzwedel)",
+        "produkt": "Session (Sitzungsmanagement), Bürgerinformationssystem SessionNet, Sitzungs-App „Mandatos“",
+        "kunden": "Über 2.200 Kunden (Eigenangabe; darunter neben Kommunen z. B. auch Banken und andere Organisationen).",
+        "website": "https://www.somacos.de/",
+        "dims": {
+            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
+            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
+            "oparl": "Ja — Somacos gehört zu den RIS-Anbietern mit OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben).",
+            "portal": "Bürgerinformationssystem SessionNet, Teil der Produktfamilie.",
+            "fraktion": "Gremien- und Mandatsarbeit über die App „Mandatos“ (Eigenangabe).",
+            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
+            "hosting": "SaaS-Angebot „Sessionasp“ aus BSI-zertifiziertem Rechenzentrum (krz; Eigenangabe).",
+            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        },
+    },
+    "mandari-vs-regisafe": {
+        "kurzname": "regisafe",
+        "anbieter": "comundus regisafe GmbH (Waiblingen)",
+        "produkt": "regisafe Sitzungsmanagement / Ratsinformationssystem mit Bürgerinfoportal",
+        "kunden": "Über 500 Verwaltungen nutzen das regisafe-Sitzungsmanagement (Eigenangabe).",
+        "website": "https://www.regisafe.de/",
+        "fairness_extra": (
+            " Positiv hervorzuheben: Für das regisafe-Ratsinformationssystem liegt ein "
+            "BITV-Zertifikat zur Barrierefreiheit vor (Oktober 2024, Eigenangabe) — ein "
+            "öffentlich geprüfter Nachweis, den mandari derzeit nicht hat."
+        ),
+        "dims": {
+            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
+            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
+            "oparl": "Keine öffentliche Angabe zu einer OParl-Schnittstelle auffindbar (Stand Juli 2026).",
+            "portal": "Bürgerinfoportal als Bestandteil des Sitzungsmanagements (Eigenangabe).",
+            "fraktion": "Gremienarbeit und Sitzungsvorbereitung sind Teil des Produkts (Eigenangabe).",
+            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
+            "hosting": "Cloud-/SaaS-Betrieb wird angeboten (Eigenangabe).",
+            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        },
+    },
+}
+
+
+def _vergleich_disclaimer(name):
+    """Rechtlich saubere Fußnote für jede Vergleichsseite."""
+    return ("disclaimer_box", {
+        "icon": "scale", "color": "gray",
+        "body": (
+            "<p><strong>Hinweis zu diesem Vergleich:</strong> Alle Aussagen über "
+            f"{name} beruhen ausschließlich auf öffentlich verfügbaren Informationen "
+            "(Website des Anbieters, oparl.org), abgerufen im Juli 2026. Wo keine "
+            "öffentliche Angabe existiert, kennzeichnen wir das ausdrücklich als "
+            "„keine öffentliche Angabe“ — das ist keine Aussage über das Produkt selbst. "
+            "Alle genannten Marken und Produktnamen sind Eigentum ihrer jeweiligen "
+            "Inhaber. Fehler oder Aktualisierungen bitte an "
+            "<a href=\"mailto:hello@mandari.de\">hello@mandari.de</a> — wir korrigieren umgehend.</p>"
+        ),
+    })
+
+
+def _build_vergleich_page(slug):
+    """Baut die Blockliste einer mandari-vs-X-Seite aus dem Fakten-Dict."""
+    v = _VERGLEICH_ANBIETER[slug]
+    name = v["kurzname"]
+
+    dim_cards = []
+    for key, titel, icon, color in _DIMENSION_META:
+        dim_cards.append(card(
+            color=color, icon=icon, title=titel,
+            bullets=[bullet("mandari: " + _MANDARI_DIMENSIONS[key], "check"),
+                     bullet(f"{name}: " + v["dims"][key], "circle-dot")],
+        ))
+
+    return [
+        ("hero", {
+            "badge_text": f"Sachlicher Vergleich · Stand {_VERGLEICH_STAND}",
+            "badge_icon": "scale", "badge_color": "primary",
+            "title": "mandari vs.", "title_highlight": name,
+            "subline": (
+                f"Sie prüfen, welches Ratsinformationssystem zu Ihrer Verwaltung oder Fraktion passt? "
+                f"Hier vergleichen wir mandari und {name} entlang von acht Kriterien — sachlich, "
+                "auf Basis öffentlich verfügbarer Informationen und mit klar gekennzeichneten Lücken."
+            ),
+            "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9) — auch das gehört zu einem ehrlichen Vergleich.",
+            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
+                     cta("Alle Vergleiche", "/vergleich/", "scale", "secondary"),
+                     cta("Migration ansehen", "/migration/", "move-right", "outline")],
+            "background_color": "primary",
+        }),
+        _vergleich_disclaimer(name),
+        ("two_column_use_case", {
+            "header": hdr(badge_text="Die beiden Systeme", badge_icon="layout-grid",
+                          title=f"mandari und {name} im Überblick", align="center",
+                          subline="Zwei unterschiedliche Ansätze — hier die Eckdaten beider Anbieter."),
+            "left_card": card(color="primary", icon="sparkles", title="mandari",
+                              subtitle="Open-Source-Plattform · Beta 0.9",
+                              description="Drei Module (Insight, Work, Session) auf einer offenen Plattform — Open Source, deutsche Server, öffentliche Preise.",
+                              bullets=[bullet("Quellcode öffentlich (AGPL-3.0)"),
+                                       bullet("Bürgerportal immer inklusive"),
+                                       bullet("Beta-Phase: jung, aktiv entwickelt, Roadmap öffentlich")],
+                              cta_label="Produkt ansehen", cta_url="/produkt/", cta_icon="arrow-right"),
+            "right_card": card(color="gray", icon="building-2", title=name,
+                               subtitle=v["anbieter"],
+                               description=v["produkt"] + ".",
+                               bullets=[bullet(v["kunden"], "users"),
+                                        bullet("Etabliertes Produkt mit langjähriger Praxis in Verwaltungen", "history"),
+                                        bullet("Details auf der Website des Anbieters", "external-link")],
+                               cta_label="Website des Anbieters", cta_url=v["website"], cta_icon="external-link"),
+        }),
+        ("mandari_cards", {
+            "header": hdr(badge_text="Acht Kriterien", badge_icon="list-checks",
+                          title="Der Vergleich im Detail", align="center",
+                          subline="Jedes Kriterium mit beiden Seiten — Eigenangaben der Anbieter sind als solche gekennzeichnet."),
+            "columns": "4", "background": "gray",
+            "cards": dim_cards[:6],
+        }),
+        ("mandari_cards", {
+            "columns": "4", "background": "gray",
+            "cards": dim_cards[6:],
+        }),
+        ("disclaimer_box", {
+            "icon": "flask-conical", "color": "amber",
+            "body": (
+                "<p><strong>Fairerweise:</strong> " + name + " ist ein etabliertes Produkt mit "
+                "langjähriger Praxis im Verwaltungsalltag — diesen Erfahrungsvorsprung hat mandari "
+                "als Beta-Software (Version 0.9) nicht. Dafür bietet mandari Offenheit, die es im "
+                "RIS-Markt bisher selten gibt: öffentlicher Quellcode, öffentliche Preise, "
+                "öffentliche Roadmap und ein kostenloses Bürgerportal."
+                + v.get("fairness_extra", "") + "</p>"
+            ),
+        }),
+        ("gradient_cta", {
+            "title": "Selbst vergleichen ist besser.",
+            "subline": "Sehen Sie sich mandari im Bürgerportal live an oder vereinbaren Sie eine Demo — unverbindlich und ohne Vertriebsdruck.",
+            "ctas": [cta("Demo anfragen", "/kontakt/?subject=Demo-RIS-Vergleich", "mail", "primary"),
+                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline"),
+                     cta("Migration vom Alt-RIS", "/migration/", "move-right", "outline")],
+            "gradient_from": "primary",
+        }),
+    ]
+
+
+def _build_vergleich_uebersicht():
+    """Übersichtsseite /vergleich/ mit Links auf alle Einzelvergleiche."""
+    vendor_cards = []
+    colors = ["primary", "blue", "teal", "amber"]
+    for i, (slug, v) in enumerate(_VERGLEICH_ANBIETER.items()):
+        vendor_cards.append(card(
+            color=colors[i % len(colors)], icon="scale",
+            title=f"mandari vs. {v['kurzname']}",
+            subtitle=v["anbieter"],
+            description=v["produkt"] + ".",
+            cta_label="Zum Vergleich", cta_url=f"/vergleich/{slug}/", cta_icon="arrow-right",
+        ))
+
+    return [
+        ("hero", {
+            "badge_text": f"RIS-Vergleich · Stand {_VERGLEICH_STAND}", "badge_icon": "scale", "badge_color": "primary",
+            "title": "mandari im Vergleich", "title_highlight": "mit etablierten RIS-Anbietern",
+            "subline": (
+                "Wer ein Ratsinformationssystem auswählt, vergleicht — und das sollte einfach sein. "
+                "Hier stellen wir mandari den etablierten Anbietern gegenüber: sachlich, mit acht "
+                "klaren Kriterien und ausschließlich auf Basis öffentlich verfügbarer Informationen."
+            ),
+            "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9). Wir vergleichen ehrlich — inklusive der Punkte, in denen etablierte Anbieter vorn liegen.",
+            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
+                     cta("Migration ansehen", "/migration/", "move-right", "outline")],
+            "background_color": "primary",
+        }),
+        ("trust_banner", {"color": "primary", "items": [
+            trust_item("list-checks", "8 Kriterien", "pro Vergleich"),
+            trust_item("file-search", "Nur öffentliche", "Quellen"),
+            trust_item("scale", "Sachlich", "ohne Herabsetzung"),
+            trust_item("mail-check", "Korrekturen", "an hello@mandari.de"),
+        ]}),
+        ("mandari_cards", {
+            "header": hdr(badge_text="Vier Vergleiche", badge_icon="layout-grid",
+                          title="Anbieter auswählen", align="center",
+                          subline="Alle Marken und Produktnamen sind Eigentum ihrer jeweiligen Inhaber."),
+            "columns": "4", "background": "white",
+            "cards": vendor_cards,
+        }),
+        ("richtext_section", {
+            "header": hdr(badge_text="Methodik", badge_icon="microscope", badge_color="gray",
+                          title="Wonach wir vergleichen"),
+            "background": "gray",
+            "body": (
+                "<p>Jeder Vergleich betrachtet dieselben acht Kriterien: "
+                "<strong>Open Source</strong>, <strong>Preistransparenz</strong>, "
+                "<strong>OParl-Standard</strong>, <strong>Bürgerportal</strong>, "
+                "<strong>Fraktions-Arbeitsbereich</strong>, <strong>kollaborative Bearbeitung</strong>, "
+                "<strong>Hosting-Modell</strong> und <strong>Vertragsbindung</strong>.</p>"
+                "<p>Grundlage sind ausschließlich öffentlich verfügbare Informationen — die Websites "
+                "der Anbieter und die Anbieterliste des OParl-Standards (oparl.org), abgerufen im "
+                "Juli 2026. Eigenangaben der Anbieter (z. B. Kundenzahlen) kennzeichnen wir als solche. "
+                "Wo keine öffentliche Angabe existiert, schreiben wir genau das — und behaupten nichts. "
+                "Eine Feststellung vorweg: Keiner der verglichenen Anbieter veröffentlicht eine "
+                "Preisliste (Stand Juli 2026); mandari tut es.</p>"
+            ),
+        }),
+        _vergleich_disclaimer("die verglichenen Anbieter"),
+        ("gradient_cta", {
+            "title": "Die beste Entscheidung ist eine informierte.",
+            "subline": "Sprechen Sie mit uns über Ihre Anforderungen — wir sagen Ihnen auch ehrlich, wenn mandari (noch) nicht passt.",
+            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
+                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline"),
+                     cta("Preise ansehen", "/preise/", "credit-card", "outline")],
+            "gradient_from": "primary",
+        }),
+    ]
+
+
+# ════════════════════════════════════════════════════════════════════════
 #  PAGE-DEFINITIONEN — pro Slug eine Liste von (block_type, value)-Tupeln
 # ════════════════════════════════════════════════════════════════════════
 
@@ -90,7 +375,7 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "Transparenzbericht · jährlich", "badge_icon": "eye", "badge_color": "primary",
                 "title": "Transparenzbericht", "title_highlight": "2026",
                 "subline": "Was andere SaaS gerne verstecken, legen wir offen: Behördenanfragen, Sicherheitsvorfälle, Finanzlage, Hosting-Realität, Open-Source-Beiträge.",
-                "subline_secondary": "Berichtszeitraum: 1. Januar bis 31. Dezember 2026 · Veröffentlicht: 26. April 2026 · Nächste Aktualisierung: Juli 2026",
+                "subline_secondary": "Berichtszeitraum: 1. Januar bis 31. Dezember 2026 · Veröffentlicht: 26. April 2026 · Aktualisiert: 20. Juli 2026 · Nächste Aktualisierung: Oktober 2026",
                 "ctas": [], "background_color": "primary",
             }),
             ("trust_banner", {"color": "primary", "items": [
@@ -108,7 +393,7 @@ def get_marketing_definitions() -> dict:
                           stat("0", "Zivilrechtlich", "blue"), stat("0", "Datenherausgaben", "blue")],
             }),
             ("warrant_canary", {
-                "date": "26.04.2026",
+                "date": "20.07.2026",
                 "body": "<p>Mandari wurde nicht durch eine Geheimhalteanordnung (z.&nbsp;B. nach § 95 GWB oder § 100b StPO) verpflichtet, Auskünfte unter Geheimhaltung zu erteilen.</p><p>Diese Erklärung wird vierteljährlich aktualisiert. Sollte sie verschwinden oder veralten, interpretiere das entsprechend.</p>",
             }),
             ("stats_grid", {
@@ -125,7 +410,7 @@ def get_marketing_definitions() -> dict:
                               subline="Anonymisierte Aggregate, keine individuellen Profile, keine Tracker."),
                 "columns": "4", "border_color": "primary",
                 "items": [stat("0", "Pilot-Kommunen live", "green"), stat("~12", "Erstgespräche", "amber"),
-                          stat("~3 k", "Insight-Aufrufe / Mon", "primary"), stat("2", "OParl-Quellen", "blue")],
+                          stat("~3 k", "Insight-Aufrufe / Mon", "primary"), stat("8", "OParl-Quellen aktiv", "blue")],
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "amber",
@@ -172,7 +457,7 @@ def get_marketing_definitions() -> dict:
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
-                "body": "<p><strong>Ehrlich gesagt:</strong> Spenden sind aktuell <em>nicht</em> steuerlich absetzbar, da Mandari als Einzelunternehmen aufgestellt ist. Eine Überführung in eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V., Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir für 2027.</p>",
+                "body": "<p><strong>Ehrlich gesagt:</strong> Spenden sind aktuell <em>nicht</em> steuerlich absetzbar, da mandari noch keine gemeinnützige Trägerstruktur hat. Eine Überführung in eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V., Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir für 2027.</p>",
             }),
             ("gradient_cta", {
                 "title": "Vermisst du eine Zahl?",
@@ -364,8 +649,8 @@ def get_marketing_definitions() -> dict:
                     card(color="green", icon="eye", title="Mandari Insight", subtitle="Bürger:innen-Portal · Kostenlos",
                          description="Transparenter Zugang zu Ratsinformationen — ohne Anmeldung, ohne Tracker.",
                          bullets=[bullet("Einblick in Anträge & Beschlüsse"), bullet("Volltextsuche über alle Dokumente"),
-                                  bullet("Geografische Karte (geplant)"), bullet("Abstimmungsverhalten einsehen"),
-                                  bullet("KI-Zusammenfassungen")],
+                                  bullet("Geo-Verortung mit Karte & Nachbarschaftssuche"), bullet("Abstimmungsverhalten einsehen"),
+                                  bullet("KI-Zusammenfassungen (geplant)")],
                          badge="Live"),
                     card(color="primary", icon="briefcase", title="Mandari Work", subtitle="Fraktions-Plattform · 39,90 €/Mon inkl. MwSt.",
                          description="Professionelle Kollaboration für das gesamte Team — pauschal pro Organisation, ohne Nutzer-Limit.",
@@ -403,11 +688,11 @@ def get_marketing_definitions() -> dict:
                                             bullet("Kein Wechsel des RIS nötig", "check-circle")]),
             }),
             ("gradient_cta", {
-                "title": "Überzeugen Sie sich selbst",
-                "subline": "Vereinbaren Sie eine kostenlose Demo und sehen Sie Mandari in Aktion. Alle Produkte sind zu 100 % Open Source.",
-                "ctas": [cta("Jetzt Demo anfragen", "/kontakt/", "mail", "primary"),
+                "title": "Überzeugt euch selbst",
+                "subline": "Vereinbart eine kostenlose Demo und seht Mandari in Aktion. Alle Produkte sind zu 100 % Open Source — und den ehrlichen Vergleich mit anderen RIS-Anbietern gibt es gleich mit.",
+                "ctas": [cta("Jetzt Demo anfragen", "/kontakt/?subject=Demo", "mail", "primary"),
                          cta("Work jetzt buchen", "https://portal.mandari.de/buchen/", "zap", "outline"),
-                         cta("Open Source", "/open-source/", "github", "outline")],
+                         cta("RIS-Vergleich ansehen", "/vergleich/", "scale", "outline")],
                 "gradient_from": "primary",
             }),
         ],
@@ -605,7 +890,7 @@ def get_marketing_definitions() -> dict:
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
-                "body": "<p><strong>Aktueller Stand:</strong> Mandari ist als Einzelunternehmen aufgestellt, Spenden sind aktuell <em>nicht</em> steuerlich absetzbar. Die Überführung in eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V., Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir, sobald die Pilot-Phase Fahrt aufnimmt. Transparenz hat Vorrang.</p>",
+                "body": "<p><strong>Aktueller Stand:</strong> mandari hat noch keine gemeinnützige Trägerstruktur, Spenden sind aktuell <em>nicht</em> steuerlich absetzbar. Die Überführung in eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V., Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir, sobald die Pilot-Phase Fahrt aufnimmt. Transparenz hat Vorrang.</p>",
             }),
             ("mandari_cards", {
                 "header": hdr(badge_text="Worauf du dich verlassen kannst", badge_icon="shield-check",
@@ -972,7 +1257,7 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "Pflichterklärung nach § 12 BFSG", "badge_icon": "accessibility", "badge_color": "primary",
                 "title": "Erklärung zur", "title_highlight": "Barrierefreiheit",
                 "subline": "Mandari ist bemüht, seine Website und alle Anwendungen barrierefrei zugänglich zu machen, nach den Maßgaben des BGG und der BITV 2.0.",
-                "subline_secondary": "Diese Erklärung gilt für die Website mandari.de sowie alle Subdomains. Stand: 26. April 2026.",
+                "subline_secondary": "Diese Erklärung gilt für die Website mandari.de sowie alle Subdomains. Stand: 20. Juli 2026 · Letzte Prüfung: April 2026.",
                 "ctas": [], "background_color": "primary",
             }),
             ("trust_banner", {"color": "amber", "items": [
@@ -997,7 +1282,7 @@ def get_marketing_definitions() -> dict:
                                   bullet("Komplexe Filter: Tastatur-Verbesserungen", "alert-triangle"),
                                   bullet("Lucide-Icons: bessere ARIA-Labels nötig", "alert-triangle"),
                                   bullet("PDF-Dokumente teilweise nicht maschinenlesbar", "alert-triangle"),
-                                  bullet("Leichte Sprache & Gebärdensprache geplant Q3/2026", "alert-triangle")]),
+                                  bullet("Leichte Sprache & Gebärdensprache in Planung", "alert-triangle")]),
                     card(color="rose", icon="x-circle", title="Ausnahmen", subtitle="Was wir nicht beeinflussen können",
                          bullets=[bullet("OParl-Quelldokumente der Kommunen", "x"),
                                   bullet("Eingebettete Inhalte Dritter (OSM-Tiles)", "x"),
@@ -1060,7 +1345,7 @@ def get_marketing_definitions() -> dict:
                 ],
             }),
             ("gradient_cta", {
-                "title": "Machen Sie mit!",
+                "title": "Mach mit!",
                 "subline": "Ob als Entwickler:in, Kommune oder Bürger:in — Mandari lebt von der Community.",
                 "ctas": [cta("GitHub Repository", "https://github.com/mandariOSS/mandari", "github", "primary"),
                          cta("Mitmachen", "/mitmachen/", "heart", "outline")],
@@ -1095,7 +1380,7 @@ def get_marketing_definitions() -> dict:
                 "columns": "4", "background": "white",
                 "steps": [
                     step("01", "primary", "search", "Bestandsaufnahme",
-                         "Wir schauen uns dein Alt-RIS an: OParl-Verfügbarkeit, Datenmenge, Sonderfelder.", "1–2 Wochen"),
+                         "Wir schauen uns Ihr Alt-RIS an: OParl-Verfügbarkeit, Datenmenge, Sonderfelder.", "1–2 Wochen"),
                     step("02", "green", "git-merge", "Mapping & Test",
                          "Wir bauen den Mapping-Layer und importieren in eine Test-Instanz.", "2–4 Wochen"),
                     step("03", "amber", "users", "Schulung & Parallelbetrieb",
@@ -1110,7 +1395,7 @@ def get_marketing_definitions() -> dict:
                               subline="Ehrliche Antwort statt „alles, kein Problem\": Der OParl-Standard trägt das meiste, der Rest ist Handarbeit.",
                               anchor_id="scope"),
                 "left_card": card(color="green", icon="check-circle", title="Das kommt mit", subtitle="Über den OParl-Standard",
-                                  description="Alles, was euer Alt-RIS über OParl bereitstellt, übernehmen wir strukturiert und verlustfrei:",
+                                  description="Alles, was Ihr Alt-RIS über OParl bereitstellt, übernehmen wir strukturiert und verlustfrei:",
                                   bullets=[bullet("Sitzungen, Tagesordnungen & TOPs", "calendar-clock"),
                                            bullet("Vorlagen, Drucksachen & Beratungsfolgen", "file-text"),
                                            bullet("Gremien, Personen & Mitgliedschaften", "users"),
@@ -1129,7 +1414,7 @@ def get_marketing_definitions() -> dict:
             }),
             ("gradient_cta", {
                 "title": "Bereit für ein Erstgespräch?",
-                "subline": "30 Minuten reichen, um zu klären: Welches Alt-RIS, welche Datenmenge, welche Pilot-Konditionen passen zu eurer Situation. Unverbindlich.",
+                "subline": "30 Minuten reichen, um zu klären: Welches Alt-RIS, welche Datenmenge, welche Pilot-Konditionen passen zu Ihrer Situation. Unverbindlich.",
                 "ctas": [cta("Migrations-Gespräch", "/kontakt/?subject=Migration-Beratung", "message-square", "primary"),
                          cta("30-Min-Call buchen", "/kontakt/#termin-buchen", "calendar", "outline"),
                          cta("Preise sehen", "/preise/", "credit-card", "outline")],
@@ -1230,7 +1515,7 @@ def get_marketing_definitions() -> dict:
                 "subline": "In einem unverbindlichen Erstgespräch klären wir Anbindbarkeit, Zeitplan und Konditionen — kostenlos, ohne Vertriebsdruck.",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden", "calendar", "primary"),
                          cta("Migration ansehen", "/migration/", "move-right", "outline"),
-                         cta("Preise ansehen", "/preise/", "credit-card", "outline")],
+                         cta("RIS-Vergleich ansehen", "/vergleich/", "scale", "outline")],
                 "gradient_from": "primary",
             }),
         ],
@@ -1384,41 +1669,58 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "Was als Nächstes kommt", "badge_icon": "map", "badge_color": "primary",
                 "title": "Mandari", "title_highlight": "Roadmap",
                 "subline": "Was wir gerade bauen, was als Nächstes kommt, und wo ihr Einfluss nehmen könnt. Ehrlich aktualisiert nach jedem Quartal.",
-                "subline_secondary": "Stand: Q1/2026 · Beta-Phase",
+                "subline_secondary": "Stand: Juli 2026 · mandari 0.9 (Beta) veröffentlicht",
                 "ctas": [cta("Issue vorschlagen", "https://github.com/mandariOSS/mandari/issues/new?template=feature_request.md", "github", "primary"),
                          cta("Releases ansehen", "/releases/", "tag", "secondary")],
                 "background_color": "primary",
             }),
             ("trust_banner", {"color": "primary", "items": [
-                trust_item("loader", "Q1/2026", "in Arbeit"),
-                trust_item("calendar", "Q2/2026", "geplant"),
-                trust_item("calendar-check", "Q3/2026", "Session-Pilot"),
-                trust_item("rocket", "2027", "Allgemeine Verfügbarkeit"),
+                trust_item("tag", "0.9 Beta", "veröffentlicht (Juli 2026)"),
+                trust_item("loader", "Q3/2026", "in Arbeit"),
+                trust_item("calendar-check", "Q3–Q4/2026", "Session-Pilot"),
+                trust_item("rocket", "2027", "Version 1.0"),
             ]}),
             ("mandari_cards", {
-                "header": hdr(badge_text="Aktuell auf dem Tisch", badge_icon="hammer",
-                              title="Was wir gerade bauen",
-                              subline="Konkrete Themen aus den nächsten Wochen."),
+                "header": hdr(badge_text="Gerade veröffentlicht", badge_icon="tag", badge_color="green",
+                              title="mandari 0.9 (Beta) ist da",
+                              subline="Am 19. Juli 2026 erschienen: der erste öffentlich versionierte Stand der Plattform — alle Details in den Release-Notes."),
                 "columns": "3", "background": "white",
                 "cards": [
+                    card(color="green", icon="eye", title="Drei Portale in Beta",
+                         description="Insight (Bürgerportal), Work (Fraktions-Arbeitsbereich) und Session (Verwaltungs-RIS) — produktiv nutzbar, wird bis zur 1.0 weiter verfeinert.",
+                         cta_label="Release-Notes lesen", cta_url="/releases/", cta_icon="tag"),
+                    card(color="primary", icon="plug", title="Eigene OParl-API",
+                         description="mandari stellt aggregierte Daten selbst OParl-1.1-konform bereit — inklusive Tombstones für zurückgezogene Objekte.",
+                         cta_label="API ansehen", cta_url="https://oparl.mandari.de/oparl/v1/system", cta_icon="external-link"),
+                    card(color="blue", icon="map-pin", title="Geo-Verortung & Suche",
+                         description="Vorgänge werden auf der Karte verortet, die Volltextsuche versteht deutsche Synonyme und Tippfehler (Elasticsearch).",
+                         cta_label="Im Portal ausprobieren", cta_url="/insight/", cta_icon="eye"),
+                ],
+            }),
+            ("mandari_cards", {
+                "header": hdr(badge_text="Aktuell auf dem Tisch", badge_icon="hammer",
+                              title="Was als Nächstes kommt",
+                              subline="Konkrete Themen für die nächsten Monate — ohne Marketing-Versprechen, mit ehrlichen Zeiträumen."),
+                "columns": "3", "background": "gray",
+                "cards": [
+                    card(color="blue", icon="building-2", title="Session-Pilotbetrieb", subtitle="Verwaltungs-RIS",
+                         description="Die ersten Pilot-Kommunen nehmen mandari Session in Betrieb — Sitzungsmanagement, Vorlagen, Protokolle im Verwaltungsalltag.",
+                         badge="Q3–Q4/2026"),
                     card(color="primary", icon="plug", title="OParl-Adapter erweitern", subtitle="Backend",
-                         description="Politik-Digital, Sternberg, More! — jeder Anbieter hat Eigenheiten, die wir kapseln wollen.",
+                         description="Jeder RIS-Anbieter hat Eigenheiten in seiner OParl-Schnittstelle — wir kapseln sie, damit mehr Kommunen anbindbar werden.",
                          badge="in Arbeit"),
-                    card(color="amber", icon="languages", title="i18n-Grundgerüst Englisch", subtitle="Setup",
-                         description="Django-i18n aufsetzen, Strings extrahieren, Übersetzer-Workflow entscheiden.",
-                         badge="Q1/2026"),
-                    card(color="rose", icon="smartphone", title="Mobile Layout Insight-Karten", subtitle="Frontend · Design",
-                         description="Map-Layer und Filter brauchen mobil mehr Platz — Bottom-Sheet statt Sidebar.",
-                         badge="Q1/2026"),
-                    card(color="blue", icon="book-open", title="Self-Hosting-Guide Hetzner", subtitle="Docs",
-                         description="Schritt-für-Schritt: Server bestellen, Docker-Compose deployen, TLS via Caddy.",
-                         badge="Q2/2026"),
-                    card(color="teal", icon="search", title="Synonym-Dictionary", subtitle="Search · Backend",
-                         description="„Bauleitplanung\" ↔ „B-Plan\", „Aufstellungsbeschluss\" — Meilisearch lernt Verwaltungssprache.",
-                         badge="Q2/2026"),
+                    card(color="blue", icon="book-open", title="Self-Hosting-Guide", subtitle="Docs",
+                         description="Schritt-für-Schritt: Server bestellen, Docker-Compose deployen, TLS via Caddy — für Kommunen, die selbst hosten wollen.",
+                         badge="Q3/2026"),
                     card(color="green", icon="accessibility", title="WCAG-AA-Audit", subtitle="A11y · Frontend",
                          description="Screenreader-Test, Tastaturnavigation, Kontrast-Check — wir wollen BITV 2.0 sauber erfüllen.",
-                         badge="Q3/2026"),
+                         badge="Q4/2026"),
+                    card(color="amber", icon="languages", title="i18n-Grundgerüst Englisch", subtitle="Setup",
+                         description="Django-i18n aufsetzen, Strings extrahieren, Übersetzer-Workflow entscheiden.",
+                         badge="geplant"),
+                    card(color="rose", icon="rocket", title="Version 1.0", subtitle="Allgemeine Verfügbarkeit",
+                         description="Externes Security-Audit, stabile Schnittstellen, verlässliche SLAs — der Schritt aus der Beta.",
+                         badge="2027"),
                 ],
             }),
             ("gradient_cta", {
@@ -1429,6 +1731,13 @@ def get_marketing_definitions() -> dict:
                 "gradient_from": "primary",
             }),
         ],
+
+        # ════════════════════════════════════════════════════════════
+        # /vergleich/ + /vergleich/mandari-vs-<anbieter>/ — Daten und
+        # Aufbau siehe _VERGLEICH_ANBIETER / _build_vergleich_page oben.
+        # ════════════════════════════════════════════════════════════
+        "vergleich": _build_vergleich_uebersicht(),
+        **{slug: _build_vergleich_page(slug) for slug in _VERGLEICH_ANBIETER},
     }
 
 
@@ -1481,9 +1790,123 @@ def get_legal_definitions() -> dict:
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
-                "body": "<p>Stand: <strong>26. April 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hi@mandari.de\">hi@mandari.de</a>.</p>",
+                "body": "<p>Stand: <strong>20. Juli 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hi@mandari.de\">hi@mandari.de</a>.</p>",
             }),
         ],
+    }
+
+
+def get_release_definitions() -> dict:
+    """Release-Seiten (blog.ReleasePage) → Meta-Felder + body StreamField.
+
+    Struktur pro Slug: {"meta": {...}, "blocks": [...]}.
+    Neue Releases werden hier einfach als weiterer Eintrag ergänzt —
+    `setup_initial_pages` legt fehlende ReleasePages unter /releases/ an,
+    `refresh_seeded_page <slug> --force` aktualisiert bestehende.
+    """
+
+    return {
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-9-beta/ — mandari 0.9 (Beta), 19.07.2026
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-9-beta": {
+            "meta": {
+                "title": "mandari 0.9 (Beta)",
+                "version": "0.9.0-beta",
+                "release_type": "beta",
+                "release_date": "2026-07-19",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.9.0-beta",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.9 (Beta) – Release-Notes",
+                "search_description": (
+                    "mandari 0.9 (Beta), veröffentlicht am 19. Juli 2026: drei Portale, "
+                    "OParl-API mit Tombstones, Geo-Verortung, kollaborativer Editor, "
+                    "Verschlüsselung und Zwei-Faktor-Authentifizierung."
+                ),
+            },
+            "blocks": [
+                ("richtext_section", {
+                    "header": hdr(badge_text="Erstes öffentliches Release", badge_icon="tag", badge_color="green",
+                                  title="Der erste öffentlich versionierte Stand der Plattform"),
+                    "background": "white",
+                    "body": (
+                        "<p><strong>mandari 0.9 (Beta)</strong> ist das erste öffentlich versionierte Release "
+                        "von mandari — veröffentlicht am 19. Juli 2026. Es bündelt den Stand aller drei Portale "
+                        "(Insight, Work, Session), die neue OParl-API und die Sicherheits-Grundausstattung "
+                        "der Plattform. Der Funktionsumfang ist produktiv im Einsatz; einzelne Bereiche werden "
+                        "bis zur Version 1.0 weiter verfeinert.</p>"
+                    ),
+                }),
+                ("mandari_cards", {
+                    "header": hdr(badge_text="Highlights", badge_icon="sparkles",
+                                  title="Drei Portale, ein Ökosystem",
+                                  subline="Bürgerportal, Fraktions-Arbeitsbereich und Verwaltungs-RIS — alle drei Module sind Teil dieses Releases."),
+                    "columns": "3", "background": "gray",
+                    "cards": [
+                        card(color="green", icon="eye", title="Insight", subtitle="Bürgerportal",
+                             description="Öffentlicher Zugang zu kommunalen Ratsinformationen — ohne Anmeldung, ohne Tracker.",
+                             bullets=[bullet("OParl-Aggregation mit Volltextsuche (Elasticsearch, deutsche Synonyme, Fehlertoleranz)"),
+                                      bullet("Automatische Texterkennung (OCR) für Sitzungsdokumente"),
+                                      bullet("Geo-Verortung von Vorgängen: Karte, Nachbarschaftssuche, DSGVO-konformer Karten-Proxy"),
+                                      bullet("Sitemaps und strukturierte Detailseiten je Kommune")]),
+                        card(color="primary", icon="briefcase", title="Work", subtitle="Fraktions-Arbeitsbereich",
+                             description="Professionelle Sitzungsvorbereitung und Zusammenarbeit im Team.",
+                             bullets=[bullet("Sitzungsvorbereitung mit Positionen, Notizen und Echtzeit-Diskussion"),
+                                      bullet("Antragsdatenbank mit Status-Pipeline, Fristen, Checklisten und Freigaben"),
+                                      bullet("Kollaborativer Editor: Live-Zusammenarbeit, Versionshistorie, Briefkopf-Export"),
+                                      bullet("Gastzugänge mit strikter Mandanten-Isolation, modulares Rechtesystem")]),
+                        card(color="blue", icon="building-2", title="Session", subtitle="Verwaltungs-RIS",
+                             description="Sitzungsmanagement für Verwaltungen — von der Vorlage bis zum Protokoll.",
+                             bullets=[bullet("Sitzungsverwaltung, Vorlagen/Drucksachen, Anträge, Tagesordnungen"),
+                                      bullet("Protokolle mit Genehmigungsworkflow"),
+                                      bullet("Anwesenheit und Sitzungsgelder"),
+                                      bullet("Vollständiges Audit-Log")]),
+                    ],
+                }),
+                ("richtext_section", {
+                    "header": hdr(badge_text="Offene Schnittstelle", badge_icon="plug", badge_color="primary",
+                                  title="OParl-API mit Tombstones"),
+                    "background": "white",
+                    "body": (
+                        "<p>mandari stellt die aggregierten Daten selbst als "
+                        "<b>OParl-1.1-konforme Schnittstelle</b> bereit: "
+                        "<a href=\"https://oparl.mandari.de/oparl/v1/system\">oparl.mandari.de</a> "
+                        "— inklusive <b>Tombstones</b> für zurückgezogene Objekte, damit nachnutzende "
+                        "Systeme Löschungen sauber nachvollziehen können. Alle 12 OParl-Objekttypen, "
+                        "Pagination und modified_since-Filter sind enthalten.</p>"
+                    ),
+                }),
+                ("richtext_section", {
+                    "header": hdr(badge_text="Sicherheit & Betrieb", badge_icon="shield-check", badge_color="green",
+                                  title="Sicherheits-Grundausstattung"),
+                    "background": "gray",
+                    "body": (
+                        "<ul>"
+                        "<li>Mandantenspezifische Verschlüsselung sensibler Inhalte (AES-256-GCM)</li>"
+                        "<li>Zwei-Faktor-Authentifizierung und Sitzungsverwaltung</li>"
+                        "<li>Rate-Limiting für alle öffentlichen Schnittstellen</li>"
+                        "<li>Docker-basiertes Deployment, Health-Checks, Statusüberwachung</li>"
+                        "</ul>"
+                    ),
+                }),
+                ("disclaimer_box", {
+                    "icon": "flask-conical", "color": "amber",
+                    "body": (
+                        "<p><strong>Beta-Hinweis:</strong> Der Funktionsumfang ist produktiv im Einsatz, "
+                        "einzelne Bereiche werden bis zur 1.0 weiter verfeinert. Fehlerberichte gern über die "
+                        "<a href=\"https://github.com/mandariOSS/mandari/issues\">GitHub-Issues</a>.</p>"
+                    ),
+                }),
+                ("gradient_cta", {
+                    "title": "Release im Detail",
+                    "subline": "Die vollständigen Release-Notes, der Quellcode und alle Änderungen — offen auf GitHub.",
+                    "ctas": [cta("Release auf GitHub", "https://github.com/mandariOSS/mandari/releases/tag/v0.9.0-beta", "github", "primary"),
+                             cta("Roadmap ansehen", "/roadmap/", "map", "outline"),
+                             cta("Insight ausprobieren", "/insight/", "eye", "outline")],
+                    "gradient_from": "primary",
+                }),
+            ],
+        },
     }
 
 

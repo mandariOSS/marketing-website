@@ -24,13 +24,14 @@
             </a>
 
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                Kommunalpolitik<br>
-                <span class="text-primary-600 dark:text-primary-400">transparent</span> machen
+                Das offene Ratsinformationssystem<br>
+                <span class="text-primary-600 dark:text-primary-400">für alle, die Kommunalpolitik machen</span>
             </h1>
 
-            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
-                Mandari ist die Open Source Plattform für Ratsinformationssysteme —
-                für Bürger:innen, Fraktionen sowie Kommunen und Verwaltungen.
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto">
+                Beschlüsse finden, Sitzungen vorbereiten, Gremien verwalten — auf einer
+                Open-Source-Plattform mit deutschen Servern. Kostenlos für Bürger:innen,
+                bezahlbar für Fraktionen, souverän für Verwaltungen.
             </p>
 
             <!-- Hero CTA group: clear 3-tier hierarchy (primary · secondary · text-link),
@@ -45,16 +46,14 @@
                     <span>Zum Bürgerportal</span>
                 </a>
 
-                <!-- Secondary CTA, high-contrast neutral that inverts in dark mode -->
-                <a href="/work/"
+                <!-- Secondary CTA: Demo — der wichtigste Kontaktpunkt für Fraktionen & Kommunen -->
+                <a href="/kontakt/?subject=Demo"
                    class="group inline-flex shrink-0 items-center justify-center gap-2.5 px-6 py-3.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 font-semibold rounded-xl whitespace-nowrap shadow-lg shadow-gray-900/20 dark:shadow-white/10 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-                    <i data-lucide="briefcase" class="w-5 h-5 shrink-0" aria-hidden="true"></i>
-                    <span>Mandari Work</span>
+                    <i data-lucide="calendar" class="w-5 h-5 shrink-0" aria-hidden="true"></i>
+                    <span>Demo anfragen</span>
                 </a>
 
-                <!-- Tertiary, text link with sliding arrow, NOT a button.
-                     This gives the eye somewhere to rest and removes the
-                     three-equal-buttons hierarchy problem. -->
+                <!-- Tertiary, text link with sliding arrow, NOT a button. -->
                 <a href="/produkt/"
                    class="group inline-flex shrink-0 items-center justify-center gap-1.5 px-3 py-3.5 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-semibold whitespace-nowrap transition-colors">
                     <span>Mehr erfahren</span>
@@ -62,27 +61,44 @@
                 </a>
             </div>
 
-            <!-- Quick Stats -->
-            {% if stats.bodies > 0 %}
-            <div class="flex flex-wrap justify-center gap-8 text-center">
+            <!-- Zielgruppen-Schnellwahl: in 5 Sekunden zum richtigen Pfad -->
+            <div class="flex flex-wrap justify-center gap-2 mb-12 text-sm" aria-label="Direkt zum passenden Angebot">
+                <a href="/insight/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-300 font-medium hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
+                    <i data-lucide="eye" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                    Ich bin Bürger:in
+                </a>
+                <a href="/produkt/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-medium hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors">
+                    <i data-lucide="briefcase" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                    Wir sind eine Fraktion
+                </a>
+                <a href="/kommunen/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+                    <i data-lucide="building-2" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                    Wir sind eine Verwaltung
+                </a>
+            </div>
+
+            <!-- Quick Stats — echte Zahlen aus dem Bürgerportal (Produktionsdaten, Juli 2026) -->
+            <div class="flex flex-wrap justify-center gap-x-10 gap-y-6 text-center">
                 <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{{ stats.bodies }}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Kommunen</div>
+                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">259.000+</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Dokumente durchsuchbar</div>
                 </div>
                 <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{{ stats.organizations }}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Gremien</div>
+                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">111.000+</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Vorgänge &amp; Vorlagen</div>
                 </div>
                 <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{{ stats.persons }}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Personen</div>
+                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">24.500+</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Sitzungen erfasst</div>
                 </div>
                 <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">{{ stats.papers }}</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Vorgänge</div>
+                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">8</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Kommunen &amp; Körperschaften</div>
                 </div>
             </div>
-            {% endif %}
+            <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">
+                Zahlen aus dem laufenden Bürgerportal, Stand Juli 2026.
+            </p>
         </div>
     </div>
 </section>
@@ -117,15 +133,15 @@
                     <ul class="space-y-2 mb-6">
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            Volltextsuche
+                            Volltextsuche mit Synonymen &amp; Fehlertoleranz
                         </li>
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            Kartenansicht
+                            Kartenansicht &amp; Nachbarschaftssuche
                         </li>
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            KI-Assistent
+                            Automatische Texterkennung (OCR)
                         </li>
                     </ul>
                     <a href="/insight/"
@@ -153,15 +169,15 @@
                     <ul class="space-y-2 mb-6">
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            Team-Workspaces
+                            Sitzungsvorbereitung im Team
                         </li>
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            KI-Zusammenfassungen
+                            Antragsdatenbank mit Fristen &amp; Freigaben
                         </li>
                         <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            E-Mail-Benachrichtigungen
+                            Kollaborativer Editor in Echtzeit
                         </li>
                     </ul>
                     <a href="/preise/"
@@ -173,31 +189,31 @@
             </div>
 
             <!-- Session -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-blue-200 dark:border-blue-800 relative overflow-hidden opacity-90">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-blue-200 dark:border-blue-800 relative overflow-hidden hover:shadow-xl transition-shadow">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-6 -mt-6"></div>
                 <div class="relative">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm font-medium rounded-full mb-4">
-                        <i data-lucide="construction" class="w-4 h-4"></i>
-                        In Entwicklung
+                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full mb-4">
+                        <i data-lucide="rocket" class="w-4 h-4"></i>
+                        Beta · Pilot-Kommunen gesucht
                     </span>
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Session</h3>
                     <p class="text-sm font-medium text-blue-600 dark:text-blue-400 mb-4">Für Kommunen &amp; Verwaltungen</p>
                     <p class="text-gray-600 dark:text-gray-300 mb-6">
                         Das Verwaltungs-RIS. Vollständiges Sitzungsmanagement —
-                        von der Einladung bis zum Protokoll, OParl-konform.
+                        von der Vorlage bis zum Protokoll, OParl-konform.
                     </p>
                     <ul class="space-y-2 mb-6">
-                        <li class="flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
-                            <i data-lucide="clock" class="w-4 h-4"></i>
-                            Sitzungsplanung
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
+                            Sitzungsplanung &amp; Tagesordnungen
                         </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
-                            <i data-lucide="clock" class="w-4 h-4"></i>
-                            Einladungsversand
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
+                            Protokolle mit Genehmigungsworkflow
                         </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
-                            <i data-lucide="clock" class="w-4 h-4"></i>
-                            Protokollierung
+                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
+                            Anwesenheit &amp; Sitzungsgelder
                         </li>
                     </ul>
                     <a href="/kommunen/"
@@ -247,10 +263,11 @@
                 <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900/40 rounded-xl flex items-center justify-center mb-4">
                     <i data-lucide="sparkles" class="w-6 h-6 text-primary-600 dark:text-primary-400"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">KI-gestützt</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Suche, die Verwaltungssprache versteht</h3>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">
-                    Automatische Zusammenfassungen, semantische Suche und ein RAG-Chatbot,
-                    der Antworten direkt aus den Original-Dokumenten zieht.
+                    Volltextsuche über alle Dokumente — mit deutschen Synonymen,
+                    Fehlertoleranz und automatischer Texterkennung (OCR) auch für
+                    gescannte Sitzungsunterlagen.
                 </p>
             </div>
 
@@ -297,7 +314,7 @@
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Moderner Tech-Stack</h3>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">
-                    Django 6, PostgreSQL, Meilisearch, HTMX. Schnell, wartbar, zukunftssicher —
+                    Django 6, PostgreSQL, Elasticsearch, HTMX. Schnell, wartbar, zukunftssicher —
                     keine Legacy-Java-Server, kein 2010er Web-Look.
                 </p>
             </div>
@@ -349,8 +366,8 @@
                 <div class="pt-8">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Loslegen</h3>
                     <p class="text-gray-600 dark:text-gray-400 text-sm">
-                        Sitzungen vorbereiten, Anträge schreiben, Aufgaben verteilen, mit
-                        KI-Unterstützung und Live-Kollaboration.
+                        Sitzungen vorbereiten, Anträge schreiben, Aufgaben verteilen —
+                        gemeinsam im Team, mit Live-Kollaboration im Editor.
                     </p>
                 </div>
             </div>
@@ -358,41 +375,57 @@
     </div>
 </section>
 
-<!-- Available Kommunen -->
-{% if available_bodies %}
-<section class="py-16 bg-gray-50 dark:bg-gray-800/50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Verfügbare Kommunen
-            </h2>
-            <p class="text-gray-600 dark:text-gray-300">
-                Diese Städte sind bereits im Portal verfügbar
-            </p>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
-            {% for body in available_bodies %}
-            <a href="/insight/?body={{ body.id }}"
-               class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-primary-300 dark:hover:border-primary-700 transition-all">
-                <div class="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <i data-lucide="landmark" class="w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+<!-- Beta-Transparenz: ehrlicher Stand als Stärke -->
+<section class="py-16 bg-gray-50 dark:bg-gray-800/50 border-y border-gray-200 dark:border-gray-800">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-sm font-medium mb-4">
+                    <i data-lucide="flask-conical" class="w-4 h-4"></i>
+                    Ehrlich in Beta
+                </span>
+                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                    mandari 0.9 (Beta) — und wir sagen es offen
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                    mandari ist jung. Statt uns größer zu machen, legen wir alles offen:
+                    den kompletten Quellcode, die Preise, die Roadmap und einen
+                    Transparenzbericht mit echten Zahlen. Beta heißt bei uns:
+                    produktiv im Einsatz, aktiv weiterentwickelt — und Pilot-Partner
+                    gestalten die Roadmap mit.
+                </p>
+                <div class="flex flex-wrap gap-4 text-sm font-medium">
+                    <a href="/releases/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
+                        <i data-lucide="tag" class="w-4 h-4"></i> Release-Notes
+                    </a>
+                    <a href="/roadmap/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
+                        <i data-lucide="map" class="w-4 h-4"></i> Roadmap
+                    </a>
+                    <a href="/transparenz/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
+                        <i data-lucide="eye" class="w-4 h-4"></i> Transparenzbericht
+                    </a>
                 </div>
-                <div class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ body.name }}</div>
-            </a>
-            {% endfor %}
-        </div>
-
-        <div class="text-center mt-8">
-            <a href="/insight/"
-               class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium hover:underline">
-                Alle Kommunen anzeigen
-                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </a>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 lg:p-8">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <i data-lucide="scale" class="w-5 h-5 text-primary-500"></i>
+                    Wie schlägt sich mandari im Vergleich?
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm mb-5">
+                    Wir vergleichen mandari sachlich mit etablierten RIS-Anbietern —
+                    Sternberg SD.NET, ALLRIS, Somacos Session und regisafe. Acht Kriterien,
+                    nur öffentlich belegbare Fakten, inklusive der Punkte, in denen
+                    andere vorn liegen.
+                </p>
+                <a href="/vergleich/"
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                    Zum RIS-Vergleich
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
         </div>
     </div>
 </section>
-{% endif %}
 
 <!-- Open Source Section -->
 <section class="py-20 lg:py-28">
