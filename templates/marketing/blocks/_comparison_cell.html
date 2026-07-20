@@ -1,0 +1,22 @@
+{# Eine Zelle der Vergleichstabelle: Status (yes / no / unknown) + optionaler Zusatztext.
+   "unknown" wird bewusst neutral-grau dargestellt und verweist auf die Fußnote —
+   keine Negativbehauptung über den Anbieter. #}
+<td class="py-3.5 px-4 sm:px-6 align-top">
+    {% if cell.status == 'yes' %}
+    <span class="inline-flex items-center gap-1.5 font-semibold text-green-700 dark:text-green-400">
+        <i data-lucide="check" class="w-4 h-4 flex-none" aria-hidden="true"></i>Ja
+    </span>
+    {% elif cell.status == 'no' %}
+    <span class="inline-flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-400">
+        <i data-lucide="minus" class="w-4 h-4 flex-none" aria-hidden="true"></i>Nein
+    </span>
+    {% else %}
+    <span class="inline-flex items-start gap-1.5 text-gray-500 dark:text-gray-400">
+        <i data-lucide="circle-help" class="w-4 h-4 flex-none mt-0.5" aria-hidden="true"></i>
+        <span>keine öffentliche Angabe<sup>1</sup></span>
+    </span>
+    {% endif %}
+    {% if cell.note %}
+    <p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-400">{{ cell.note }}</p>
+    {% endif %}
+</td>

@@ -1,0 +1,45 @@
+{% load wagtailcore_tags %}
+{# Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
+   Mobile: horizontal scrollbar (overflow-x-auto + min-w).
+   Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. #}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+            <table class="w-full min-w-[640px] text-sm border-collapse">
+                <caption class="sr-only">Funktionsvergleich mandari und {{ self.competitor_label }}</caption>
+                <thead>
+                    <tr class="border-b-2 border-gray-200 dark:border-gray-700">
+                        <th scope="col" class="text-left py-4 px-4 sm:px-6 font-semibold text-gray-500 dark:text-gray-400 w-[34%]">Funktion / Kriterium</th>
+                        <th scope="col" class="text-left py-4 px-4 sm:px-6 w-[33%]">
+                            <span class="font-bold text-primary-700 dark:text-primary-300">mandari</span>
+                            <span class="ml-2 inline-block px-2 py-0.5 bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-medium rounded-full align-middle">Beta 0.9</span>
+                        </th>
+                        <th scope="col" class="text-left py-4 px-4 sm:px-6 font-bold text-gray-900 dark:text-white w-[33%]">{{ self.competitor_label }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in self.groups %}
+                    <tr class="bg-gray-50 dark:bg-gray-900/40">
+                        <th scope="colgroup" colspan="3" class="text-left py-2.5 px-4 sm:px-6 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ group.title }}</th>
+                    </tr>
+                    {% for row in group.rows %}
+                    <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
+                        <th scope="row" class="text-left py-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">{{ row.label }}</th>
+                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.mandari %}
+                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.competitor %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if self.footnote %}
+        <div class="mt-4 text-xs text-gray-500 dark:text-gray-400 prose-a:underline max-w-none">
+            {{ self.footnote|richtext }}
+        </div>
+        {% endif %}
+    </div>
+</section>

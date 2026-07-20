@@ -505,6 +505,71 @@ class PricingTableBlock(StructBlock):
         label = "Pricing-Tabelle (3 Cards)"
 
 
+# ─────────────────── Vergleichstabelle (mandari vs. X) ───────────────────
+
+
+class ComparisonCellBlock(StructBlock):
+    """Eine Zelle der Vergleichstabelle (mandari- oder Anbieter-Spalte)."""
+
+    status = ChoiceBlock(
+        choices=[
+            ("yes", "✓ Ja (grün)"),
+            ("no", "– Nein / nicht vorhanden (neutral)"),
+            ("unknown", "keine öffentliche Angabe (neutral, mit Fußnote)"),
+        ],
+        default="yes",
+    )
+    note = CharBlock(
+        required=False,
+        help_text="Optionaler kurzer Zusatztext unter dem Status (z. B. Produktname, Eigenangabe-Kennzeichnung)",
+    )
+
+    class Meta:
+        icon = "tick"
+        label = "Vergleichs-Zelle"
+
+
+class ComparisonRowBlock(StructBlock):
+    """Eine Zeile der Vergleichstabelle: Kriterium + zwei Zellen."""
+
+    label = CharBlock(required=True, help_text="Funktion/Kriterium, z. B. 'Open Source'")
+    mandari = ComparisonCellBlock(help_text="mandari-Spalte")
+    competitor = ComparisonCellBlock(help_text="Anbieter-Spalte")
+
+    class Meta:
+        icon = "list-ul"
+        label = "Vergleichs-Zeile"
+
+
+class ComparisonGroupBlock(StructBlock):
+    """Gruppe von Vergleichszeilen (z. B. 'Grundlagen', 'Betrieb')."""
+
+    title = CharBlock(required=True, help_text="Gruppen-Überschrift, z. B. 'Grundlagen'")
+    rows = ListBlock(ComparisonRowBlock(), min_num=1)
+
+    class Meta:
+        icon = "folder-open-1"
+        label = "Kriterien-Gruppe"
+
+
+class ComparisonTableBlock(StructBlock):
+    """Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme."""
+
+    header = SectionHeaderBlock(required=False)
+    competitor_label = CharBlock(required=True, help_text="Spaltentitel des Anbieters, z. B. 'ALLRIS (CC e-gov)'")
+    groups = ListBlock(ComparisonGroupBlock(), min_num=1)
+    footnote = RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Fußnote unter der Tabelle (z. B. Erläuterung zu 'keine öffentliche Angabe')",
+    )
+
+    class Meta:
+        template = "marketing/blocks/comparison_table.html"
+        icon = "table"
+        label = "Vergleichstabelle (mandari vs. Anbieter)"
+
+
 # ─────────────────────── Composite block container ──────────────────────
 
 
@@ -519,6 +584,7 @@ class MarketingStreamBlock(StreamBlock):
     step_process = StepProcessBlock()
     stats_grid = StatsGridBlock()
     pricing_table = PricingTableBlock()
+    comparison_table = ComparisonTableBlock()
     accordion_faq = AccordionFAQBlock()
     gradient_cta = GradientCTABlock()
 

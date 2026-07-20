@@ -87,28 +87,49 @@ def stat(value, label, color="primary"):
 
 _VERGLEICH_STAND = "Juli 2026"
 
-# mandari-Seite der Vergleichsdimensionen — überall identisch, ehrlich inkl. Beta-Status.
-_MANDARI_DIMENSIONS = {
-    "open_source": "Ja — komplette Plattform unter AGPL-3.0, Quellcode öffentlich auf GitHub.",
-    "preis": "Preise öffentlich: Insight kostenlos, Work 39,90 €/Monat inkl. MwSt. (Pauschale ohne Nutzerlimit), Session individuell.",
-    "oparl": "OParl-Import aus bestehenden RIS und eigene OParl-1.1-API inklusive Tombstones (oparl.mandari.de).",
-    "portal": "Bürgerportal mandari Insight immer inklusive — kostenlos, ohne Anmeldung, ohne Tracking.",
-    "fraktion": "Eigener Fraktions-Arbeitsbereich (mandari work) mit Antragsdatenbank, Sitzungsvorbereitung und Gastzugängen.",
-    "kollab": "Kollaborativer Echtzeit-Editor mit Versionshistorie und Briefkopf-Export (Teil von 0.9 Beta).",
-    "hosting": "Managed Hosting in deutschen Rechenzentren (Hetzner) oder vollständiges Self-Hosting — freie Wahl.",
-    "vertrag": "mandari work: 3 Monate Mindestlaufzeit, danach monatlich kündbar; Online-Kündigung nach § 312k BGB.",
-}
-
-_DIMENSION_META = [
-    ("open_source", "Open Source", "unlock", "green"),
-    ("preis", "Preistransparenz", "receipt-text", "primary"),
-    ("oparl", "OParl-Standard", "plug", "blue"),
-    ("portal", "Bürgerportal", "eye", "green"),
-    ("fraktion", "Fraktions-Arbeitsbereich", "briefcase", "primary"),
-    ("kollab", "Kollaborative Bearbeitung", "users", "teal"),
-    ("hosting", "Hosting-Modell", "server", "blue"),
-    ("vertrag", "Vertragsbindung", "file-signature", "amber"),
+# ── Zeilen der Funktionstabelle: 4 Gruppen × 3 Kriterien ──────────────────
+# Jede Zeile hat einen Key; die Zellwerte (Status + kurzer Zusatztext) stehen
+# in _MANDARI_CELLS (mandari-Spalte) und _VERGLEICH_ANBIETER[slug]["cells"]
+# (Anbieter-Spalte). Status: "yes" = ✓ (grün) · "no" = – (neutral) ·
+# "unknown" = "keine öffentliche Angabe" (neutral-grau, mit Fußnote).
+_VERGLEICH_GRUPPEN = [
+    ("Grundlagen", [
+        ("open_source", "Open Source (Quellcode öffentlich)"),
+        ("preis", "Öffentliche Preisliste"),
+        ("oparl", "OParl-Schnittstelle"),
+    ]),
+    ("Portale", [
+        ("portal", "Bürgerportal"),
+        ("fraktion", "Fraktionsbereich"),
+        ("ris", "Verwaltungs-RIS (Sitzungsmanagement)"),
+    ]),
+    ("Arbeiten", [
+        ("kollab", "Echtzeit-Kollaboration im Editor"),
+        ("ki", "KI-Zusammenfassungen"),
+        ("suche", "Volltextsuche mit OCR & Synonymen"),
+    ]),
+    ("Betrieb", [
+        ("hosting_de", "Hosting in Deutschland"),
+        ("vertrag", "Vertragslaufzeiten öffentlich"),
+        ("selfhost", "Self-Hosting möglich"),
+    ]),
 ]
+
+# mandari-Spalte — überall identisch, ehrlich inkl. Beta-Status.
+_MANDARI_CELLS = {
+    "open_source": ("yes", "Komplette Plattform unter AGPL-3.0 auf GitHub"),
+    "preis": ("yes", "Insight kostenlos, Work 39,90 €/Monat inkl. MwSt., Session individuell"),
+    "oparl": ("yes", "Import aus Alt-RIS + eigene OParl-1.1-API mit Tombstones (oparl.mandari.de)"),
+    "portal": ("yes", "mandari Insight — kostenlos, ohne Anmeldung, ohne Tracking"),
+    "fraktion": ("yes", "mandari work: Antragsdatenbank, Sitzungsvorbereitung, Gastzugänge"),
+    "ris": ("yes", "mandari Session (Beta 0.9, Pilot-Kommunen gesucht)"),
+    "kollab": ("yes", "Editor mit Versionshistorie und Briefkopf-Export (Beta 0.9)"),
+    "ki": ("yes", "Zusammenfassungen in mandari work (Beta 0.9)"),
+    "suche": ("yes", "Elasticsearch, deutsche Synonyme, Fehlertoleranz, OCR"),
+    "hosting_de": ("yes", "Deutsche Rechenzentren (Hetzner)"),
+    "vertrag": ("yes", "Work: 3 Monate Mindestlaufzeit, dann monatlich; Online-Kündigung nach § 312k BGB"),
+    "selfhost": ("yes", "Docker-Compose, AGPL-3.0 — volle Datenhoheit"),
+}
 
 # Öffentlich belegbare Fakten je Anbieter (Quellen: Anbieter-Websites + oparl.org,
 # abgerufen im Juli 2026). Eigenangaben der Anbieter sind als solche gekennzeichnet.
@@ -119,15 +140,19 @@ _VERGLEICH_ANBIETER = {
         "produkt": "SD.NET (Sitzungsmanagement), Bürgerportal SD.NET RIM (ratsinfomanagement.net), Sitzungs-App „RICH“",
         "kunden": "Über 900 Kunden (Eigenangabe; darunter auch Organisationen, die keine Kommunen sind).",
         "website": "https://www.sitzungsdienst.net/",
-        "dims": {
-            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
-            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
-            "oparl": "Ja — Sternberg gehört zu den RIS-Anbietern mit OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben).",
-            "portal": "Bürgerinformation über SD.NET RIM (ratsinfomanagement.net), Teil der Produktfamilie.",
-            "fraktion": "Gremien- und Mandatsarbeit über die Sitzungs-App „RICH“ (Eigenangabe).",
-            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
-            "hosting": "Cloud-Angebot „S24“ aus Trusted-Cloud-zertifizierten Partner-Rechenzentren (Eigenangabe).",
-            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        "cells": {
+            "open_source": ("unknown", ""),
+            "preis": ("unknown", "Angebot auf Anfrage"),
+            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
+            "portal": ("yes", "SD.NET RIM (ratsinfomanagement.net)"),
+            "fraktion": ("yes", "Sitzungs-App „RICH“ (Eigenangabe)"),
+            "ris": ("yes", "SD.NET Sitzungsmanagement"),
+            "kollab": ("unknown", ""),
+            "ki": ("unknown", ""),
+            "suche": ("unknown", ""),
+            "hosting_de": ("unknown", "Cloud „S24“ aus Trusted-Cloud-zertifizierten Partner-Rechenzentren (Eigenangabe) — Standort ohne öffentliche Angabe"),
+            "vertrag": ("unknown", ""),
+            "selfhost": ("unknown", ""),
         },
     },
     "mandari-vs-allris": {
@@ -136,15 +161,19 @@ _VERGLEICH_ANBIETER = {
         "produkt": "ALLRIS (Sitzungsmanagement) mit Bürgerinformationssystem ALLRIS net",
         "kunden": "Über 600 Kommunen (Eigenangabe).",
         "website": "https://www.cc-egov.de/",
-        "dims": {
-            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
-            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
-            "oparl": "Ja — ALLRIS bietet eine OParl-Schnittstelle an (Quellen: oparl.org, Herstellerangaben).",
-            "portal": "Bürgerinformationssystem ALLRIS net, Teil der Produktfamilie.",
-            "fraktion": "Gremienarbeit und Mandatsträger-Zugänge sind Teil des Produkts (Eigenangabe).",
-            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
-            "hosting": "Hosting u. a. im Rechenzentrum Düsseldorf sowie über STACKIT (Eigenangabe).",
-            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        "cells": {
+            "open_source": ("unknown", ""),
+            "preis": ("unknown", "Angebot auf Anfrage"),
+            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
+            "portal": ("yes", "Bürgerinformationssystem ALLRIS net"),
+            "fraktion": ("yes", "Gremienarbeit und Mandatsträger-Zugänge (Eigenangabe)"),
+            "ris": ("yes", "ALLRIS Sitzungsmanagement"),
+            "kollab": ("unknown", ""),
+            "ki": ("unknown", ""),
+            "suche": ("unknown", ""),
+            "hosting_de": ("yes", "U. a. Rechenzentrum Düsseldorf sowie STACKIT (Eigenangabe)"),
+            "vertrag": ("unknown", ""),
+            "selfhost": ("unknown", ""),
         },
     },
     "mandari-vs-somacos": {
@@ -153,15 +182,19 @@ _VERGLEICH_ANBIETER = {
         "produkt": "Session (Sitzungsmanagement), Bürgerinformationssystem SessionNet, Sitzungs-App „Mandatos“",
         "kunden": "Über 2.200 Kunden (Eigenangabe; darunter neben Kommunen z. B. auch Banken und andere Organisationen).",
         "website": "https://www.somacos.de/",
-        "dims": {
-            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
-            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
-            "oparl": "Ja — Somacos gehört zu den RIS-Anbietern mit OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben).",
-            "portal": "Bürgerinformationssystem SessionNet, Teil der Produktfamilie.",
-            "fraktion": "Gremien- und Mandatsarbeit über die App „Mandatos“ (Eigenangabe).",
-            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
-            "hosting": "SaaS-Angebot „Sessionasp“ aus BSI-zertifiziertem Rechenzentrum (krz; Eigenangabe).",
-            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        "cells": {
+            "open_source": ("unknown", ""),
+            "preis": ("unknown", "Angebot auf Anfrage"),
+            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
+            "portal": ("yes", "Bürgerinformationssystem SessionNet"),
+            "fraktion": ("yes", "Sitzungs-App „Mandatos“ (Eigenangabe)"),
+            "ris": ("yes", "Session Sitzungsmanagement"),
+            "kollab": ("unknown", ""),
+            "ki": ("unknown", ""),
+            "suche": ("unknown", ""),
+            "hosting_de": ("yes", "SaaS „Sessionasp“ aus BSI-zertifiziertem Rechenzentrum (krz; Eigenangabe)"),
+            "vertrag": ("unknown", ""),
+            "selfhost": ("unknown", ""),
         },
     },
     "mandari-vs-regisafe": {
@@ -175,15 +208,19 @@ _VERGLEICH_ANBIETER = {
             "BITV-Zertifikat zur Barrierefreiheit vor (Oktober 2024, Eigenangabe) — ein "
             "öffentlich geprüfter Nachweis, den mandari derzeit nicht hat."
         ),
-        "dims": {
-            "open_source": "Ein Open-Source-Modell wird öffentlich nicht beworben (Stand Juli 2026).",
-            "preis": "Keine öffentliche Preisliste auffindbar (Stand Juli 2026) — Angebot auf Anfrage.",
-            "oparl": "Keine öffentliche Angabe zu einer OParl-Schnittstelle auffindbar (Stand Juli 2026).",
-            "portal": "Bürgerinfoportal als Bestandteil des Sitzungsmanagements (Eigenangabe).",
-            "fraktion": "Gremienarbeit und Sitzungsvorbereitung sind Teil des Produkts (Eigenangabe).",
-            "kollab": "Kollaborative Echtzeit-Bearbeitung wird öffentlich nicht beworben (Stand Juli 2026).",
-            "hosting": "Cloud-/SaaS-Betrieb wird angeboten (Eigenangabe).",
-            "vertrag": "Keine öffentliche Angabe zu Vertragslaufzeiten (Stand Juli 2026).",
+        "cells": {
+            "open_source": ("unknown", ""),
+            "preis": ("unknown", "Angebot auf Anfrage"),
+            "oparl": ("unknown", ""),
+            "portal": ("yes", "Bürgerinfoportal im Sitzungsmanagement (Eigenangabe)"),
+            "fraktion": ("yes", "Gremienarbeit und Sitzungsvorbereitung (Eigenangabe)"),
+            "ris": ("yes", "regisafe Sitzungsmanagement"),
+            "kollab": ("unknown", ""),
+            "ki": ("unknown", ""),
+            "suche": ("unknown", ""),
+            "hosting_de": ("unknown", "Cloud-/SaaS-Betrieb wird angeboten (Eigenangabe) — Standort ohne öffentliche Angabe"),
+            "vertrag": ("unknown", ""),
+            "selfhost": ("unknown", ""),
         },
     },
 }
@@ -206,18 +243,46 @@ def _vergleich_disclaimer(name):
     })
 
 
+def _comparison_cell(status, note):
+    return {"status": status, "note": note}
+
+
+def _build_vergleich_tabelle(slug):
+    """Baut den comparison_table-Block einer mandari-vs-X-Seite."""
+    v = _VERGLEICH_ANBIETER[slug]
+    name = v["kurzname"]
+
+    groups = []
+    for group_title, rows in _VERGLEICH_GRUPPEN:
+        groups.append({
+            "title": group_title,
+            "rows": [{
+                "label": label,
+                "mandari": _comparison_cell(*_MANDARI_CELLS[key]),
+                "competitor": _comparison_cell(*v["cells"][key]),
+            } for key, label in rows],
+        })
+
+    return ("comparison_table", {
+        "header": hdr(badge_text="Funktionstabelle · 12 Kriterien", badge_icon="list-checks",
+                      title="Der Vergleich im Detail", align="center",
+                      subline="Zeile für Zeile: mandari und " + name + " — Eigenangaben der Anbieter sind als solche gekennzeichnet."),
+        "competitor_label": name,
+        "groups": groups,
+        "footnote": (
+            f"<p><sup>1</sup> <strong>„Keine öffentliche Angabe“ (Stand {_VERGLEICH_STAND}):</strong> "
+            "Auf der Website des Anbieters bzw. auf oparl.org war zum Abrufzeitpunkt keine "
+            "entsprechende Angabe auffindbar. Das ist keine Aussage über den tatsächlichen "
+            "Funktionsumfang des Produkts. Angaben in der mandari-Spalte sind Eigenangaben; "
+            "mandari ist Beta-Software (Version 0.9).</p>"
+        ),
+    })
+
+
 def _build_vergleich_page(slug):
     """Baut die Blockliste einer mandari-vs-X-Seite aus dem Fakten-Dict."""
     v = _VERGLEICH_ANBIETER[slug]
     name = v["kurzname"]
-
-    dim_cards = []
-    for key, titel, icon, color in _DIMENSION_META:
-        dim_cards.append(card(
-            color=color, icon=icon, title=titel,
-            bullets=[bullet("mandari: " + _MANDARI_DIMENSIONS[key], "check"),
-                     bullet(f"{name}: " + v["dims"][key], "circle-dot")],
-        ))
 
     return [
         ("hero", {
@@ -225,9 +290,8 @@ def _build_vergleich_page(slug):
             "badge_icon": "scale", "badge_color": "primary",
             "title": "mandari vs.", "title_highlight": name,
             "subline": (
-                f"Sie prüfen, welches Ratsinformationssystem zu Ihrer Verwaltung oder Fraktion passt? "
-                f"Hier vergleichen wir mandari und {name} entlang von acht Kriterien — sachlich, "
-                "auf Basis öffentlich verfügbarer Informationen und mit klar gekennzeichneten Lücken."
+                f"mandari und {name} in einer Funktionstabelle — zwölf Kriterien, sachlich, "
+                "auf Basis öffentlich verfügbarer Informationen, Lücken klar gekennzeichnet."
             ),
             "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9) — auch das gehört zu einem ehrlichen Vergleich.",
             "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
@@ -255,17 +319,7 @@ def _build_vergleich_page(slug):
                                         bullet("Details auf der Website des Anbieters", "external-link")],
                                cta_label="Website des Anbieters", cta_url=v["website"], cta_icon="external-link"),
         }),
-        ("mandari_cards", {
-            "header": hdr(badge_text="Acht Kriterien", badge_icon="list-checks",
-                          title="Der Vergleich im Detail", align="center",
-                          subline="Jedes Kriterium mit beiden Seiten — Eigenangaben der Anbieter sind als solche gekennzeichnet."),
-            "columns": "4", "background": "gray",
-            "cards": dim_cards[:6],
-        }),
-        ("mandari_cards", {
-            "columns": "4", "background": "gray",
-            "cards": dim_cards[6:],
-        }),
+        _build_vergleich_tabelle(slug),
         ("disclaimer_box", {
             "icon": "flask-conical", "color": "amber",
             "body": (
@@ -307,8 +361,8 @@ def _build_vergleich_uebersicht():
             "title": "mandari im Vergleich", "title_highlight": "mit etablierten RIS-Anbietern",
             "subline": (
                 "Wer ein Ratsinformationssystem auswählt, vergleicht — und das sollte einfach sein. "
-                "Hier stellen wir mandari den etablierten Anbietern gegenüber: sachlich, mit acht "
-                "klaren Kriterien und ausschließlich auf Basis öffentlich verfügbarer Informationen."
+                "Hier stellen wir mandari den etablierten Anbietern gegenüber: als Funktionstabelle "
+                "mit zwölf Kriterien, ausschließlich auf Basis öffentlich verfügbarer Informationen."
             ),
             "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9). Wir vergleichen ehrlich — inklusive der Punkte, in denen etablierte Anbieter vorn liegen.",
             "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
@@ -316,7 +370,7 @@ def _build_vergleich_uebersicht():
             "background_color": "primary",
         }),
         ("trust_banner", {"color": "primary", "items": [
-            trust_item("list-checks", "8 Kriterien", "pro Vergleich"),
+            trust_item("list-checks", "12 Kriterien", "pro Vergleich"),
             trust_item("file-search", "Nur öffentliche", "Quellen"),
             trust_item("scale", "Sachlich", "ohne Herabsetzung"),
             trust_item("mail-check", "Korrekturen", "an hello@mandari.de"),
@@ -333,11 +387,11 @@ def _build_vergleich_uebersicht():
                           title="Wonach wir vergleichen"),
             "background": "gray",
             "body": (
-                "<p>Jeder Vergleich betrachtet dieselben acht Kriterien: "
-                "<strong>Open Source</strong>, <strong>Preistransparenz</strong>, "
-                "<strong>OParl-Standard</strong>, <strong>Bürgerportal</strong>, "
-                "<strong>Fraktions-Arbeitsbereich</strong>, <strong>kollaborative Bearbeitung</strong>, "
-                "<strong>Hosting-Modell</strong> und <strong>Vertragsbindung</strong>.</p>"
+                "<p>Jeder Vergleich ist eine Funktionstabelle mit zwölf Kriterien in vier Gruppen: "
+                "<strong>Grundlagen</strong> (Open Source, öffentliche Preisliste, OParl), "
+                "<strong>Portale</strong> (Bürgerportal, Fraktionsbereich, Verwaltungs-RIS), "
+                "<strong>Arbeiten</strong> (Echtzeit-Kollaboration, KI-Zusammenfassungen, Volltextsuche) und "
+                "<strong>Betrieb</strong> (Hosting in Deutschland, Vertragslaufzeiten, Self-Hosting).</p>"
                 "<p>Grundlage sind ausschließlich öffentlich verfügbare Informationen — die Websites "
                 "der Anbieter und die Anbieterliste des OParl-Standards (oparl.org), abgerufen im "
                 "Juli 2026. Eigenangaben der Anbieter (z. B. Kundenzahlen) kennzeichnen wir als solche. "
