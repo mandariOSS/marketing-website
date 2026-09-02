@@ -6,6 +6,15 @@
 {% block meta_description %}mandari Dokumentation: OParl, öffentliche APIs, Tutorials und Self-Hosting.{% endblock %}
 
 {% block content %}
+{# Inline-Code-Styling (prose-code:*) darf Code in pre-Blöcken nicht treffen, sonst hell auf hell #}
+<style>
+    .prose pre code {
+        background-color: transparent;
+        padding: 0;
+        border-radius: 0;
+        color: inherit;
+    }
+</style>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <div class="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10">
         <!-- Sidebar -->
