@@ -15,6 +15,7 @@ from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from blog.feeds import BlogFeed
+from marketing.docs_views import docs_page
 from marketing.views import (
     altcha_challenge,
     crawler_info_view,
@@ -56,6 +57,9 @@ urlpatterns = [
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
     # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
     path("crawler/", crawler_info_view, name="crawler_info"),
+    # Dokumentation (Markdown aus docs_content/, auch via docs.mandari.de)
+    path("docs/", docs_page, name="docs_index"),
+    path("docs/<slug:slug>/", docs_page, name="docs_page"),
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
     path("loesungen/", RedirectView.as_view(url="/produkt/#zielgruppen", permanent=True)),

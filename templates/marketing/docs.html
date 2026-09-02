@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ doc_title }} — Dokumentation{% endblock %}
+{% block og_title %}{{ doc_title }} — mandari Dokumentation{% endblock %}
+{% block meta_description %}mandari Dokumentation: OParl, öffentliche APIs, Tutorials und Self-Hosting.{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10">
+        <!-- Sidebar -->
+        <aside class="mb-8 lg:mb-0">
+            <div class="lg:sticky lg:top-24">
+                <p class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Dokumentation</p>
+                <nav class="space-y-5">
+                    {% for section, entries in docs_nav %}
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">{{ section }}</p>
+                        <ul class="space-y-0.5">
+                            {% for slug, title in entries %}
+                            <li>
+                                <a href="/docs/{% if slug %}{{ slug }}/{% endif %}"
+                                   class="block px-2.5 py-1.5 text-sm rounded-lg transition-colors
+                                       {% if slug == active_slug %}bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium{% else %}text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800{% endif %}">
+                                    {{ title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                </nav>
+                <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-400 dark:text-gray-500">
+                    Fehlt etwas? Die Doku lebt im
+                    <a href="https://github.com/mandariOSS/marketing-website" class="text-primary-600 dark:text-primary-400 hover:underline">Repository</a> —
+                    Pull Requests willkommen.
+                </div>
+            </div>
+        </aside>
+
+        <!-- Inhalt -->
+        <article class="prose prose-gray dark:prose-invert max-w-none
+                        prose-headings:scroll-mt-24 prose-a:text-primary-600 dark:prose-a:text-primary-400
+                        prose-code:before:content-none prose-code:after:content-none
+                        prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                        prose-pre:bg-gray-900 prose-pre:text-gray-100">
+            {{ content_html|safe }}
+        </article>
+    </div>
+</div>
+{% endblock %}
