@@ -1,7 +1,7 @@
 {% load wagtailcore_tags %}
-{# Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
+{% comment %} Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
    Mobile: horizontal scrollbar (overflow-x-auto + min-w).
-   Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. #}
+   Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. {% endcomment %}
 <section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {% if self.header %}{% include_block self.header %}{% endif %}

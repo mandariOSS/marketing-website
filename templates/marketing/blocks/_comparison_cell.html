@@ -1,6 +1,6 @@
-{# Eine Zelle der Vergleichstabelle: Status (yes / no / unknown) + optionaler Zusatztext.
+{% comment %} Eine Zelle der Vergleichstabelle: Status (yes / no / unknown) + optionaler Zusatztext.
    "unknown" wird bewusst neutral-grau dargestellt und verweist auf die Fußnote —
-   keine Negativbehauptung über den Anbieter. #}
+   keine Negativbehauptung über den Anbieter. {% endcomment %}
 <td class="py-3.5 px-4 sm:px-6 align-top">
     {% if cell.status == 'yes' %}
     <span class="inline-flex items-center gap-1.5 font-semibold text-green-700 dark:text-green-400">
