@@ -1,4 +1,5 @@
 {# Single Mandari card — used by mandari_cards & two_column_use_case #}
+{% load typo %}
 {% with card=card.value|default:card %}
 <div class="bg-white dark:bg-gray-800 rounded-2xl border-2 border-{{ card.color|default:'primary' }}-200 dark:border-{{ card.color|default:'primary' }}-800 p-8 relative overflow-hidden flex flex-col">
     <div class="absolute top-0 right-0 w-32 h-32 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/30 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
@@ -28,7 +29,7 @@
         <div class="w-14 h-14 bg-{{ card.color|default:'primary' }}-100 dark:bg-{{ card.color|default:'primary' }}-900/50 rounded-2xl flex items-center justify-center mb-4">
             <i data-lucide="{{ card.icon }}" class="w-7 h-7 text-{{ card.color|default:'primary' }}-600 dark:text-{{ card.color|default:'primary' }}-400"></i>
         </div>
-        <h3 class="text-xl 2xl:text-2xl font-bold text-gray-900 dark:text-white mb-2 break-words hyphens-auto" lang="de">{{ card.title }}</h3>
+        <h3 class="text-xl 2xl:text-2xl font-bold text-gray-900 dark:text-white mb-2 break-words hyphens-auto" lang="de">{{ card.title|shy }}</h3>
         {% if card.subtitle %}<p class="text-sm text-{{ card.color|default:'primary' }}-600 dark:text-{{ card.color|default:'primary' }}-400 font-medium mb-4 break-words">{{ card.subtitle }}</p>{% endif %}
         {% if card.description %}<p class="text-gray-700 dark:text-gray-300 mb-6">{{ card.description }}</p>{% endif %}
         {% if card.bullets %}
