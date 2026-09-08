@@ -30,6 +30,9 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
+        run: python scripts/check_template_comments.py templates
+
       - name: Tailwind-CSS bauen (wie im Docker-Build)
         run: |
           npm ci
