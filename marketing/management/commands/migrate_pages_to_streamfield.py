@@ -2049,10 +2049,14 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("In Prüfung", "search", "gray")],
                          description="Niederschriftsentwurf aus der Audioaufzeichnung, Zusammenfassungen von Vorlagen für den Sitzungsdienst.",
                          cta_label="Issue #49", cta_url="https://github.com/mandariOSS/mandari/issues/49", cta_icon="github"),
-                    card(color="blue", icon="smartphone", title="Selbst-Abstimmung am eigenen Gerät", subtitle="nach 1.0",
-                         status_badges=[sbadge("In Prüfung", "search", "gray")],
-                         description="Mitglieder stimmen in der Sitzung am eigenen Gerät ab, Ergebnisse fließen direkt ins Protokoll.",
-                         cta_label="Issue #92", cta_url="https://github.com/mandariOSS/mandari/issues/92", cta_icon="github"),
+                    card(color="blue", icon="video", title="Hybride und digitale Gremiensitzungen", subtitle="2027",
+                         status_badges=[sbadge("Geplant", "calendar", "amber")],
+                         description="Sitzungsformat mit Landesprofil, Live-Cockpit der Sitzungsleitung, Abstimmung am eigenen Gerät, Videokonferenz-Anbindung, Livestream mit Sprungmarken, automatische Niederschriftsvermerke.",
+                         cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/156", cta_icon="github"),
+                    card(color="blue", icon="file-signature", title="Vollständige Ratsarbeit", subtitle="2027",
+                         status_badges=[sbadge("Geplant", "calendar", "amber")],
+                         description="Vorlagenarten mit Nummernkreisen und Word-Import, Mitzeichnung mit parallelen Stationen, Sitzungsgeld mit Fahrtkosten und Verdienstausfall, elektronische Signatur, E-Akte-Übergabe.",
+                         cta_label="Meilenstein ansehen", cta_url="https://github.com/mandariOSS/mandari/milestones", cta_icon="github"),
                 ],
             }),
             ("mandari_cards", {
@@ -2073,9 +2077,9 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Termine, Vorlagen, Suche und Benachrichtigungen aufs Smartphone; später Mandatsträger-Modus mit Offline-Sitzungsmappen.",
                          cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/113", cta_icon="github"),
-                    card(color="green", icon="database", title="mandari Data: Open-Data-Portal", subtitle="2027",
+                    card(color="green", icon="database", title="mandari Data: Open-Data-Plattform", subtitle="2027",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
-                         description="Ratsdaten automatisch als Open-Data-Katalog nach DCAT-AP.de, harvestbar durch Landesportale und GovData, plus eigene Verwaltungsdatensätze.",
+                         description="Offene Daten jeder Art (Tabellen, Geodaten, Dokumente, Dienste, Sensordaten) mit Daten-APIs, Redaktionsworkflow, DCAT-AP.de und GovData-Anbindung. Ratsdaten fließen automatisch ein.",
                          cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/112", cta_icon="github"),
                     card(color="green", icon="languages", title="Vorlagen in einfacher Sprache", subtitle="nach 1.0",
                          status_badges=[sbadge("In Prüfung", "search", "gray")],
@@ -2105,6 +2109,10 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Prüfung von Web, API, Anmeldung und Mandantentrennung, Zusammenfassung im Trust Center, SBOM automatisiert je Release.",
                          cta_label="Issue #97", cta_url="https://github.com/mandariOSS/mandari/issues/97", cta_icon="github"),
+                    card(color="primary", icon="code-2", title="Code-Qualität und Frontend-Architektur", subtitle="Q4/2026 – Q1/2027",
+                         status_badges=[sbadge("Zugesagt", "badge-check", "green")],
+                         description="Sicherheits-Header und Content-Security-Policy in der Anwendung, echte Testgates, Komponentenbibliothek, Auslagerung von JavaScript und CSS, Typisierung, nachvollziehbare Lieferkette. Erste Schritte sind umgesetzt.",
+                         cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/177", cta_icon="github"),
                     card(color="primary", icon="tag", title="Release- und Support-Politik", subtitle="Q4/2026",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Versionierung, Kadenz, Fristen für Sicherheitsupdates, Stabilität der Schnittstellen, abonnierbare Sicherheitsmeldungen.",
@@ -2129,7 +2137,9 @@ def get_marketing_definitions() -> dict:
                     "<li><strong>OParl-Adapter erweitern:</strong> läuft weiter und wird zum Programm „Adapter für Ratsinformationssysteme ohne OParl“ mit eigenem Epic ausgebaut.</li>"
                     "<li><strong>WCAG-AA-Audit (Q4/2026):</strong> unverändert, jetzt als Zusage für Session; Insight und Work folgen 2026/27.</li>"
                     "<li><strong>i18n Englisch:</strong> zurückgestellt auf „In Prüfung“. Deutsche Kommunen sind unser Markt, Englisch bringt aktuell keinen Kundennutzen.</li>"
-                    "<li><strong>Neu aufgenommen:</strong> Vergabeunterlagen, SLA, Release-Politik, Single Sign-on, Penetrationstest, Open-Data-Portal, native App.</li>"
+                    "<li><strong>Neu aufgenommen:</strong> Vergabeunterlagen, SLA, Release-Politik, Single Sign-on, Penetrationstest, Open-Data-Plattform, native App, hybride Gremiensitzungen, vollständige Ratsarbeit, Code-Qualität.</li>"
+                    "<li><strong>Selbst-Abstimmung am eigenen Gerät:</strong> aus „In Prüfung“ in das Epic „Hybride Sitzungen“ überführt und dort mit hoher Priorität geplant.</li>"
+                    "<li><strong>Open-Data-Portal:</strong> präzisiert zur vollwertigen Plattform für alle Verwaltungsdaten, nicht nur Ratsdaten.</li>"
                     "<li><strong>Version 1.0:</strong> bleibt bei 2027; ein konkretes Quartal nennen wir, sobald der Pilotbetrieb läuft.</li>"
                     "</ul>"
                     "<h2>Was wir bewusst nicht bauen</h2>"
