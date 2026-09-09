@@ -483,6 +483,8 @@ class PricingTierBlock(StructBlock):
     price_main = CharBlock(required=True, help_text="Hauptpreis, z.B. '39,90 €' oder '0 €'")
     price_unit = CharBlock(required=False, help_text="z.B. '/Monat' oder 'für immer'")
     price_note = CharBlock(required=False, help_text="Kleiner Hinweis unter dem Preis")
+    price_net = CharBlock(required=False, help_text="Nettoausweis für Vergabevergleiche, z. B. '33,53 € netto zzgl. 19 % USt'")
+    price_alt = CharBlock(required=False, help_text="Alternative Zahlweise, z. B. 'oder 399 €/Jahr – zwei Monate gespart'")
     description = TextBlock(required=False)
     features = ListBlock(CardBulletBlock(), required=False)
     is_highlighted = BooleanBlock(required=False, help_text="Mit Empfohlen-Sticker + shadow")
@@ -570,6 +572,65 @@ class ComparisonTableBlock(StructBlock):
         label = "Vergleichstabelle (mandari vs. Anbieter)"
 
 
+# ─────────────────── Feature-Matrix (Zeilen = Funktionen, Spalten = Module/Modelle) ───────────────────
+
+
+class FeatureCellBlock(StructBlock):
+    """Eine Zelle der Feature-Matrix."""
+
+    status = ChoiceBlock(
+        choices=[
+            ("yes", "✓ verfügbar"),
+            ("partial", "◐ teilweise / Basis"),
+            ("planned", "○ geplant"),
+            ("no", "– nicht vorgesehen"),
+            ("info", "nur Text (z. B. Zuständigkeit)"),
+        ],
+        default="yes",
+    )
+    note = CharBlock(required=False, help_text="Kurzer Zusatz, z. B. 'Q4/2026' oder 'Kommune'")
+
+    class Meta:
+        icon = "tick"
+        label = "Matrix-Zelle"
+
+
+class FeatureRowBlock(StructBlock):
+    """Eine Zeile: Funktion plus eine Zelle je Spalte (Reihenfolge wie `columns`)."""
+
+    label = CharBlock(required=True, help_text="Funktion oder Kriterium")
+    description = CharBlock(required=False, help_text="Optionale Erläuterung unter dem Namen")
+    cells = ListBlock(FeatureCellBlock(), min_num=2, max_num=4)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Matrix-Zeile"
+
+
+class FeatureGroupBlock(StructBlock):
+    title = CharBlock(required=True, help_text="Gruppen-Überschrift, z. B. 'Sitzungsdienst'")
+    rows = ListBlock(FeatureRowBlock(), min_num=1)
+
+    class Meta:
+        icon = "folder-open-1"
+        label = "Funktionsgruppe"
+
+
+class FeatureMatrixBlock(StructBlock):
+    """Funktionsmatrix: Spalten frei benennbar (Insight/Work/Session oder Betriebsmodelle)."""
+
+    header = SectionHeaderBlock(required=False)
+    columns = ListBlock(CharBlock(), min_num=2, max_num=4, help_text="Spaltentitel in Reihenfolge der Zellen")
+    groups = ListBlock(FeatureGroupBlock(), min_num=1)
+    show_legend = BooleanBlock(required=False, default=True, help_text="Legende der Symbole anzeigen")
+    footnote = RichTextBlock(required=False, features=["bold", "italic", "link"])
+
+    class Meta:
+        template = "marketing/blocks/feature_matrix.html"
+        icon = "table"
+        label = "Feature-Matrix"
+
+
 # ─────────────────────── Composite block container ──────────────────────
 
 
@@ -585,6 +646,7 @@ class MarketingStreamBlock(StreamBlock):
     stats_grid = StatsGridBlock()
     pricing_table = PricingTableBlock()
     comparison_table = ComparisonTableBlock()
+    feature_matrix = FeatureMatrixBlock()
     accordion_faq = AccordionFAQBlock()
     gradient_cta = GradientCTABlock()
 

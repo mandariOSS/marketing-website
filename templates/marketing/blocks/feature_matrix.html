@@ -1,0 +1,64 @@
+{% load wagtailcore_tags %}
+{% comment %} Feature-Matrix: Zeilen = Funktionen, Spalten = Module oder Betriebsmodelle.
+   Nur statische Tailwind-Klassen. Mobile: horizontal scrollbar. {% endcomment %}
+<section class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50"{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %}>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+
+        <div class="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+            <table class="w-full min-w-[640px] text-sm border-collapse">
+                <caption class="sr-only">Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}</caption>
+                <thead>
+                    <tr class="border-b-2 border-gray-200 dark:border-gray-700">
+                        <th scope="col" class="text-left py-4 px-4 sm:px-6 font-semibold text-gray-500 dark:text-gray-400 w-[34%]">Funktion</th>
+                        {% for col in self.columns %}
+                        <th scope="col" class="text-left py-4 px-4 sm:px-6 font-bold text-gray-900 dark:text-white">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in self.groups %}
+                    <tr class="bg-gray-50 dark:bg-gray-900/40">
+                        <th scope="colgroup" colspan="{{ self.columns|length|add:1 }}" class="text-left py-2.5 px-4 sm:px-6 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">{{ group.title }}</th>
+                    </tr>
+                    {% for row in group.rows %}
+                    <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
+                        <th scope="row" class="text-left py-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">
+                            {{ row.label }}
+                            {% if row.description %}<span class="block text-xs font-normal text-gray-500 dark:text-gray-400 mt-0.5">{{ row.description }}</span>{% endif %}
+                        </th>
+                        {% for cell in row.cells %}
+                        <td class="py-3.5 px-4 sm:px-6 align-top">
+                            {% if cell.status == "yes" %}
+                            <span class="inline-flex items-center gap-1.5 text-green-700 dark:text-green-400 font-medium"><i data-lucide="check-circle" class="w-4 h-4 flex-none" aria-hidden="true"></i><span class="sr-only">verfügbar</span>{% if cell.note %}<span class="text-gray-700 dark:text-gray-300 font-normal">{{ cell.note }}</span>{% endif %}</span>
+                            {% elif cell.status == "partial" %}
+                            <span class="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium"><i data-lucide="circle-dot" class="w-4 h-4 flex-none" aria-hidden="true"></i><span class="sr-only">teilweise</span><span class="text-gray-700 dark:text-gray-300 font-normal">{{ cell.note|default:"teilweise" }}</span></span>
+                            {% elif cell.status == "planned" %}
+                            <span class="inline-flex items-center gap-1.5 text-primary-700 dark:text-primary-300 font-medium"><i data-lucide="circle-dashed" class="w-4 h-4 flex-none" aria-hidden="true"></i><span class="sr-only">geplant</span><span class="font-normal">{{ cell.note|default:"geplant" }}</span></span>
+                            {% elif cell.status == "no" %}
+                            <span class="inline-flex items-center gap-1.5 text-gray-400 dark:text-gray-500"><i data-lucide="minus" class="w-4 h-4 flex-none" aria-hidden="true"></i><span class="sr-only">nicht vorgesehen</span>{% if cell.note %}<span>{{ cell.note }}</span>{% endif %}</span>
+                            {% else %}
+                            <span class="text-gray-700 dark:text-gray-300">{{ cell.note }}</span>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if self.show_legend %}
+        <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-green-600" aria-hidden="true"></i>verfügbar</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-dot" class="w-3.5 h-3.5 text-amber-600" aria-hidden="true"></i>teilweise / Basisfunktion</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-dashed" class="w-3.5 h-3.5 text-primary-600" aria-hidden="true"></i>geplant (Zeitraum siehe Roadmap)</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="minus" class="w-3.5 h-3.5" aria-hidden="true"></i>nicht vorgesehen</span>
+        </div>
+        {% endif %}
+        {% if self.footnote %}
+        <div class="mt-3 text-xs text-gray-500 dark:text-gray-400 prose-a:underline max-w-none">{{ self.footnote|richtext }}</div>
+        {% endif %}
+    </div>
+</section>

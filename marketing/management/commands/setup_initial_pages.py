@@ -113,6 +113,12 @@ MARKETING_PAGE_META = [
     # ── Vertrauen ─────────────────────────────────────────────────────
     # /sicherheit/ wurde in /trust/ integriert (komplette Doppelung)
     {
+        "title": "Vergabe & Unterlagen",
+        "slug": "vergabe",
+        "seo_title": "Vergabe & Unterlagen – Dokumente für Beschaffung und Prüfung | mandari",
+        "search_description": "Muster-AVV, TOM, Löschkonzept, Subprozessoren, SBOM, Barrierefreiheitserklärung und Funktionsübersicht für Vergabestellen, IT-Leitungen und Datenschutzbeauftragte.",
+    },
+    {
         "title": "Trust Center",
         "slug": "trust",
         "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",

@@ -17,6 +17,8 @@
                     {% if tier.subtitle %}<p class="text-sm text-{{ tier.color|default:'primary' }}-600 dark:text-{{ tier.color|default:'primary' }}-400 font-medium mb-6">{{ tier.subtitle }}</p>{% endif %}
                     <div class="mb-6">
                         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1"><span class="text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white tabular-nums whitespace-nowrap">{{ tier.price_main }}</span>{% if tier.price_unit %}<span class="text-gray-500 dark:text-gray-400">{{ tier.price_unit }}</span>{% endif %}</div>
+                        {% if tier.price_net %}<p class="text-sm text-gray-600 dark:text-gray-300 mt-1 tabular-nums">{{ tier.price_net }}</p>{% endif %}
+                        {% if tier.price_alt %}<p class="text-sm text-{{ tier.color|default:'primary' }}-700 dark:text-{{ tier.color|default:'primary' }}-300 font-medium mt-1">{{ tier.price_alt }}</p>{% endif %}
                         {% if tier.price_note %}<p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ tier.price_note }}</p>{% endif %}
                     </div>
                     {% if tier.description %}<p class="text-gray-700 dark:text-gray-300 mb-6">{{ tier.description }}</p>{% endif %}

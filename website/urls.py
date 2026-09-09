@@ -63,7 +63,7 @@ urlpatterns = [
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
     path("loesungen/", RedirectView.as_view(url="/produkt/#zielgruppen", permanent=True)),
-    path("team/", RedirectView.as_view(url="/ueber-uns/#founder", permanent=True)),
+    path("team/", RedirectView.as_view(url="/ueber-uns/", permanent=True)),
     path("danksagungen/", RedirectView.as_view(url="/open-source/#danke", permanent=True)),
     # Phase 2 — weitere Konsolidierungen (Sicherheit komplett in Trust integriert,
     # FAQ aufgelöst — Page-spezifische FAQs direkt auf den jeweiligen Pages)
