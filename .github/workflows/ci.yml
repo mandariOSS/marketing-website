@@ -89,11 +89,12 @@ jobs:
           # URL -> Textbausteine, die im gerenderten HTML stehen muessen
           checks = {
               "/": ["Demo anfragen", "Zum RIS-Vergleich", "Ehrlich in Beta"],
-              "/produkt/": ["Mandari Insight"],
-              "/preise/": ["39,90"],
+              "/produkt/": ["Mandari Insight", "Welches Modul kann was"],
+              "/preise/": ["39,90", "33,53", "Wer macht was"],
               "/kommunen/": ["Ratsinformationssystem"],
               "/migration/": ["Bestandsaufnahme"],
-              "/roadmap/": ["Session-Pilot"],
+              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb"],
+              "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
               "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
               "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium"],
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
