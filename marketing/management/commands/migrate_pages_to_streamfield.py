@@ -1948,9 +1948,10 @@ def get_marketing_definitions() -> dict:
                 ],
             }),
             ("richtext_section", {
-                "anchor_id": "vertragsgrundlagen",
+                "header": hdr(badge_text="Vertrag", badge_icon="file-signature", badge_color="primary",
+                              title="Vertragsgrundlagen und Ausstieg", anchor_id="vertragsgrundlagen"),
+                "background": "white",
                 "body": (
-                    "<h2>Vertragsgrundlagen und Ausstieg</h2>"
                     "<p><strong>Software:</strong> mandari steht vollständig unter der AGPL-3.0. Die Nutzung der Software ist lizenzkostenfrei, der Quellcode ist öffentlich. "
                     "Das ist zugleich Ihre Absicherung gegen Anbieterausfall: Es braucht kein Software-Escrow, der Code liegt offen auf GitHub.</p>"
                     "<p><strong>Betrieb:</strong> Für Managed Hosting gelten unsere <a href=\"/agb/\">AGB</a> und der <a href=\"/avv/\">AVV</a>. "
@@ -2119,9 +2120,10 @@ def get_marketing_definitions() -> dict:
                 ],
             }),
             ("richtext_section", {
-                "anchor_id": "aenderungen",
+                "header": hdr(badge_text="Änderungsprotokoll", badge_icon="history", badge_color="primary",
+                              title="Was sich gegenüber der Roadmap vom Juli 2026 geändert hat", anchor_id="aenderungen"),
+                "background": "white",
                 "body": (
-                    "<h2>Was sich gegenüber der Roadmap vom Juli 2026 geändert hat</h2>"
                     "<ul>"
                     "<li><strong>Self-Hosting-Guide (Q3/2026):</strong> geliefert, in erweiterter Form als eigene Dokumentationsplattform docs.mandari.de.</li>"
                     "<li><strong>OParl-Adapter erweitern:</strong> läuft weiter und wird zum Programm „Adapter für Ratsinformationssysteme ohne OParl“ mit eigenem Epic ausgebaut.</li>"
