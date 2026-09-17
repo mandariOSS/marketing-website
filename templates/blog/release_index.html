@@ -101,4 +101,136 @@
         {% endif %}
     </div>
 </section>
+
+<!-- Release- und Support-Politik (Kurzfassung; vollständig im Hauptrepo) -->
+<section id="release-politik" class="py-16 lg:py-20 bg-gray-50 dark:bg-gray-800/50 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-4">
+                <i data-lucide="calendar-check" class="w-4 h-4" aria-hidden="true"></i>
+                Verbindlich seit 17.09.2026, gültig ab Release 0.10.0
+            </span>
+            <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-3">Release- und Support-Politik</h2>
+            <p class="text-gray-600 dark:text-gray-300">
+                Kommunen planen Fachverfahren über Jahre. Deshalb legen wir fest, wie mandari versioniert wird,
+                wie oft Releases erscheinen, wie lange eine Version unterstützt wird, in welcher Frist
+                Sicherheitslücken geschlossen werden und wie lange Schnittstellen stabil bleiben.
+            </p>
+        </div>
+
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-primary-200 dark:border-primary-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-primary-50 dark:bg-primary-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="git-branch" class="w-5 h-5 text-primary-600 dark:text-primary-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Versionierung</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Semantic Versioning 2.0 (<span class="font-mono">MAJOR.MINOR.PATCH</span>): MAJOR bei Migration mit Handarbeit,
+                        Bruch einer Schnittstelle oder Wegfall einer Funktion; MINOR für neue Funktionen ohne Handarbeit;
+                        PATCH für Fehler- und Sicherheitskorrekturen. Entwicklungsstände sind keine Releases.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-blue-200 dark:border-blue-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 dark:bg-blue-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="calendar-clock" class="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Release-Kadenz</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        MINOR alle zwei Monate, jeweils in der ersten Woche. PATCH bei Bedarf innerhalb der Sicherheitsfristen.
+                        MAJOR mindestens sechs Monate vorher angekündigt, mit Migrationsleitfaden.
+                        Managed Hosting wird spätestens 14 Tage nach einem Release aktualisiert.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-green-200 dark:border-green-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 dark:bg-green-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="life-buoy" class="w-5 h-5 text-green-600 dark:text-green-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Support je Version</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Jüngste MINOR: Funktionen, Fehlerbehebungen, Sicherheitskorrekturen bis zur nächsten MINOR.
+                        Vorherige MINOR: Sicherheitskorrekturen sechs Monate ab Erscheinen der Nachfolgerin.
+                        LTS ab 1.0: 24 Monate, jährlich eine neue LTS-Linie.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-rose-200 dark:border-rose-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-rose-50 dark:bg-rose-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-rose-600 dark:text-rose-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Sicherheitsfristen</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Korrektur in Produktion und als PATCH nach CVSS 3.1: kritisch (≥ 9,0) in 72 Stunden,
+                        hoch (7,0–8,9) in 7 Tagen, mittel (4,0–6,9) in 30 Tagen, niedrig im nächsten regulären Release.
+                        Frist ab Bestätigung der Meldung; Advisory mit der Korrektur, CVE ab „hoch“.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-amber-200 dark:border-amber-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 dark:bg-amber-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="plug-zap" class="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Schnittstellen und Abkündigung</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        OParl-API: brechende Änderungen 12 Monate vorher angekündigt, alte Version bleibt parallel erreichbar.
+                        Session- und Fraktions-API: 6 Monate, alte Pfadversion parallel. Abkündigungen stehen im Changelog
+                        und in der API-Antwort als Header <span class="font-mono">Deprecation</span> und <span class="font-mono">Sunset</span>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl border-2 border-teal-200 dark:border-teal-800 p-6">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-teal-50 dark:bg-teal-900/20 rounded-bl-full -mr-8 -mt-8" aria-hidden="true"></div>
+                <div class="relative">
+                    <div class="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center mb-4">
+                        <i data-lucide="bell-ring" class="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Sicherheitsmeldungen abonnieren</h3>
+                    <ul class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                        <li>GitHub Security Advisories: „Watch → Custom → Security alerts“</li>
+                        <li><a href="https://github.com/mandariOSS/mandari/security/advisories" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Advisory-Feed</a>
+                            und <a href="https://github.com/mandariOSS/mandari/releases.atom" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">Release-Feed</a></li>
+                        <li>E-Mail-Verteiler <span class="font-mono">security-announce@mandari.de</span>, nur Ankündigungen</li>
+                        <li>Meldungen an uns: <a href="/sicherheit/disclosure/" class="text-primary-600 dark:text-primary-400 hover:underline">security@mandari.de</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-4">
+            <a href="https://github.com/mandariOSS/mandari/blob/dev/docs/RELEASE_POLITIK.md" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="book-open" class="w-4 h-4" aria-hidden="true"></i>
+                Vollständige Release-Politik
+                <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            </a>
+            <a href="https://github.com/mandariOSS/mandari/blob/dev/CHANGELOG.md" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="file-text" class="w-4 h-4" aria-hidden="true"></i>
+                Changelog (Keep a Changelog)
+                <i data-lucide="external-link" class="w-3.5 h-3.5" aria-hidden="true"></i>
+            </a>
+            <a href="/sla/"
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-primary-700 text-gray-900 dark:text-white font-medium rounded-xl transition-colors">
+                <i data-lucide="activity" class="w-4 h-4" aria-hidden="true"></i>
+                Service Level Agreement
+            </a>
+        </div>
+    </div>
+</section>
 {% endblock %}
