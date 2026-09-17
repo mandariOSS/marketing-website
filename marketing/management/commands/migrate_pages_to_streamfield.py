@@ -18,6 +18,15 @@ from __future__ import annotations
 from django.core.management.base import BaseCommand
 from wagtail.blocks import StreamValue
 
+from marketing.sla_content import (
+    SLA_DATE,
+    SLA_PDF_URL,
+    SLA_SECTIONS,
+    SLA_SOURCE_URL,
+    SLA_VERSION,
+    sla_toc_items,
+)
+
 
 # ════════════════════════════════════════════════════════════════════════
 #  HILFSFUNKTIONEN — wiederverwendbare Block-Strukturen
@@ -430,6 +439,64 @@ def _build_vergleich_uebersicht():
 # ════════════════════════════════════════════════════════════════════════
 
 
+def _build_sla_page() -> list:
+    """Blöcke der Seite /sla/ aus der zentralen SLA-Quelle (marketing/sla_content.py)."""
+    blocks = [
+        ("hero", {
+            "badge_text": f"Vertragsanlage Service Level · Version {SLA_VERSION} vom {SLA_DATE}",
+            "badge_icon": "activity", "badge_color": "primary",
+            "title": "Service Level Agreement", "title_highlight": "für das Managed Hosting.",
+            "subline": "Was wir im Betrieb zusagen: Verfügbarkeit je Stufe mit nachprüfbarer Messregel, Wartungsfenster, Störungsklassen mit Reaktions- und Wiederherstellungszeiten, Datensicherung, Servicezeiten und Gutschriften bei Unterschreitung.",
+            "subline_secondary": "Diese Seite richtet sich an Vergabestellen, IT-Leitungen und Verwaltungen, die Managed Hosting prüfen. Preise stehen bewusst nicht hier.",
+            "ctas": [cta("Live-Status ansehen", "https://status.mandari.de", "activity", "primary"),
+                     cta("PDF-Fassung", SLA_PDF_URL, "download", "secondary"),
+                     cta("Rückfrage stellen", "/kontakt/?subject=SLA", "message-square", "outline")],
+            "background_color": "primary",
+        }),
+        ("trust_banner", {"color": "primary", "items": [
+            trust_item("activity", "99,5 %", "Verfügbarkeit Standard je Monat"),
+            trust_item("timer", "1 Stunde", "Reaktion bei Ausfall (Klasse 1)"),
+            trust_item("database-backup", "Täglich", "Sicherung an zwei Standorten, 30 Tage"),
+            trust_item("badge-percent", "Bis 50 %", "Gutschrift bei Unterschreitung"),
+        ]}),
+        ("disclaimer_box", {
+            "icon": "info", "color": "gray",
+            "body": (
+                "<p><strong>Stand:</strong> Version " + SLA_VERSION + ", beschlossen am " + SLA_DATE + ". "
+                "Verbindlich mit Veröffentlichung auf dieser Seite und als Anlage „Service Level“ zu den "
+                "<a href=\"/agb/\">AGB</a>. Messquelle ist die öffentliche Statusseite "
+                "<a href=\"https://status.mandari.de\" rel=\"noopener\" target=\"_blank\">status.mandari.de</a>.</p>"
+            ),
+        }),
+        ("table_of_contents", {"title": "Inhalt", "items": sla_toc_items()}),
+    ]
+    for section in SLA_SECTIONS:
+        blocks.append(("numbered_article", {
+            "number": section["number"], "anchor": section["anchor"],
+            "title": section["title"], "body": section["body"],
+        }))
+    blocks += [
+        ("disclaimer_box", {
+            "icon": "download", "color": "primary",
+            "body": (
+                "<p><strong>PDF-Fassung:</strong> <a href=\"" + SLA_PDF_URL + "\">Service Level Agreement, Version "
+                + SLA_VERSION + " vom " + SLA_DATE + " (PDF)</a> — für Vergabeakten und Vertragsanlagen. "
+                "Druckansicht: <a href=\"/sla/druck/\">/sla/druck/</a>. Quelltext der verbindlichen Fassung: "
+                "<a href=\"" + SLA_SOURCE_URL + "\" rel=\"noopener\" target=\"_blank\">docs/SLA.md</a> im Hauptrepository.</p>"
+            ),
+        }),
+        ("gradient_cta", {
+            "title": "Fragen zum Service Level?",
+            "subline": "Wir erläutern Messregel, Stufen und Eskalation gern im Gespräch und prüfen Ihre Vertragsmuster im Einzelfall.",
+            "ctas": [cta("Rückfrage stellen", "/kontakt/?subject=SLA", "message-square", "primary"),
+                     cta("Trust Center", "/trust/", "shield-check", "outline"),
+                     cta("Vergabe & Unterlagen", "/vergabe/", "folder-check", "outline")],
+            "gradient_from": "primary",
+        }),
+    ]
+    return blocks
+
+
 def get_marketing_definitions() -> dict:
     """Marketing-Pages (MarketingPage Model) → body StreamField."""
 
@@ -648,7 +715,7 @@ def get_marketing_definitions() -> dict:
                         frow("Für wen", cell("info", "IT-affine Kommunen, Rechenzentren, Community"), cell("info", "Kommunen ohne eigenen Betrieb, Fraktionen"), cell("info", "Kommunen mit Vorgaben zum Eigenbetrieb")),
                     ),
                 ],
-                "footnote": "<p>Betriebsdokumentation für Self-Hosting und On-Premises: <a href=\"https://docs.mandari.de/betrieb/\">docs.mandari.de/betrieb</a>. Unterlagen für Beschaffung und Prüfung: <a href=\"/vergabe/\">Vergabe und Unterlagen</a>.</p>",
+                "footnote": "<p>Verfügbarkeit, Reaktionszeiten und Gutschriften im Managed Hosting regelt das <a href=\"/sla/\">Service Level Agreement</a>. Betriebsdokumentation für Self-Hosting und On-Premises: <a href=\"https://docs.mandari.de/betrieb/\">docs.mandari.de/betrieb</a>. Unterlagen für Beschaffung und Prüfung: <a href=\"/vergabe/\">Vergabe und Unterlagen</a>.</p>",
             }),
             ("two_column_use_case", {
                 "header": hdr(badge_text="Du wählst, wie Mandari läuft", badge_icon="git-branch",
@@ -1221,10 +1288,10 @@ def get_marketing_definitions() -> dict:
                          description="RPO, RTO, Aufbewahrungsfristen — was im Ernstfall wirklich passiert.",
                          cta_label="Zum Abschnitt", cta_url="#backup", cta_icon="arrow-right"),
                     card(color="rose", icon="activity", title="Verfügbarkeit",
-                         description="SLA-Versprechen für die Beta-Phase und für die produktive Nutzung.",
+                         description="99,5 % je Monat im Managed Hosting, gemessen über die öffentliche Statusseite — mit Störungsklassen, Reaktionszeiten und Gutschriften im SLA.",
                          cta_label="Zum Abschnitt", cta_url="#availability", cta_icon="arrow-right"),
-                    card(color="teal", icon="award", title="Audits & Zertifikate",
-                         description="Was bereits geprüft wurde — und unser Fahrplan für externe Nachweise 2026/27.",
+                    card(color="teal", icon="award", title="Nachweise und Fahrplan",
+                         description="Was heute belegbar ist (TOM, Löschkonzept, Kryptokonzept, SBOM je Release) — und wann Penetrationstest und Notfallübung folgen.",
                          cta_label="Zum Abschnitt", cta_url="#audits", cta_icon="arrow-right"),
                 ],
             }),
@@ -1322,15 +1389,17 @@ def get_marketing_definitions() -> dict:
                 "number": "5", "anchor": "availability",
                 "title": "Verfügbarkeit & Status",
                 "body": (
-                    "<p>Wir befinden uns in der Pilot-Phase und schulden vertraglich noch keine feste "
-                    "Verfügbarkeitsquote (siehe <a href=\"/agb/\">AGB</a>). Ein SLA-Dokument mit Verfügbarkeitszusage, "
-                    "Störungsklassen und Reaktionszeiten ist für die Version 1.0 in Vorbereitung "
-                    "(<a href=\"https://github.com/mandariOSS/mandari/issues/93\">öffentlich nachverfolgbar</a>). "
-                    "Was wir heute bieten:</p>"
+                    "<p><strong>Für das Managed Hosting sagen wir eine Verfügbarkeit von 99,5 % je Kalendermonat zu "
+                    "(Stufe Standard; Premium 99,7 %, Enterprise 99,9 %).</strong> Verbindlich geregelt ist das im "
+                    "<a href=\"/sla/\">Service Level Agreement</a> (Version " + SLA_VERSION + " vom " + SLA_DATE + "), "
+                    "das als Anlage „Service Level“ Bestandteil der <a href=\"/agb/\">AGB</a> ist: Messregel und "
+                    "Ausnahmen, Wartungsfenster, Störungsklassen mit Reaktions- und Wiederherstellungszeiten, "
+                    "Datensicherung (RPO/RTO), Servicezeiten, Eskalation und Gutschriften bei Unterschreitung.</p>"
                     "<ul>"
-                    "<li>Öffentliche Live-Statusseite: <a href=\"https://status.mandari.de\">status.mandari.de</a> "
-                    "(auch unter <a href=\"/status/\">/status/</a> eingebunden)</li>"
-                    "<li>Wartungsfenster werden vorab angekündigt</li>"
+                    "<li>Gemessen wird über die öffentliche Statusseite <a href=\"https://status.mandari.de\">status.mandari.de</a> "
+                    "(Prüfintervall 60 Sekunden; auch unter <a href=\"/status/\">/status/</a> eingebunden) — "
+                    "sie zeigt die Verfügbarkeit der letzten 24 Stunden, 7 und 30 Tage je Dienst</li>"
+                    "<li>Wartungsfenster werden mindestens 48 Stunden vorab auf der Statusseite angekündigt</li>"
                     "<li>Vorfälle werden transparent dokumentiert — siehe <a href=\"/transparenz/\">Transparenzbericht</a></li>"
                     "</ul>"
                 ),
@@ -1338,11 +1407,28 @@ def get_marketing_definitions() -> dict:
             # ── 06 · Audits ──────────────────────────────────────────
             ("numbered_article", {
                 "number": "6", "anchor": "audits",
-                "title": "Audits & Zertifikate",
+                "title": "Nachweise und Fahrplan",
                 "body": (
                     "<p>Auch hier keine Marketing-Übertreibung: Eine ISO-27001- oder BSI-Grundschutz-"
-                    "Zertifizierung ist in der Beta-Phase nicht realistisch — "
-                    "und wir behaupten keine.</p>"
+                    "Zertifizierung haben wir noch nicht — und wir behaupten keine. Was heute belegbar ist, "
+                    "steht hier mit Link; was folgt, mit Termin.</p>"
+                    "<h3>Nachweise</h3>"
+                    "<ul>"
+                    "<li>Technische und organisatorische Maßnahmen (Anlage zum AVV): "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/DSGVO_TOM.md\">TOM</a></li>"
+                    "<li>Löschkonzept und Aufbewahrungsfristen: "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/DSGVO_LOESCHKONZEPT.md\">Löschkonzept</a></li>"
+                    "<li>Kryptokonzept nach BSI TR-02102-1: "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/KRYPTOKONZEPT.md\">Kryptokonzept</a></li>"
+                    "<li>Protokollierung mit Fristen und Zugriffsschutz: "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/PROTOKOLLE.md\">Protokollkonzept</a></li>"
+                    "<li>Software-Stückliste (SBOM, CycloneDX) je Release als Anhang "
+                    "<code>sbom-*.cdx.json</code> bei den <a href=\"https://github.com/mandariOSS/mandari/releases\">GitHub-Releases</a></li>"
+                    "<li>Informationssicherheitsbeauftragter benannt: der Betreiber persönlich (Geschäftsführung), seit 17.09.2026</li>"
+                    "<li>Verfügbarkeit und Reaktionszeiten: <a href=\"/sla/\">Service Level Agreement</a>; "
+                    "Versionierung, Support und Sicherheitsfristen: <a href=\"/releases/#release-politik\">Release- und Support-Politik</a></li>"
+                    "</ul>"
+                    "<h3>Was wir heute tun</h3>"
                     "<ul>"
                     "<li>Der gesamte Code ist Open Source (AGPL-3.0) und öffentlich auditierbar</li>"
                     "<li>Responsible-Disclosure-Programm nach RFC 9116: <a href=\"/sicherheit/disclosure/\">/sicherheit/disclosure/</a></li>"
@@ -1352,14 +1438,17 @@ def get_marketing_definitions() -> dict:
                     "<a href=\"https://github.com/mandariOSS/mandari/releases\">GitHub-Releases</a></li>"
                     "<li>Lizenzinventar nach REUSE-Standard: jede Datei im Repository trägt eine maschinenlesbare "
                     "Lizenz- und Urheberangabe, geprüft in der CI</li>"
-                    "<li>Externes Security-Audit ist für die General-Availability-Phase geplant</li>"
                     "</ul>"
-                    "<h3>Fahrplan Nachweise</h3>"
+                    "<h3>Fahrplan</h3>"
                     "<ul>"
-                    "<li>Q4/2026: Barrierefreiheitsprüfung nach BITV 2.0 (Session), Erklärung mit Prüfbericht</li>"
-                    "<li>2027: Externer Penetrationstest mit veröffentlichter Zusammenfassung</li>"
-                    "<li>2027: Selbstbewertung nach BSI IT-Grundschutz Basis-Absicherung; ISO 27001 abhängig vom Auftragsvolumen</li>"
-                    "<li>Fortschritt öffentlich: <a href=\"https://github.com/mandariOSS/mandari/issues/97\">Fahrplan Sicherheitsnachweise</a></li>"
+                    "<li>Q4 2026: SBOM je Release (erledigt); Selbstbewertung nach BSI IT-Grundschutz Basis-Absicherung veröffentlicht; "
+                    "Informationssicherheitsbeauftragter benannt (erledigt); Barrierefreiheitsprüfung nach BITV 2.0 (Session), Erklärung mit Prüfbericht</li>"
+                    "<li>Q2 2027: Notfallübung mit gemessener Wiederanlaufzeit — RTO/RPO als Zahl</li>"
+                    "<li>Q3 2027: Erster externer Penetrationstest (Bürgerportal und OParl-API, mandari work, mandari session, "
+                    "Mandantentrennung, Betrieb), kritische und hohe Befunde geschlossen; Management-Summary mit Datum hier</li>"
+                    "<li>Jährlich ab 2027: Penetrationstest wiederholen, Selbstbewertung fortschreiben</li>"
+                    "<li>Bei Bedarf: ISO 27001, abhängig vom Auftragsvolumen oder einer Vergabeanforderung</li>"
+                    "<li>Vollständiger Fahrplan mit Prüfumfang: <a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/SICHERHEITSNACHWEISE.md\">Fahrplan Sicherheitsnachweise</a></li>"
                     "</ul>"
                 ),
             }),
@@ -1372,6 +1461,14 @@ def get_marketing_definitions() -> dict:
                 "gradient_from": "primary",
             }),
         ],
+
+        # ════════════════════════════════════════════════════════════
+        # /sla/ — Service Level Agreement (Managed Hosting)
+        # Inhalt kommt zentral aus marketing/sla_content.py (Quelle:
+        # mandariOSS/mandari docs/SLA.md); dieselbe Quelle speist die
+        # Druckansicht /sla/druck/ und scripts/build_sla_pdf.py.
+        # ════════════════════════════════════════════════════════════
+        "sla": _build_sla_page(),
 
         # ════════════════════════════════════════════════════════════
         # /abuse/ — Missbrauch melden
@@ -1702,6 +1799,10 @@ def get_marketing_definitions() -> dict:
                                    cta_label="Beratung anfragen", cta_url="/kontakt/?subject=Custom-Adapter", cta_icon="mail"),
             }),
             ("disclaimer_box", {
+                "icon": "activity", "color": "primary",
+                "body": "<p><strong>Verbindliche Verfügbarkeit:</strong> Für das Managed Hosting gilt ein öffentliches <a href=\"/sla/\">Service Level Agreement</a> mit 99,5 % Verfügbarkeit je Monat, festen Reaktionszeiten und Gutschriften bei Unterschreitung.</p>",
+            }),
+            ("disclaimer_box", {
                 "icon": "info", "color": "amber",
                 "body": "<p><strong>Ehrlicher Stand (Beta 0.9):</strong> Mandari ist in der Pilot-Phase — aktuell ist noch keine Kommune produktiv live, zwei sind in Anbindung, weitere Gespräche laufen. Pilot-Kommunen erhalten Sonderkonditionen und gestalten die Roadmap mit. <a href=\"/kontakt/?subject=Pilot-Kommune\">Pilot-Kommune werden →</a></p>",
             }),
@@ -1906,6 +2007,10 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Verfügbar", "check", "green")],
                          description="Konformitätsstand, bekannte Einschränkungen, Feedback-Mechanismus und Schlichtungsstelle. Prüfung nach BITV 2.0 für Session ist für Q4/2026 geplant.",
                          cta_label="Erklärung lesen", cta_url="/barrierefreiheit/", cta_icon="arrow-right"),
+                    card(color="rose", icon="activity", title="Service Level Agreement",
+                         status_badges=[sbadge("Verfügbar", "check", "green")],
+                         description="Verfügbarkeit je Stufe mit Messregel, Wartungsfenster, Störungsklassen, Reaktions- und Wiederherstellungszeiten, Datensicherung, Gutschriften. Auch als PDF mit Versionsnummer.",
+                         cta_label="SLA lesen", cta_url="/sla/", cta_icon="arrow-right"),
                     card(color="rose", icon="bug", title="Responsible Disclosure und security.txt",
                          status_badges=[sbadge("Verfügbar", "check", "green")],
                          description="Meldeweg für Sicherheitslücken nach RFC 9116, Reaktionsfristen, Transparenzbericht mit Vorfällen und Behördenanfragen.",
@@ -1934,10 +2039,6 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("In Vorbereitung", "hammer", "amber")],
                          description="Alle laufenden, einmaligen und optionalen Positionen inklusive Session-Staffel und Support-Verträgen für On-Premises.",
                          cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/100", cta_icon="github"),
-                    card(color="amber", icon="activity", title="Service-Level-Vereinbarung",
-                         status_badges=[sbadge("In Vorbereitung", "hammer", "amber")],
-                         description="Verfügbarkeit, Wartungsfenster, Störungsklassen, Reaktions- und Wiederherstellungszeiten, Gutschriften.",
-                         cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/93", cta_icon="github"),
                     card(color="amber", icon="file-check", title="Eigenerklärungen und Referenzblatt",
                          status_badges=[sbadge("In Vorbereitung", "hammer", "amber")],
                          description="Eigenerklärung zu Ausschlussgründen und Eignung, Referenzliste mit klarer Trennung von angebundenen Datenquellen und Kunden.",
