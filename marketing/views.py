@@ -362,7 +362,8 @@ Acknowledgments: {site_url}/sicherheit/disclosure/#hall-of-fame
 
 # PGP-Fingerprint: 5D06 A2BC B71C 6095 7A23 0BD8 7E96 93FD 0505 3234
 # Eingangsbestätigung innerhalb von 3 Werktagen, erste Einschätzung mit
-# Schweregrad (CVSS 3.1) innerhalb von 7 Tagen.
+# Schweregrad (CVSS 3.1) innerhalb von 7 Tagen, Zwischenstand spätestens
+# nach zwei Wochen.
 # Korrektur nach Schweregrad: kritisch innerhalb von 72 Stunden, hoch
 # innerhalb von 7 Tagen, mittel innerhalb von 30 Tagen.
 # Vollständige Offenlegung 90 Tage nach Veröffentlichung des Fixes, früher

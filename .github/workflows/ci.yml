@@ -135,7 +135,7 @@ jobs:
           django.setup()
           from django.test import Client
           c = Client()
-          fristen = ["3 Werktage", "72 Stunden", "7 Tage", "30 Tage", "90 Tage nach"]
+          fristen = ["3 Werktage", "zwei Wochen", "72 Stunden", "7 Tage", "30 Tage", "90 Tage nach"]
           veraltet = ["5 Werktage", "14 Tage"]
           errors = []
           for url in ["/.well-known/security.txt", "/sicherheit/disclosure/"]:
@@ -143,9 +143,44 @@ jobs:
               if r.status_code != 200:
                   errors.append(f"{url}: HTTP {r.status_code}")
                   continue
-              body = r.content.decode("utf-8")
+              # Zeilenumbrüche und Einrückung der Vorlage zählen als ein Leerzeichen.
+              body = " ".join(r.content.decode("utf-8").split())
               errors += [f"{url}: '{f}' fehlt" for f in fristen if f not in body]
               errors += [f"{url}: veraltet '{v}'" for v in veraltet if v in body]
           assert not errors, "Sicherheitsfristen weichen ab: " + "; ".join(errors)
           print("OK: security.txt und Disclosure-Policy nennen die Fristen aus SECURITY.md")
+          EOF
+
+      - name: Urheber- und Lizenzangabe (Fußzeile wie in mandariOSS/mandari)
+        # Urheber ist Sven Konopka, Lizenz AGPL-3.0-or-later. Die Fußzeile muss das nennen, und jedes
+        # Urheberzeichen in einer versionierten HTML-Datei muss den Urheber nennen (Ausnahme:
+        # Namensnennung von OpenStreetMap).
+        run: |
+          python - <<'EOF'
+          import os, re, subprocess, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          errors = []
+          r = Client().get("/")
+          if r.status_code != 200:
+              errors.append(f"/: HTTP {r.status_code}")
+          else:
+              body = " ".join(r.content.decode("utf-8").split())
+              muster = r"&copy; 2025–\d{4} Sven Konopka\. mandari ist Open Source unter der Lizenz AGPL-3\.0-or-later\."
+              if not re.search(muster, body):
+                  errors.append("/: Fußzeile ohne Urheber Sven Konopka und AGPL-3.0-or-later")
+          dateien = subprocess.run(
+              ["git", "ls-files", "*.html"], capture_output=True, text=True, check=True
+          ).stdout.splitlines()
+          for datei in dateien:
+              with open(datei, encoding="utf-8", errors="replace") as fh:
+                  for nr, zeile in enumerate(fh, 1):
+                      if ("&copy;" in zeile or "©" in zeile) and not (
+                          "Sven Konopka" in zeile or "OpenStreetMap" in zeile
+                      ):
+                          errors.append(f"{datei}:{nr}: Urheberangabe ohne Sven Konopka")
+          assert not errors, "Urheberangabe weicht ab: " + "; ".join(errors)
+          print(f"OK: Fußzeile und {len(dateien)} HTML-Dateien nennen den Urheber")
           EOF
