@@ -1,8 +1,17 @@
 # Build & push the website image to GHCR on every push to main/dev.
 #
-# Tags:
-#   ghcr.io/mandarioss/website:<branch>              (moving tag, e.g. "main")
-#   ghcr.io/mandarioss/website:<branch>-<shortsha>   (immutable, e.g. "main-a1b2c3d")
+# Tags aus diesem Repository:
+#   ghcr.io/mandarioss/website:main              Push auf main (beweglich)
+#   ghcr.io/mandarioss/website:latest            Push auf main (beweglich, Vorgabe der Installation)
+#   ghcr.io/mandarioss/website:main-<shortsha>   Push auf main (unveränderlich, z. B. "main-a1b2c3d")
+#   ghcr.io/mandarioss/website:dev-<shortsha>    Push auf dev (unveränderlich)
+#
+# Die Installation (docker-compose.yml, Helm-Chart in mandariOSS/mandari) zieht mandari, ingestor
+# und website mit EINEM Tag. Deshalb setzt der Release-Workflow von mandariOSS/mandari für die
+# Website zusätzlich dieselben Tags wie für mandari und ingestor – Release-Versionen (v0.11.0),
+# latest, dev und die Commit-Tags seiner Läufe – jeweils als Kopie von :main (ohne Neubau).
+# Das bewegliche Tag :dev gehört damit zum Kanal "dev" der Installation; ein Push auf den
+# dev-Zweig dieses Repositorys überschreibt es nicht.
 
 name: Release
 
@@ -42,9 +51,14 @@ jobs:
         run: |
           SHORT_SHA="${GITHUB_SHA::7}"
           BRANCH="${GITHUB_REF_NAME}"
-          {
-            echo "tags=${IMAGE}:${BRANCH},${IMAGE}:${BRANCH}-${SHORT_SHA}"
-          } >> "$GITHUB_OUTPUT"
+          if [ "$BRANCH" = "main" ]; then
+            # latest = neuester Stand von main; bisher blieb es auf einem Stand vom Februar 2026 stehen
+            TAGS="${IMAGE}:main,${IMAGE}:latest,${IMAGE}:main-${SHORT_SHA}"
+          else
+            TAGS="${IMAGE}:${BRANCH}-${SHORT_SHA}"
+          fi
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "Tags: ${TAGS}"
 
       - name: Build and push
         uses: docker/build-push-action@v6
