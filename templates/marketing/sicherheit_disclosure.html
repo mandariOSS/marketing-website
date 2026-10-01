@@ -20,7 +20,7 @@
         </h1>
         <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">
             Sicherheitsforschung an Open Source ist ein Geschenk. Wir nehmen jede
-            Meldung ernst, bestätigen den Eingang <strong>innerhalb von 5 Werktagen</strong>
+            Meldung ernst, bestätigen den Eingang <strong>innerhalb von 3 Werktagen</strong>
             und behandeln dich mit Respekt — keine Anwälte, keine Drohungen.
         </p>
         <p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">
@@ -53,11 +53,11 @@
         <div class="flex flex-wrap lg:flex-nowrap items-center justify-center gap-x-6 gap-y-4 lg:gap-x-10 text-center">
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <i data-lucide="mail-check" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
-                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Eingangsbestätigung</strong> ≤ 5 Werktage</span>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Eingangsbestätigung</strong> ≤ 3 Werktage</span>
             </div>
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <i data-lucide="calendar-clock" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
-                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Koordinierte Veröffentlichung:</strong> i.&nbsp;d.&nbsp;R. ≤ 90 Tage</span>
+                <span class="text-sm lg:text-base text-gray-700 dark:text-gray-300"><strong>Kritische Lücken</strong> behoben ≤ 72 Stunden</span>
             </div>
             <div class="flex items-center gap-2 whitespace-nowrap">
                 <i data-lucide="shield-check" class="w-5 h-5 text-rose-600 dark:text-rose-400 flex-none"></i>
@@ -233,9 +233,9 @@
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
                     Wir bestätigen den Eingang deiner Meldung. Danach folgt die
                     Erstbewertung mit Einordnung des Schweregrads nach <strong>CVSS 3.1</strong> —
-                    innerhalb von 14 Tagen.
+                    innerhalb von 7 Tagen.
                 </p>
-                <span class="text-xs font-medium text-green-600 dark:text-green-400">≤ 5 Werktage</span>
+                <span class="text-xs font-medium text-green-600 dark:text-green-400">≤ 3 Werktage</span>
             </div>
 
             <!-- Step 3 -->
@@ -248,10 +248,11 @@
                 </div>
                 <h3 class="font-bold text-gray-900 dark:text-white mb-2">Behebung</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    Patch wird entwickelt, getestet und ausgerollt — priorisiert nach
-                    Schweregrad. Du erhältst laufend Statusinformationen zum Fortschritt.
+                    Patch wird entwickelt, getestet und ausgerollt — kritische Lücken
+                    innerhalb von 72 Stunden, hohe innerhalb von 7 Tagen, mittlere innerhalb
+                    von 30 Tagen. Du erhältst laufend Statusinformationen zum Fortschritt.
                 </p>
-                <span class="text-xs font-medium text-amber-600 dark:text-amber-400">nach Schweregrad</span>
+                <span class="text-xs font-medium text-amber-600 dark:text-amber-400">72 Stunden / 7 Tage / 30 Tage</span>
             </div>
 
             <!-- Step 4 -->
@@ -264,10 +265,11 @@
                 </div>
                 <h3 class="font-bold text-gray-900 dark:text-white mb-2">Koordinierte Veröffentlichung</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    Veröffentlichung stimmen wir mit dir ab — in der Regel nach spätestens
-                    90 Tagen: Security-Advisory, Erwähnung in der Hall of Fame (sofern gewünscht).
+                    Veröffentlichung stimmen wir mit dir ab — vollständige Offenlegung
+                    90 Tage nach dem Fix, früher bei bereits ausgenutzten Lücken:
+                    Security-Advisory, Erwähnung in der Hall of Fame (sofern gewünscht).
                 </p>
-                <span class="text-xs font-medium text-blue-600 dark:text-blue-400">i. d. R. ≤ 90 Tage</span>
+                <span class="text-xs font-medium text-blue-600 dark:text-blue-400">90 Tage nach dem Fix</span>
             </div>
 
         </div>
@@ -417,7 +419,7 @@
         <div class="max-w-3xl mx-auto text-center">
             <h2 class="text-3xl font-bold text-white mb-6">Du hast was gefunden?</h2>
             <p class="text-xl text-white/90 mb-10">
-                Schreib uns — wir bestätigen den Eingang innerhalb von 5 Werktagen,
+                Schreib uns — wir bestätigen den Eingang innerhalb von 3 Werktagen,
                 koordinieren die Veröffentlichung mit dir und behandeln deine Meldung
                 mit dem Respekt, den sie verdient.
             </p>

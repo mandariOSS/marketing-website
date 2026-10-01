@@ -123,3 +123,29 @@ jobs:
           assert not errors, "Render-Smoke fehlgeschlagen: " + "; ".join(errors)
           print(f"OK: {len(checks)} Seiten gerendert und geprueft")
           EOF
+
+      - name: Sicherheitsfristen (security.txt und Policy wie SECURITY.md im mandari-Repository)
+        # Eingangsbestätigung, Korrekturfristen und Offenlegung müssen mit der SECURITY.md von
+        # mandariOSS/mandari übereinstimmen; alte Angaben (5 Werktage, 14 Tage) dürfen nicht zurückkehren.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          fristen = ["3 Werktage", "72 Stunden", "7 Tage", "30 Tage", "90 Tage nach"]
+          veraltet = ["5 Werktage", "14 Tage"]
+          errors = []
+          for url in ["/.well-known/security.txt", "/sicherheit/disclosure/"]:
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}")
+                  continue
+              body = r.content.decode("utf-8")
+              errors += [f"{url}: '{f}' fehlt" for f in fristen if f not in body]
+              errors += [f"{url}: veraltet '{v}'" for v in veraltet if v in body]
+          assert not errors, "Sicherheitsfristen weichen ab: " + "; ".join(errors)
+          print("OK: security.txt und Disclosure-Policy nennen die Fristen aus SECURITY.md")
+          EOF
