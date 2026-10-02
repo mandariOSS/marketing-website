@@ -2,9 +2,14 @@
 Kontaktformulare auf /kontakt/: Terminanfrage (#termin) und Nachricht (#nachricht).
 
 Ablauf beim Absenden:
-  1. Altcha-Lösung prüfen (Proof of Work, selbst gehostet) und jede Lösung nur einmal annehmen.
-  2. Honigtopf-Feld und Begrenzung je IP-Adresse (Arbeitsspeicher, höchstens eine Stunde).
-  3. Felder prüfen, Anfrage als E-Mail an CONTACT_TO zustellen (Antwort-an: die Absenderin).
+  1. Honigtopf-Feld prüfen, Altcha-Lösung prüfen (Proof of Work, selbst gehostet, mit Ablaufzeit)
+     und jede Lösung nur einmal annehmen.
+  2. Felder prüfen, dann Begrenzung je Anschluss (fünf je Stunde) und insgesamt (60 je Stunde).
+  3. Anfrage als E-Mail an CONTACT_TO zustellen (Antwort-an: die Absenderin).
+
+Einmal-Prüfung und Zähler liegen im Zwischenspeicher „formulare“ (DatabaseCache, siehe
+settings.CACHES), damit alle gunicorn-Worker dieselben Einträge sehen. Die Tabelle legt
+`python manage.py createcachetable` an (läuft im Container-Start mit).
 
 Die Website speichert Anfragen nicht. Protokolliert werden Art und Ergebnis, nie Inhalte oder Absender.
 
@@ -15,20 +20,24 @@ Zustellung (Umgebungsvariablen, keine Django-Einstellungen nötig):
   CONTACT_SMTP_PASSWORD  Passwort
   CONTACT_FROM           Absender der Benachrichtigung, Standard hello@mandari.de
   CONTACT_TO             Empfänger, Standard hello@mandari.de
+  CONTACT_TRUSTED_PROXIES  Zahl der eigenen Reverse Proxys vor der Website, Standard 1
+                         (0 = direkt erreichbar, dann zählt nur REMOTE_ADDR)
 """
 
 from __future__ import annotations
 
 import base64
 import datetime
+import ipaddress
 import json
 import logging
 import os
 import re
+import time
 
 from django import forms
 from django.conf import settings
-from django.core.cache import cache
+from django.core.cache import caches
 from django.core.mail import EmailMessage, get_connection
 from django.core.mail.message import make_msgid
 from django.utils import timezone
@@ -90,7 +99,8 @@ DIRECTORY = [
 
 PER_ADDRESS_PER_HOUR = 5
 TOTAL_PER_HOUR = 60
-_ALTCHA_REUSE_SECONDS = 2 * 3600
+RATE_WINDOW_SECONDS = 3600
+CACHE_ALIAS = "formulare"
 
 
 def topic_for_subject(subject: str) -> str:
@@ -168,41 +178,89 @@ FORMS = {AppointmentForm.kind: AppointmentForm, MessageForm.kind: MessageForm}
 # ── Spamschutz ─────────────────────────────────────────────────────────────
 
 
+def _store():
+    """Gemeinsamer Zwischenspeicher aller Worker (settings.CACHES["formulare"])."""
+    return caches[CACHE_ALIAS]
+
+
+def _trusted_proxies() -> int:
+    try:
+        return max(0, int(os.environ.get("CONTACT_TRUSTED_PROXIES", "1")))
+    except ValueError:
+        return 1
+
+
 def _client_address(request) -> str:
-    forwarded = request.META.get("HTTP_X_FORWARDED_FOR", "")
-    return (forwarded.split(",")[0].strip() if forwarded else "") or request.META.get("REMOTE_ADDR", "")
+    """Anschluss der Absenderin, wie ihn der eigene Reverse Proxy gesehen hat.
 
-
-def _within_rate_limit(request) -> bool:
-    address = _client_address(request) or "unbekannt"
-    per_address = f"kontakt:rate:{address}"
-    total = "kontakt:rate:gesamt"
-    cache.add(per_address, 0, 3600)
-    cache.add(total, 0, 3600)
-    if cache.get(per_address, 0) >= PER_ADDRESS_PER_HOUR or cache.get(total, 0) >= TOTAL_PER_HOUR:
-        return False
-    for key in (per_address, total):
+    X-Forwarded-For kann jeder Client selbst mitschicken. Verlässlich ist nur, was die eigenen
+    Proxys anhängen: bei N Proxys der N-te Eintrag von hinten. Ohne Proxy (N = 0) oder ohne
+    passenden Eintrag zählt REMOTE_ADDR. IPv6-Adressen zählen je /64-Netz, so viele Adressen
+    hat ein einzelner Anschluss.
+    """
+    remote = request.META.get("REMOTE_ADDR", "")
+    hops = _trusted_proxies()
+    entries = [entry.strip() for entry in request.META.get("HTTP_X_FORWARDED_FOR", "").split(",") if entry.strip()]
+    from_proxy = entries[-hops] if hops and len(entries) >= hops else remote
+    for candidate in (from_proxy, remote):
         try:
-            cache.incr(key)
-        except ValueError:  # abgelaufen zwischen add und incr
-            cache.set(key, 1, 3600)
-    return True
+            address = ipaddress.ip_address(candidate)
+        except ValueError:
+            continue
+        if address.version == 6:
+            if address.ipv4_mapped:
+                return str(address.ipv4_mapped)
+            return str(ipaddress.ip_network(f"{address}/64", strict=False))
+        return str(address)
+    return "unbekannt"
+
+
+def _rate_limit(request) -> str:
+    """Leer, wenn die Anfrage durchgeht; sonst "zu-viele" (dieser Anschluss) oder "ueberlastet" (alle).
+
+    Gleitendes Fenster von einer Stunde: Je Schlüssel stehen die Zeitpunkte der angenommenen
+    Anfragen im Zwischenspeicher. Abgelehnte Anfragen zählen nicht mit.
+    """
+    store = _store()
+    now = time.time()
+    buckets = [
+        (f"kontakt:rate:{_client_address(request)}", PER_ADDRESS_PER_HOUR, "zu-viele"),
+        ("kontakt:rate:gesamt", TOTAL_PER_HOUR, "ueberlastet"),
+    ]
+    recent = []
+    for key, limit, result in buckets:
+        stamps = [stamp for stamp in store.get(key, []) if stamp > now - RATE_WINDOW_SECONDS]
+        if len(stamps) >= limit:
+            return result
+        recent.append((key, stamps))
+    for key, stamps in recent:
+        store.set(key, [*stamps, now], RATE_WINDOW_SECONDS)
+    return ""
 
 
 def _altcha_ok(payload_b64: str) -> bool:
-    from marketing.views import verify_altcha_payload
+    from marketing.views import altcha_expires, verify_altcha_payload
 
     if not verify_altcha_payload(payload_b64):
         return False
-    # Jede gelöste Aufgabe gilt genau einmal.
+    # Jede gelöste Aufgabe gilt genau einmal – gemerkt bis zu ihrem Ablauf.
     try:
-        challenge = json.loads(base64.b64decode(payload_b64))["challenge"]
+        payload = json.loads(base64.b64decode(payload_b64))
+        challenge, expires = payload["challenge"], altcha_expires(payload["salt"])
     except (KeyError, ValueError, TypeError):
         return False
-    return cache.add(f"kontakt:altcha:{challenge}", True, _ALTCHA_REUSE_SECONDS)
+    remaining = (expires or 0) - time.time()
+    if remaining <= 0:
+        return False
+    return _store().add(f"kontakt:altcha:{challenge}", True, int(remaining) + 60)
 
 
 # ── Zustellung ─────────────────────────────────────────────────────────────
+
+
+def delivery_ready() -> bool:
+    """Ob Anfragen zugestellt werden können. Ohne Zustellweg zeigt /kontakt/ die Mailadresse statt der Formulare."""
+    return _connection() is not None
 
 
 def _connection():
@@ -256,7 +314,8 @@ def handle_submission(request):
     """Verarbeitet einen POST auf /kontakt/.
 
     Rückgabe: (art, formular, ergebnis) mit ergebnis in
-    ``"gesendet"``, ``"ungueltig"``, ``"spamschutz"``, ``"zu-viele"``, ``"nicht-zustellbar"``.
+    ``"gesendet"``, ``"ungueltig"``, ``"spamschutz"``, ``"zu-viele"``, ``"ueberlastet"``,
+    ``"nicht-zustellbar"``.
     """
     kind = request.POST.get("art", "")
     form_class = FORMS.get(kind)
@@ -272,9 +331,10 @@ def handle_submission(request):
         return kind, form, "spamschutz"
     if not form.is_valid():
         return kind, form, "ungueltig"
-    if not _within_rate_limit(request):
-        logger.warning("Kontaktformular (%s): Grenze je Stunde erreicht", kind)
-        return kind, form, "zu-viele"
+    limited = _rate_limit(request)
+    if limited:
+        logger.warning("Kontaktformular (%s): Grenze je Stunde erreicht (%s)", kind, limited)
+        return kind, form, limited
 
     connection = _connection()
     if connection is None:

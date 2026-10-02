@@ -114,7 +114,10 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
 - **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
   Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
   (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das
-  Thema vor.
+  Thema vor. Einmal-Prüfung des Spamschutzes und Begrenzung (fünf Anfragen je Stunde
+  und Anschluss, 60 insgesamt) liegen im Datenbank-Zwischenspeicher `formulare`;
+  die Tabelle legt `python manage.py createcachetable` an (läuft beim Container-Start).
+  Ohne Zustellweg zeigt `/kontakt/` statt der Formulare die Mailadresse.
 
 ## 🚀 Quickstart (Docker, empfohlen)
 
@@ -240,8 +243,9 @@ marketing-website/
 | `STATUS_PAGE_URL` | `https://status.mandari.de/` | Öffentliche Statusseite: Ziel von `/status/` und Link in der Fußzeile |
 | `BOOKING_URL` | `/kontakt/#termin-buchen` | Ziel der „Call buchen"-CTAs |
 | `ALTCHA_HMAC_KEY` | dev-Wert | HMAC-Secret für Altcha-Challenges |
-| `CONTACT_SMTP_HOST` / `_PORT` / `_USER` / `_PASSWORD` | – / 465 | SMTP-Zugang für die Kontaktformulare (ohne Host: ehrliche Fehlermeldung statt Zustellung) |
+| `CONTACT_SMTP_HOST` / `_PORT` / `_USER` / `_PASSWORD` | – / 465 | SMTP-Zugang für die Kontaktformulare (ohne Host: Mailadresse statt Formular) |
 | `CONTACT_FROM` / `CONTACT_TO` | `hello@mandari.de` | Absender und Empfänger der Formular-Mails |
+| `CONTACT_TRUSTED_PROXIES` | `1` | Eigene Reverse Proxys vor der Website; bestimmt, welcher `X-Forwarded-For`-Eintrag als Anschluss zählt |
 | `TZ` | `Europe/Berlin` | Zeitzone |
 
 ## 🎨 Gestaltung

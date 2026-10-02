@@ -6,8 +6,9 @@
 {% else %}
 <div class="mt-6 rounded-lg bg-red-50 dark:bg-red-900/20 px-4 py-3 text-red-900 dark:text-red-200" role="alert">
     {% if status.result == "ungueltig" %}Bitte prüfen Sie die markierten Felder.
-    {% elif status.result == "spamschutz" %}Der Spamschutz konnte Ihre Anfrage nicht bestätigen. Bitte laden Sie die Seite neu und senden Sie noch einmal – oder schreiben Sie an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a>.
+    {% elif status.result == "spamschutz" %}Der Spamschutz konnte Ihre Anfrage nicht bestätigen. Bitte senden Sie das Formular noch einmal – Ihre Eingaben sind erhalten. Oder schreiben Sie an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a>.
     {% elif status.result == "zu-viele" %}Von Ihrem Anschluss kamen in der letzten Stunde schon mehrere Anfragen. Bitte versuchen Sie es später noch einmal oder schreiben Sie an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a>.
+    {% elif status.result == "ueberlastet" %}Das Formular nimmt gerade keine weiteren Anfragen an. Bitte schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a> – wir antworten innerhalb eines Werktags.
     {% else %}Ihre Anfrage konnte gerade nicht zugestellt werden. Bitte schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a> – wir antworten innerhalb eines Werktags.{% endif %}
 </div>
 {% endif %}
