@@ -1,18 +1,18 @@
-{# Einladung: ein gefüllter Aufruf, höchstens ein Textlink (wie im Hero), kein Verlauf. Am Seitenende auf ruhiger dunkler Fläche, mitten auf der Seite auf heller Fläche (last_block kommt aus marketing_page.html). #}
-{% if last_block == False %}
-<section class="bg-mist py-16 lg:py-20">
-    <div class="wrap">
-        <div class="max-w-[42rem]">
-            <h2 class="t-h3 text-gray-900 dark:text-white">{{ self.title }}</h2>
-            {% if self.subline %}<p class="t-body text-gray-600 dark:text-gray-300 mt-3">{{ self.subline }}</p>{% endif %}
-{% else %}
-<section class="on-ink bg-gray-900 dark:bg-gray-950 text-white py-20 lg:py-28">
+{# Einladung: ein gefüllter Aufruf, höchstens ein Textlink (wie im Hero), kein Verlauf. Am Seitenende auf dem dunklen Band, mitten auf der Seite auf der zarten Markenfläche (band aus marketing/templatetags/baender.py; ohne band entscheidet last_block). #}
+{% if band == "tinte" or not band and last_block != False %}
+<section class="on-ink band-tinte text-white py-20 lg:py-28">
     <div class="wrap">
         <div class="max-w-[42rem]">
             <h2 class="t-h2 text-white">{{ self.title }}</h2>
             {% if self.subline %}<p class="t-lead text-gray-300 mt-6">{{ self.subline }}</p>{% endif %}
+{% else %}
+<section class="band-{{ band|default:'marke' }} py-16 lg:py-20">
+    <div class="wrap">
+        <div class="max-w-[42rem]">
+            <h2 class="t-h3 text-gray-900 dark:text-white">{{ self.title }}</h2>
+            {% if self.subline %}<p class="t-body text-gray-600 dark:text-gray-300 mt-3">{{ self.subline }}</p>{% endif %}
 {% endif %}
-            <div class="{% if last_block == False %}mt-7{% else %}mt-10{% endif %} flex flex-wrap items-center gap-x-8 gap-y-5">
+            <div class="{% if band == 'tinte' or not band and last_block != False %}mt-10{% else %}mt-7{% endif %} flex flex-wrap items-center gap-x-8 gap-y-5">
                 {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
                 {% if forloop.first %}
                 <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>

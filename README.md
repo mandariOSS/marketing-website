@@ -252,8 +252,22 @@ marketing-website/
 
 Weniger ist mehr: Typografie trägt die Seite, nicht Effekte.
 
-- **Flächen:** Weiß als Grund, eine ruhige helle Fläche (`bg-mist`) für
-  Abschnitte, Tinte `#111827` für die Einladung am Seitenende. Keine Verläufe.
+- **Bänder:** Jeder Abschnitt liegt auf einem vollbreiten Band, benachbarte
+  Bänder haben nie denselben Grund: Weiß, kühles Hellgrau (`#EEF0F4`), zarte
+  Markenfläche (Indigo, für Einladungen mitten auf der Seite), Tinte `#111827`
+  für die Einladung am Seitenende, die Fußzeile eine Stufe dunkler. Auf
+  StreamField-Seiten legt `marketing/templatetags/baender.py` die Bänder nach der
+  Reihenfolge der Blöcke fest (Hero hell, dann abwechselnd; Zusätze wie Eckdaten
+  oder Hinweise bleiben auf dem Band davor; Rechtstexte ruhig: Titel grau, Text
+  weiß). Das Feld „Hintergrund“ einzelner Blöcke wirkt nur noch ohne diese
+  Automatik. Farben hell und dunkel als Variablen in `static/css/input.css`.
+  Keine Verläufe.
+- **Produktfarben:** Session Blau `#1E40AF` (Standardfarbe in Session), Work
+  Indigo `#4F46E5` (Standardfarbe in Work), Insight Grün `#17703F`. Jedes Produkt
+  erscheint auf Startseite und `/produkte/` als eigene Fläche in seiner Farbe
+  (`_produkt.html`), `/fraktionen/` und `/kommunen/` tragen die Fläche im Hero,
+  Preisstufen, Spalten der Funktionsübersicht und Einträge mit Produktbezug den
+  Namen in der Kennfarbe.
 - **Akzent:** Indigo nur für den einen gefüllten Button (`btn-primary`),
   Textlinks (`textlink`) und den Punkt der Wortmarke (`punkt`).
 - **Schrift:** Inter, Stufen `t-display`, `t-h1`, `t-h2`, `t-h3`, `t-lead`,

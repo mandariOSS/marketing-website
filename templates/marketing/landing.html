@@ -5,7 +5,7 @@
 
 {% block content %}
 {# Hero: Überschrift, ein Satz, ein Aufruf; der Weg zum Bürgerportal als ruhiger Textlink; ein echtes Produktbild #}
-<section class="bg-white dark:bg-gray-900 pt-14 lg:pt-24">
+<section class="band-hell pt-14 pb-16 lg:pt-24 lg:pb-24">
     <div class="wrap">
         <h1 class="t-display text-gray-900 dark:text-white max-w-[13ch]">Software für die offene Verwaltung<span class="punkt">.</span></h1>
         <p class="t-lead text-gray-600 dark:text-gray-300 mt-7 max-w-[38rem]">
@@ -36,69 +36,29 @@
     </div>
 </section>
 
-{# Drei Seiten des Ratssaals: je Zielgruppe ein Produkt, ein Satz, ein Weg #}
-<section class="bg-white dark:bg-gray-900 py-24 lg:py-36">
+{# Drei Seiten des Ratssaals: je Zielgruppe ein Produkt als eigene Fläche in seiner Kennfarbe (Name, Zielgruppe, ein Satz, ein Weg). Der Screenshot von Insight steht schon im Hero. #}
+<section class="band-grau py-20 lg:py-32">
     <div class="wrap">
         <h2 class="t-h2 text-gray-900 dark:text-white max-w-[18ch]">Eine Plattform für alle Seiten des Ratssaals.</h2>
         <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[41rem]">
             Verwaltung, Politik und Öffentlichkeit arbeiten mit denselben Ratsdaten – jede Seite mit dem Werkzeug, das zu ihrem Alltag passt.
         </p>
 
-        <div class="mt-16 lg:mt-24 space-y-16 lg:space-y-20">
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
-                <div class="lg:col-span-4">
-                    <h3 class="t-h3 text-gray-900 dark:text-white">Verwaltung</h3>
-                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Session</p>
-                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Pilotphase</p>
-                </div>
-                <div class="lg:col-span-7 lg:col-start-6">
-                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
-                        Einladungsfristen, Vorlagen aus fünf Ämtern, die Niederschrift bis Freitag. Session ist das Ratsinformationssystem für Ihren Sitzungsdienst: von der Tagesordnung bis zur freigegebenen Niederschrift, ohne Medienbruch.
-                    </p>
-                    <p class="mt-4"><a class="textlink" href="/kommunen/">mandari Session ansehen</a></p>
-                </div>
-            </article>
-
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
-                <div class="lg:col-span-4">
-                    <h3 class="t-h3 text-gray-900 dark:text-white">Politik</h3>
-                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Work</p>
-                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Offene Beta</p>
-                </div>
-                <div class="lg:col-span-7 lg:col-start-6">
-                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
-                        Hunderte Seiten Unterlagen, Abstimmung per Mailkette, Ratsarbeit nach Feierabend. Work bündelt Sitzungsvorbereitung, Anträge und Fristen Ihrer Fraktion an einem Ort, der die Ratsdaten schon kennt.
-                    </p>
-                    <p class="mt-4"><a class="textlink" href="/fraktionen/">mandari Work ansehen</a></p>
-                </div>
-            </article>
-
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
-                <div class="lg:col-span-4">
-                    <h3 class="t-h3 text-gray-900 dark:text-white">Bürger:innen</h3>
-                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Insight</p>
-                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Im Einsatz</p>
-                </div>
-                <div class="lg:col-span-7 lg:col-start-6">
-                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
-                        Was wurde zu meiner Straße beschlossen? Insight findet Beschlüsse im Volltext und zeigt sie auf der Karte – kostenlos und ohne Anmeldung.
-                    </p>
-                    <p class="mt-4"><a class="textlink" href="/insight/">Bürgerportal öffnen</a></p>
-                </div>
-            </article>
+        <div class="mt-12 lg:mt-16 space-y-5 lg:space-y-6">
+            {% include "marketing/blocks/_produkt.html" with produkt="session" name="mandari Session" zielgruppe="Für Verwaltungen" status="Pilotphase" text="Das Ratsinformationssystem für Ihren Sitzungsdienst – von der Tagesordnung bis zur freigegebenen Niederschrift, ohne Medienbruch." link_label="mandari Session ansehen" link_url="/kommunen/" %}
+            {% include "marketing/blocks/_produkt.html" with produkt="work" name="mandari Work" zielgruppe="Für Fraktionen und Mandatsträger:innen" status="Offene Beta" text="Sitzungsvorbereitung, Anträge und Fristen Ihrer Fraktion an einem Ort, der die Ratsdaten schon kennt." link_label="mandari Work ansehen" link_url="/fraktionen/" %}
+            {% include "marketing/blocks/_produkt.html" with produkt="insight" name="mandari Insight" zielgruppe="Für Bürger:innen" status="Im Einsatz" text="Beschlüsse Ihrer Kommune im Volltext finden und auf der Karte sehen – kostenlos und ohne Anmeldung." link_label="Bürgerportal öffnen" link_url="/insight/" %}
         </div>
 
-        <div class="grid lg:grid-cols-12 gap-x-10 mt-20 lg:mt-24">
-            <p class="t-body text-gray-600 dark:text-gray-300 lg:col-span-7 lg:col-start-6 max-w-[36rem]">
-                Als Nächstes bauen wir auf demselben Fundament weiter: Wahlergebnisse live, das Open-Data-Portal mandari Data und die App für Mandatsträger:innen.
-                <a class="textlink whitespace-nowrap" href="/roadmap/">Roadmap ansehen</a>
-            </p>
-        </div>
+        <p class="t-body text-gray-600 dark:text-gray-300 mt-12 lg:mt-14 max-w-[36rem]">
+            Als Nächstes bauen wir auf demselben Fundament weiter: Wahlergebnisse live, das Open-Data-Portal mandari Data und die App für Mandatsträger:innen.
+            <a class="textlink whitespace-nowrap" href="/roadmap/">Roadmap ansehen</a>
+        </p>
     </div>
 </section>
 
-{# Werte als Zusage: offener Code, eigene Daten, Betrieb nach Wahl #}
-<section class="bg-mist py-24 lg:py-32">
+{# Werte als Zusage auf der zarten Markenfläche: offener Code, eigene Daten, Betrieb nach Wahl #}
+<section class="band-marke py-20 lg:py-32">
     <div class="wrap grid lg:grid-cols-12 gap-x-10 gap-y-8">
         <h2 class="t-h2 text-gray-900 dark:text-white lg:col-span-5">Öffentliches Geld.<br>Öffentlicher Code.</h2>
         <div class="lg:col-span-6 lg:col-start-7 lg:pt-2">
@@ -113,8 +73,8 @@
     </div>
 </section>
 
-{# Einladung: ruhige dunkle Fläche, derselbe Aufruf wie im Hero #}
-<section class="on-ink bg-gray-900 dark:bg-gray-950 text-white py-24 lg:py-32">
+{# Einladung: dunkles Band, derselbe Aufruf wie im Hero #}
+<section class="on-ink band-tinte text-white py-20 lg:py-32">
     <div class="wrap">
         <div class="max-w-[40rem]">
             <h2 class="t-h2">Lassen Sie uns über Ihre Verwaltung sprechen.</h2>

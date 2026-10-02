@@ -1,10 +1,15 @@
-{% load wagtailcore_tags %}
-{# Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts. Gruppierung über Abstand, ohne Rahmen. #}
-<section class="py-20 lg:py-28 {% if self.background == 'gray' %}bg-mist{% endif %}">
+{% load wagtailcore_tags baender %}
+{# Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts. Gruppierung über Abstand, ohne Rahmen. Zeilen zu Session, Work und Insight werden Produktflächen (_produkt.html). #}
+<section class="py-20 lg:py-28 {% if band %}band-{{ band }}{% elif self.background == 'gray' %}bg-mist{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <div class="space-y-14 lg:space-y-16">
+        {% produkt_zeile self.rows.0 as erstes_produkt %}
+        <div class="{% if erstes_produkt %}space-y-5 lg:space-y-6{% else %}space-y-14 lg:space-y-16{% endif %}">
             {% for row in self.rows %}
+            {% produkt_zeile row as p %}
+            {% if p %}
+            {% include "marketing/blocks/_produkt.html" with produkt=p name=row.title zielgruppe=row.label status=row.status text=row.text|richtext link_label=row.link_label link_url=row.link_url anker=row.anchor_id mit_bild=True %}
+            {% else %}
             <article{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="grid lg:grid-cols-12 gap-x-10 gap-y-3 scroll-mt-24">
                 <div class="lg:col-span-4">
                     <h3 class="t-h3 text-gray-900 dark:text-white">{{ row.title }}</h3>
@@ -16,6 +21,7 @@
                     {% if row.link_label and row.link_url %}<p class="mt-4"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}
                 </div>
             </article>
+            {% endif %}
             {% endfor %}
         </div>
         {% if self.note %}

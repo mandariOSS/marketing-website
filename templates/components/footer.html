@@ -1,19 +1,21 @@
 {% comment %}
 Fußzeile nach der Zielstruktur der Website: Produkte · Vertrauen · Unternehmen · Hilfe · Rechtliches, darunter die
-Urheber- und Lizenzzeile (die CI prüft sie wörtlich). Ruhige dunkle Fläche, Gliederung nur über Abstand.
+Urheber- und Lizenzzeile (die CI prüft sie wörtlich). Eigenes dunkles Band, eine Stufe dunkler als die Einladung davor;
+Gliederung über Abstand und klare Gruppenüberschriften. Mobil zweispaltig: Produkte und Vertrauen, Unternehmen und
+Rechtliches, darunter Hilfe.
 scripts/check_site_structure.py prüft die Einträge.
 {% endcomment %}
-<div class="bg-gray-900 dark:bg-gray-950 text-gray-400">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-8 gap-y-12 text-[0.9375rem]">
+<div class="band-fuss text-gray-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 lg:pt-20 lg:pb-12">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 sm:gap-x-8 gap-y-10 lg:gap-y-12 text-[0.9375rem]">
             <div class="col-span-2 md:col-span-3 lg:col-span-1">
                 <a href="/" class="text-[1.4rem] font-bold tracking-tight leading-none text-white" aria-label="mandari Startseite">mandari<span class="text-primary-400" aria-hidden="true">.</span></a>
                 <p class="mt-4 max-w-[18rem]">Offene Software für Verwaltung, Politik und Bürger:innen. Entwickelt in Münster.</p>
             </div>
 
             <nav aria-labelledby="fuss-produkte">
-                <h2 id="fuss-produkte" class="font-semibold text-white">Produkte</h2>
-                <ul class="mt-4 space-y-2.5">
+                <h2 id="fuss-produkte" class="text-base font-semibold text-white">Produkte</h2>
+                <ul class="mt-3 space-y-2.5">
                     <li><a href="/produkte/" class="hover:text-white transition-colors">Übersicht</a></li>
                     <li><a href="/kommunen/" class="hover:text-white transition-colors">Für Verwaltungen</a></li>
                     <li><a href="/fraktionen/" class="hover:text-white transition-colors">Für Fraktionen</a></li>
@@ -26,8 +28,8 @@ scripts/check_site_structure.py prüft die Einträge.
             </nav>
 
             <nav aria-labelledby="fuss-vertrauen">
-                <h2 id="fuss-vertrauen" class="font-semibold text-white">Vertrauen</h2>
-                <ul class="mt-4 space-y-2.5">
+                <h2 id="fuss-vertrauen" class="text-base font-semibold text-white">Vertrauen</h2>
+                <ul class="mt-3 space-y-2.5">
                     <li><a href="/trust/" class="hover:text-white transition-colors">Trust Center</a></li>
                     <li><a href="/vergabe/" class="hover:text-white transition-colors">Vergabe und Unterlagen</a></li>
                     <li><a href="/transparenz/" class="hover:text-white transition-colors">Transparenzbericht</a></li>
@@ -39,8 +41,8 @@ scripts/check_site_structure.py prüft die Einträge.
             </nav>
 
             <nav aria-labelledby="fuss-unternehmen">
-                <h2 id="fuss-unternehmen" class="font-semibold text-white">Unternehmen</h2>
-                <ul class="mt-4 space-y-2.5">
+                <h2 id="fuss-unternehmen" class="text-base font-semibold text-white">Unternehmen</h2>
+                <ul class="mt-3 space-y-2.5">
                     <li><a href="/unternehmen/" class="hover:text-white transition-colors">Über mandari</a></li>
                     <li><a href="/karriere/" class="hover:text-white transition-colors">Karriere</a></li>
                     <li><a href="/partner/" class="hover:text-white transition-colors">Partner</a></li>
@@ -50,17 +52,17 @@ scripts/check_site_structure.py prüft die Einträge.
                 </ul>
             </nav>
 
-            <nav aria-labelledby="fuss-hilfe">
-                <h2 id="fuss-hilfe" class="font-semibold text-white">Hilfe</h2>
-                <ul class="mt-4 space-y-2.5">
+            <nav aria-labelledby="fuss-hilfe" class="order-last lg:order-none">
+                <h2 id="fuss-hilfe" class="text-base font-semibold text-white">Hilfe</h2>
+                <ul class="mt-3 space-y-2.5">
                     <li><a href="https://docs.mandari.de/" class="hover:text-white transition-colors">Dokumentation</a></li>
                     <li><a href="/kontakt/" class="hover:text-white transition-colors">Kontakt</a></li>
                 </ul>
             </nav>
 
             <nav aria-labelledby="fuss-rechtliches">
-                <h2 id="fuss-rechtliches" class="font-semibold text-white">Rechtliches</h2>
-                <ul class="mt-4 space-y-2.5">
+                <h2 id="fuss-rechtliches" class="text-base font-semibold text-white">Rechtliches</h2>
+                <ul class="mt-3 space-y-2.5">
                     <li><a href="/impressum/" class="hover:text-white transition-colors">Impressum</a></li>
                     <li><a href="/datenschutz/" class="hover:text-white transition-colors">Datenschutz</a></li>
                     <li><a href="/agb/" class="hover:text-white transition-colors">AGB</a></li>

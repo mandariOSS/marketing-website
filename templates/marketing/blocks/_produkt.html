@@ -1,0 +1,21 @@
+{% load baender %}
+{# Ein Produkt als eigene Fläche in seiner Kennfarbe (eine Ebene auf dem Band): Name, Zielgruppe, Stand, ein Satz, ein Link, wo vorhanden ein kleiner echter Screenshot. Erwartet produkt, name, zielgruppe, status, text (HTML), link_label, link_url, anker; mit_bild schaltet den Screenshot ein. #}
+{% produkt_bild produkt as bild %}
+<article{% if anker %} id="{{ anker }}"{% endif %} class="produkt produkt-{{ produkt }} rounded-2xl px-6 py-7 sm:p-8 lg:p-10 grid lg:grid-cols-12 gap-x-10 gap-y-3 scroll-mt-24">
+    <div class="lg:col-span-4">
+        <h3 class="t-h3 kenn">{{ name }}</h3>
+        {% if zielgruppe %}<p class="mt-2 font-semibold text-gray-900 dark:text-gray-100">{{ zielgruppe }}</p>{% endif %}
+        {% if status %}<p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ status }}</p>{% endif %}
+    </div>
+    <div class="lg:col-span-5 lg:col-start-5">
+        <div class="t-body text-gray-700 dark:text-gray-300 max-w-[36rem] richtext">{{ text|kernsatz_html }}</div>
+        {% if link_label and link_url %}<p class="mt-4"><a class="textlink" href="{{ link_url }}">{{ link_label }}</a></p>{% endif %}
+    </div>
+    {% if mit_bild and bild %}
+    <figure class="mt-4 lg:mt-0 lg:col-span-3 lg:col-start-10">
+        <img src="{{ bild.url }}" width="{{ bild.breite }}" height="{{ bild.hoehe }}" alt="{{ bild.alt }}"
+             loading="lazy" decoding="async"
+             class="block w-full max-w-sm h-auto rounded-lg border border-black/10 dark:border-white/10">
+    </figure>
+    {% endif %}
+</article>

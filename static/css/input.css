@@ -2,6 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Bänder und Produktfarben ────────────────────────────────────────────
+   Jeder Abschnitt liegt auf einem vollbreiten Band; benachbarte Bänder haben nie
+   denselben Grund (Reihenfolge: marketing/templatetags/baender.py). Hell und dunkel
+   stehen als Variablen nebeneinander, damit der Dunkelmodus mitzieht. */
+:root {
+  --band-hell: #ffffff;
+  --band-grau: #eef0f4;   /* kühles Hellgrau */
+  --band-marke: #eceffe;  /* zarte Markenfläche (Indigo, etwas kräftiger als Indigo 50) */
+  --band-tinte: #111827;  /* Einladung */
+  --band-fuss: #0a0e18;   /* Fußzeile, eine Stufe dunkler als die Einladung */
+
+  /* Produkte: Kennfarbe (Name, Links) und Fläche */
+  --session: #1e40af;     /* Blau des Sitzungsdienstes (Standardfarbe in Session) */
+  --session-flaeche: #e1edf9;
+  --work: #4f46e5;        /* Indigo des Fraktionsbereichs (Standardfarbe in Work) */
+  --work-flaeche: #ebeafd;
+  --insight: #17703f;     /* ruhiges Grün des Bürgerportals */
+  --insight-flaeche: #e2f2e7;
+}
+.dark {
+  --band-hell: #111827;
+  --band-grau: #182131;
+  --band-marke: #1e214b;
+  --band-tinte: #0a0e18;
+  --band-fuss: #05070d;
+
+  --session: #93b9f5;
+  --session-flaeche: #132541;
+  --work: #a5b4fc;
+  --work-flaeche: #211f4e;
+  --insight: #86d6a4;
+  --insight-flaeche: #112c1e;
+}
+
+.band-hell { background-color: var(--band-hell); }
+.band-grau { background-color: var(--band-grau); }
+.band-marke { background-color: var(--band-marke); }
+.band-tinte { background-color: var(--band-tinte); color: #fff; }
+.band-session { background-color: var(--session-flaeche); }
+.band-work { background-color: var(--work-flaeche); }
+.band-insight { background-color: var(--insight-flaeche); }
+.band-fuss { background-color: var(--band-fuss); }
+
+/* Neutrale Fläche, die sich vom Band abhebt (eine Ebene, kein Rahmen) */
+.band-grau .flaeche { background-color: var(--band-hell); }
+.band-hell .flaeche,
+.band-marke .flaeche { background-color: var(--band-grau); }
+
+/* Produktfläche: Name und Links in der Kennfarbe des Produkts */
+.produkt-session { --kenn: var(--session); --flaeche: var(--session-flaeche); }
+.produkt-work { --kenn: var(--work); --flaeche: var(--work-flaeche); }
+.produkt-insight { --kenn: var(--insight); --flaeche: var(--insight-flaeche); }
+.produkt { background-color: var(--flaeche); }
+.kenn { color: var(--kenn); }
+.produkt .textlink {
+  color: var(--kenn);
+  text-decoration-color: color-mix(in srgb, var(--kenn) 40%, transparent);
+}
+.produkt .textlink:hover { text-decoration-color: currentColor; }
+
+/* Kernsatz: der erste Satz einer längeren Beschreibung trägt, der Rest erklärt */
+.kernsatz { color: #111827; font-weight: 520; }
+.dark .kernsatz { color: #f3f4f6; }
+
 /* ── Gestaltung ohne Effekte: Schriftstufen, ein Button, Textlinks ──────────
    Grundlage: Startseiten-Prototyp (Weiß, Tinte #111827, helle Fläche #F5F6F8,
    Indigo nur für Button, Textlinks und den Punkt der Wortmarke). Zustände
@@ -53,12 +117,9 @@
     color: #818cf8;
   }
 
-  /* Ruhige helle Fläche für einen Abschnitt */
+  /* Ruhige helle Fläche für einen Abschnitt (wie das Band „grau“) */
   .bg-mist {
-    background-color: #f5f6f8;
-  }
-  .dark .bg-mist {
-    background-color: rgb(31 41 55 / 0.5);
+    background-color: var(--band-grau);
   }
 
   /* Genau ein gefüllter Aufruf je Abschnitt */

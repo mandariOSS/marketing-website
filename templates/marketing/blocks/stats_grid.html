@@ -1,6 +1,6 @@
 {% load wagtailcore_tags %}
 {# Kennzahlen dort, wo sie eine Entscheidung stützen (z. B. Transparenzbericht) – Zahl und Erklärung, ohne Kästen. #}
-<section class="py-16 lg:py-20">
+<section class="py-16 lg:py-20 band-{{ band|default:'hell' }}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <dl class="grid grid-cols-2 md:grid-cols-{{ self.columns|default:'4' }} gap-x-10 gap-y-10 max-w-5xl">

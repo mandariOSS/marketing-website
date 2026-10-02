@@ -3,7 +3,7 @@
 {% company_settings as company %}
 {% section_header "Angaben zum Unternehmen" "Für Eignungsprüfungen, Verträge und Vergabeverfahren – alles an einem Ort." "angaben" as kopf %}
 {% with entity=company.entity %}
-<section class="bg-mist py-16 lg:py-20">
+<section class="band-{{ band|default:'grau' }} py-16 lg:py-20">
     <div class="wrap">
         {% block_template "marketing/blocks/section_header.html" kopf %}
         <dl class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700">

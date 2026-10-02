@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags baender %}
 
 {% block content %}
-<div class="bg-white dark:bg-gray-900">
-{% for block in page.body_stream %}
-    {% include_block block %}
+{# Rechtstexte ruhig: Titel auf Hellgrau, der Text durchgehend auf Weiß #}
+{% baender page.body_stream ruhig=True as abschnitte %}
+{% for a in abschnitte %}
+    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}
 {% endfor %}
-</div>
 {% endblock %}

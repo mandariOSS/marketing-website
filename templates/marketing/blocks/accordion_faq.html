@@ -1,6 +1,6 @@
 {% load wagtailcore_tags %}
 {# Häufige Fragen: Liste mit Trennlinien zwischen den Fragen (Lesbarkeit), ohne Kästen. #}
-<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="py-20 lg:py-24 {% if self.background == 'gray' %}bg-mist{% endif %} ">
+<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="py-20 lg:py-24 {% if band %}band-{{ band }}{% elif self.background == 'gray' %}bg-mist{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700" x-data="{ open: 1 }">

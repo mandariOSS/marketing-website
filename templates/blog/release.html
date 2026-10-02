@@ -2,13 +2,14 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-<article class="pt-16 pb-24 lg:pt-24 lg:pb-32">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<article>
+<div class="band-grau pt-14 pb-12 lg:pt-20 lg:pb-14">
+    <div class="wrap">
         <div class="max-w-3xl">
             <p class="text-[0.95rem]">
                 <a href="{{ page.get_parent.url }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:underline underline-offset-4">Alle Releases</a>
             </p>
-            <h1 class="mt-4 text-4xl lg:text-5xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ page.title }}</h1>
+            <h1 class="mt-4 t-h1 text-gray-900 dark:text-white">{{ page.title }}</h1>
             <p class="mt-5 text-gray-600 dark:text-gray-300">
                 Veröffentlicht am <time datetime="{{ page.release_date|date:'Y-m-d' }}">{{ page.release_date|date:"j. F Y" }}</time>, Version {{ page.version }}{% if page.github_url %}.
                 <a href="{{ page.github_url }}" class="text-primary-700 dark:text-primary-300 underline decoration-primary-300 underline-offset-4 hover:decoration-current">Release v{{ page.version }} auf GitHub</a>{% endif %}
@@ -20,8 +21,14 @@
                 Bitte prüfen Sie die Hinweise in den Release-Notes auf GitHub, bevor Sie aktualisieren.
             </p>
             {% endif %}
-
-            <div class="mt-14 space-y-14">
+        </div>
+    </div>
+</div>
+{# Release-Notes auf Weiß, darunter die Wege zu den Nachbarversionen #}
+<div class="band-hell pt-12 pb-24 lg:pt-16 lg:pb-32">
+    <div class="wrap">
+        <div class="max-w-3xl">
+            <div class="space-y-14">
                 {% for block in page.body %}
                 {% if block.block_type == "richtext_section" %}
                 <section>
@@ -56,5 +63,6 @@
             {% endif %}
         </div>
     </div>
+</div>
 </article>
 {% endblock %}

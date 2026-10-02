@@ -1,6 +1,4 @@
-{% load wagtailcore_tags company_tags %}
-{# StreamField-Inhalt mit einem festen Abschnitt (abschnitt) nach dem Block mit dem Anker nach_anker #}
-{% with stelle=page.body|insert_position:nach_anker %}
-{% for block in page.body %}{% if forloop.counter0 == stelle %}{% include abschnitt %}{% endif %}{% include_block block with last_block=forloop.last %}{% endfor %}
-{% if stelle >= page.body|length %}{% include abschnitt %}{% endif %}
-{% endwith %}
+{% load wagtailcore_tags baender %}
+{# StreamField-Inhalt mit einem festen Abschnitt (abschnitt) nach dem Block mit dem Anker nach_anker; der Abschnitt zählt im Wechsel der Bänder mit #}
+{% baender page.body einschub_nach=nach_anker as abschnitte %}
+{% for a in abschnitte %}{% if a.einschub %}{% include abschnitt with band=a.band %}{% else %}{% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}{% endif %}{% endfor %}
