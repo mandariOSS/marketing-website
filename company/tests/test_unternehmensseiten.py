@@ -48,7 +48,7 @@ def main_text(response):
     """Sichtbarer Text des Hauptbereichs (ohne Kopf- und Fußzeile)."""
     parser = _MainText()
     parser.feed(response.content.decode("utf-8"))
-    return " ".join(" ".join(parser.parts).split())
+    return " ".join(" ".join(parser.parts).replace("\u00ad", "").split())  # ohne weiche Trennstriche
 
 
 class UnternehmensseitenTests(TestCase):
