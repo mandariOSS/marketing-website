@@ -111,6 +111,12 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
   `/open-source/` stehen in `marketing/seeds_unternehmen.py`, die Kennzahlen der
   Presseseite dort mit Stand. Das Logo-Paket (`/presse/mandari-logopaket.zip`) wird
   aus `static/brand/` gebaut.
+- **RIS-Vergleich** (`/vergleich/`, die vier Anbieterseiten und die Lücken auf `/roadmap/`): Funktionen,
+  Zellen, Quellen und Lücken stehen in `marketing/seeds_vergleich.py`. Jede Angabe zu einem Anbieter trägt
+  ein Quellenkürzel (z. B. `[ST2]`), über Anbieter steht nie „Nein“, sondern höchstens „keine öffentliche
+  Angabe“; was mandari fehlt, steht als „Noch nicht verfügbar“ mit der Roadmap-Stufe. Die Tests in
+  `marketing/tests/test_vergleich.py` prüfen das. Nach Änderungen `refresh_seeded_page vergleich --force`,
+  `refresh_seeded_page mandari-vs-<anbieter> --force` und `refresh_seeded_page roadmap --force`.
 - **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
   Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
   (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das

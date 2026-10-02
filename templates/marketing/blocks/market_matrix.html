@@ -1,0 +1,63 @@
+{% load wagtailcore_tags %}
+{% comment %} Marktübersicht: Zeilen = Funktionen, Spalten = mandari und Anbieter. Nur Status und kurze Zusätze,
+   Erläuterungen und Belege stehen in den Einzelvergleichen (die Spaltenköpfe verlinken dorthin).
+   Die erste Spalte bleibt beim seitlichen Verschieben stehen, damit man am Handy weiß, welche Zeile man liest.
+   "k. A." heißt keine öffentliche Angabe, nie "fehlt". Nur statische Tailwind-Klassen. {% endcomment %}
+<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+    <div class="wrap">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+
+        <p class="lg:hidden mb-3 text-[0.9375rem] text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
+        <div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="{{ self.header.title|default:"Marktübersicht" }}">
+            <table class="w-full min-w-[780px] sm:min-w-[860px] text-sm border-collapse">
+                <caption class="sr-only">{{ self.header.title|default:"Marktübersicht" }}: je Funktion vorhanden, teilweise, bei mandari noch nicht verfügbar oder keine öffentliche Angabe</caption>
+                <thead>
+                    <tr class="border-b-2 border-gray-200 dark:border-gray-700">
+                        <th scope="col" class="sticky left-0 z-10 bg-white dark:bg-gray-800 text-left py-4 pl-4 sm:pl-6 pr-4 font-semibold text-gray-600 dark:text-gray-400 w-[10.5rem] sm:w-[30%]">Funktion</th>
+                        {% for col in self.columns %}
+                        <th scope="col" class="text-left py-4 px-3 font-bold text-gray-900 dark:text-white">{% if col.url %}<a class="textlink" href="{{ col.url }}">{{ col.name }}</a>{% else %}{{ col.name }}{% endif %}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in self.groups %}
+                    <tr class="bg-gray-50 dark:bg-gray-900/40">
+                        <th scope="colgroup" colspan="{{ self.columns|length|add:1 }}" class="text-left py-2.5 pl-4 sm:pl-6 pr-4 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ group.title }}</th>
+                    </tr>
+                    {% for row in group.rows %}
+                    <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
+                        <th scope="row" class="sticky left-0 z-10 bg-white dark:bg-gray-800 text-left py-3 pl-4 sm:pl-6 pr-4 font-medium text-gray-900 dark:text-white align-top">{{ row.label }}</th>
+                        {% for cell in row.cells %}
+                        <td class="py-3 px-3 align-top">
+                            {% if cell.status == "yes" %}
+                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap font-semibold text-green-700 dark:text-green-400"><i data-lucide="check" class="w-4 h-4 flex-none" aria-hidden="true"></i>Ja</span>
+                            {% elif cell.status == "partial" %}
+                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap font-semibold text-amber-700 dark:text-amber-400"><i data-lucide="circle-dot" class="w-4 h-4 flex-none" aria-hidden="true"></i>Teilweise</span>
+                            {% elif cell.status == "open" %}
+                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap font-semibold text-primary-700 dark:text-primary-300"><i data-lucide="circle-dashed" class="w-4 h-4 flex-none" aria-hidden="true"></i>Noch nicht</span>
+                            {% elif cell.status == "no" %}
+                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap text-gray-500 dark:text-gray-400"><i data-lucide="minus" class="w-4 h-4 flex-none" aria-hidden="true"></i>Nein</span>
+                            {% else %}
+                            <span class="inline-flex items-center gap-1.5 whitespace-nowrap text-gray-500 dark:text-gray-400"><i data-lucide="circle-help" class="w-4 h-4 flex-none" aria-hidden="true"></i><abbr title="keine öffentliche Angabe" class="no-underline">k. A.</abbr></span>
+                            {% endif %}
+                            {% if cell.note %}<span class="block mt-0.5 text-xs text-gray-600 dark:text-gray-400">{{ cell.note }}</span>{% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-green-700" aria-hidden="true"></i>vorhanden</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-dot" class="w-3.5 h-3.5 text-amber-700" aria-hidden="true"></i>teilweise oder eingeschränkt</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-dashed" class="w-3.5 h-3.5 text-primary-700" aria-hidden="true"></i>bei mandari noch nicht verfügbar, mit Stufe aus der Roadmap</span>
+            <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-help" class="w-3.5 h-3.5" aria-hidden="true"></i>keine öffentliche Angabe gefunden</span>
+        </div>
+        {% if self.footnote %}
+        <div class="mt-3 max-w-4xl text-sm text-gray-600 dark:text-gray-400 richtext">{{ self.footnote|richtext }}</div>
+        {% endif %}
+    </div>
+</section>

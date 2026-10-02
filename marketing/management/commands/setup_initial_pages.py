@@ -110,15 +110,15 @@ MARKETING_PAGE_META = [
     },
 
     # ── Vergleich (Übersicht + Unterseiten via "parent"-Key) ──────────
-    # Inhalte kommen aus migrate_pages_to_streamfield (_VERGLEICH_ANBIETER).
+    # Inhalte kommen aus marketing/seeds_vergleich.py.
     {
         "title": "RIS-Vergleich",
         "slug": "vergleich",
         "show_in_menus": False,
         "seo_title": "Ratsinformationssysteme im Vergleich – mandari vs. etablierte Anbieter",
         "search_description": (
-            "mandari im sachlichen Vergleich mit Sternberg SD.NET, ALLRIS, Somacos Session "
-            "und regisafe — Open Source, Preistransparenz, OParl, Bürgerportal, Hosting."
+            "mandari im sachlichen Vergleich mit Somacos, Sternberg, ALLRIS und regisafe: "
+            "48 Funktionen mit Quellen, dazu offen, was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -128,8 +128,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "mandari vs. Sternberg SD.NET – RIS-Vergleich",
         "search_description": (
-            "mandari und Sternberg SD.NET im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und Sternberg SD.NET im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -139,8 +139,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "mandari vs. ALLRIS (CC e-gov) – RIS-Vergleich",
         "search_description": (
-            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -150,8 +150,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "mandari vs. Somacos Session – RIS-Vergleich",
         "search_description": (
-            "mandari und Somacos Session im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und Somacos Session im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -161,8 +161,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "mandari vs. regisafe – RIS-Vergleich",
         "search_description": (
-            "mandari und regisafe im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und regisafe im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
 

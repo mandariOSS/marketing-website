@@ -97,333 +97,9 @@ def srow(title, *, text, label="", status="", link_label="", link_url="", anchor
 # ════════════════════════════════════════════════════════════════════════
 #  VERGLEICHSSEITEN — mandari vs. etablierte RIS-Anbieter
 #
-#  Rechtlicher Rahmen (vergleichende Werbung, § 6 UWG): ausschließlich
-#  objektiv nachprüfbare, öffentlich belegbare Aussagen; sachlicher Ton,
-#  keine Herabsetzung; fehlende Angaben werden als "keine öffentliche
-#  Angabe (Stand Juli 2026)" gekennzeichnet, NIE als Behauptung über den
-#  Anbieter. Quellen: Websites der Anbieter und oparl.org, abgerufen im
-#  Juli 2026. Korrekturhinweise an hello@mandari.de werden umgehend
-#  eingearbeitet.
+#  Daten, Quellen und Aufbau stehen in marketing/seeds_vergleich.py (Funktionsanalyse
+#  vom 2. Oktober 2026, § 6 UWG: objektiv, nachprüfbar, jede Angabe mit Quelle).
 # ════════════════════════════════════════════════════════════════════════
-
-_VERGLEICH_STAND = "Juli 2026"
-
-# ── Zeilen der Funktionstabelle: 4 Gruppen × 3 Kriterien ──────────────────
-# Jede Zeile hat einen Key; die Zellwerte (Status + kurzer Zusatztext) stehen
-# in _MANDARI_CELLS (mandari-Spalte) und _VERGLEICH_ANBIETER[slug]["cells"]
-# (Anbieter-Spalte). Status: "yes" = ✓ (grün) · "no" = – (neutral) ·
-# "unknown" = "keine öffentliche Angabe" (neutral-grau, mit Fußnote).
-_VERGLEICH_GRUPPEN = [
-    ("Grundlagen", [
-        ("open_source", "Open Source (Quellcode öffentlich)"),
-        ("preis", "Öffentliche Preisliste"),
-        ("oparl", "OParl-Schnittstelle"),
-    ]),
-    ("Portale", [
-        ("portal", "Bürgerportal"),
-        ("fraktion", "Fraktionsbereich"),
-        ("ris", "Verwaltungs-RIS (Sitzungsmanagement)"),
-    ]),
-    ("Arbeiten", [
-        ("kollab", "Echtzeit-Kollaboration im Editor"),
-        ("ki", "KI-Zusammenfassungen"),
-        ("suche", "Volltextsuche mit OCR & Synonymen"),
-    ]),
-    ("Betrieb", [
-        ("hosting_de", "Hosting in Deutschland"),
-        ("vertrag", "Vertragslaufzeiten öffentlich"),
-        ("selfhost", "Self-Hosting möglich"),
-    ]),
-]
-
-# mandari-Spalte — überall identisch, ehrlich inkl. Beta-Status. Bewusst ohne
-# Versionsnummer: Der aktuelle Stand steht auf /releases/, damit diese Seiten
-# nicht mit jedem Release veralten.
-_MANDARI_CELLS = {
-    "open_source": ("yes", "Komplette Plattform unter AGPL-3.0 auf GitHub"),
-    "preis": ("yes", "Insight kostenlos, Work 39,90 €/Monat inkl. MwSt., Session individuell"),
-    "oparl": ("yes", "Import aus Alt-RIS + eigene OParl-1.1-API mit Tombstones (oparl.mandari.de)"),
-    "portal": ("yes", "mandari Insight — kostenlos, ohne Anmeldung, ohne Tracking"),
-    "fraktion": ("yes", "mandari work: Antragsdatenbank, Sitzungsvorbereitung, Gastzugänge"),
-    "ris": ("yes", "mandari Session (Pilotphase, Pilot-Kommunen gesucht)"),
-    "kollab": ("yes", "Editor mit Versionshistorie und Briefkopf-Export (offene Beta)"),
-    "ki": ("yes", "Zusammenfassungen in mandari work (offene Beta)"),
-    "suche": ("yes", "Elasticsearch, deutsche Synonyme, Fehlertoleranz, OCR"),
-    "hosting_de": ("yes", "Deutsche Rechenzentren (Hetzner)"),
-    "vertrag": ("yes", "Work: 3 Monate Mindestlaufzeit, dann monatlich; Online-Kündigung nach § 312k BGB"),
-    "selfhost": ("yes", "Docker-Compose, AGPL-3.0 — volle Datenhoheit"),
-}
-
-# Öffentlich belegbare Fakten je Anbieter (Quellen: Anbieter-Websites + oparl.org,
-# abgerufen im Juli 2026). Eigenangaben der Anbieter sind als solche gekennzeichnet.
-_VERGLEICH_ANBIETER = {
-    "mandari-vs-sternberg": {
-        "kurzname": "Sternberg SD.NET",
-        "anbieter": "STERNBERG Software GmbH & Co. KG (Bielefeld)",
-        "produkt": "SD.NET (Sitzungsmanagement), Bürgerportal SD.NET RIM (ratsinfomanagement.net), Sitzungs-App „RICH“",
-        "kunden": "Über 900 Kunden (Eigenangabe; darunter auch Organisationen, die keine Kommunen sind).",
-        "website": "https://www.sitzungsdienst.net/",
-        "cells": {
-            "open_source": ("unknown", ""),
-            "preis": ("unknown", "Angebot auf Anfrage"),
-            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
-            "portal": ("yes", "SD.NET RIM (ratsinfomanagement.net)"),
-            "fraktion": ("yes", "Sitzungs-App „RICH“ (Eigenangabe)"),
-            "ris": ("yes", "SD.NET Sitzungsmanagement"),
-            "kollab": ("unknown", ""),
-            "ki": ("unknown", ""),
-            "suche": ("unknown", ""),
-            "hosting_de": ("unknown", "Cloud „S24“ aus Trusted-Cloud-zertifizierten Partner-Rechenzentren (Eigenangabe) — Standort ohne öffentliche Angabe"),
-            "vertrag": ("unknown", ""),
-            "selfhost": ("unknown", ""),
-        },
-    },
-    "mandari-vs-allris": {
-        "kurzname": "ALLRIS (CC e-gov)",
-        "anbieter": "CC e-gov GmbH (Hamburg)",
-        "produkt": "ALLRIS (Sitzungsmanagement) mit Bürgerinformationssystem ALLRIS net",
-        "kunden": "Über 600 Kommunen (Eigenangabe).",
-        "website": "https://www.cc-egov.de/",
-        "cells": {
-            "open_source": ("unknown", ""),
-            "preis": ("unknown", "Angebot auf Anfrage"),
-            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
-            "portal": ("yes", "Bürgerinformationssystem ALLRIS net"),
-            "fraktion": ("yes", "Gremienarbeit und Mandatsträger-Zugänge (Eigenangabe)"),
-            "ris": ("yes", "ALLRIS Sitzungsmanagement"),
-            "kollab": ("unknown", ""),
-            "ki": ("unknown", ""),
-            "suche": ("unknown", ""),
-            "hosting_de": ("yes", "U. a. Rechenzentrum Düsseldorf sowie STACKIT (Eigenangabe)"),
-            "vertrag": ("unknown", ""),
-            "selfhost": ("unknown", ""),
-        },
-    },
-    "mandari-vs-somacos": {
-        "kurzname": "Somacos Session",
-        "anbieter": "SOMACOS GmbH & Co. KG (Salzwedel)",
-        "produkt": "Session (Sitzungsmanagement), Bürgerinformationssystem SessionNet, Sitzungs-App „Mandatos“",
-        "kunden": "Über 2.200 Kunden (Eigenangabe; darunter neben Kommunen z. B. auch Banken und andere Organisationen).",
-        "website": "https://www.somacos.de/",
-        "cells": {
-            "open_source": ("unknown", ""),
-            "preis": ("unknown", "Angebot auf Anfrage"),
-            "oparl": ("yes", "OParl-Schnittstelle (Quellen: oparl.org, Herstellerangaben)"),
-            "portal": ("yes", "Bürgerinformationssystem SessionNet"),
-            "fraktion": ("yes", "Sitzungs-App „Mandatos“ (Eigenangabe)"),
-            "ris": ("yes", "Session Sitzungsmanagement"),
-            "kollab": ("unknown", ""),
-            "ki": ("unknown", ""),
-            "suche": ("unknown", ""),
-            "hosting_de": ("yes", "SaaS „Sessionasp“ aus BSI-zertifiziertem Rechenzentrum (krz; Eigenangabe)"),
-            "vertrag": ("unknown", ""),
-            "selfhost": ("unknown", ""),
-        },
-    },
-    "mandari-vs-regisafe": {
-        "kurzname": "regisafe",
-        "anbieter": "comundus regisafe GmbH (Waiblingen)",
-        "produkt": "regisafe Sitzungsmanagement / Ratsinformationssystem mit Bürgerinfoportal",
-        "kunden": "Über 500 Verwaltungen nutzen das regisafe-Sitzungsmanagement (Eigenangabe).",
-        "website": "https://www.regisafe.de/",
-        "fairness_extra": (
-            " Positiv hervorzuheben: Für das regisafe-Ratsinformationssystem liegt ein "
-            "BITV-Zertifikat zur Barrierefreiheit vor (Oktober 2024, Eigenangabe) — ein "
-            "öffentlich geprüfter Nachweis, den mandari derzeit nicht hat."
-        ),
-        "cells": {
-            "open_source": ("unknown", ""),
-            "preis": ("unknown", "Angebot auf Anfrage"),
-            "oparl": ("unknown", ""),
-            "portal": ("yes", "Bürgerinfoportal im Sitzungsmanagement (Eigenangabe)"),
-            "fraktion": ("yes", "Gremienarbeit und Sitzungsvorbereitung (Eigenangabe)"),
-            "ris": ("yes", "regisafe Sitzungsmanagement"),
-            "kollab": ("unknown", ""),
-            "ki": ("unknown", ""),
-            "suche": ("unknown", ""),
-            "hosting_de": ("unknown", "Cloud-/SaaS-Betrieb wird angeboten (Eigenangabe) — Standort ohne öffentliche Angabe"),
-            "vertrag": ("unknown", ""),
-            "selfhost": ("unknown", ""),
-        },
-    },
-}
-
-
-def _vergleich_disclaimer(name):
-    """Rechtlich saubere Fußnote für jede Vergleichsseite."""
-    return ("disclaimer_box", {
-        "icon": "scale", "color": "gray",
-        "body": (
-            "<p><strong>Hinweis zu diesem Vergleich:</strong> Alle Aussagen über "
-            f"{name} beruhen ausschließlich auf öffentlich verfügbaren Informationen "
-            "(Website des Anbieters, oparl.org), abgerufen im Juli 2026. Wo keine "
-            "öffentliche Angabe existiert, kennzeichnen wir das ausdrücklich als "
-            "„keine öffentliche Angabe“ — das ist keine Aussage über das Produkt selbst. "
-            "Alle genannten Marken und Produktnamen sind Eigentum ihrer jeweiligen "
-            "Inhaber. Fehler oder Aktualisierungen bitte an "
-            "<a href=\"mailto:hello@mandari.de\">hello@mandari.de</a> — wir korrigieren umgehend.</p>"
-        ),
-    })
-
-
-def _comparison_cell(status, note):
-    return {"status": status, "note": note}
-
-
-def _build_vergleich_tabelle(slug):
-    """Baut den comparison_table-Block einer mandari-vs-X-Seite."""
-    v = _VERGLEICH_ANBIETER[slug]
-    name = v["kurzname"]
-
-    groups = []
-    for group_title, rows in _VERGLEICH_GRUPPEN:
-        groups.append({
-            "title": group_title,
-            "rows": [{
-                "label": label,
-                "mandari": _comparison_cell(*_MANDARI_CELLS[key]),
-                "competitor": _comparison_cell(*v["cells"][key]),
-            } for key, label in rows],
-        })
-
-    return ("comparison_table", {
-        "header": hdr(badge_text="Funktionstabelle · 12 Kriterien", badge_icon="list-checks",
-                      title="Der Vergleich im Detail", align="center",
-                      subline="Zeile für Zeile: mandari und " + name + " — Eigenangaben der Anbieter sind als solche gekennzeichnet."),
-        "competitor_label": name,
-        "groups": groups,
-        "footnote": (
-            f"<p><sup>1</sup> <strong>„Keine öffentliche Angabe“ (Stand {_VERGLEICH_STAND}):</strong> "
-            "Auf der Website des Anbieters bzw. auf oparl.org war zum Abrufzeitpunkt keine "
-            "entsprechende Angabe auffindbar. Das ist keine Aussage über den tatsächlichen "
-            "Funktionsumfang des Produkts. Angaben in der mandari-Spalte sind Eigenangaben; "
-            "mandari ist in der Beta-Phase, den aktuellen Stand zeigen die "
-            "<a href=\"/releases/\">Release-Notes</a>.</p>"
-        ),
-    })
-
-
-def _build_vergleich_page(slug):
-    """Baut die Blockliste einer mandari-vs-X-Seite aus dem Fakten-Dict."""
-    v = _VERGLEICH_ANBIETER[slug]
-    name = v["kurzname"]
-
-    return [
-        ("hero", {
-            "badge_text": f"Sachlicher Vergleich · Stand {_VERGLEICH_STAND}",
-            "badge_icon": "scale", "badge_color": "primary",
-            "title": "mandari vs.", "title_highlight": name,
-            "subline": (
-                f"mandari und {name} in einer Funktionstabelle — zwölf Kriterien, sachlich, "
-                "auf Basis öffentlich verfügbarer Informationen, Lücken klar gekennzeichnet."
-            ),
-            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
-                     cta("Alle Vergleiche", "/vergleich/", "scale", "secondary")],
-            "background_color": "primary",
-        }),
-        _vergleich_disclaimer(name),
-        ("two_column_use_case", {
-            "header": hdr(badge_text="Die beiden Systeme", badge_icon="layout-grid",
-                          title=f"mandari und {name} im Überblick", align="center",
-                          subline="Zwei unterschiedliche Ansätze — hier die Eckdaten beider Anbieter."),
-            "left_card": card(color="primary", icon="sparkles", title="mandari",
-                              subtitle="Open-Source-Plattform in der Beta-Phase",
-                              description="Drei Module (Insight, Work, Session) auf einer offenen Plattform — Open Source, deutsche Server, öffentliche Preise.",
-                              bullets=[bullet("Quellcode öffentlich (AGPL-3.0)"),
-                                       bullet("Bürgerportal immer inklusive"),
-                                       bullet("Beta-Phase: jung, aktiv entwickelt, Roadmap öffentlich")],
-                              cta_label="Produkte ansehen", cta_url="/produkte/", cta_icon="arrow-right"),
-            "right_card": card(color="gray", icon="building-2", title=name,
-                               subtitle=v["anbieter"],
-                               description=v["produkt"] + ".",
-                               bullets=[bullet(v["kunden"], "users"),
-                                        bullet("Etabliertes Produkt mit langjähriger Praxis in Verwaltungen", "history"),
-                                        bullet("Details auf der Website des Anbieters", "external-link")],
-                               cta_label="Website des Anbieters", cta_url=v["website"], cta_icon="external-link"),
-        }),
-        _build_vergleich_tabelle(slug),
-        ("disclaimer_box", {
-            "icon": "flask-conical", "color": "amber",
-            "body": (
-                "<p><strong>Fairerweise:</strong> " + name + " ist ein etabliertes Produkt mit "
-                "langjähriger Praxis im Verwaltungsalltag — diesen Erfahrungsvorsprung hat mandari "
-                "als junge Plattform in der Beta-Phase noch nicht. Dafür bietet mandari Offenheit, die es im "
-                "RIS-Markt bisher selten gibt: öffentlicher Quellcode, öffentliche Preise, "
-                "öffentliche Roadmap und ein kostenloses Bürgerportal."
-                + v.get("fairness_extra", "") + "</p>"
-            ),
-        }),
-        ("gradient_cta", {
-            "title": "Selbst vergleichen ist besser.",
-            "subline": "Sehen Sie sich mandari im Bürgerportal live an oder vereinbaren Sie eine Demo — unverbindlich und ohne Vertriebsdruck.",
-            "ctas": [cta("Demo anfragen", "/kontakt/?subject=Demo-RIS-Vergleich", "mail", "primary"),
-                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline")],
-            "gradient_from": "primary",
-        }),
-    ]
-
-
-def _build_vergleich_uebersicht():
-    """Übersichtsseite /vergleich/ mit Links auf alle Einzelvergleiche."""
-    vendor_cards = []
-    colors = ["primary", "blue", "teal", "amber"]
-    for i, (slug, v) in enumerate(_VERGLEICH_ANBIETER.items()):
-        vendor_cards.append(card(
-            color=colors[i % len(colors)], icon="scale",
-            title=f"mandari vs. {v['kurzname']}",
-            subtitle=v["anbieter"],
-            description=v["produkt"] + ".",
-            cta_label="Zum Vergleich", cta_url=f"/vergleich/{slug}/", cta_icon="arrow-right",
-        ))
-
-    return [
-        ("hero", {
-            "badge_text": f"RIS-Vergleich · Stand {_VERGLEICH_STAND}", "badge_icon": "scale", "badge_color": "primary",
-            "title": "mandari im Vergleich", "title_highlight": "mit etablierten RIS-Anbietern",
-            "subline": (
-                "Wer ein Ratsinformationssystem auswählt, vergleicht — und das sollte einfach sein. "
-                "Hier stellen wir mandari den etablierten Anbietern gegenüber: als Funktionstabelle "
-                "mit zwölf Kriterien, ausschließlich auf Basis öffentlich verfügbarer Informationen."
-            ),
-            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
-                     cta("Migration ansehen", "/migration/", "move-right", "outline")],
-            "background_color": "primary",
-        }),
-        ("mandari_cards", {
-            "header": hdr(badge_text="Vier Vergleiche", badge_icon="layout-grid",
-                          title="Anbieter auswählen", align="center",
-                          subline="Alle Marken und Produktnamen sind Eigentum ihrer jeweiligen Inhaber."),
-            "columns": "4", "background": "white",
-            "cards": vendor_cards,
-        }),
-        ("richtext_section", {
-            "header": hdr(badge_text="Methodik", badge_icon="microscope", badge_color="gray",
-                          title="Wonach wir vergleichen"),
-            "background": "gray",
-            "body": (
-                "<p>Jeder Vergleich ist eine Funktionstabelle mit zwölf Kriterien in vier Gruppen: "
-                "<strong>Grundlagen</strong> (Open Source, öffentliche Preisliste, OParl), "
-                "<strong>Portale</strong> (Bürgerportal, Fraktionsbereich, Verwaltungs-RIS), "
-                "<strong>Arbeiten</strong> (Echtzeit-Kollaboration, KI-Zusammenfassungen, Volltextsuche) und "
-                "<strong>Betrieb</strong> (Hosting in Deutschland, Vertragslaufzeiten, Self-Hosting).</p>"
-                "<p>Grundlage sind ausschließlich öffentlich verfügbare Informationen — die Websites "
-                "der Anbieter und die Anbieterliste des OParl-Standards (oparl.org), abgerufen im "
-                "Juli 2026. Eigenangaben der Anbieter (z. B. Kundenzahlen) kennzeichnen wir als solche. "
-                "Wo keine öffentliche Angabe existiert, schreiben wir genau das — und behaupten nichts. "
-                "Eine Feststellung vorweg: Keiner der verglichenen Anbieter veröffentlicht eine "
-                "Preisliste (Stand Juli 2026); mandari tut es. Wo etablierte Anbieter vorn liegen, "
-                "schreiben wir das ebenso dazu.</p>"
-            ),
-        }),
-        _vergleich_disclaimer("die verglichenen Anbieter"),
-        ("gradient_cta", {
-            "title": "Die beste Entscheidung ist eine informierte.",
-            "subline": "Sprechen Sie mit uns über Ihre Anforderungen — wir sagen Ihnen auch ehrlich, wenn mandari (noch) nicht passt.",
-            "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
-                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline")],
-            "gradient_from": "primary",
-        }),
-    ]
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -433,6 +109,7 @@ def _build_vergleich_uebersicht():
 
 def get_marketing_definitions() -> dict:
     """Marketing-Pages (MarketingPage Model) → body StreamField."""
+    from marketing import seeds_vergleich  # Vergleichsseiten und Lücken auf /roadmap/
     from marketing.seeds_unternehmen import get_company_page_definitions
 
     return {
@@ -768,48 +445,81 @@ def get_marketing_definitions() -> dict:
             }),
             ("feature_matrix", {
                 "header": hdr(title="Welches Modul kann was?", anchor_id="funktionen",
-                              subline="Eine Tabelle statt Prospektsprache, Stand September 2026. Geplante Funktionen mit Zeitraum stehen in der Roadmap."),
+                              subline="Eine Tabelle statt Prospektsprache, Stand Oktober 2026. Auch was noch fehlt, steht hier: geplante Funktionen mit Zeitraum aus der Roadmap, offene Punkte als „in Prüfung“."),
                 "columns": ["Insight (Bürgerportal)", "Work (Fraktionen)", "Session (Verwaltung)"],
                 "show_legend": True,
                 "groups": [
                     fgroup("Sitzungsdienst",
                         frow("Sitzungsplanung und Tagesordnung", cell("yes", "Anzeige"), cell("partial", "Vorbereitung und Notizen"), cell("yes")),
                         frow("Einladungen digital und als Druck", cell("no"), cell("partial", "Fraktionssitzungen"), cell("yes")),
+                        frow("Sitzungsmappe als Gesamt-PDF", cell("no"), cell("no"), cell("yes", "mit Inhaltsverzeichnis und Lesezeichen")),
+                        frow("Personalisiertes Wasserzeichen", cell("no"), cell("no"), cell("review")),
                         frow("Protokoll mit Genehmigungsworkflow", cell("no"), cell("yes", "Fraktionssitzungen"), cell("yes")),
                         frow("Anwesenheit und Rückmeldungen", cell("no"), cell("yes"), cell("yes")),
                         frow("Abstimmungsergebnisse, auch namentlich", cell("yes", "Anzeige"), cell("yes", "interne Abstimmungen"), cell("yes")),
+                        frow("Umlaufbeschlüsse", cell("no"), cell("no"), cell("partial", "Rücklauf erfassen; Stimmabgabe online in Prüfung")),
                         frow("Beschlusskontrolle und Umsetzungsstand", cell("yes", "Beschlüsse verfolgen, Abo"), cell("yes", "Beschlüsse der Kommune"), cell("yes", "Beschlussregister")),
                         frow("Fristen-Erinnerungen (Ladung, Vorlagen, Wiedervorlage)", cell("no"), cell("no"), cell("yes")),
-                        frow("Sitzungsgeld und Aufwandsentschädigung", cell("no"), cell("no"), cell("yes", "mit Vier-Augen-Prinzip")),
+                        frow("Raum- und Ressourcenplanung", cell("no"), cell("no"), cell("planned", "2027")),
+                        frow("Bekanntmachung und Amtsblatt", cell("no"), cell("no"), cell("review")),
+                        frow("Sitzungsgeld und Aufwandsentschädigung", cell("no"), cell("no"), cell("yes", "mit Vier-Augen-Prinzip und SEPA")),
+                        frow("Mitteilung an das Finanzamt (Mitteilungsverordnung)", cell("no"), cell("no"), cell("review")),
+                        frow("Endgeräte der Ratsmitglieder verwalten", cell("no"), cell("no"), cell("yes", "Bestand und Zuschüsse")),
+                    ),
+                    fgroup("Sitzung live",
+                        frow("Hybride Sitzungen mit Live-Cockpit", cell("no"), cell("no"), cell("yes", "Teilnahmeart, Beschlussfähigkeit, Störungen")),
+                        frow("Stimmabgabe am eigenen Gerät", cell("no"), cell("no"), cell("planned", "2027")),
+                        frow("Rednerliste und Saalanzeige", cell("no"), cell("no"), cell("planned", "2027")),
+                        frow("Livestream mit Sprungmarken je Tagesordnungspunkt", cell("planned", "2027"), cell("no"), cell("partial", "Stream-Adresse je Sitzung; Sprungmarken 2027")),
+                        frow("Konferenz- und Abstimmungsanlagen im Saal", cell("no"), cell("no"), cell("review")),
+                        frow("KI-Entwurf der Niederschrift", cell("no"), cell("review", "Fraktionssitzungen in Prüfung"), cell("planned", "2027")),
                     ),
                     fgroup("Vorlagen und Anträge",
                         frow("Vorlagen und Drucksachen mit Beratungsfolge", cell("yes", "Anzeige"), cell("yes", "Anzeige und Kommentare"), cell("yes")),
+                        frow("Mitzeichnung mit Vier-Augen-Prinzip und Vertretung", cell("no"), cell("no"), cell("yes")),
+                        frow("Parallele Stationen und Eskalation", cell("no"), cell("no"), cell("planned", "2027")),
+                        frow("Freigabe unterwegs in mobiler Ansicht", cell("no"), cell("no"), cell("review")),
+                        frow("Fassungen mit Vergleich", cell("no"), cell("yes", "Versionshistorie"), cell("yes")),
+                        frow("Import aus Word", cell("no"), cell("yes", "Word und PDF"), cell("planned", "2027")),
+                        frow("Elektronische Signatur", cell("no"), cell("no"), cell("planned", "2027")),
                         frow("Anträge schreiben mit Versionen und Vorlagen", cell("no"), cell("yes"), cell("partial", "Antragseingang")),
                         frow("Digitale Einreichung Fraktion an Verwaltung", cell("no"), cell("yes"), cell("yes", "mit Statusrückmeldung")),
                         frow("Gemeinsames Schreiben in Echtzeit", cell("no"), cell("yes"), cell("planned", "nach 1.0")),
+                        frow("KI-Schreibhilfe", cell("no"), cell("yes", "Antragsassistent"), cell("review")),
+                    ),
+                    fgroup("Für Ratsmitglieder",
+                        frow("Alle Unterlagen, auch nichtöffentliche, im eigenen Bereich", cell("no"), cell("partial", "Unterlagen der Fraktion"), cell("review", "heute mit der Ladung per E-Mail")),
+                        frow("Notizen an Tagesordnungspunkten und Vorlagen", cell("no"), cell("yes", "privat oder geteilt"), cell("no")),
+                        frow("App mit Unterlagen offline", cell("planned", "Bürger-App 2027"), cell("partial", "installierbare Web-App; offline 2027"), cell("planned", "2027")),
                     ),
                     fgroup("Öffentlichkeit und Daten",
                         frow("Bürgerportal ohne Anmeldung", cell("yes"), cell("no"), cell("yes", "Veröffentlichung per Schalter")),
                         frow("Volltextsuche inklusive Texterkennung", cell("yes"), cell("yes"), cell("yes")),
-                        frow("OParl-1.1-Schnittstelle", cell("yes", "Aggregations-API"), cell("no"), cell("yes", "je Kommune")),
+                        frow("Schwärzung für die Veröffentlichung", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
+                        frow("Einbindung in die Website der Kommune", cell("partial", "Kalender-Feed, OParl; Bausteine in Prüfung"), cell("no"), cell("info", "über das Bürgerportal")),
+                        frow("OParl-1.1-Schnittstelle", cell("yes", "Aggregations-API mit Änderungsfeed"), cell("no"), cell("yes", "je Kommune")),
+                        frow("Datenkatalog nach DCAT-AP.de", cell("partial", "Katalog vorhanden, Anbindung an Datenportale folgt"), cell("no"), cell("yes", "je Kommune, zuschaltbar")),
                         frow("Öffentliche Fraktions-API für die eigene Webseite", cell("no"), cell("yes"), cell("no")),
                         frow("Ratsfragen an Mandatsträger:innen", cell("yes"), cell("no"), cell("no")),
+                        frow("Einwohnerfragestunde und Eingaben", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
                         frow("KI-Zusammenfassungen", cell("partial", "für ausgewählte Quellen"), cell("yes", "Recherche"), cell("planned", "Sitzungsassistent")),
-                        frow("Open-Data-Katalog nach DCAT-AP.de", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
+                        frow("Vorlagen in einfacher Sprache", cell("review"), cell("no"), cell("no")),
                     ),
                     fgroup("Betrieb und Sicherheit",
                         frow("Rollen und Rechte", cell("no", "ohne Anmeldung"), cell("yes", "über 50 Berechtigungen"), cell("yes")),
                         frow("Mandantentrennung, Verschlüsselung je Mandant", cell("no"), cell("yes"), cell("yes")),
                         frow("Zwei-Faktor-Authentifizierung", cell("no"), cell("yes"), cell("yes")),
-                        frow("Revisionssicheres Audit-Log", cell("no"), cell("partial", "Änderungshistorie"), cell("yes")),
+                        frow("Revisionssicheres Audit-Log", cell("no"), cell("partial", "Änderungshistorie"), cell("yes", "inklusive Lesezugriffe")),
                         frow("Single Sign-on (SAML, OpenID Connect)", cell("no"), cell("planned", "2027"), cell("planned", "2027")),
+                        frow("Übergabe an DMS und E-Akte", cell("no"), cell("no"), cell("planned", "2027")),
                         frow("Aufbewahrungsfristen und Löschlauf", cell("no"), cell("info", "Löschung bei Vertragsende"), cell("yes", "je Mandant konfigurierbar")),
                         frow("Datenexport (OParl, CSV, JSON)", cell("yes"), cell("yes"), cell("yes")),
                         frow("Self-Hosting mit Docker", cell("yes"), cell("yes"), cell("yes")),
                         frow("Barrierefreiheit nach BITV 2.0", cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung Q4/2026")),
+                        frow("Externer Penetrationstest", cell("planned", "2027"), cell("planned", "2027"), cell("planned", "2027")),
                     ),
                 ],
-                "footnote": "<p>Geplante Funktionen mit Zeitraum finden Sie in der <a href=\"/roadmap/\">Roadmap</a> und als Issues auf <a href=\"https://github.com/mandariOSS/mandari/issues\">GitHub</a>. Details zu jeder Funktion in der <a href=\"https://docs.mandari.de/\">Dokumentation</a>.</p>",
+                "footnote": "<p>Geplante Funktionen mit Zeitraum finden Sie in der <a href=\"/roadmap/\">Roadmap</a> und als Issues auf <a href=\"https://github.com/mandariOSS/mandari/issues\">GitHub</a>. Wie sich das zu etablierten Ratsinformationssystemen verhält, zeigt der <a href=\"/vergleich/\">RIS-Vergleich</a>. Details zu jeder Funktion in der <a href=\"https://docs.mandari.de/\">Dokumentation</a>.</p>",
             }),
             ("mandari_cards", {
                 "header": hdr(title="Was sich anbinden lässt", anchor_id="integrationen",
@@ -828,14 +538,14 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
                          description="Anmeldung über den Verzeichnisdienst der Verwaltung: SAML 2.0 und OpenID Connect, etwa Entra ID oder Keycloak, mit Rollenzuordnung aus Gruppen.",
                          cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/95", cta_icon="github"),
-                    card(color="gray", icon="archive", title="DMS und eAkte",
-                         status_badges=[sbadge("Projektarbeit auf Anfrage", "briefcase", "gray")],
-                         description="Übergabe von Vorlagen, Protokollen und Beschlüssen an Dokumentenmanagementsysteme richten wir je Kommune als Projekt ein. Export als PDF, JSON und OParl steht immer bereit.",
-                         cta_label="Anfrage stellen", cta_url="/kontakt/?subject=DMS-Anbindung", cta_icon="mail"),
+                    card(color="amber", icon="archive", title="DMS und E-Akte",
+                         status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
+                         description="Standardübergabe von Vorlagen, Niederschriften und Beschlüssen per CMIS und XDomea. Bis dahin richten wir die Übergabe je Kommune als Projekt ein; Export als PDF, JSON und OParl steht immer bereit.",
+                         cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/154", cta_icon="github"),
                     card(color="amber", icon="video", title="Livestream und Video",
-                         status_badges=[sbadge("Geplant nach 1.0", "calendar", "amber")],
-                         description="Einbindung von Sitzungs-Livestreams und Aufzeichnungen mit Sprungmarken je Tagesordnungspunkt im Bürgerportal.",
-                         cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/47", cta_icon="github"),
+                         status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
+                         description="Einbindung von Sitzungs-Livestreams und Aufzeichnungen mit Sprungmarken je Tagesordnungspunkt im Bürgerportal. Die Adresse des Streams lässt sich schon heute je Sitzung hinterlegen.",
+                         cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/146", cta_icon="github"),
                     card(color="amber", icon="database", title="Open Data (mandari Data)",
                          status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
                          description="Ratsdaten automatisch als Open-Data-Katalog nach DCAT-AP.de, harvestbar durch Landesportale und GovData, plus eigene Verwaltungsdatensätze.",
@@ -1527,7 +1237,7 @@ def get_marketing_definitions() -> dict:
         # ════════════════════════════════════════════════════════════
         "roadmap": [
             ("hero", {
-                "badge_text": "Zuletzt aktualisiert: 9. September 2026 · nächste Aktualisierung: Dezember 2026", "badge_icon": "map", "badge_color": "primary",
+                "badge_text": "Zuletzt aktualisiert: 2. Oktober 2026 · nächste Aktualisierung: Dezember 2026", "badge_icon": "map", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
                 "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Aktualisiert nach jedem Quartal, Verschiebungen werden offen benannt.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
@@ -1589,18 +1299,18 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Anmeldung über den Verzeichnisdienst der Verwaltung mit Rollenzuordnung aus Gruppen.",
                          cta_label="Issue #95", cta_url="https://github.com/mandariOSS/mandari/issues/95", cta_icon="github"),
-                    card(color="blue", icon="mic", title="KI-Sitzungsassistent", subtitle="nach 1.0",
-                         status_badges=[sbadge("In Prüfung", "search", "gray")],
-                         description="Niederschriftsentwurf aus der Audioaufzeichnung, Zusammenfassungen von Vorlagen für den Sitzungsdienst.",
+                    card(color="blue", icon="mic", title="KI-Entwurf der Niederschrift", subtitle="2027",
+                         status_badges=[sbadge("Geplant", "calendar", "amber")],
+                         description="Entwurf je Tagesordnungspunkt aus der Audioaufzeichnung, Transkription ohne Übermittlung in Drittländer, Nichtöffentliches nur mit selbst betriebenem Sprachmodell. Der Sitzungsdienst prüft und übernimmt.",
                          cta_label="Issue #49", cta_url="https://github.com/mandariOSS/mandari/issues/49", cta_icon="github"),
                     card(color="blue", icon="video", title="Hybride und digitale Gremiensitzungen", subtitle="2027",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
-                         description="Sitzungsformat mit Landesprofil, Live-Cockpit der Sitzungsleitung, Abstimmung am eigenen Gerät, Videokonferenz-Anbindung, Livestream mit Sprungmarken, automatische Niederschriftsvermerke.",
+                         description="Sitzungsformat mit Landesprofil, Teilnahmeart und Live-Cockpit sind geliefert. Es folgen Abstimmung am eigenen Gerät mit zertifizierungsfähigem Modul, Rednerliste, Saalanzeige, Videokonferenz-Anbindung, Livestream mit Sprungmarken und automatische Niederschriftsvermerke.",
                          cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/156", cta_icon="github"),
                     card(color="blue", icon="file-signature", title="Vollständige Ratsarbeit", subtitle="2027",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
-                         description="Vorlagenarten mit Nummernkreisen und Word-Import, Mitzeichnung mit parallelen Stationen, Sitzungsgeld mit Fahrtkosten und Verdienstausfall, elektronische Signatur, E-Akte-Übergabe.",
-                         cta_label="Meilenstein ansehen", cta_url="https://github.com/mandariOSS/mandari/milestones", cta_icon="github"),
+                         description="Vorlagenarten mit Nummernkreisen und Word-Import, Mitzeichnung mit parallelen Stationen, Veröffentlichungsfassung mit Schwärzung, Räume und Ressourcen, Eingang von Anfragen und Eingaben, Sitzungsgeld mit Fahrtkosten und Verdienstausfall, elektronische Signatur, E-Akte-Übergabe.",
+                         cta_label="Vorhaben #496 ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/496", cta_icon="github"),
                 ],
             }),
             ("mandari_cards", {
@@ -1629,10 +1339,10 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("In Prüfung", "search", "gray")],
                          description="KI-Kurzfassung in einfacher Sprache, klar als solche gekennzeichnet.",
                          cta_label="Issue #51", cta_url="https://github.com/mandariOSS/mandari/issues/51", cta_icon="github"),
-                    card(color="green", icon="video", title="Livestream und Video mit Sprungmarken", subtitle="nach 1.0",
-                         status_badges=[sbadge("In Prüfung", "search", "gray")],
-                         description="Sitzungsaufzeichnungen je Tagesordnungspunkt im Bürgerportal.",
-                         cta_label="Issue #47", cta_url="https://github.com/mandariOSS/mandari/issues/47", cta_icon="github"),
+                    card(color="green", icon="video", title="Livestream und Video mit Sprungmarken", subtitle="2027",
+                         status_badges=[sbadge("Geplant", "calendar", "amber")],
+                         description="Livestream und Aufzeichnungen je Tagesordnungspunkt im Bürgerportal, Teil des Vorhabens „Hybride und digitale Gremiensitzungen“.",
+                         cta_label="Issue #146", cta_url="https://github.com/mandariOSS/mandari/issues/146", cta_icon="github"),
                 ],
             }),
             ("mandari_cards", {
@@ -1671,11 +1381,20 @@ def get_marketing_definitions() -> dict:
                          cta_label="Meilenstein 1.0", cta_url="https://github.com/mandariOSS/mandari/milestone/4", cta_icon="github"),
                 ],
             }),
+            *seeds_vergleich.roadmap_luecken(),
             ("richtext_section", {
                 "header": hdr(badge_text="Änderungsprotokoll", badge_icon="history", badge_color="primary",
-                              title="Was sich gegenüber der Roadmap vom Juli 2026 geändert hat", anchor_id="aenderungen"),
+                              title="Was sich an der Roadmap geändert hat", anchor_id="aenderungen"),
                 "background": "white",
                 "body": (
+                    "<h3>Oktober 2026</h3>"
+                    "<ul>"
+                    "<li><strong>Marktvergleich:</strong> Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht, stehen jetzt gesammelt in der Roadmap. Acht davon sind neu und in Prüfung: eigener Bereich für Ratsmitglieder, Freigabe unterwegs, Umlaufverfahren mit Stimmabgabe online, Mitteilungen an das Finanzamt, Bekanntmachung und Amtsblatt, Einbindung in die Website der Kommune, Saaltechnik und KI-Schreibhilfe im Sitzungsdienst.</li>"
+                    "<li><strong>KI-Entwurf der Niederschrift:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, weil er zum Vorhaben „Vollständige Ratsarbeit“ gehört.</li>"
+                    "<li><strong>Livestream mit Sprungmarken:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, gleichgezogen mit dem Vorhaben „Hybride und digitale Gremiensitzungen“.</li>"
+                    "<li><strong>Hybride Sitzungen:</strong> Sitzungsformat, Teilnahmeart und Live-Cockpit sind geliefert.</li>"
+                    "</ul>"
+                    "<h3>September 2026, gegenüber Juli 2026</h3>"
                     "<ul>"
                     "<li><strong>Self-Hosting-Guide (Q3/2026):</strong> geliefert, in erweiterter Form als eigene Dokumentationsplattform docs.mandari.de.</li>"
                     "<li><strong>OParl-Adapter erweitern:</strong> läuft weiter und wird zum Programm „Adapter für Ratsinformationssysteme ohne OParl“ mit eigenem Epic ausgebaut.</li>"
@@ -1686,7 +1405,7 @@ def get_marketing_definitions() -> dict:
                     "<li><strong>Open-Data-Portal:</strong> präzisiert zur vollwertigen Plattform für alle Verwaltungsdaten, nicht nur Ratsdaten.</li>"
                     "<li><strong>Version 1.0:</strong> bleibt bei 2027; ein konkretes Quartal nennen wir, sobald der Pilotbetrieb läuft.</li>"
                     "</ul>"
-                    "<h2>Was wir bewusst nicht bauen</h2>"
+                    "<h3>Was wir bewusst nicht bauen</h3>"
                     "<ul>"
                     "<li>Kein Windows-Installer für den Eigenbetrieb; unterstützt wird Docker Compose auf Linux.</li>"
                     "<li>Keine Bezahlschranken für Sicherheitsfunktionen wie Zwei-Faktor-Authentifizierung, Verschlüsselung oder Audit-Log.</li>"
@@ -1706,10 +1425,10 @@ def get_marketing_definitions() -> dict:
 
         # ════════════════════════════════════════════════════════════
         # /vergleich/ + /vergleich/mandari-vs-<anbieter>/ — Daten und
-        # Aufbau siehe _VERGLEICH_ANBIETER / _build_vergleich_page oben.
+        # Aufbau in marketing/seeds_vergleich.py.
         # ════════════════════════════════════════════════════════════
-        "vergleich": _build_vergleich_uebersicht(),
-        **{slug: _build_vergleich_page(slug) for slug in _VERGLEICH_ANBIETER},
+        "vergleich": seeds_vergleich.uebersichtsseite(),
+        **{slug: seeds_vergleich.anbieterseite(slug) for slug in seeds_vergleich.ANBIETER},
     }
 
 

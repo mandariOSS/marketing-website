@@ -1,10 +1,19 @@
-{% comment %} Eine Zelle der Vergleichstabelle: Status (yes / no / unknown) + optionaler Zusatztext.
-   "unknown" wird bewusst neutral-grau dargestellt und verweist auf die Fußnote —
+{% comment %} Eine Zelle der Vergleichstabelle: Status (yes / partial / open / no / unknown) + optionaler Zusatztext.
+   "open" gibt es nur in der mandari-Spalte: noch nicht verfügbar, der Zusatz nennt die Roadmap-Stufe.
+   "unknown" wird bewusst neutral-grau dargestellt und verweist auf die Fußnote –
    keine Negativbehauptung über den Anbieter. {% endcomment %}
 <td class="py-3.5 px-4 sm:px-6 align-top">
     {% if cell.status == 'yes' %}
     <span class="inline-flex items-center gap-1.5 font-semibold text-green-700 dark:text-green-400">
         <i data-lucide="check" class="w-4 h-4 flex-none" aria-hidden="true"></i>Ja
+    </span>
+    {% elif cell.status == 'partial' %}
+    <span class="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
+        <i data-lucide="circle-dot" class="w-4 h-4 flex-none" aria-hidden="true"></i>Teilweise
+    </span>
+    {% elif cell.status == 'open' %}
+    <span class="inline-flex items-center gap-1.5 font-semibold text-primary-700 dark:text-primary-300">
+        <i data-lucide="circle-dashed" class="w-4 h-4 flex-none" aria-hidden="true"></i>Noch nicht verfügbar
     </span>
     {% elif cell.status == 'no' %}
     <span class="inline-flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-400">
