@@ -68,24 +68,38 @@
    Bildschirme im Hochformat (Work hinten, Insight vorne), Session entfällt. */
 .hero-stapel {
   position: relative;
+  isolation: isolate;
   aspect-ratio: 100 / 105;   /* zwei Hochformate, je 58 % breit, das vordere 10 % tiefer */
   max-width: 26rem;
+}
+/* Ruhige Markenfläche hinter den Bildschirmen: löst die Figur vom weißen Grund, ohne Verlauf und ohne Deko */
+.hero-stapel::before {
+  content: "";
+  position: absolute;
+  inset: 7% 0 -5% 8%;   /* mobil innerhalb der Spalte, kein Anstoßen am Rand */
+  z-index: -1;
+  border-radius: 1.25rem;
+  background-color: var(--band-marke);
 }
 .hero-karte {
   position: absolute;
   overflow: hidden;
   border-radius: 0.5rem;
-  border: 1px solid rgb(17 24 39 / 0.1);
+  border: 1px solid rgb(17 24 39 / 0.12);
   background-color: #faf9f7;   /* Grund der Anwendungen, bis das Bild geladen ist */
-  box-shadow: 0 1px 2px rgb(17 24 39 / 0.04), 0 18px 40px -20px rgb(17 24 39 / 0.28);
+  /* Mehrstufiger Schatten: Kante, Nahschatten, weicher Fernschatten – die Bildschirme liegen sichtbar über der Fläche */
+  box-shadow:
+    0 1px 2px rgb(17 24 39 / 0.06),
+    0 8px 16px -6px rgb(17 24 39 / 0.12),
+    0 28px 56px -18px rgb(17 24 39 / 0.34);
 }
 .hero-karte img { display: block; width: 100%; height: auto; }
 .hero-karte-session { display: none; }
 .hero-karte-work { left: 0; top: 0; width: 58%; }
 .hero-karte-insight { right: 0; top: 10%; width: 58%; }
 .dark .hero-karte {
-  border-color: rgb(255 255 255 / 0.1);
-  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  border-color: rgb(255 255 255 / 0.12);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 20px -8px rgb(0 0 0 / 0.5), 0 30px 60px -16px rgb(0 0 0 / 0.75);
 }
 .dark .hero-karte img { filter: brightness(0.92); }   /* helle Bildschirme blenden auf dunklem Grund nicht */
 
@@ -100,6 +114,7 @@
 }
 @media (min-width: 1024px) {
   .hero-stapel { max-width: none; }
+  .hero-stapel::before { inset: 6% -5% -7% 9%; }
   /* Zweispaltig: Überschrift etwas kleiner, damit sie in zwei Zeilen neben das Bild passt */
   .hero-titel { font-size: clamp(3.1rem, 1.5rem + 2.6vw, 4.1rem); }
 }
