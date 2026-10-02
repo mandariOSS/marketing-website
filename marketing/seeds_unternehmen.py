@@ -427,8 +427,8 @@ def get_company_page_definitions() -> dict:
                 ],
                 anchor="ablauf", background="gray",
                 note="<p>Für jede Partnerschaft gilt unser Wertekompass: Ratsdaten bleiben vollständig und "
-                     "unverändert, wir arbeiten mit allen demokratischen Parteien gleichermaßen, Code und "
-                     'Förderquellen sind offen. <a href="/unternehmen/#werte">Wertekompass lesen</a></p>',
+                     "unverändert, wir arbeiten mit allen demokratischen Parteien gleichermaßen, und jede Zeile "
+                     'Code bleibt offen. <a href="/unternehmen/#werte">Wertekompass lesen</a></p>',
             ),
             _invitation(
                 "Finden wir heraus, was wir zusammen bewegen.",
@@ -446,7 +446,6 @@ def get_company_page_definitions() -> dict:
                 "Software, die das Gemeinwesen trägt, gehört offengelegt. Deshalb steht mandari vollständig unter "
                 "AGPL-3.0: jede Zeile, jedes Produkt, ohne Premium-Ausgabe hinter verschlossener Tür.",
                 cta_label="Quellcode ansehen", cta_url="https://github.com/mandariOSS/mandari",
-                secondary="Sie müssen uns nicht glauben. Sie können nachsehen.",
             ),
             _rows(
                 "Was offener Code für Ihre Verwaltung bedeutet",
@@ -487,8 +486,8 @@ def get_company_page_definitions() -> dict:
                          link_label="Sicherheitslücke melden", link_url="/sicherheit/disclosure/"),
                 ],
                 anchor="entwicklung", background="gray",
-                subline="Offenheit endet bei uns nicht an der Lizenz. Roadmap, Releases, Sicherheitsprozesse und "
-                        "Betriebsstatus sind öffentlich, weil Vertrauen so entsteht.",
+                subline="Sie müssen uns nicht glauben. Sie können nachsehen: Roadmap, Releases, "
+                        "Sicherheitsprozesse und Betriebsstatus sind öffentlich.",
             ),
             _section(
                 "Schauen Sie uns in den Code",
