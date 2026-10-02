@@ -152,8 +152,11 @@ marketing-website/
 ## 🚢 CI & Deployment
 
 - **CI**: Jeder Push auf `main`/`dev` baut das Docker-Image und pusht es nach
-  **`ghcr.io/mandarioss/website`** (Tags: `<branch>` und `<branch>-<shortsha>`,
-  siehe `.github/workflows/release.yml`).
+  **`ghcr.io/mandarioss/website`** (`main`: Tags `main`, `latest` und `main-<shortsha>`;
+  `dev`: `dev-<shortsha>`, siehe `.github/workflows/release.yml`). Release-Versionen
+  (`v0.11.0`), `dev` und die Commit-Tags der Installation setzt der Release-Workflow von
+  [`mandariOSS/mandari`](https://github.com/mandariOSS/mandari) als Kopie von `main`, weil die
+  Installation alle drei Images mit einem Tag zieht.
 - **Produktion**: Die Website läuft als `website`-Service im
   Docker-Compose-Stack des Hauptrepos
   [`mandariOSS/mandari`](https://github.com/mandariOSS/mandari) auf dem
