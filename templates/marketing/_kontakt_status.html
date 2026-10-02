@@ -1,0 +1,14 @@
+{# Rückmeldung nach dem Absenden – direkt über dem jeweiligen Formular #}
+{% if status.result == "gesendet" %}
+<div class="mt-6 rounded-lg bg-green-50 dark:bg-green-900/20 px-4 py-3 text-green-900 dark:text-green-200" role="status">
+    {% if status.kind == "termin" %}<strong>Danke, Ihre Terminanfrage ist bei uns.</strong> Wir bestätigen den Termin innerhalb eines Werktags per E-Mail.{% else %}<strong>Danke für Ihre Nachricht.</strong> Sie erhalten innerhalb eines Werktags eine persönliche Antwort.{% endif %}
+</div>
+{% else %}
+<div class="mt-6 rounded-lg bg-red-50 dark:bg-red-900/20 px-4 py-3 text-red-900 dark:text-red-200" role="alert">
+    {% if status.result == "ungueltig" %}Bitte prüfen Sie die markierten Felder.
+    {% elif status.result == "spamschutz" %}Der Spamschutz konnte Ihre Anfrage nicht bestätigen. Bitte senden Sie das Formular noch einmal – Ihre Eingaben sind erhalten. Oder schreiben Sie an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a>.
+    {% elif status.result == "zu-viele" %}Von Ihrem Anschluss kamen in der letzten Stunde schon mehrere Anfragen. Bitte versuchen Sie es später noch einmal oder schreiben Sie an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a>.
+    {% elif status.result == "ueberlastet" %}Das Formular nimmt gerade keine weiteren Anfragen an. Bitte schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a> – wir antworten innerhalb eines Werktags.
+    {% else %}Ihre Anfrage konnte gerade nicht zugestellt werden. Bitte schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="underline">{{ contact_fallback }}</a> – wir antworten innerhalb eines Werktags.{% endif %}
+</div>
+{% endif %}

@@ -13,6 +13,29 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import get_template as load_template
 from wagtail.models import Page, Site
 
+# Kontaktseite (ContactPage, eigener Seitentyp) – `refresh_seeded_page kontakt --force`
+# bringt Titel und SEO-Felder einer bestehenden Seite auf diesen Stand.
+CONTACT_PAGE_META = {
+    "title": "Kontakt",
+    "slug": "kontakt",
+    "seo_title": "Kontakt",
+    "search_description": (
+        "Erstgespräch mit mandari vereinbaren oder eine Nachricht schreiben – für Verwaltungen, Fraktionen, "
+        "Partner und Presse. Antwort innerhalb eines Werktags."
+    ),
+}
+
+
+def seeded_custom_template(slug: str) -> str:
+    """Template, das der Seed für eine Marketing-Seite vorsieht ('' = Standard-Template).
+
+    Steht im Eintrag von MARKETING_PAGE_META ein ``custom_template`` (Seiten mit festen
+    Abschnitten, z. B. company/unternehmen.html), setzen es `migrate_pages_to_streamfield`
+    und `refresh_seeded_page`; sonst rendert marketing_page.html.
+    """
+    meta = next((m for m in MARKETING_PAGE_META if m["slug"] == slug), None)
+    return (meta or {}).get("custom_template", "")
+
 
 # ── Startseite: Metadaten ─────────────────────────────────────────────────
 # Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
@@ -177,8 +200,11 @@ MARKETING_PAGE_META = [
     {
         "title": "Open Source",
         "slug": "open-source",
-        "seo_title": "Open Source – Mandari",
-        "search_description": "Mandari ist Open Source unter AGPL-3.0. Selbst-Hosting möglich.",
+        "seo_title": "Open Source",
+        "search_description": (
+            "mandari steht vollständig unter AGPL-3.0. Was offener Quellcode für Verwaltungen bedeutet: "
+            "freie Anbieterwahl, Prüfbarkeit bis zur letzten Zeile, dauerhafte Verfügbarkeit."
+        ),
     },
     {
         "title": "Mitmachen",
@@ -187,24 +213,49 @@ MARKETING_PAGE_META = [
         "search_description": "Werde Teil der Mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
     },
 
-    # ── Über uns ──────────────────────────────────────────────────────
+    # ── Unternehmen ───────────────────────────────────────────────────
+    # Inhalte: marketing/seeds_unternehmen.py. /ueber-uns/ ist in /unternehmen/
+    # aufgegangen: 301 in website/urls.py, eine bestehende Seite zieht
+    # `retire_page ueber-uns --redirect /unternehmen/` zurück.
     {
-        "title": "Über uns",
-        "slug": "ueber-uns",
-        "seo_title": "Über uns – Mission & Werte",
-        "search_description": "Mandari — Mission, Werte und das Projekt hinter dem offenen Ratsinformationssystem.",
+        "title": "Unternehmen",
+        "slug": "unternehmen",
+        "seo_title": "Unternehmen",
+        "search_description": (
+            "mandari ist ein GovTech-Startup aus Münster: Mission, Wertekompass, Geschäftsmodell, Wegmarken "
+            "und die Angaben zum Unternehmen für Eignungsprüfung und Vergabe."
+        ),
+        # Angaben zum Unternehmen kommen aus „Einstellungen → Unternehmensangaben“ (company.CompanySettings)
+        "custom_template": "company/unternehmen.html",
+    },
+    {
+        "title": "Karriere",
+        "slug": "karriere",
+        "seo_title": "Karriere",
+        "search_description": (
+            "Arbeiten bei mandari, dem GovTech-Startup aus Münster: Software mit Wirkung bauen, Open Source "
+            "by default, früh dabei sein. So arbeiten wir – und so bewirbst du dich."
+        ),
     },
     {
         "title": "Partner",
         "slug": "partner",
-        "seo_title": "Partner – Mandari",
-        "search_description": "Partnerschaften mit Kommunen, Fraktionen und zivilgesellschaftlichen Organisationen.",
+        "seo_title": "Partner",
+        "search_description": (
+            "Mit mandari zusammenarbeiten: kommunale IT-Dienstleister und Systemhäuser, Pilotkommunen, "
+            "Förderer und Stiftungen sowie die Civic-Tech-Gemeinschaft."
+        ),
     },
     {
         "title": "Presse",
         "slug": "presse",
-        "seo_title": "Presse – Mandari",
-        "search_description": "Pressematerial und Kontakt für Journalist:innen.",
+        "seo_title": "Presse",
+        "search_description": (
+            "Pressebereich von mandari: Kurzprofil, Fakten und Kennzahlen mit Stand, das Logo-Paket zum "
+            "Herunterladen und der direkte Weg für Presseanfragen."
+        ),
+        # Logo-Paket aus static/brand/ (templates/company/_logopaket.html)
+        "custom_template": "company/presse.html",
     },
     # /faq/ wurde aufgelöst — Page-spezifische FAQs sind direkt in
     # /preise/, /kontakt/, /migration/ integriert
@@ -335,10 +386,10 @@ class Command(BaseCommand):
                 page.delete()
                 self.stdout.write(self.style.WARNING(f"  {slug}/ entfernt (konsolidiert)"))
 
-        # Note: custom_template wird bewusst NICHT mehr geseedet — die alten
-        # Spezial-Templates (marketing/produkt.html, …) existieren in diesem
-        # Repo nicht. Inhalte kommen aus dem StreamField-Seed
-        # (`migrate_pages_to_streamfield`), gerendert über marketing_page.html.
+        # Note: Inhalte kommen aus dem StreamField-Seed (`migrate_pages_to_streamfield`),
+        # gerendert über marketing_page.html. Ein custom_template steht nur dort im
+        # Seed, wo die Seite feste Abschnitte ergänzt (z. B. company/unternehmen.html);
+        # die alten Spezial-Templates (marketing/produkt.html, …) gibt es nicht mehr.
         for page_data in marketing_pages:
             slug = page_data.pop("slug")
             show_in_menus = page_data.pop("show_in_menus", True)
@@ -373,10 +424,7 @@ class Command(BaseCommand):
 
         if not ContactPage.objects.exists():
             contact = ContactPage(
-                title="Kontakt",
-                slug="kontakt",
-                seo_title="Kontakt – Mandari",
-                search_description="Kontaktformular und Ansprechpartner.",
+                **CONTACT_PAGE_META,
                 intro="<p>Wir freuen uns über Ihre Nachricht.</p>",
                 thank_you_text="<p>Vielen Dank für Ihre Nachricht! Wir melden uns so schnell wie möglich.</p>",
                 show_in_menus=True,

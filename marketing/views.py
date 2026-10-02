@@ -15,6 +15,8 @@ import hmac
 import json
 import logging
 import secrets
+import time
+from urllib.parse import parse_qs
 
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
@@ -36,7 +38,10 @@ logger = logging.getLogger(__name__)
 #   2. Server signiert challenge mit HMAC-SHA256(secret) → signature
 #   3. Client (Browser) versucht number durch Brute-Force zu finden (PoW)
 #   4. Client schickt payload (base64-JSON) zurück mit number, salt, sig
-#   5. Server prüft: hash stimmt + signature stimmt + (Replay-Schutz, optional)
+#   5. Server prüft: hash stimmt + signature stimmt + Aufgabe nicht abgelaufen
+#      (Ablaufzeit steht als ?expires=<Unix-Sekunden> im Salt und ist damit von der
+#      Signatur gedeckt; das Widget holt nach Ablauf selbst eine neue Aufgabe).
+#      Die Einmal-Prüfung je Formular übernimmt der Form-Handler.
 #
 # Dependency-frei — alles in Python-stdlib.
 
@@ -46,8 +51,9 @@ def altcha_challenge(request):
     """Generiert eine Altcha-Challenge (JSON), die der <altcha-widget> abholt."""
     secret = getattr(settings, "ALTCHA_HMAC_KEY", "")
     max_number = getattr(settings, "ALTCHA_MAX_NUMBER", 100000)
+    expires = int(time.time()) + int(getattr(settings, "ALTCHA_EXPIRES_SECONDS", 3600))
 
-    salt = secrets.token_hex(16)
+    salt = f"{secrets.token_hex(16)}?expires={expires}"
     number = secrets.randbelow(max_number)
     challenge = hashlib.sha256(f"{salt}{number}".encode()).hexdigest()
     signature = hmac.new(
@@ -67,6 +73,12 @@ def altcha_challenge(request):
     )
 
 
+def altcha_expires(salt: str) -> int | None:
+    """Ablaufzeit einer Aufgabe (Unix-Sekunden) aus ihrem Salt, ``None`` ohne Angabe."""
+    value = parse_qs(str(salt).partition("?")[2]).get("expires", [""])[0]
+    return int(value) if value.isascii() and value.isdigit() else None
+
+
 def verify_altcha_payload(payload_b64: str) -> bool:
     """Verifiziert eine Altcha-Lösung. Aufrufen im Form-Handler.
 
@@ -81,7 +93,8 @@ def verify_altcha_payload(payload_b64: str) -> bool:
                     return redirect("kontakt")
                 # ...rest der Form-Verarbeitung...
 
-    Returns ``True`` bei gültiger Signatur + korrektem PoW, sonst ``False``.
+    Returns ``True`` bei gültiger Signatur, korrektem PoW und nicht abgelaufener
+    Aufgabe, sonst ``False``.
     """
     if not payload_b64:
         return False
@@ -101,7 +114,7 @@ def verify_altcha_payload(payload_b64: str) -> bool:
 
     # Prüfe: Hash der Lösung entspricht der Challenge
     expected_challenge = hashlib.sha256(f"{salt}{number}".encode()).hexdigest()
-    if not hmac.compare_digest(expected_challenge, challenge):
+    if not isinstance(challenge, str) or not hmac.compare_digest(expected_challenge.encode(), challenge.encode()):
         return False
 
     # Prüfe: Signatur ist valide (challenge wurde von uns ausgestellt)
@@ -111,7 +124,12 @@ def verify_altcha_payload(payload_b64: str) -> bool:
         challenge.encode(),
         hashlib.sha256,
     ).hexdigest()
-    return hmac.compare_digest(expected_signature, signature)
+    if not hmac.compare_digest(expected_signature.encode(), str(signature).encode()):
+        return False
+
+    # Prüfe: Aufgabe ist nicht abgelaufen (Aufgaben ohne Ablaufzeit gelten nicht)
+    expires = altcha_expires(salt)
+    return expires is not None and expires > time.time()
 
 
 # ─────────────────────────── robots.txt (RFC 9309) ──────────────────────────

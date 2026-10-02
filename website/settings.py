@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     # Wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -91,6 +92,7 @@ INSTALLED_APPS = [
     # Project apps
     "marketing",
     "blog",
+    "company",
 ]
 
 MIDDLEWARE = [
@@ -144,6 +146,18 @@ DATABASES = {
         conn_max_age=600,
         conn_health_checks=True,
     )
+}
+
+# Zwischenspeicher. "formulare" liegt in der Datenbank, damit alle gunicorn-Worker dieselben
+# Einträge sehen (Einmal-Prüfung des Spamschutzes, Begrenzung der Kontaktanfragen).
+# Tabelle anlegen: python manage.py createcachetable (idempotent, läuft im Container-Start).
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "formulare": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "website_formular_cache",
+        "OPTIONS": {"MAX_ENTRIES": 20000},
+    },
 }
 
 AUTH_PASSWORD_VALIDATORS = [

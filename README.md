@@ -97,6 +97,28 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
 `.legal-content/` und werden auf laufenden Instanzen mit
 `refresh_seeded_page <slug> --force` ausgerollt.
 
+## Unternehmensangaben, Unternehmensseiten und Kontakt
+
+- **Stufenschalter Vorgründung / Gesellschaft:** Wagtail-Admin → *Einstellungen →
+  Unternehmensangaben* (App `company`). Standard ist die Vorgründung (Rechtsträger
+  topixmedia, Inhaber Sven Konopka). Nach der Eintragung der Gesellschaft Firma,
+  Geschäftsführung, Anschrift und Register eintragen und die Stufe umstellen – die
+  *Angaben zum Unternehmen* auf `/unternehmen/` und die Anschrift auf `/kontakt/`
+  ziehen sofort nach. Ohne Pflichtangaben lässt sich die Stufe nicht speichern.
+  Die Rechtstexte in `.legal-content/` schalten **nicht** automatisch um: Sie werden
+  geprüft, angepasst und mit `refresh_seeded_page <slug> --force` ausgerollt.
+- **Inhalte** von `/unternehmen/`, `/karriere/`, `/presse/`, `/partner/` und
+  `/open-source/` stehen in `marketing/seeds_unternehmen.py`, die Kennzahlen der
+  Presseseite dort mit Stand. Das Logo-Paket (`/presse/mandari-logopaket.zip`) wird
+  aus `static/brand/` gebaut.
+- **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
+  Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
+  (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das
+  Thema vor. Einmal-Prüfung des Spamschutzes und Begrenzung (fünf Anfragen je Stunde
+  und Anschluss, 60 insgesamt) liegen im Datenbank-Zwischenspeicher `formulare`;
+  die Tabelle legt `python manage.py createcachetable` an (läuft beim Container-Start).
+  Ohne Zustellweg zeigt `/kontakt/` statt der Formulare die Mailadresse.
+
 ## 🚀 Quickstart (Docker, empfohlen)
 
 ```bash
@@ -221,6 +243,9 @@ marketing-website/
 | `STATUS_PAGE_URL` | `https://status.mandari.de/` | Öffentliche Statusseite: Ziel von `/status/` und Link in der Fußzeile |
 | `BOOKING_URL` | `/kontakt/#termin-buchen` | Ziel der „Call buchen"-CTAs |
 | `ALTCHA_HMAC_KEY` | dev-Wert | HMAC-Secret für Altcha-Challenges |
+| `CONTACT_SMTP_HOST` / `_PORT` / `_USER` / `_PASSWORD` | – / 465 | SMTP-Zugang für die Kontaktformulare (ohne Host: Mailadresse statt Formular) |
+| `CONTACT_FROM` / `CONTACT_TO` | `hello@mandari.de` | Absender und Empfänger der Formular-Mails |
+| `CONTACT_TRUSTED_PROXIES` | `1` | Eigene Reverse Proxys vor der Website; bestimmt, welcher `X-Forwarded-For`-Eintrag als Anschluss zählt |
 | `TZ` | `Europe/Berlin` | Zeitzone |
 
 ## 🎨 Gestaltung

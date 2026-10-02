@@ -56,18 +56,20 @@ urlpatterns = [
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
     # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
     path("crawler/", crawler_info_view, name="crawler_info"),
+    # Unternehmensseiten (Relaunch 2026): Logo-Paket der Presse, /ueber-uns/ → /unternehmen/
+    path("", include("company.urls")),
     # Dokumentation lebt auf docs.mandari.de (Repo mandariOSS/docs); alte Pfade leiten dauerhaft weiter
     path("docs/", docs_redirect, name="docs_index"),
     path("docs/<path:rest>", docs_redirect, name="docs_page"),
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
     path("loesungen/", RedirectView.as_view(url="/produkte/", permanent=True)),
-    path("team/", RedirectView.as_view(url="/ueber-uns/", permanent=True)),
+    path("team/", RedirectView.as_view(url="/unternehmen/", permanent=True)),
     path("danksagungen/", RedirectView.as_view(url="/open-source/#danke", permanent=True)),
     # Phase 2 — weitere Konsolidierungen (Sicherheit komplett in Trust integriert,
     # FAQ aufgelöst — Page-spezifische FAQs direkt auf den jeweiligen Pages)
     path("sicherheit/", RedirectView.as_view(url="/trust/", permanent=True)),
-    path("faq/", RedirectView.as_view(url="/kontakt/#faq", permanent=True)),
+    path("faq/", RedirectView.as_view(url="/kontakt/", permanent=True)),
     # Relaunch 2026 — Produkte: /produkt/ ist aufgeteilt in /produkte/ (Plattform, Modulübersicht,
     # Bürgerportal) und /fraktionen/ (mandari Work); Wagtail-Seite per
     # `retire_page produkt --redirect /fraktionen/` zurückziehen

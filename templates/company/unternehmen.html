@@ -1,0 +1,3 @@
+{% extends "marketing/marketing_page.html" %}
+{# /unternehmen/: Redaktionsinhalt aus Wagtail, die Angaben zum Unternehmen aus „Einstellungen → Unternehmensangaben“ #}
+{% block content %}{% include "company/_inhalt_mit_abschnitt.html" with abschnitt="company/_angaben.html" nach_anker="wegmarken" %}{% endblock %}
