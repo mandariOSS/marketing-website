@@ -879,7 +879,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Politik machen statt PDFs sortieren.",
                 "subline": "mandari Work ist der gemeinsame Arbeitsplatz Ihrer Fraktion: Sitzungen vorbereiten, Anträge schreiben, Positionen abstimmen – in einem Werkzeug, das die Ratsdaten Ihrer Kommune schon kennt.",
                 "ctas": [cta("mandari Work buchen", "https://portal.mandari.de/buchen/"),
-                         cta("Preise ansehen", "/preise/", style="outline")],
+                         cta("Alle Funktionen im Überblick", "/produkte/#funktionen", style="outline")],
             }),
             ("mandari_cards", {
                 "header": hdr(title="Was Ihre Fraktion gewinnt", anchor_id="funktionen",
