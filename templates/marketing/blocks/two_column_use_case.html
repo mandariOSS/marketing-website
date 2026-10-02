@@ -1,9 +1,9 @@
-{% load wagtailcore_tags %}
-{# Zwei Wege nebeneinander – offen auf ruhiger Fläche, ohne Karten. #}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+{% load wagtailcore_tags baender %}
+{# Zwei Wege nebeneinander – Einträge offen auf der Fläche, ohne Karten, im selben Raster wie die übrigen Einträge. #}
+<section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <div class="grid md:grid-cols-2 gap-x-16 gap-y-12 max-w-5xl">
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-12">
             {% include "marketing/blocks/_mandari_card.html" with card=self.left_card %}
             {% include "marketing/blocks/_mandari_card.html" with card=self.right_card %}
         </div>

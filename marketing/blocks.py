@@ -414,9 +414,22 @@ class SplitRowBlock(StructBlock):
 
 
 class SplitRowsBlock(StructBlock):
-    """Ruhige Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts."""
+    """Einträge ohne Karten: Titel über dem Text, im Raster oder als Zeitleiste.
+
+    Einträge zu mandari Session, Work und Insight werden Produktflächen in der Kennfarbe. Der Typname
+    bleibt aus Kompatibilitätsgründen ``split_rows``.
+    """
 
     header = SectionHeaderBlock(required=False)
+    layout = ChoiceBlock(
+        choices=[
+            ("raster", "Raster: Titel über dem Text, zwei Spalten (drei bei genau drei Einträgen)"),
+            ("zeitleiste", "Zeitleiste: Datum (Titel) links, Ereignis (Zeile darunter) und Text rechts"),
+        ],
+        default="raster",
+        required=False,
+        help_text="Zeitleiste nur für Daten in zeitlicher Folge",
+    )
     rows = ListBlock(SplitRowBlock(), min_num=1, max_num=8)
     note = RichTextBlock(
         required=False,
@@ -431,7 +444,7 @@ class SplitRowsBlock(StructBlock):
     class Meta:
         template = "marketing/blocks/split_rows.html"
         icon = "list-ul"
-        label = "Zeilen (Titel links, Text rechts)"
+        label = "Einträge (Raster oder Zeitleiste)"
 
 
 class AccordionFAQBlock(StructBlock):
@@ -542,6 +555,12 @@ class RichTextSectionBlock(StructBlock):
 
     header = SectionHeaderBlock(required=False)
     body = RichTextBlock(features=["bold", "italic", "link", "ol", "ul", "h2", "h3", "h4", "blockquote"])
+    aside = RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link", "ul", "h3"],
+        help_text="Randspalte rechts neben dem Text (am Handy darunter): kurze Ergänzung wie Kernsätze, "
+                  "Kennzahlen mit Stand oder ein Kontakt. Leer lassen, wenn es nichts Eigenes zu sagen gibt.",
+    )
     background = ChoiceBlock(
         choices=[("white", "Weiß"), ("gray", "Hellgrau (gray-50)")],
         default="white",

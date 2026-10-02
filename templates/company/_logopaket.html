@@ -2,11 +2,11 @@
 {# Das eine Logo-Paket: Vorschau, ZIP mit allen Dateien, Einzeldateien und Nutzungshinweise #}
 {% logo_rules as logo_rules %}
 {% section_header "Logos und Bildmarke" "Ein Paket mit allen Fassungen, frei verwendbar unter Creative Commons Namensnennung (CC BY)." "material" as kopf %}
-<section class="band-{{ band|default:'hell' }} py-16 lg:py-20">
+<section class="band-{{ band|default:'hell' }} abschnitt">
     <span id="logo-wortmarke" class="block scroll-mt-24" aria-hidden="true"></span>
     <div class="wrap">
         {% block_template "marketing/blocks/section_header.html" kopf %}
-        <div class="max-w-4xl grid sm:grid-cols-2 gap-6">
+        <div class="grid sm:grid-cols-2 gap-6 max-w-5xl">
             <div class="rounded-lg border border-gray-200 bg-white px-10 py-14 flex items-center justify-center">
                 <img src="{% static 'brand/mandari-logo.svg' %}" alt="Wortmarke mandari, dunkel auf hellem Grund" width="320" height="90" class="w-56 h-auto">
             </div>
@@ -14,11 +14,11 @@
                 <img src="{% static 'brand/mandari-logo-white.svg' %}" alt="Wortmarke mandari, weiß auf dunklem Grund" width="320" height="90" class="w-56 h-auto">
             </div>
         </div>
-        <div class="max-w-4xl mt-10 grid lg:grid-cols-2 gap-x-16 gap-y-10">
+        <div class="max-w-5xl mt-10 grid lg:grid-cols-2 gap-x-12 gap-y-10">
             <div>
                 <a href="{% url 'press_logo_package' %}" class="btn-primary">Logo-Paket herunterladen</a>
-                <p class="mt-3 text-[0.9375rem] text-gray-600 dark:text-gray-400">ZIP mit allen Dateien und den Nutzungshinweisen.</p>
-                <p class="mt-8 t-body text-gray-700 dark:text-gray-300">Einzeln:</p>
+                <p class="mt-3 text-base text-gray-600 dark:text-gray-400">ZIP mit allen Dateien und den Nutzungshinweisen.</p>
+                <p class="mt-8 t-body text-gray-600 dark:text-gray-300">Einzeln:</p>
                 <ul class="mt-2 space-y-2 t-body">
                     <li><a href="{% static 'brand/mandari-logo.svg' %}" download class="textlink">Wortmarke dunkel (SVG)</a></li>
                     <li><a href="{% static 'brand/mandari-logo.png' %}" download class="textlink">Wortmarke dunkel (PNG, 2400 px)</a></li>
@@ -28,9 +28,9 @@
                     <li><a href="{% static 'brand/favicon.svg' %}" download class="textlink">Bildmarke „m.“ (SVG)</a></li>
                 </ul>
             </div>
-            <div class="t-body text-gray-700 dark:text-gray-300">
-                <h3 class="font-semibold text-gray-900 dark:text-white">So setzen Sie die Wortmarke richtig ein</h3>
-                <ul class="mt-3 space-y-2 list-disc pl-5">
+            <div class="t-body text-gray-600 dark:text-gray-300">
+                <h3 class="t-h3 text-gray-900 dark:text-white">So setzen Sie die Wortmarke richtig ein</h3>
+                <ul class="mt-3 space-y-2 list-disc pl-5 marker:text-gray-400">
                     {% for regel in logo_rules %}<li>{{ regel }}</li>{% endfor %}
                 </ul>
             </div>

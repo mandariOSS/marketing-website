@@ -1,33 +1,52 @@
 {% load wagtailcore_tags baender %}
-{# Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts. Gruppierung über Abstand, ohne Rahmen. Zeilen zu Session, Work und Insight werden Produktflächen (_produkt.html). #}
-<section class="py-20 lg:py-28 {% if band %}band-{{ band }}{% elif self.background == 'gray' %}bg-mist{% endif %}">
+{# Einträge statt Zeilen „Titel links, Text rechts“: Titel über dem Text im Raster (zwei Spalten, bei genau drei Einträgen drei) oder als Zeitleiste (Datum | Ereignis). Einträge zu Session, Work und Insight werden Produktflächen (_produkt.html). #}
+<section class="{% if self.background == 'gray' %}{% abschnitt band band_anfang band_ende standard='grau' %}{% else %}{% abschnitt band band_anfang band_ende %}{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         {% produkt_zeile self.rows.0 as erstes_produkt %}
-        <div class="{% if erstes_produkt %}space-y-5 lg:space-y-6{% else %}space-y-14 lg:space-y-16{% endif %}">
+        {% if erstes_produkt %}
+        <div class="space-y-5 lg:space-y-6">
             {% for row in self.rows %}
             {% produkt_zeile row as p %}
             {% if p %}
-            {% include "marketing/blocks/_produkt.html" with produkt=p name=row.title zielgruppe=row.label status=row.status text=row.text|richtext link_label=row.link_label link_url=row.link_url anker=row.anchor_id mit_bild=True %}
+            {% include "marketing/blocks/_produkt.html" with produkt=p name=row.title zielgruppe=row.label status=row.status text=row.text|richtext link_label=row.link_label link_url=row.link_url anker=row.anchor_id %}
             {% else %}
-            <article{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="grid lg:grid-cols-12 gap-x-10 gap-y-3 scroll-mt-24">
-                <div class="lg:col-span-4">
-                    <h3 class="t-h3 text-gray-900 dark:text-white">{{ row.title }}</h3>
-                    {% if row.label %}<p class="mt-2 font-semibold text-gray-900 dark:text-gray-100">{{ row.label }}</p>{% endif %}
-                    {% if row.status %}<p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ row.status }}</p>{% endif %}
-                </div>
-                <div class="lg:col-span-7 lg:col-start-6">
-                    <div class="t-body text-gray-600 dark:text-gray-300 max-w-[38rem] richtext">{{ row.text|richtext }}</div>
-                    {% if row.link_label and row.link_url %}<p class="mt-4"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}
-                </div>
+            <article{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="flaeche rounded-2xl px-6 py-7 sm:p-8 lg:px-10 lg:py-9 grid lg:grid-cols-12 gap-x-8 gap-y-3 scroll-mt-24">
+                <div class="lg:col-span-4"><h3 class="t-h3 text-gray-900 dark:text-white">{{ row.title }}</h3>{% if row.label %}<p class="mt-1.5 font-semibold text-gray-900 dark:text-gray-100">{{ row.label }}</p>{% endif %}{% if row.status %}<p class="text-base text-gray-600 dark:text-gray-400">{{ row.status }}</p>{% endif %}</div>
+                <div class="lg:col-span-8 lg:col-start-5"><div class="t-body text-gray-600 dark:text-gray-300 max-w-[45rem] richtext">{{ row.text|richtext }}</div>{% if row.link_label and row.link_url %}<p class="mt-4"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}</div>
             </article>
             {% endif %}
             {% endfor %}
         </div>
-        {% if self.note %}
-        <div class="grid lg:grid-cols-12 gap-x-10 mt-16 lg:mt-20">
-            <div class="lg:col-span-7 lg:col-start-6 t-body text-gray-600 dark:text-gray-300 max-w-[38rem] richtext">{{ self.note|richtext }}</div>
+        {% elif self.layout == "zeitleiste" %}
+        <ol class="max-w-5xl border-t border-gray-200 dark:border-gray-700">
+            {% for row in self.rows %}
+            <li{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="grid gap-y-2 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-x-8 py-7 border-b border-gray-200 dark:border-gray-700 scroll-mt-24">
+                <p class="t-body font-semibold text-gray-900 dark:text-white tabular-nums">{{ row.title }}</p>
+                <div class="max-w-[45rem]">
+                    {% if row.label %}<h3 class="t-h3 text-gray-900 dark:text-white">{{ row.label }}</h3>{% endif %}
+                    {% if row.status %}<p class="text-base text-gray-600 dark:text-gray-400">{{ row.status }}</p>{% endif %}
+                    <div class="{% if row.label or row.status %}mt-2 {% endif %}t-body text-gray-600 dark:text-gray-300 richtext">{{ row.text|richtext }}</div>
+                    {% if row.link_label and row.link_url %}<p class="mt-3"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <div class="grid grid-cols-1 md:grid-cols-2 {% if self.rows|length == 3 %}lg:grid-cols-3{% endif %} gap-x-12 gap-y-12">
+            {% for row in self.rows %}
+            <article{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="flex flex-col scroll-mt-24">
+                <h3 class="t-h3 text-gray-900 dark:text-white">{{ row.title }}</h3>
+                {% if row.label %}<p class="mt-1.5 font-medium text-gray-900 dark:text-gray-100">{{ row.label }}</p>{% endif %}
+                {% if row.status %}<p class="mt-1 text-base text-gray-600 dark:text-gray-400">{{ row.status }}</p>{% endif %}
+                <div class="mt-3 t-body text-gray-600 dark:text-gray-300 richtext">{{ row.text|richtext }}</div>
+                {% if row.link_label and row.link_url %}<p class="mt-4"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}
+            </article>
+            {% endfor %}
         </div>
+        {% endif %}
+        {% if self.note %}
+        <div class="mt-12 max-w-[45rem] t-body text-gray-600 dark:text-gray-300 richtext">{{ self.note|richtext }}</div>
         {% endif %}
     </div>
 </section>

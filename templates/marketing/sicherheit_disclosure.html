@@ -6,16 +6,16 @@
 
 {% block content %}
 
-{# Hero: Überschrift, ein Satz, ein Aufruf, ein Textlink #}
-<section class="band-hell pt-14 pb-14 lg:pt-24 lg:pb-20">
+{# Hero wie auf allen Seiten (marketing/blocks/hero.html): Überschrift, ein Satz, ein Aufruf, ein Textlink #}
+<section class="band-hell hero">
     <div class="wrap">
         <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Sicherheitslücke gefunden? Erzählen Sie es uns.</h1>
-        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[42rem]">
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
             Sicherheitsforschung an Open Source ist ein Geschenk. Wir nehmen jede Meldung ernst, bestätigen den
             Eingang <strong>innerhalb von 3 Werktagen</strong> und behandeln Sie mit Respekt – keine Anwälte,
             keine Drohungen.
         </p>
-        <div class="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
+        <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
             <a href="mailto:security@mandari.de" class="btn-primary">Sicherheitslücke melden</a>
             <a href="/wstatic/security/mandari-pgp-key.asc" class="textlink">PGP-Schlüssel herunterladen</a>
         </div>
@@ -23,16 +23,16 @@
 </section>
 
 {# Geltungsbereich: zwei Listen, ohne Karten #}
-<section class="band-grau py-16 lg:py-20">
+<section class="band-grau abschnitt">
     <div class="wrap">
-        <div class="max-w-3xl mb-12 lg:mb-14">
+        <div class="kopf">
             <h2 class="t-h2 text-gray-900 dark:text-white">Was Sie testen dürfen und was nicht</h2>
             <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">Diese Policy gilt für alle mandari-Domains, das Repository mandariOSS/mandari und selbst betriebene mandari-Instanzen. Klare Grenzen schützen alle: Sie, uns und unsere Nutzer:innen.</p>
         </div>
-        <div class="grid md:grid-cols-2 gap-x-16 gap-y-12 max-w-5xl">
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-12">
             <div>
                 <h3 class="t-h3 text-gray-900 dark:text-white">Im Geltungsbereich</h3>
-                <ul class="mt-5 space-y-3 t-body text-gray-700 dark:text-gray-300 list-disc pl-5">
+                <ul class="mt-4 space-y-2 t-body text-gray-600 dark:text-gray-300 list-disc pl-5 marker:text-gray-400">
                     <li><code class="px-1.5 py-0.5 bg-white dark:bg-gray-900 rounded text-sm">mandari.de</code> und alle Subdomains</li>
                     <li>Quellcode im Repository <code class="px-1.5 py-0.5 bg-white dark:bg-gray-900 rounded text-sm">mandariOSS/mandari</code></li>
                     <li>Container-Images aus der mandari-Registry</li>
@@ -43,7 +43,7 @@
             </div>
             <div>
                 <h3 class="t-h3 text-gray-900 dark:text-white">Außerhalb des Geltungsbereichs</h3>
-                <ul class="mt-5 space-y-3 t-body text-gray-700 dark:text-gray-300 list-disc pl-5">
+                <ul class="mt-4 space-y-2 t-body text-gray-600 dark:text-gray-300 list-disc pl-5 marker:text-gray-400">
                     <li><strong>DoS und DDoS</strong> jeglicher Art</li>
                     <li>Social Engineering gegen Mitwirkende oder Nutzer:innen</li>
                     <li>Physische Angriffe auf Hosting-Standorte</li>
@@ -58,85 +58,79 @@
 </section>
 
 {# Ablauf: echte Abfolge mit Fristen (wie SECURITY.md im mandari-Repository) #}
-<section class="band-hell py-20 lg:py-24">
+<section class="band-hell abschnitt">
     <div class="wrap">
-        <div class="max-w-3xl mb-12 lg:mb-14">
+        <div class="kopf">
             <h2 class="t-h2 text-gray-900 dark:text-white">Vom Befund zur behobenen Lücke</h2>
             <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">Vier Schritte, klare Zeiten, Standard nach <strong>ISO/IEC 29147</strong>.</p>
         </div>
-        <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
+        <ol class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
             <li class="flex flex-col">
                 <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">1</span>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Meldung</h3>
+                <h3 class="mt-1.5 t-h3 text-gray-900 dark:text-white">Meldung</h3>
                 <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Sie schreiben an security@mandari.de, gern PGP-verschlüsselt: Beschreibung, Nachweis, betroffene Adresse.</p>
-                <p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">Tag 0</p>
+                <p class="mt-3 text-base font-medium text-gray-900 dark:text-gray-100">Tag 0</p>
             </li>
             <li class="flex flex-col">
                 <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">2</span>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Eingangsbestätigung</h3>
+                <h3 class="mt-1.5 t-h3 text-gray-900 dark:text-white">Eingangsbestätigung</h3>
                 <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Wir bestätigen den Eingang Ihrer Meldung. Danach folgt die Erstbewertung mit Einordnung des Schweregrads nach <strong>CVSS 3.1</strong> – innerhalb von 7 Tagen.</p>
-                <p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">höchstens 3 Werktage</p>
+                <p class="mt-3 text-base font-medium text-gray-900 dark:text-gray-100">höchstens 3 Werktage</p>
             </li>
             <li class="flex flex-col">
                 <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">3</span>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Behebung</h3>
+                <h3 class="mt-1.5 t-h3 text-gray-900 dark:text-white">Behebung</h3>
                 <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Wir entwickeln, testen und rollen die Korrektur aus – kritische Lücken innerhalb von 72 Stunden, hohe innerhalb von 7 Tagen, mittlere innerhalb von 30 Tagen. Einen Zwischenstand bekommen Sie spätestens nach zwei Wochen, danach laufend Statusinformationen.</p>
-                <p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">72 Stunden, 7 Tage oder 30 Tage</p>
+                <p class="mt-3 text-base font-medium text-gray-900 dark:text-gray-100">72 Stunden, 7 Tage oder 30 Tage</p>
             </li>
             <li class="flex flex-col">
                 <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">4</span>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">Koordinierte Veröffentlichung</h3>
+                <h3 class="mt-1.5 t-h3 text-gray-900 dark:text-white">Koordinierte Veröffentlichung</h3>
                 <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Die Veröffentlichung stimmen wir mit Ihnen ab – vollständige Offenlegung 90 Tage nach dem Fix, früher bei bereits ausgenutzten Lücken: Security-Advisory und, wenn Sie möchten, ein Eintrag in der Hall of Fame.</p>
-                <p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">90 Tage nach dem Fix</p>
+                <p class="mt-3 text-base font-medium text-gray-900 dark:text-gray-100">90 Tage nach dem Fix</p>
             </li>
         </ol>
     </div>
 </section>
 
-{# Safe Harbor: drei Zusagen als Zeilen #}
-<section class="band-grau py-20 lg:py-28">
+{# Safe Harbor: drei Zusagen im Raster (Titel über dem Text, wie alle Einträge) #}
+<section class="band-grau abschnitt">
     <div class="wrap">
-        <div class="max-w-3xl mb-12 lg:mb-14">
+        <div class="kopf">
             <h2 class="t-h2 text-gray-900 dark:text-white">Safe Harbor für gutgläubige Forschung</h2>
             <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">Solange Sie sich an diese Policy halten, sagen wir Ihnen zu:</p>
         </div>
-        <div class="space-y-14 lg:space-y-16">
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-3">
-                <h3 class="lg:col-span-4 t-h3 text-gray-900 dark:text-white">Keine rechtlichen Schritte</h3>
-                <p class="lg:col-span-7 lg:col-start-6 t-body text-gray-600 dark:text-gray-300 max-w-[38rem]">Wir verzichten bei gutgläubiger Forschung auf zivil- und strafrechtliche Schritte, auch nach § 202c StGB.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-12">
+            <article>
+                <h3 class="t-h3 text-gray-900 dark:text-white">Keine rechtlichen Schritte</h3>
+                <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Wir verzichten bei gutgläubiger Forschung auf zivil- und strafrechtliche Schritte, auch nach § 202c StGB.</p>
             </article>
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-3">
-                <h3 class="lg:col-span-4 t-h3 text-gray-900 dark:text-white">Persönliche Antwort</h3>
-                <p class="lg:col-span-7 lg:col-start-6 t-body text-gray-600 dark:text-gray-300 max-w-[38rem]">Kein Ticket-Bot, keine automatische Antwort. Sie sprechen direkt mit den Menschen, die die Lücke beheben.</p>
+            <article>
+                <h3 class="t-h3 text-gray-900 dark:text-white">Persönliche Antwort</h3>
+                <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Kein Ticket-Bot, keine automatische Antwort. Sie sprechen direkt mit den Menschen, die die Lücke beheben.</p>
             </article>
-            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-3">
-                <h3 class="lg:col-span-4 t-h3 text-gray-900 dark:text-white">Anerkennung</h3>
-                <p class="lg:col-span-7 lg:col-start-6 t-body text-gray-600 dark:text-gray-300 max-w-[38rem]">Nennung in der Hall of Fame und im Security-Advisory, auf Wunsch ein persönliches Empfehlungsschreiben.</p>
+            <article>
+                <h3 class="t-h3 text-gray-900 dark:text-white">Anerkennung</h3>
+                <p class="mt-3 t-body text-gray-600 dark:text-gray-300">Nennung in der Hall of Fame und im Security-Advisory, auf Wunsch ein persönliches Empfehlungsschreiben.</p>
             </article>
         </div>
     </div>
 </section>
 
-{# Hall of Fame – Anker wird von /.well-known/security.txt referenziert #}
-<section id="hall-of-fame" class="band-hell py-16 lg:py-20">
-    <div class="wrap">
-        <div class="max-w-[42rem]">
+{# Hall of Fame (Anker wird von /.well-known/security.txt referenziert) und verschlüsselt schreiben: ein Band, zwei Spalten #}
+<section class="band-hell abschnitt">
+    <div class="wrap grid gap-y-14 lg:grid-cols-12 lg:gap-x-8">
+        <div id="hall-of-fame" class="lg:col-span-6">
             <h2 class="t-h2 text-gray-900 dark:text-white">Sicherheitsforscher:innen, denen wir danken</h2>
             <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">
                 Hier ist noch Platz. Sie könnten <strong>die erste Person</strong> sein, die wir hier nennen.
             </p>
             <p class="mt-7"><a href="mailto:security@mandari.de" class="textlink">Erste Meldung schicken</a></p>
         </div>
-    </div>
-</section>
-
-{# Verschlüsselt schreiben #}
-<section class="band-grau py-16 lg:py-20">
-    <div class="wrap">
-        <div class="max-w-[42rem]">
+        <div class="lg:col-span-5 lg:col-start-8">
             <h2 class="t-h3 text-gray-900 dark:text-white">Verschlüsselt schreiben</h2>
             <p class="t-body text-gray-600 dark:text-gray-300 mt-4">Für vertrauliche Meldungen verwenden Sie bitte unseren PGP-Schlüssel. Fingerabdruck zur Prüfung:</p>
-            <p class="mt-4 rounded-lg bg-white dark:bg-gray-900 px-4 py-3 font-mono text-sm text-gray-900 dark:text-gray-100 break-all">5D06 A2BC B71C 6095 7A23&nbsp;&nbsp;0BD8 7E96 93FD 0505 3234</p>
+            <p class="mt-4 flaeche rounded-lg px-4 py-3 font-mono text-sm text-gray-900 dark:text-gray-100 break-all">5D06 A2BC B71C 6095 7A23&nbsp;&nbsp;0BD8 7E96 93FD 0505 3234</p>
             <p class="t-body text-gray-600 dark:text-gray-300 mt-4">Schlüssel für security@mandari.de, gültig bis Juli 2028, auch genannt in unserer security.txt (RFC 9116).</p>
             <p class="mt-6 flex flex-wrap gap-x-8 gap-y-3">
                 <a href="/wstatic/security/mandari-pgp-key.asc" class="textlink">Öffentlichen Schlüssel herunterladen</a>
@@ -147,15 +141,15 @@
 </section>
 
 {# Einladung auf dunkler Fläche #}
-<section class="on-ink band-tinte text-white py-20 lg:py-28">
+<section class="on-ink band-tinte text-white abschnitt">
     <div class="wrap">
-        <div class="max-w-[42rem]">
+        <div class="max-w-[45rem]">
             <h2 class="t-h2">Sie haben etwas gefunden?</h2>
-            <p class="t-lead text-gray-300 mt-6">
+            <p class="t-lead text-gray-300 mt-5">
                 Schreiben Sie uns – wir bestätigen den Eingang innerhalb von 3 Werktagen, koordinieren die
                 Veröffentlichung mit Ihnen und behandeln Ihre Meldung mit dem Respekt, den sie verdient.
             </p>
-            <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+            <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
                 <a href="mailto:security@mandari.de" class="btn-primary">Sicherheitslücke melden</a>
                 <a href="https://github.com/mandariOSS/mandari/security/advisories/new" rel="noopener" class="textlink">Über GitHub melden</a>
             </div>

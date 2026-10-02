@@ -1,6 +1,6 @@
-{% load wagtailcore_tags %}
+{% load baender wagtailcore_tags %}
 {# E-Mail-Verzeichnis-Tabelle — RFC 2142 Style #}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+<section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="max-w-5xl bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">

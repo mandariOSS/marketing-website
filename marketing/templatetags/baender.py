@@ -1,23 +1,27 @@
 """
-Hintergrundbänder und Produktfarben.
+Hintergrundbänder, Abstände und Produktfarben.
 
 Jeder Abschnitt einer Seite liegt auf einem vollbreiten Band mit eigenem Hintergrund, damit sich Bereiche
 auch am Handy klar voneinander abheben. ``baender`` legt die Bänder für StreamField-Seiten nach der
 Reihenfolge der Blöcke fest – ohne dass Redaktion oder Seeds etwas einstellen müssen:
 
-* Hero hell (auf den Produktseiten in der Fläche des Produkts),
+* der Hero immer hell (ein Seitenkopf für alle Seiten; Produktseiten zeigen rechts ein echtes Bild,
+  siehe ``hero_bild``),
 * danach abwechselnd Hellgrau und Weiß, nie zwei gleiche Bänder nebeneinander – auch die nummerierten
   Artikel im Trust Center, damit lange Seiten am Handy nicht zu einer Textwand werden,
-* eine Einladung mitten auf der Seite auf der zarten Markenfläche, die abschließende Einladung dunkel,
+* eine Einladung mitten auf der Seite auf der Markenfläche (nach Weiß) oder auf Weiß (nach Hellgrau),
+  die abschließende Einladung dunkel,
 * kleine Zusätze (Eckdaten, Hinweis, Warrant Canary) bleiben auf dem Band davor,
-* Rechtstexte ruhig: Titel auf Hellgrau, der Text durchgehend auf Weiß.
+* Dokumente (Rechtstexte, Quellen) ruhig: Kopf und Text durchgehend auf Weiß, wie ein gedrucktes Dokument.
 
-Die Farben selbst stehen in ``static/css/input.css`` (Klassen ``band-*`` und ``produkt-*``, hell und dunkel).
+``abschnitt`` setzt Band und Innenabstand aus der einen Abstandsskala (static/css/input.css). Die Farben
+selbst stehen dort ebenfalls (Klassen ``band-*`` und ``produkt-*``, hell und dunkel).
 
 Produktfarben (aus den Anwendungen abgeleitet): Session trägt ein Petrol, abgeleitet vom Blau des
 Sitzungsdienstes (Standardfarbe der Kommune in Session) und so weit ins Petrol geschoben, dass es sich
 am Handy klar vom Indigo abhebt; Work das Indigo des Fraktionsbereichs (Standardfarbe der Organisation
-in Work), Insight ein ruhiges Grün, wie bisher auf der Preisseite.
+in Work), Insight ein ruhiges Grün, wie bisher auf der Preisseite. Die Produkte stehen überall in derselben
+Reihenfolge: Session, Work, Insight.
 """
 
 import re
@@ -33,26 +37,39 @@ HELL, GRAU, MARKE, TINTE = "hell", "grau", "marke", "tinte"
 # Gehören zum Abschnitt davor und bekommen kein eigenes Band.
 ANGEHAENGT = {"trust_banner", "disclaimer_box", "warrant_canary"}
 
-# Seiten, die ganz einem Produkt gehören: Hero in der Fläche des Produkts.
-PRODUKT_JE_SEITE = {"fraktionen": "work", "kommunen": "session"}
+# Seiten mit einem echten Produktbild im Hero: der Stapel aus drei Bildschirmen wie auf der Startseite
+# oder ein Bildschirm des Produkts, dem die Seite gehört.
+HERO_BILD = {"produkte": "stapel", "kommunen": "session", "fraktionen": "work"}
+
+# Feste Reihenfolge der Produkte in Tabellen, Preisen und Flächen
+REIHENFOLGE = ("session", "work", "insight")
 
 PRODUKTE = {
     "session": {
         "name": "mandari Session",
-        "bild": None,
+        "bild": {
+            "src": "images/startseite/hero-session-800.webp",
+            "src_gross": "images/startseite/hero-session-1600.webp",
+            "alt": "mandari Session: Sitzungsübersicht der Stadtverwaltung mit kommenden Sitzungen von Rat und "
+                   "Ausschüssen und ihrem Stand",
+        },
     },
     "work": {
         "name": "mandari Work",
-        "bild": None,
+        "bild": {
+            "src": "images/startseite/hero-work-800.webp",
+            "src_gross": "images/startseite/hero-work-1600.webp",
+            "alt": "mandari Work: Die Fraktion bereitet die Ratssitzung vor und legt zu jedem Tagesordnungspunkt "
+                   "ihre Position fest",
+        },
     },
     "insight": {
         "name": "mandari Insight",
-        # Echter Screenshot des Bürgerportals (Münster), dasselbe Bild wie im Hero der Startseite
         "bild": {
-            "src": "images/startseite/insight-muenster-1280.webp",
-            "breite": 1280,
-            "hoehe": 800,
-            "alt": "mandari Insight für Münster: Suche in den Ratsinformationen und kommende Sitzungen",
+            "src": "images/startseite/hero-insight-muenster-800.webp",
+            "src_gross": "images/startseite/hero-insight-muenster-1600.webp",
+            "alt": "mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste "
+                   "Vorgänge der Stadt",
         },
     },
 }
@@ -64,34 +81,29 @@ _PRODUKT_MUSTER = {
 }
 
 
-def band_folge(typen, produkt=None, ruhig=False):
+def band_folge(typen, ruhig=False):
     """Bänder für eine Folge von Block-Typen.
 
-    Gibt je Block ein Band zurück (``hell``, ``grau``, ``marke``, ``tinte`` oder den Schlüssel eines
-    Produkts). ``produkt`` färbt Hero und Markenfläche in der Fläche des Produkts, ``ruhig`` setzt
-    Rechtstexte ohne Wechsel: Titel hellgrau, alles danach weiß.
+    Gibt je Block ein Band zurück (``hell``, ``grau``, ``marke`` oder ``tinte``). ``ruhig`` setzt Dokumente
+    ohne Wechsel: Kopf und Text durchgehend weiß.
     """
     baender = []
-    # Nach einem hellen Hero beginnt der Wechsel mit Grau, nach einer getönten Fläche mit Weiß.
-    zuletzt_neutral = GRAU if produkt else HELL
     for index, typ in enumerate(typen):
         vorher = baender[-1] if baender else None
         letzter = index == len(typen) - 1
         if index == 0 and typ == "hero":
-            band = GRAU if ruhig else (produkt or HELL)
+            band = HELL
         elif vorher and typ in ANGEHAENGT:
             band = vorher
         elif typ == "gradient_cta" and letzter:
             band = TINTE
-        elif typ == "gradient_cta":
-            band = produkt or MARKE
         elif ruhig:
             band = HELL
+        elif typ == "gradient_cta":
+            # Mitten auf der Seite: Markenfläche nach Weiß, sonst Weiß – nie neben Hellgrau
+            band = MARKE if vorher in (None, HELL) else HELL
         else:
-            band = HELL if zuletzt_neutral == GRAU else GRAU
-            if band == vorher:
-                band = GRAU if band == HELL else HELL
-            zuletzt_neutral = band
+            band = GRAU if vorher in (None, HELL) else HELL
         baender.append(band)
     return baender
 
@@ -127,9 +139,31 @@ def baender(context, body, einschub_nach=None, ruhig=False):
 
         eintraege.insert(insert_position(body, einschub_nach), None)
     typen = ["einschub" if e is None else e.block_type for e in eintraege]
+    return _abschnitte(eintraege, band_folge(typen, ruhig=ruhig))
+
+
+@register.simple_tag
+def abschnitt(band=None, anfang=True, ende=True, standard=HELL, art="abschnitt"):
+    """Klassen eines Abschnitts: ``<section class="{% abschnitt band band_anfang band_ende %}">``.
+
+    Band (``band-*``) und Innenabstand aus der einen Skala: ``abschnitt`` (96 px, am Handy 64), ``kompakt``
+    (64/48) oder ``hero``. Setzt der Block das Band seines Vorgängers fort (``anfang`` ist False), entfällt
+    der Abstand nach oben; geht das Band nach ihm weiter (``ende`` ist False), bleibt ein Unterabschnitt
+    (48 px). Ohne Angaben (Block außerhalb von ``baender``) gilt der volle Abstand.
+    """
+    klassen = [f"band-{band or standard}", {"kompakt": "abschnitt-kompakt"}.get(art, art)]
+    if anfang is False:
+        klassen.append("fortsetzung")
+    if ende is False:
+        klassen.append("fortgesetzt")
+    return " ".join(klassen)
+
+
+@register.simple_tag(takes_context=True)
+def hero_bild(context):
+    """Bild im Hero der aktuellen Seite: ``stapel`` (drei Produkte), ein Produktschlüssel oder ``""``."""
     page = context.get("page")
-    produkt = PRODUKT_JE_SEITE.get(getattr(page, "slug", ""))
-    return _abschnitte(eintraege, band_folge(typen, produkt=produkt, ruhig=ruhig))
+    return HERO_BILD.get(getattr(page, "slug", ""), "")
 
 
 def produkt_aus(*texte):
@@ -169,11 +203,50 @@ def produkt_zeile(row):
 
 @register.simple_tag
 def produkt_bild(key):
-    """Screenshot eines Produkts (nur, wo ein echter vorliegt) mit fertiger ``src``."""
+    """Bildschirm eines Produkts mit fertigen Adressen (``url``, ``url_gross``) und Alternativtext."""
     bild = (PRODUKTE.get(key) or {}).get("bild")
     if not bild:
         return None
-    return {**bild, "url": static(bild["src"])}
+    return {**bild, "url": static(bild["src"]), "url_gross": static(bild["src_gross"])}
+
+
+def _rang(schluessel):
+    return REIHENFOLGE.index(schluessel) if schluessel in REIHENFOLGE else len(REIHENFOLGE)
+
+
+def produkt_ordnung(namen):
+    """Indizes von ``namen`` in der festen Produktreihenfolge (Session, Work, Insight).
+
+    Nur wenn jede Spalte eindeutig ein Produkt ist, wird umsortiert; sonst bleibt die Reihenfolge.
+    """
+    schluessel = [produkt_aus(name) for name in namen]
+    if not schluessel or not all(schluessel) or len(set(schluessel)) != len(schluessel):
+        return list(range(len(namen)))
+    return sorted(range(len(namen)), key=lambda i: _rang(schluessel[i]))
+
+
+@register.simple_tag
+def produkt_matrix(value):
+    """Funktionsübersicht in Produktreihenfolge: ``{% produkt_matrix self as m %}`` mit ``columns`` und
+    ``groups`` (Zeilen mit ``label``, ``description``, ``cells``)."""
+    spalten = list(value.get("columns") or [])
+    ordnung = produkt_ordnung(spalten)
+    gruppen = []
+    for gruppe in value.get("groups") or []:
+        zeilen = []
+        for zeile in gruppe.get("rows") or []:
+            zellen = list(zeile.get("cells") or [])
+            zellen = [zellen[i] for i in ordnung if i < len(zellen)] + zellen[len(ordnung):]
+            zeilen.append({"label": zeile.get("label"), "description": zeile.get("description"), "cells": zellen})
+        gruppen.append({"title": gruppe.get("title"), "rows": zeilen})
+    return {"columns": [spalten[i] for i in ordnung], "groups": gruppen}
+
+
+@register.simple_tag
+def produkt_stufen(tiers):
+    """Preisstufen in Produktreihenfolge (Session, Work, Insight), wenn jede Stufe ein Produkt ist."""
+    stufen = list(tiers or [])
+    return [stufen[i] for i in produkt_ordnung([t.get("name") for t in stufen])]
 
 
 # Abkürzungen, nach denen kein Satz endet

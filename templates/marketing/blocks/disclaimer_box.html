@@ -1,6 +1,7 @@
-{# Hinweis: ein Absatz auf leicht getönter Fläche, ohne Rahmen und Symbol. #}
-<section class="band-{{ band|default:'hell' }} {% if band_anfang %}pt-16 lg:pt-20{% else %}pt-0{% endif %} {% if band_ende %}pb-16 lg:pb-20{% else %}pb-6{% endif %}">
+{% load baender %}
+{# Hinweis: ein Absatz auf leicht getönter Fläche, ohne Rahmen und Symbol; setzt meist das Band davor fort (Abstand eines Unterabschnitts). #}
+<section class="{% abschnitt band band_anfang band_ende art='kompakt' %}">
     <div class="wrap">
-        <div class="max-w-4xl rounded-lg px-5 py-4 bg-{{ self.color|default:'gray' }}-50 dark:bg-{{ self.color|default:'gray' }}-900/20 text-[0.9375rem] text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert prose-a:text-primary-700 dark:prose-a:text-primary-300">{{ self.body|safe }}</div>
+        <div class="max-w-[45rem] rounded-lg px-5 py-4 bg-{{ self.color|default:'gray' }}-50 dark:bg-{{ self.color|default:'gray' }}-900/20 text-base text-gray-700 dark:text-gray-300 prose dark:prose-invert">{{ self.body|safe }}</div>
     </div>
 </section>

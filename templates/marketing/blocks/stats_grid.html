@@ -1,12 +1,12 @@
-{% load wagtailcore_tags %}
+{% load baender wagtailcore_tags %}
 {# Kennzahlen dort, wo sie eine Entscheidung stützen (z. B. Transparenzbericht) – Zahl und Erklärung, ohne Kästen. #}
-<section class="py-16 lg:py-20 band-{{ band|default:'hell' }}">
+<section class="{% abschnitt band band_anfang band_ende %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <dl class="grid grid-cols-2 md:grid-cols-{{ self.columns|default:'4' }} gap-x-10 gap-y-10 max-w-5xl">
             {% for item in self.items %}
-            <div class="flex flex-col-reverse">
-                <dt class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ item.label }}</dt>
+            <div class="flex flex-col-reverse justify-end">
+                <dt class="mt-1 text-base text-gray-600 dark:text-gray-400">{{ item.label }}</dt>
                 <dd class="text-3xl lg:text-4xl font-semibold tracking-tight text-gray-900 dark:text-white tabular-nums">{{ item.value }}</dd>
             </div>
             {% endfor %}

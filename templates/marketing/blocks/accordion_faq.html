@@ -1,16 +1,16 @@
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags baender %}
 {# Häufige Fragen: Liste mit Trennlinien zwischen den Fragen (Lesbarkeit), ohne Kästen. #}
-<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="py-20 lg:py-24 {% if band %}band-{{ band }}{% elif self.background == 'gray' %}bg-mist{% endif %}">
+<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="{% if self.background == 'gray' %}{% abschnitt band band_anfang band_ende standard='grau' %}{% else %}{% abschnitt band band_anfang band_ende %}{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700" x-data="{ open: 1 }">
             {% for item in self.items %}
             <div>
                 <button type="button" @click="open = open === {{ forloop.counter }} ? null : {{ forloop.counter }}" class="w-full py-5 flex items-center justify-between gap-6 text-left" :aria-expanded="(open === {{ forloop.counter }}).toString()">
-                    <span class="text-lg font-medium text-gray-900 dark:text-white">{{ item.question }}</span>
+                    <span class="t-body font-medium text-gray-900 dark:text-white">{{ item.question }}</span>
                     <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === {{ forloop.counter }} ? 'rotate-180' : ''" aria-hidden="true"></i>
                 </button>
-                <div x-show="open === {{ forloop.counter }}" x-collapse class="pb-6 pr-10 text-gray-600 dark:text-gray-300 prose dark:prose-invert max-w-none prose-a:text-primary-700 dark:prose-a:text-primary-300">{{ item.answer|safe }}</div>
+                <div x-show="open === {{ forloop.counter }}" x-collapse class="pb-6 pr-10 prose prose-lg dark:prose-invert max-w-[45rem]">{{ item.answer|safe }}</div>
             </div>
             {% endfor %}
         </div>
