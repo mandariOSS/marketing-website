@@ -6,80 +6,62 @@
 
 {% block content %}
 
-{# Hero: Überschrift und ein erklärender Absatz. Keine Pille, kein Verlauf, kein Farbwort. #}
-<section class="pt-14 pb-12 lg:pt-24 lg:pb-16">
+<section class="bg-white dark:bg-gray-900 pt-14 pb-12 lg:pt-24 lg:pb-16">
     <div class="wrap">
         <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Über unseren Crawler</h1>
         <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[42rem]">
-            mandari macht öffentliche Ratsinformationen deutscher Kommunen zentral durchsuchbar. Dafür ruft unser Dienst
-            mandari-ingestor ausschließlich öffentlich zugängliche Seiten und Dokumente von Ratsinformationssystemen ab –
-            bevorzugt über die standardisierte OParl-Schnittstelle, ersatzweise über die öffentlichen Webseiten.
+            mandari macht öffentliche Ratsinformationen deutscher Kommunen zentral durchsuchbar. Dafür ruft unser
+            Dienst <code class="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-sm">mandari-ingestor</code>
+            ausschließlich <strong>öffentlich zugängliche</strong> Seiten und Dokumente von Ratsinformationssystemen
+            ab – bevorzugt über die standardisierte OParl-Schnittstelle, ersatzweise über die öffentlichen Webseiten.
         </p>
     </div>
 </section>
 
-<section class="pb-20 lg:pb-28">
+<section class="bg-white dark:bg-gray-900 pb-20 lg:pb-28">
     <div class="wrap">
-        <div class="max-w-3xl space-y-16">
+        <div class="max-w-[42rem] space-y-14">
 
             <div>
                 <h2 class="t-h3 text-gray-900 dark:text-white">Woran Sie uns erkennen</h2>
-                <p class="mt-4 t-body text-gray-600 dark:text-gray-300">Unsere Abrufe tragen immer diesen User-Agent:</p>
-                <pre class="mt-4 bg-mist rounded-lg px-5 py-4 font-mono text-[0.9375rem] text-gray-900 dark:text-gray-100 overflow-x-auto">mandari-ingestor (+https://mandari.de/crawler)</pre>
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">Unsere Abrufe tragen immer diesen User-Agent:</p>
+                <pre class="mt-3 rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-3 text-sm text-gray-900 dark:text-gray-100 overflow-x-auto">mandari-ingestor (+https://mandari.de/crawler)</pre>
             </div>
 
             <div>
                 <h2 class="t-h3 text-gray-900 dark:text-white">Regeln, die wir einhalten</h2>
-                <dl class="mt-6 space-y-6 t-body">
-                    <div>
-                        <dt class="font-semibold text-gray-900 dark:text-white">Nur öffentliche Inhalte</dt>
-                        <dd class="mt-1 text-gray-600 dark:text-gray-300">Wir rufen ausschließlich Seiten und Dokumente ab, die ohne Anmeldung zugänglich sind. Nichtöffentliche Bereiche bleiben unberührt.</dd>
-                    </div>
-                    <div>
-                        <dt class="font-semibold text-gray-900 dark:text-white">robots.txt</dt>
-                        <dd class="mt-1 text-gray-600 dark:text-gray-300">Wir respektieren die Crawl-Direktiven Ihrer Website nach RFC 9309. Ein Disallow genügt, und wir bleiben fern.</dd>
-                    </div>
-                    <div>
-                        <dt class="font-semibold text-gray-900 dark:text-white">Ressourcenschonend</dt>
-                        <dd class="mt-1 text-gray-600 dark:text-gray-300">Standardmäßig höchstens eine Anfrage alle zwei Sekunden pro Server, keine parallelen Zugriffe, erneute Abrufe nur bei tatsächlichen Änderungen.</dd>
-                    </div>
-                    <div>
-                        <dt class="font-semibold text-gray-900 dark:text-white">Transparent</dt>
-                        <dd class="mt-1 text-gray-600 dark:text-gray-300">Ein eindeutiger User-Agent verweist auf diese Seite. Auf Wunsch nennen wir Ihnen die abgerufenen Inhalte im Detail.</dd>
-                    </div>
-                </dl>
+                <ul class="mt-4 space-y-3 t-body text-gray-600 dark:text-gray-300 list-disc pl-5">
+                    <li><strong class="text-gray-900 dark:text-white">Nur öffentliche Inhalte:</strong> Wir rufen ausschließlich Seiten und Dokumente ab, die ohne Anmeldung zugänglich sind. Nichtöffentliche Bereiche werden nicht angefasst.</li>
+                    <li><strong class="text-gray-900 dark:text-white">robots.txt:</strong> Wir respektieren die Crawl-Direktiven Ihrer Website nach RFC 9309. Ein Disallow genügt, und wir bleiben fern.</li>
+                    <li><strong class="text-gray-900 dark:text-white">Ressourcenschonend:</strong> Standardmäßig höchstens eine Anfrage alle zwei Sekunden pro Server, keine parallelen Zugriffe, Wiederholungsabrufe nur bei tatsächlichen Änderungen.</li>
+                    <li><strong class="text-gray-900 dark:text-white">Transparent:</strong> Identifizierbarer User-Agent mit dieser Kontaktseite; auf Wunsch nennen wir Ihnen die abgerufenen Inhalte im Detail.</li>
+                </ul>
             </div>
 
             <div>
                 <h2 class="t-h3 text-gray-900 dark:text-white">Warum wir das tun</h2>
-                <p class="mt-4 t-body text-gray-600 dark:text-gray-300">
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">
                     Ratsinformationen sind öffentliche Informationen. mandari stellt sie Bürgerinnen und Bürgern zentral,
-                    barrierearm und durchsuchbar zur Verfügung – als Open-Source-Projekt und als OParl-konforme Schnittstelle
-                    unter <a href="https://oparl.mandari.de" class="textlink">oparl.mandari.de</a>. Kommunen entsteht dadurch
-                    kein Aufwand; die Quelle wird auf allen Detailseiten genannt und verlinkt.
+                    barrierearm und durchsuchbar zur Verfügung – als Open-Source-Projekt und als OParl-konforme
+                    Schnittstelle unter <a href="https://oparl.mandari.de" class="textlink">oparl.mandari.de</a>.
+                    Kommunen entsteht dadurch kein Aufwand; die Quelle wird auf allen Detailseiten genannt und verlinkt.
                 </p>
             </div>
 
-        </div>
-    </div>
-</section>
-
-{# Einladung am Seitenende: Kontakt und Widerspruch auf ruhiger dunkler Fläche, ein Aufruf #}
-<section class="on-ink bg-gray-900 dark:bg-gray-950 text-white py-20 lg:py-28">
-    <div class="wrap">
-        <div class="max-w-[42rem]">
-            <h2 class="t-h2 text-white">Kontakt und Widerspruch</h2>
-            <p class="t-lead text-gray-300 mt-6">
-                Sie betreiben ein Ratsinformationssystem und möchten die Abrufrate anpassen oder der Übernahme Ihrer Inhalte
-                widersprechen? Schreiben Sie uns. Wir reagieren zeitnah und entfernen Inhalte auf Wunsch der Kommune vollständig.
-            </p>
-            <div class="mt-10">
-                <a href="mailto:hello@mandari.de?subject=Crawler%20mandari-ingestor" class="btn-primary">An hello@mandari.de schreiben</a>
+            <div>
+                <h2 class="t-h3 text-gray-900 dark:text-white">Kontakt und Widerspruch</h2>
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">
+                    Sie betreiben ein Ratsinformationssystem und haben Fragen, möchten die Abrufrate anpassen oder der
+                    Übernahme Ihrer Inhalte widersprechen? Schreiben Sie uns – wir reagieren zeitnah und entfernen
+                    Inhalte auf Wunsch der Kommune vollständig.
+                </p>
+                <p class="mt-7"><a href="mailto:hello@mandari.de?subject=Crawler%20mandari-ingestor" class="btn-primary">E-Mail an hello@mandari.de</a></p>
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-6">
+                    Noch besser als Scraping ist eine OParl-Schnittstelle – viele RIS-Produkte bringen sie bereits mit.
+                    Gern unterstützen wir bei der Aktivierung.
+                </p>
             </div>
-            <p class="t-body text-gray-400 mt-10">
-                Noch besser als Scraping ist eine OParl-Schnittstelle – viele RIS-Produkte bringen sie bereits mit.
-                Gern unterstützen wir bei der Aktivierung.
-            </p>
+
         </div>
     </div>
 </section>
