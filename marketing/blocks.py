@@ -596,6 +596,8 @@ class ComparisonCellBlock(StructBlock):
     status = ChoiceBlock(
         choices=[
             ("yes", "✓ Ja (grün)"),
+            ("partial", "◐ Teilweise / eingeschränkt"),
+            ("open", "○ Noch nicht verfügbar (nur mandari, Roadmap-Stufe im Zusatztext)"),
             ("no", "– Nein / nicht vorhanden (neutral)"),
             ("unknown", "keine öffentliche Angabe (neutral, mit Fußnote)"),
         ],
@@ -663,6 +665,7 @@ class FeatureCellBlock(StructBlock):
             ("yes", "✓ verfügbar"),
             ("partial", "◐ teilweise / Basis"),
             ("planned", "○ geplant"),
+            ("review", "in Prüfung (ohne Termin)"),
             ("no", "– nicht vorgesehen"),
             ("info", "nur Text (z. B. Zuständigkeit)"),
         ],
@@ -711,6 +714,54 @@ class FeatureMatrixBlock(StructBlock):
         label = "Feature-Matrix"
 
 
+# ─────────────── Marktübersicht (mandari und mehrere Anbieter, nur Status) ───────────────
+
+
+class MarketMatrixColumnBlock(StructBlock):
+    """Spaltenkopf der Marktübersicht, optional mit Link auf den Einzelvergleich."""
+
+    name = CharBlock(required=True, help_text="z. B. 'mandari' oder 'Somacos'")
+    url = CharBlock(required=False, help_text="Optionaler Link, z. B. /vergleich/mandari-vs-somacos/")
+
+    class Meta:
+        icon = "link"
+        label = "Spalte"
+
+
+class MarketMatrixRowBlock(StructBlock):
+    """Eine Zeile: Funktion plus eine Zelle je Spalte (Reihenfolge wie `columns`)."""
+
+    label = CharBlock(required=True, help_text="Funktion")
+    cells = ListBlock(ComparisonCellBlock(), min_num=2, max_num=6)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Zeile"
+
+
+class MarketMatrixGroupBlock(StructBlock):
+    title = CharBlock(required=True, help_text="Bereich, z. B. 'Sitzungsdienst'")
+    rows = ListBlock(MarketMatrixRowBlock(), min_num=1)
+
+    class Meta:
+        icon = "folder-open-1"
+        label = "Bereich"
+
+
+class MarketMatrixBlock(StructBlock):
+    """Marktübersicht: Zeilen = Funktionen, Spalten = mandari und Anbieter; nur Status, kurze Zusätze."""
+
+    header = SectionHeaderBlock(required=False)
+    columns = ListBlock(MarketMatrixColumnBlock(), min_num=2, max_num=6)
+    groups = ListBlock(MarketMatrixGroupBlock(), min_num=1)
+    footnote = RichTextBlock(required=False, features=["bold", "italic", "link"])
+
+    class Meta:
+        template = "marketing/blocks/market_matrix.html"
+        icon = "table"
+        label = "Marktübersicht (mandari und Anbieter)"
+
+
 # ─────────────────────── Composite block container ──────────────────────
 
 
@@ -727,6 +778,7 @@ class MarketingStreamBlock(StreamBlock):
     stats_grid = StatsGridBlock()
     pricing_table = PricingTableBlock()
     comparison_table = ComparisonTableBlock()
+    market_matrix = MarketMatrixBlock()
     feature_matrix = FeatureMatrixBlock()
     accordion_faq = AccordionFAQBlock()
     gradient_cta = GradientCTABlock()

@@ -1,16 +1,17 @@
 {% load wagtailcore_tags %}
 {% comment %} Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
-   Mobile: horizontal scrollbar (overflow-x-auto + min-w).
+   Ab sm eine echte Tabelle. Darunter gestapelt: je Zeile die Funktion über die volle Breite, darunter mandari
+   und der Anbieter nebeneinander, jede Zelle mit kleinem Spaltennamen. So sieht man am Handy beide Seiten
+   ohne seitliches Verschieben.
    Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. {% endcomment %}
 <section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
-        <p class="sm:hidden mb-3 text-[0.9375rem] text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
-        <div class="relative overflow-x-auto max-w-5xl rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="Funktionsvergleich mandari und {{ self.competitor_label }}">
-            <table class="w-full min-w-[640px] text-sm border-collapse">
+        <div class="relative sm:overflow-x-auto max-w-5xl rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="Funktionsvergleich mandari und {{ self.competitor_label }}">
+            <table class="block sm:table w-full sm:min-w-[640px] text-sm border-collapse">
                 <caption class="sr-only">Funktionsvergleich mandari und {{ self.competitor_label }}</caption>
-                <thead>
+                <thead class="hidden sm:table-header-group">
                     <tr class="border-b-2 border-gray-200 dark:border-gray-700">
                         <th scope="col" class="text-left py-4 px-4 sm:px-6 font-semibold text-gray-500 dark:text-gray-400 w-[34%]">Funktion / Kriterium</th>
                         <th scope="col" class="text-left py-4 px-4 sm:px-6 w-[33%]">
@@ -19,16 +20,16 @@
                         <th scope="col" class="text-left py-4 px-4 sm:px-6 font-bold text-gray-900 dark:text-white w-[33%]">{{ self.competitor_label }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="block sm:table-row-group">
                     {% for group in self.groups %}
-                    <tr class="bg-gray-50 dark:bg-gray-900/40">
-                        <th scope="colgroup" colspan="3" class="text-left py-2.5 px-4 sm:px-6 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ group.title }}</th>
+                    <tr class="block sm:table-row bg-gray-50 dark:bg-gray-900/40{% if not forloop.first %} border-t border-gray-200 dark:border-gray-700 sm:border-t-0{% endif %}">
+                        <th scope="colgroup" colspan="3" class="block sm:table-cell text-left py-2.5 px-4 sm:px-6 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ group.title }}</th>
                     </tr>
                     {% for row in group.rows %}
-                    <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
-                        <th scope="row" class="text-left py-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">{{ row.label }}</th>
-                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.mandari %}
-                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.competitor %}
+                    <tr class="grid grid-cols-2 sm:table-row border-t border-gray-100 dark:border-gray-700/60 align-top">
+                        <th scope="row" class="col-span-2 block sm:table-cell text-left pt-3.5 pb-1 sm:pb-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">{{ row.label }}</th>
+                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.mandari spalte="mandari" %}
+                        {% include "marketing/blocks/_comparison_cell.html" with cell=row.competitor spalte=self.competitor_label %}
                     </tr>
                     {% endfor %}
                     {% endfor %}

@@ -35,7 +35,7 @@ jobs:
         # meldet makemigrations offene Änderungen und der Schritt schlägt fehl.
         run: python manage.py makemigrations --check --dry-run
 
-      - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases)
+      - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
         run: python manage.py test --buffer
 
       - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
@@ -102,23 +102,23 @@ jobs:
           # URL -> Textbausteine, die im gerenderten HTML stehen muessen
           checks = {
               "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "hero-insight-muenster-800.webp", "hero-work-800.webp", "hero-session-800.webp"],
-              "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt"],
+              "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt", "in Prüfung (ohne Termin)", "Mitteilung an das Finanzamt"],
               "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
               "/kommunen/": ["Ratsinformations", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit."],
               "/migration/": ["Bestandsaufnahme"],
-              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb"],
+              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
               "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
               "/karriere/": ["Bau mit an der Software", "Initiativ bewerben"],
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
               "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
               "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
-              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
-              "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat", "Funktion / Kriterium"],
+              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt: in Prüfung", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
+              "/vergleich/mandari-vs-sternberg/": ["Stand Oktober 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium", "Noch nicht verfügbar", "[ST1]"],
+              "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
+              "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
+              "/vergleich/mandari-vs-regisafe/": ["barrierefrei zertifiziert", "Funktion / Kriterium", "Noch nicht verfügbar", "[RS1]"],
               "/releases/": ["mandari 0.11", "mandari 0.9 (Beta)"],
               "/releases/mandari-0-11/": ["Sitzungsdienst", "v0.11.0", "Vorherige Version"],
               "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
