@@ -11,7 +11,8 @@ ausgehend von ``/`` alle internen Links mit dem Django-Test-Client. Fehler sind:
 * doppelte oder falsch gebaute Seitentitel („<Titel> | mandari“),
   fehlende oder doppelte Meta-Descriptions, Canonicals, die nicht auf SITE_URL zeigen,
 * Kopf- und Fußzeile, die von der Zielstruktur abweichen, oder Seiten, die sie
-  nicht genau einmal enthalten,
+  nicht genau einmal enthalten; in der Kopfzeile außerdem „Bürgerportal“ genau
+  einmal als direkter Link und der Knopf „Menü“ für das Slide-Menü (Dialog),
 * Anker-Links (``/seite/#anker``) auf Abschnitte, die es nicht gibt.
 
 Interne Links auf Weiterleitungen sind Warnungen: Sie funktionieren, sollten
@@ -44,21 +45,24 @@ PRODUKTE_MENUE = [
     ("Übersicht", "/produkte/"),
     ("Für Verwaltungen", "/kommunen/"),
     ("Für Fraktionen", "/fraktionen/"),
-    ("Bürgerportal", "/produkte/#insight"),
+    ("Für Bürger:innen", "/produkte/#insight"),
     ("Roadmap", "/roadmap/"),
 ]
 HAUPTMENUE = PRODUKTE_MENUE + [("Preise", "/preise/"), ("Unternehmen", "/unternehmen/"), ("Kontakt", "/kontakt/")]
-PORTALE = [("Bürgerportal", "/insight/"), ("Anmelden", "/work/")]
+BUERGERPORTAL = ("Bürgerportal", "/insight/")
+ANMELDEN = ("Anmelden", "/work/")
+PORTALE = [BUERGERPORTAL, ANMELDEN]
 WORTMARKE = ("mandari.", "/")
-# Reihenfolge im Quelltext: Wortmarke, Hauptmenü (Desktop), Portale, dasselbe noch einmal im mobilen Menü.
-KOPFZEILE = [WORTMARKE] + HAUPTMENUE + PORTALE + HAUPTMENUE + PORTALE
+# Reihenfolge im Quelltext: Wortmarke, Hauptmenü (Desktop), Portale, dann das Slide-Menü (mobil). Das
+# Bürgerportal steht auch mobil in der Leiste und deshalb nur einmal in der Kopfzeile.
+KOPFZEILE = [WORTMARKE] + HAUPTMENUE + PORTALE + HAUPTMENUE + [ANMELDEN]
 
 FUSSZEILE = {
     "Produkte": [
         ("Übersicht", "/produkte/"),
         ("Für Verwaltungen", "/kommunen/"),
         ("Für Fraktionen", "/fraktionen/"),
-        ("Bürgerportal", "/produkte/#insight"),
+        ("Für Bürger:innen", "/produkte/#insight"),
         ("Umstieg", "/migration/"),
         ("Vergleich", "/vergleich/"),
         ("Roadmap", "/roadmap/"),
@@ -129,6 +133,7 @@ class SeitenParser(HTMLParser):
         self.footer_links: list[tuple[str, str]] = []
         self.footer_headings: list[str] = []
         self.header_buttons: list[tuple[str, dict]] = []
+        self.header_dialogs: list[dict] = []
         self._in_title = False
         self._region_stack: list[str | None] = []
         self._anchor: dict | None = None
@@ -164,6 +169,8 @@ class SeitenParser(HTMLParser):
             self._anchor = {"href": attrs["href"], "text": []}
         if tag == "button" and self._region == "kopf":
             self._button = {"attrs": attrs, "text": []}
+        if attrs.get("role") == "dialog" and self._region == "kopf":
+            self.header_dialogs.append(attrs)
         if tag == "h2" and self._region == "fuss":
             self._heading = []
 
@@ -411,6 +418,21 @@ def main() -> int:
         produkte = [attrs for text, attrs in html.header_buttons if text == "Produkte"]
         if len(produkte) != 1 or "aria-expanded" not in produkte[0] or "aria-controls" not in produkte[0]:
             struktur["Kopfzeile ohne Aufklappknopf 'Produkte' mit aria-expanded und aria-controls"].append(pfad)
+        if [eintrag for eintrag in html.header_links if eintrag[0] == BUERGERPORTAL[0]] != [BUERGERPORTAL]:
+            struktur["Kopfzeile: 'Bürgerportal' nicht genau einmal als direkter Link auf /insight/"].append(pfad)
+        menue = [attrs for text, attrs in html.header_buttons if text == "Menü"]
+        dialoge = {attrs.get("id"): attrs for attrs in html.header_dialogs}
+        dialog = dialoge.get(menue[0].get("aria-controls")) if len(menue) == 1 else None
+        if (
+            dialog is None
+            or "aria-expanded" not in menue[0]
+            or dialog.get("aria-modal") != "true"
+            or not (dialog.get("aria-label") or dialog.get("aria-labelledby"))
+        ):
+            struktur[
+                "Kopfzeile ohne Knopf 'Menü' (aria-expanded, aria-controls) für ein beschriftetes Slide-Menü "
+                "mit role=dialog und aria-modal=true"
+            ].append(pfad)
         erwartet_fuss = [WORTMARKE] + [eintrag for eintraege in fusszeile.values() for eintrag in eintraege]
         if html.footer_headings != list(fusszeile):
             struktur[f"Fußzeile: Spalten {html.footer_headings} statt {list(fusszeile)}"].append(pfad)
