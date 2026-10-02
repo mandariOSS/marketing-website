@@ -1,6 +1,6 @@
 {% load wagtailcore_tags %}
 {# Werkzeuge, auf denen mandari aufbaut: Name und ein kurzer Zusatz, verlinkt. Ohne Kacheln und Symbole. #}
-<section class="py-20 lg:py-24">
+<section class="py-20 lg:py-24 band-{{ band|default:'hell' }}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-8 max-w-5xl">

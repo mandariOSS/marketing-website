@@ -1,8 +1,10 @@
-{# Ein Eintrag im Raster – offen auf der Fläche, ohne Rahmen, Viertelkreis oder Symbolkachel. Status als leiser Text, Aufruf als Textlink. #}
+{% load baender %}
+{# Ein Eintrag im Raster – offen auf der Fläche, ohne Rahmen, Viertelkreis oder Symbolkachel. Status als leiser Text, Aufruf als Textlink. Bezieht sich der Eintrag auf ein Produkt, steht dessen Name in der Kennfarbe. #}
 {% with card=card.value|default:card %}
-<div class="flex flex-col">
-    <h3 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white break-words text-balance">{{ card.title }}</h3>
-    {% if card.subtitle %}<p class="mt-1.5 font-medium text-gray-900 dark:text-gray-100 break-words">{{ card.subtitle }}</p>{% endif %}
+{% with p_unter=card.subtitle|produkt p_titel=card.title|produkt %}
+<div class="flex flex-col{% if p_unter %} produkt-{{ p_unter }}{% elif p_titel %} produkt-{{ p_titel }}{% endif %}">
+    <h3 class="text-xl font-semibold tracking-tight break-words text-balance {% if p_titel and not p_unter %}kenn{% else %}text-gray-900 dark:text-white{% endif %}">{{ card.title }}</h3>
+    {% if card.subtitle %}<p class="mt-1.5 font-medium break-words {% if p_unter %}kenn{% else %}text-gray-900 dark:text-gray-100{% endif %}">{{ card.subtitle }}</p>{% endif %}
     {% if card.status_badges %}
     <p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{% for sb in card.status_badges %}{{ sb.text }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
     {% elif card.badge %}
@@ -18,4 +20,5 @@
     <p class="mt-5"><a href="{{ card.cta_url }}" class="textlink">{{ card.cta_label }}</a></p>
     {% endif %}
 </div>
+{% endwith %}
 {% endwith %}

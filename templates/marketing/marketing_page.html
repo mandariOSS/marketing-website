@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags baender %}
 
 {% block content %}
-<div class="bg-white dark:bg-gray-900">
-{% for block in page.body %}
-    {% include_block block with last_block=forloop.last %}
+{# Jeder Block auf einem eigenen Band; Reihenfolge der Hintergründe aus marketing/templatetags/baender.py #}
+{% baender page.body as abschnitte %}
+{% for a in abschnitte %}
+    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}
 {% endfor %}
-</div>
 {% endblock %}

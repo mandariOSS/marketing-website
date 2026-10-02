@@ -2,7 +2,7 @@
 {# Das eine Logo-Paket: Vorschau, ZIP mit allen Dateien, Einzeldateien und Nutzungshinweise #}
 {% logo_rules as logo_rules %}
 {% section_header "Logos und Bildmarke" "Ein Paket mit allen Fassungen, frei verwendbar unter Creative Commons Namensnennung (CC BY)." "material" as kopf %}
-<section class="bg-white dark:bg-gray-900 py-16 lg:py-20">
+<section class="band-{{ band|default:'hell' }} py-16 lg:py-20">
     <span id="logo-wortmarke" class="block scroll-mt-24" aria-hidden="true"></span>
     <div class="wrap">
         {% block_template "marketing/blocks/section_header.html" kopf %}

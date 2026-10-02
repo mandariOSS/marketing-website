@@ -1,15 +1,16 @@
-{% load wagtailcore_tags typo %}
-{# Preise nebeneinander: eine Ebene mit feinem Rahmen, kein Viertelkreis, kein Sticker. Gefüllt ist nur der Aufruf der hervorgehobenen Stufe. #}
-<section class="py-20 lg:py-24">
+{% load wagtailcore_tags typo baender %}
+{# Preise nebeneinander: je Stufe eine Fläche auf dem Band (Produkte in ihrer Kennfarbe), kein Rahmen, kein Viertelkreis, kein Sticker. Gefüllt ist nur der Aufruf der hervorgehobenen Stufe. #}
+<section class="py-20 lg:py-24 band-{{ band|default:'hell' }}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <div class="grid grid-cols-1 lg:grid-cols-{{ self.tiers|length }} gap-6 items-stretch">
             {% for tier in self.tiers %}
-            <div class="rounded-xl p-7 lg:p-8 flex flex-col {% if tier.is_highlighted %}border-2 border-primary-600 dark:border-primary-400{% else %}border border-gray-200 dark:border-gray-700{% endif %}">
+            {% with p=tier.name|produkt %}
+            <div class="rounded-2xl p-7 lg:p-8 flex flex-col {% if p %}produkt produkt-{{ p }}{% else %}flaeche{% endif %}">
                 {% if tier.is_highlighted or tier.badge %}
-                <p class="text-[0.9375rem] {% if tier.is_highlighted %}font-semibold text-primary-700 dark:text-primary-300{% else %}text-gray-600 dark:text-gray-400{% endif %}">{% if tier.is_highlighted %}Empfohlen{% if tier.badge %}, {{ tier.badge }}{% endif %}{% else %}{{ tier.badge }}{% endif %}</p>
+                <p class="text-[0.9375rem] {% if tier.is_highlighted %}font-semibold text-gray-900 dark:text-white{% else %}text-gray-600 dark:text-gray-400{% endif %}">{% if tier.is_highlighted %}Empfohlen{% if tier.badge %}, {{ tier.badge }}{% endif %}{% else %}{{ tier.badge }}{% endif %}</p>
                 {% endif %}
-                <h3 class="mt-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white break-words hyphens-auto" lang="de">{{ tier.name|shy }}</h3>
+                <h3 class="mt-2 text-2xl font-semibold tracking-tight {% if p %}kenn{% else %}text-gray-900 dark:text-white{% endif %} break-words hyphens-auto" lang="de">{{ tier.name|shy }}</h3>
                 {% if tier.subtitle %}<p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ tier.subtitle }}</p>{% endif %}
                 <div class="mt-6">
                     <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1"><span class="text-4xl xl:text-5xl font-semibold tracking-tight text-gray-900 dark:text-white tabular-nums whitespace-nowrap">{{ tier.price_main }}</span>{% if tier.price_unit %}<span class="text-gray-600 dark:text-gray-400">{{ tier.price_unit }}</span>{% endif %}</div>
@@ -30,6 +31,7 @@
                 </p>
                 {% endif %}
             </div>
+            {% endwith %}
             {% endfor %}
         </div>
     </div>

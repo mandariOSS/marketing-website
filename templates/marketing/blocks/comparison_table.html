@@ -2,7 +2,7 @@
 {% comment %} Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
    Mobile: horizontal scrollbar (overflow-x-auto + min-w).
    Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. {% endcomment %}
-<section class="py-20 lg:py-24 bg-mist">
+<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
