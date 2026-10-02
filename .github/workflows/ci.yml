@@ -91,8 +91,9 @@ jobs:
           c = Client()
           # URL -> Textbausteine, die im gerenderten HTML stehen muessen
           checks = {
-              "/": ["Demo anfragen", "Zum RIS-Vergleich", "Ehrlich in Beta"],
-              "/produkt/": ["Mandari Insight", "Welches Modul kann was"],
+              "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "insight-muenster-1280.webp"],
+              "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt"],
+              "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90"],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
               "/kommunen/": ["Ratsinformationssystem"],
               "/migration/": ["Bestandsaufnahme"],
@@ -206,4 +207,41 @@ jobs:
                           errors.append(f"{datei}:{nr}: Urheberangabe ohne Sven Konopka")
           assert not errors, "Urheberangabe weicht ab: " + "; ".join(errors)
           print(f"OK: Fußzeile und {len(dateien)} HTML-Dateien nennen den Urheber")
+          EOF
+
+      - name: Weiterleitungen Produkte (/produkt/ und /loesungen/)
+        # /produkt/ ist aufgeteilt in /produkte/ und /fraktionen/; alte Adressen leiten dauerhaft weiter.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          redirects = {"/produkt/": "/fraktionen/", "/loesungen/": "/produkte/"}
+          errors = []
+          for url, target in redirects.items():
+              r = c.get(url)
+              if r.status_code != 301 or r.get("Location") != target:
+                  errors.append(f"{url}: HTTP {r.status_code} -> {r.get('Location')} (erwartet 301 -> {target})")
+          assert not errors, "Weiterleitungen fehlerhaft: " + "; ".join(errors)
+          print(f"OK: {len(redirects)} Weiterleitungen")
+          EOF
+
+      - name: Ruhige Oberflaeche (kein Hover-Sprung, keine Verlaeufe in den Bausteinen)
+        # Gestaltungsregeln: Zustaende aendern Farbe oder Unterstreichung, nie die Position;
+        # die StreamField-Bausteine kommen ohne Farbverlauf aus.
+        run: |
+          python - <<'EOF'
+          import pathlib, re
+          errors = []
+          for f in pathlib.Path("templates").rglob("*.html"):
+              text = f.read_text(encoding="utf-8")
+              if re.search(r"hover:-?translate-y", text):
+                  errors.append(f"{f}: Hover mit translate-y")
+              if f.parent.name == "blocks" and "bg-gradient" in text:
+                  errors.append(f"{f}: Farbverlauf im Baustein")
+          assert not errors, "; ".join(errors)
+          print("OK: keine Hover-Spruenge, Bausteine ohne Verlauf")
           EOF
