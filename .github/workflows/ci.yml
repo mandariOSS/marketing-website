@@ -80,6 +80,11 @@ jobs:
       - name: StreamField-Seeds anwenden
         run: python manage.py migrate_pages_to_streamfield
 
+      - name: Unternehmensseiten und Kontaktformular (Tests)
+        # Inhalte und Sie-Form, Stufenschalter Vorgründung/Gesellschaft, Logo-Paket, Weiterleitung
+        # /ueber-uns/, Seed-Befehle sowie die Formulare mit Spamschutz, Prüfung und Zustellung.
+        run: python manage.py test company --buffer
+
       - name: Render-Smoke (alle Kernseiten liefern 200 mit Inhalt)
         run: |
           python - <<'EOF'
@@ -99,6 +104,11 @@ jobs:
               "/migration/": ["Bestandsaufnahme"],
               "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
+              "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
+              "/karriere/": ["Bau mit an der Software", "Initiativ bewerben"],
+              "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
+              "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
+              "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
               "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
               "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium"],
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
