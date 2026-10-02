@@ -439,6 +439,7 @@ def _build_vergleich_uebersicht():
 
 def get_marketing_definitions() -> dict:
     """Marketing-Pages (MarketingPage Model) → body StreamField."""
+    from marketing.seeds_unternehmen import get_company_page_definitions
 
     return {
         # ════════════════════════════════════════════════════════════
@@ -919,225 +920,6 @@ def get_marketing_definitions() -> dict:
         ],
 
         # ════════════════════════════════════════════════════════════
-        # /partner/ — Sechs konkrete Partner-Wege
-        # ════════════════════════════════════════════════════════════
-        "partner": [
-            ("hero", {
-                "badge_text": "Beta-Phase · offen für Mit-Träger",
-                "badge_icon": "hand-heart", "badge_color": "primary",
-                "title": "Mandari wächst.", "title_highlight": "Komm dazu.",
-                "subline": "Ein modernes, offenes Ratsinformationssystem für Deutschland baut sich nicht allein auf. Es gibt sechs konkrete Wege, dieses Projekt mitzutragen — vom unterzeichneten Pilot-Vertrag bis zum 5-Minuten-Pull-Request.",
-                "subline_secondary": "Auf dieser Seite siehst du sie alle, ehrlich beschrieben, mit klaren nächsten Schritten und ohne Marketing-Phrasen.",
-                "ctas": [cta("Partner werden", "/kontakt/?subject=Partnerschaft", "mail", "primary"),
-                         cta("30-Min-Call buchen", "/kontakt/#termin-buchen", "calendar", "secondary"),
-                         cta("Finanziell unterstützen", "#mittragen", "heart", "outline")],
-                "background_color": "primary",
-            }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("github", "AGPL-3.0", "Code öffentlich"),
-                trust_item("server", "Hosting", "in Deutschland"),
-                trust_item("rocket", "Pilot-Phase 2026", "jetzt einsteigen"),
-                trust_item("hand-heart", "Förderung & Spenden", "möglich"),
-            ]}),
-            ("mandari_cards", {
-                "header": hdr(badge_text="Sechs konkrete Wege", badge_icon="sparkles",
-                              title="Wer Mandari mitträgt",
-                              subline="Von Verwaltungen über Stiftungen und Parteien bis zu einzelnen Engagierten — Civic-Tech entsteht im Zusammenspiel vieler Rollen. Jede Säule zählt, keine ist wichtiger als die anderen."),
-                "columns": "3", "background": "white",
-                "cards": [
-                    card(color="green", icon="building-2", title="Pilot-Kommunen",
-                         subtitle="Verwaltungen & Räte, die starten wollen",
-                         status_badges=[sbadge("Offen ab sofort", "rocket", "auto"),
-                                        sbadge("Pilot-Konditionen", color="amber")],
-                         description="Die ersten Kommunen, die ihre OParl-Quelle anbinden — wir bauen zusammen die Praxis-Erfahrung auf, die Mandari produktionsreif macht.",
-                         bullets=[bullet("Anbindung in Tagen statt Monaten"),
-                                  bullet("Pilot-Konditionen & direkter Draht zu uns"),
-                                  bullet("Mitgestaltung der Roadmap")],
-                         cta_label="Pilot-Kommune werden", cta_url="/kontakt/?subject=Pilot-Kommune", cta_icon="rocket"),
-                    card(color="primary", icon="hand-heart", title="Förderer & Mit-Träger",
-                         subtitle="Stiftungen, Fonds, Kommunen mit Weitblick",
-                         status_badges=[sbadge("Anträge laufend", "hand-heart", "auto"),
-                                        sbadge("Co-Funding möglich", color="gray")],
-                         description="Mandari ist demokratische Infrastruktur und braucht eine finanzielle Basis, die nicht von einzelnen Lizenzdeals abhängt. Hier ist Raum für Förderpartnerschaften.",
-                         bullets=[bullet("Projekt- oder Jahresförderung"),
-                                  bullet("Co-Funding & Antrags-Unterstützung"),
-                                  bullet("Sichtbar gelistet als Mit-Träger")],
-                         cta_label="Förderung besprechen", cta_url="/kontakt/?subject=Förderpartnerschaft", cta_icon="hand-heart"),
-                    card(color="blue", icon="vote", title="Parteien & Fraktionen",
-                         subtitle="Werkzeug für Mandatsträger:innen",
-                         status_badges=[sbadge("Beta-Lizenzen aktiv", "vote", "auto"),
-                                        sbadge("Parteien-neutral", color="gray")],
-                         description="Wir machen Mandari Work für eure Fraktionen verfügbar — politisch neutral, parteienoffen, mit allen demokratischen Akteur:innen gleichermaßen.",
-                         bullets=[bullet("Pauschale Fraktions-Lizenz, ohne Nutzer-Limit"),
-                                  bullet("Onboarding für Mandatsträger:innen"),
-                                  bullet("Empfehlung an Orts- & Kreisverbände")],
-                         cta_label="Fraktion ausstatten", cta_url="/kontakt/?subject=Parteien-Partnerschaft", cta_icon="vote"),
-                    card(color="amber", icon="megaphone", title="NGOs & Initiativen",
-                         subtitle="Für mehr Transparenz & Beteiligung",
-                         status_badges=[sbadge("Erste Allianzen", "megaphone", "auto"),
-                                        sbadge("NGO-Konditionen", color="gray")],
-                         description="Bürgerstiftungen, Demokratie-Vereine, Transparenz-Initiativen, OK Labs — wir verstärken eure Wirkung mit offenen Daten und teilbaren Bürger-Tools.",
-                         bullets=[bullet("Whitelabel- & Embed-Möglichkeiten"),
-                                  bullet("Co-Marketing & gemeinsame Veranstaltungen"),
-                                  bullet("Vergünstigte NGO-Konditionen")],
-                         cta_label="Allianz starten", cta_url="/kontakt/?subject=NGO-Partnerschaft", cta_icon="megaphone"),
-                    card(color="rose", icon="briefcase", title="IT-Dienstleister",
-                         subtitle="Setup & Betreuung als Reseller",
-                         status_badges=[sbadge("Reseller ab Q2 2026", "briefcase", "auto"),
-                                        sbadge("Marge verhandelbar", color="gray")],
-                         description="Lokale IT-Häuser, die Mandari für ihre Kommunal-Kunden einrichten, konfigurieren und im Alltag begleiten — als verlängerter Arm in eurem Netzwerk.",
-                         bullets=[bullet("Reseller-Marge (verhandelbar)"),
-                                  bullet("Technische Schulung & Doku"),
-                                  bullet("Listing als zertifizierter Partner")],
-                         cta_label="Reseller-Gespräch starten", cta_url="/kontakt/?subject=Reseller-Partner", cta_icon="handshake"),
-                    card(color="teal", icon="award", title="Beirat & Mentor:innen",
-                         subtitle="Erfahrung aus Verwaltung & Civic-Tech",
-                         status_badges=[sbadge("0 von 5 besetzt", "award", "auto"),
-                                        sbadge("2–4 h pro Quartal", color="gray")],
-                         description="Erfahrene Köpfe, die Mandari strategisch begleiten, Türen öffnen und Sparring auf Augenhöhe geben — 2 bis 4 Stunden im Quartal genügen schon.",
-                         bullets=[bullet("Sichtbare Nennung auf der Website"),
-                                  bullet("Mitsprache an Produkt-Entscheidungen"),
-                                  bullet("Optional: Aufwandsentschädigung")],
-                         cta_label="Beirat anbieten", cta_url="/kontakt/?subject=Beirat-Position", cta_icon="users"),
-                ],
-            }),
-            ("step_process", {
-                "header": hdr(badge_text="Vom Erstkontakt zur Zusammenarbeit", badge_icon="route", badge_color="blue",
-                              title="So läuft eine Partnerschaft konkret ab", align="center",
-                              subline="Egal welche Rolle, der Weg ist immer derselbe: schlank, ohne Sales-Trichter, in vier nachvollziehbaren Schritten."),
-                "columns": "4", "background": "gray",
-                "steps": [
-                    step("01", "primary", "message-square", "Erstgespräch",
-                         "Per Mail oder direkt im 30-Minuten-Call. Du erzählst, was du dir vorstellst, wir erklären, was realistisch ist.",
-                         duration="30 Min", meta_text="kostenlos · unverbindlich"),
-                    step("02", "green", "file-search", "Scope & Konditionen",
-                         "Was passt zueinander? Schriftliches Ein-Seiten-Memorandum mit Aufwand, Konditionen und Verantwortlichkeiten.",
-                         duration="1 Woche", meta_text="1 Seite · klar lesbar"),
-                    step("03", "blue", "signature", "Vertrag oder MoU",
-                         "Pilot-Kommunen unterschreiben einen schlanken AVV+Pilotvertrag, bei Allianzen reicht oft ein Memorandum.",
-                         duration="2–3 Wochen", meta_text="DSGVO-fest"),
-                    step("04", "amber", "rocket", "Loslegen",
-                         "Onboarding, geteilter Slack/Matrix-Kanal, regelmäßiges Sync. Du bekommst einen direkten Draht zu uns, kein Ticket-System.",
-                         duration="Tage", meta_text="Anbindung in Tagen"),
-                ],
-                "note_html": "<p><strong>Kurze Wege:</strong> Du sprichst direkt mit den Menschen, die Mandari entwickeln — ohne Sales-Pipeline und ohne Kundenservice-Schicht. Das macht uns schnell, hat aber natürliche Kapazitäts-Grenzen — ehrliche Wartezeit-Auskunft inklusive.</p>",
-            }),
-            ("two_column_use_case", {
-                "header": hdr(badge_text="Allianz statt Konkurrenz", badge_icon="network", badge_color="amber",
-                              title="Wir spielen gerne mit anderen", align="center",
-                              subline="Open-Source-Civic-Tech ist ein Ökosystem, kein Wettbewerb. Hosting in Deutschland ist Pflicht, nicht Kür."),
-                "left_card": card(color="amber", icon="globe", title="Civic-Tech-Allianzen",
-                                  subtitle="OParl, Code for Germany, OKFN, D64 …",
-                                  description="Wir suchen den Austausch mit allen, die sich für offene Daten und demokratische Beteiligung einsetzen:",
-                                  bullets=[bullet("Beiträge zum OParl-Standard (Vendor-Extensions, Bugfixes)", "git-branch"),
-                                           bullet("Co-Marketing & gemeinsame Veranstaltungen", "megaphone"),
-                                           bullet("Wissensaustausch & gegenseitige Verlinkung", "book-open")]),
-                "right_card": card(color="gray", icon="server", title="Hosting-Partner",
-                                   subtitle="Deutsche, DSGVO-konforme Anbieter",
-                                   description="Mandari läuft auf deutschen Servern, Punkt. Wir suchen Hosting-Partner, die Spezialtarife für unsere Kunden anbieten:",
-                                   bullets=[bullet("Hetzner, IONOS, Strato, Open Telekom Cloud & Vergleichbare", "shield-check"),
-                                            bullet("Docker-Compose-Stack, läuft auf jedem Linux", "layers"),
-                                            bullet("Auftragsverarbeitungsverträge nach Art. 28 DSGVO", "badge-check")]),
-            }),
-            ("tech_partner_grid", {
-                "header": hdr(badge_text="Auf wessen Schultern wir stehen", badge_icon="package-open", badge_color="gray",
-                              title="Unsere echten Tech-Partnerschaften", align="center",
-                              subline="Mandari wäre ohne diese Open-Source-Projekte nicht möglich. Sie verdienen Sichtbarkeit — und Beiträge zurück."),
-                "partners": [
-                    {"name": "Django", "icon": "layout-template", "color": "green",
-                     "description": "Web-Framework, das Fundament", "url": "https://www.djangoproject.com/"},
-                    {"name": "Wagtail", "icon": "feather", "color": "blue",
-                     "description": "CMS, Marketing-Site", "url": "https://wagtail.org/"},
-                    {"name": "OParl", "icon": "plug", "color": "primary",
-                     "description": "Standard, die Datenquelle", "url": "https://oparl.org/"},
-                    {"name": "PostgreSQL", "icon": "database", "color": "blue",
-                     "description": "Datenbank, alles persistent", "url": "https://www.postgresql.org/"},
-                    {"name": "HTMX", "icon": "zap", "color": "primary",
-                     "description": "Frontend, kein SPA-Overkill", "url": "https://htmx.org/"},
-                    {"name": "Tailwind", "icon": "palette", "color": "blue",
-                     "description": "CSS, was du gerade siehst", "url": "https://tailwindcss.com/"},
-                    {"name": "Lucide", "icon": "sparkle", "color": "amber",
-                     "description": "Icons, alle hier auf der Seite", "url": "https://lucide.dev/"},
-                    {"name": "Altcha", "icon": "shield-check", "color": "green",
-                     "description": "Spam-Schutz ohne CAPTCHA", "url": "https://altcha.org/"},
-                ],
-            }),
-            ("disclaimer_box", {
-                "icon": "git-pull-request", "color": "primary",
-                "body": "<p><strong>Was wir zurückgeben:</strong> Mandari ist selbst <strong>AGPL-3.0</strong>, der gesamte Code ist offen. Vendor-Extensions zum OParl-Standard werden im <a href=\"https://github.com/mandariOSS\">öffentlichen Repository</a> dokumentiert und der OParl-Working-Group vorgeschlagen.</p>",
-            }),
-            ("mandari_cards", {
-                "header": hdr(badge_text="Schon ab fünf Minuten", badge_icon="zap", badge_color="green",
-                              title="Du musst keine Organisation sein", align="center",
-                              subline="Die meisten Beiträge zu Open Source kommen von Einzelnen. Hier sind vier Wege, ohne Vertrag oder Verpflichtung mitzubauen."),
-                "columns": "4", "background": "white",
-                "cards": [
-                    card(color="primary", icon="code-2", title="Code beitragen",
-                         description="Pull Requests sind willkommen — von der Tippfehler-Korrektur bis zur neuen Funktion.",
-                         cta_label="GitHub-Repo öffnen", cta_url="https://github.com/mandariOSS", cta_icon="external-link"),
-                    card(color="amber", icon="languages", title="Übersetzen",
-                         description="Aktuell nur Deutsch. Englisch und EU-Sprachen kommen — sprich deine Muttersprache?",
-                         cta_label="Sprache anbieten", cta_url="/kontakt/?subject=Übersetzung", cta_icon="arrow-right"),
-                    card(color="green", icon="bug", title="Testen & melden",
-                         description="Beta-Tester:innen, die UI-Bugs, Datenfehler oder Verbesserungs­ideen rückmelden, sind Gold wert.",
-                         cta_label="Tester werden", cta_url="/kontakt/?subject=Beta-Tester", cta_icon="arrow-right"),
-                    card(color="blue", icon="share-2", title="Verbreiten",
-                         description="Vortrag im OK Lab, Blog-Post, Social-Media-Hinweis, Empfehlung an deine Bürgermeisterin — alles hilft.",
-                         cta_label="Materialien anfragen", cta_url="/kontakt/?subject=Mandari-verbreiten", cta_icon="arrow-right"),
-                ],
-            }),
-            ("two_column_use_case", {
-                "header": hdr(badge_text="Finanziell mittragen", badge_icon="hand-heart",
-                              title="Damit Mandari unabhängig bleiben kann", align="center",
-                              subline="Open Source ist kostenfrei, Open-Source-Entwicklung nicht. Hier siehst du, wie du das Projekt finanziell stärkst.",
-                              anchor_id="mittragen"),
-                "left_card": card(color="primary", icon="landmark", title="Institutionelle Förderung",
-                                  subtitle="Stiftungen & Fördermittel",
-                                  description="Wir bewerben uns auf passende Programme — wenn du dort Kontakte hast oder uns weiterempfehlen kannst, freuen wir uns:",
-                                  bullets=[bullet("Sovereign Tech Fund (BMWK), kritische Open-Source-Infrastruktur", "circle-dot"),
-                                           bullet("Prototype Fund (OKFN / BMBF), frühe Civic-Tech-Projekte", "circle-dot"),
-                                           bullet("NLnet Foundation, Open-Source-Förderung EU-weit", "circle-dot"),
-                                           bullet("Mercator-, Bertelsmann-, Telekom-Stiftung & Vergleichbare", "circle-dot")],
-                                  cta_label="Programm empfehlen oder co-bewerben", cta_url="/kontakt/?subject=Förderprogramm-Empfehlung", cta_icon="arrow-right"),
-                "right_card": card(color="green", icon="heart-handshake", title="Direkte Unterstützung",
-                                   subtitle="Spenden, Sponsoring & Kommunal-Mitfinanzierung",
-                                   description="Schneller, unbürokratischer Weg — von Einzelpersonen, Unternehmen oder Kommunen, die Mandari als demokratische Infrastruktur stärken wollen:",
-                                   bullets=[bullet("GitHub Sponsors — monatlich oder einmalig (0 % Plattformgebühr)", "github"),
-                                            bullet("Ko-fi — niedrigschwellig ab 3 €", "coffee"),
-                                            bullet("Buy Me a Coffee — Ein-Klick-Tip ohne Account", "cookie"),
-                                            bullet("SEPA-Überweisung — Bankdaten auf Anfrage (0 % Gebühren)", "banknote"),
-                                            bullet("Kommunale Ko-Finanzierung oder Unternehmens-Sponsoring mit Rechnung", "building")],
-                                   cta_label="Beitragsweg besprechen", cta_url="/kontakt/?subject=Direkte-Unterstützung", cta_icon="arrow-right"),
-            }),
-            ("disclaimer_box", {
-                "icon": "info", "color": "gray",
-                "body": "<p><strong>Aktueller Stand:</strong> mandari hat noch keine gemeinnützige Trägerstruktur, Spenden sind aktuell <em>nicht</em> steuerlich absetzbar. Die Überführung in eine <strong>gemeinwohlorientierte Trägerstruktur</strong> (z.&nbsp;B. e.&nbsp;V., Genossenschaft, gGmbH oder Verantwortungseigentum) prüfen wir, sobald die Pilot-Phase Fahrt aufnimmt. Transparenz hat Vorrang.</p>",
-            }),
-            ("mandari_cards", {
-                "header": hdr(badge_text="Worauf du dich verlassen kannst", badge_icon="shield-check",
-                              title="Drei Versprechen an alle Partner", align="center",
-                              subline="Weil Vertrauen die Grundlage jeder Zusammenarbeit ist."),
-                "columns": "3", "background": "white",
-                "cards": [
-                    card(color="green", icon="check-check", title="Daten bleiben neutral",
-                         description="OParl-Daten zeigen wir vollständig und unverändert an — egal wer Partner ist. Niemand kann unbequeme Beschlüsse rauspolieren."),
-                    card(color="blue", icon="scale", title="Politisch ausgewogen",
-                         description="Wir arbeiten mit allen demokratischen Akteur:innen gleichberechtigt. Mandari wird kein Werkzeug parteipolitischer Einseitigkeit."),
-                    card(color="amber", icon="eye", title="Transparent nach innen & außen",
-                         description="Code offen (AGPL), Förderquellen offen, Partnerlisten offen. Jede Partnerschaft hält dieser Transparenz stand."),
-                ],
-            }),
-            ("gradient_cta", {
-                "title": "Lass uns reden",
-                "subline": "Egal in welcher Rolle du dabei sein möchtest — ein 30-Minuten-Erstgespräch ist immer drin. Kostenlos, unverbindlich, auf Augenhöhe.",
-                "ctas": [cta("Direkt schreiben", "/kontakt/", "mail", "primary"),
-                         cta("30-Min-Call buchen", "/kontakt/#termin-buchen", "calendar", "outline"),
-                         cta("GitHub", "https://github.com/mandariOSS", "github", "outline")],
-                "gradient_from": "primary",
-            }),
-        ],
-
-        # ════════════════════════════════════════════════════════════
         # /mitmachen/
         # ════════════════════════════════════════════════════════════
         "mitmachen": [
@@ -1549,51 +1331,6 @@ def get_marketing_definitions() -> dict:
         ],
 
         # ════════════════════════════════════════════════════════════
-        # /open-source/ — kompakte Version
-        # ════════════════════════════════════════════════════════════
-        "open-source": [
-            ("hero", {
-                "badge_text": "100 % Open Source", "badge_icon": "unlock", "badge_color": "green",
-                "title": "Freie Software für", "title_highlight": "freie Demokratie",
-                "subline": "Mandari ist vollständig quelloffen — alle drei Module stehen unter der AGPL-3.0 Lizenz. Keine versteckten proprietären Teile, keine Anbieterabhängigkeit.",
-                "ctas": [cta("GitHub Repository", "https://github.com/mandariOSS/mandari", "github", "primary"),
-                         cta("Mitmachen", "/mitmachen/", "heart", "secondary")],
-                "background_color": "green",
-            }),
-            ("trust_banner", {"color": "green", "items": [
-                trust_item("scale", "AGPL-3.0", "Lizenz"),
-                trust_item("server", "Eigenes Hosting", "erlaubt"),
-                trust_item("git-fork", "Eigene Kopie", "erlaubt"),
-                trust_item("users", "Community", "getrieben"),
-            ]}),
-            ("tech_partner_grid", {
-                "header": hdr(badge_text="Auf wessen Schultern wir stehen", badge_icon="package-open", badge_color="gray",
-                              title="Unsere Tech-Partnerschaften", align="center",
-                              subline="Mandari wäre ohne diese Open-Source-Projekte nicht möglich. Sie verdienen Sichtbarkeit und Beiträge zurück.",
-                              anchor_id="danke"),
-                "partners": [
-                    {"name": "Python", "icon": "code-2", "color": "amber", "description": "Programmiersprache · PSF", "url": "https://www.python.org"},
-                    {"name": "Django", "icon": "layout-template", "color": "green", "description": "Web-Framework · BSD-3", "url": "https://www.djangoproject.com/"},
-                    {"name": "Wagtail", "icon": "feather", "color": "blue", "description": "CMS · BSD-3", "url": "https://wagtail.org/"},
-                    {"name": "PostgreSQL", "icon": "database", "color": "blue", "description": "Datenbank", "url": "https://www.postgresql.org/"},
-                    {"name": "OParl", "icon": "plug", "color": "primary", "description": "Standard · CC-BY-SA", "url": "https://oparl.org/"},
-                    {"name": "HTMX", "icon": "zap", "color": "primary", "description": "Frontend · BSD-2", "url": "https://htmx.org/"},
-                    {"name": "Tailwind", "icon": "palette", "color": "blue", "description": "CSS · MIT", "url": "https://tailwindcss.com/"},
-                    {"name": "Lucide", "icon": "sparkle", "color": "amber", "description": "Icons · ISC", "url": "https://lucide.dev/"},
-                    {"name": "Altcha", "icon": "shield-check", "color": "green", "description": "Spam-Schutz · MIT", "url": "https://altcha.org/"},
-                    {"name": "Docker", "icon": "container", "color": "blue", "description": "Container · Apache-2.0", "url": "https://www.docker.com/"},
-                ],
-            }),
-            ("gradient_cta", {
-                "title": "Mach mit!",
-                "subline": "Ob als Entwickler:in, Kommune oder Bürger:in — Mandari lebt von der Community.",
-                "ctas": [cta("GitHub Repository", "https://github.com/mandariOSS/mandari", "github", "primary"),
-                         cta("Mitmachen", "/mitmachen/", "heart", "outline")],
-                "gradient_from": "green",
-            }),
-        ],
-
-        # ════════════════════════════════════════════════════════════
         # /migration/ — kompakte Version
         # ════════════════════════════════════════════════════════════
         "migration": [
@@ -1761,145 +1498,11 @@ def get_marketing_definitions() -> dict:
         ],
 
         # ════════════════════════════════════════════════════════════
-        # /ueber-uns/
+        # Unternehmensseiten: /unternehmen/, /karriere/, /presse/, /partner/,
+        # /open-source/ — Inhalte in marketing/seeds_unternehmen.py
+        # (/ueber-uns/ ist in /unternehmen/ aufgegangen, siehe setup_initial_pages)
         # ════════════════════════════════════════════════════════════
-        "ueber-uns": [
-            ("hero", {
-                "badge_text": "Mission · Werte", "badge_icon": "compass", "badge_color": "primary",
-                "title": "Mandari macht", "title_highlight": "Kommunalpolitik zugänglich.",
-                "subline": "Mandari hat eine klare Mission: Ratsinformationssysteme aus den frühen 2000ern in die Gegenwart zu holen — für Verwaltungen, Fraktionen und Bürger:innen.",
-                "subline_secondary": "Kein Startup mit Investorenrunde. Kein Konzern. Ein Projekt aus Überzeugung mit offener Community drum herum.",
-                "ctas": [cta("Wer wir sind", "#founder", "users", "primary"),
-                         cta("Werte ansehen", "#werte", "heart", "secondary"),
-                         cta("Direkt schreiben", "/kontakt/", "mail", "outline")],
-                "background_color": "primary",
-            }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("eye", "Transparent", "& unabhängig"),
-                trust_item("map-pin", "Aus", "Münster"),
-                trust_item("github", "AGPL-3.0", "Open Source"),
-                trust_item("flask-conical", "Beta-Phase", "2026"),
-            ]}),
-            ("two_column_use_case", {
-                # anchor_id "founder" bleibt bestehen — /team/ leitet per
-                # 301-Redirect auf /ueber-uns/#founder (website/urls.py).
-                "header": hdr(badge_text="Über Mandari", badge_icon="users",
-                              title="Wer hinter Mandari steht",
-                              subline="Mandari ist kein Konzern und kein Startup mit Investorenrunde, sondern ein Projekt aus Überzeugung — entwickelt und betrieben aus Münster.",
-                              anchor_id="founder"),
-                "left_card": card(color="primary", icon="users", title="Mandari", subtitle="Projekt & Betrieb",
-                                  description="Wir entwickeln und betreiben Mandari als unabhängiges Projekt — ohne Fremdkapital, mit offener Community und öffentlichem Code.",
-                                  bullets=[bullet("Mission: RIS modernisieren, Bürger:innen einbinden", "lightbulb"),
-                                           bullet("Stack: Django, PostgreSQL, HTMX, Wagtail", "layers"),
-                                           bullet("Verantwortlichkeiten & Kontakt im Impressum", "file-text")],
-                                  cta_label="GitHub-Organisation", cta_url="https://github.com/mandariOSS", cta_icon="github"),
-                "right_card": card(color="primary", icon="quote", title="Wie wir arbeiten", subtitle="Direkter Draht",
-                                   description="Kurze Wege statt Konzernstrukturen. Zwei Konsequenzen, die wir offen kommunizieren:",
-                                   bullets=[bullet("Direkter Draht: kein Ticket-System, kein Vertriebs-Bot", "user-check"),
-                                            bullet("Ehrliches Tempo: keine Versprechen, die wir nicht halten können", "clock"),
-                                            bullet("Realistische Roadmap statt Marketing-Ankündigungen", "map")]),
-            }),
-            ("mandari_cards", {
-                "header": hdr(badge_text="Werte", badge_icon="compass",
-                              title="Drei Werte, die jede Entscheidung prägen", align="center",
-                              subline="Wo es Zielkonflikte gibt, entscheidet immer einer dieser drei Werte.",
-                              anchor_id="werte"),
-                "columns": "3", "background": "white",
-                "cards": [
-                    card(color="green", icon="eye", title="Transparenz", subtitle="Offen statt verborgen",
-                         description="Offene Prozesse — in der Politik wie in der Software. Code ist offen, Entscheidungen sind nachvollziehbar, Roadmap ist öffentlich.",
-                         bullets=[bullet("Code unter AGPL-3.0 auf GitHub"),
-                                  bullet("Öffentliche Roadmap & Releases"),
-                                  bullet("Quellennachweise für jede Datenquelle")]),
-                    card(color="primary", icon="lock", title="Datensouveränität", subtitle="Du behältst die Kontrolle",
-                         description="Hosting in Deutschland, AES-256-Verschlüsselung, kein Tracking. Jede Kommune kann selbst hosten.",
-                         bullets=[bullet("Deutsche Server, DSGVO-konform"),
-                                  bullet("Self-Hosting jederzeit möglich"),
-                                  bullet("Datenexport in offenen Formaten")]),
-                    card(color="blue", icon="accessibility", title="Zugänglichkeit", subtitle="Für alle, nicht nur Profis",
-                         description="Politische Information muss für alle zugänglich sein — unabhängig von Budget, technischem Wissen oder Endgerät.",
-                         bullets=[bullet("Insight-Portal kostenlos & ohne Login"),
-                                  bullet("Mobil-first, responsive Design"),
-                                  bullet("BFSG-konform — siehe Barrierefreiheit")]),
-                ],
-            }),
-            ("gradient_cta", {
-                "title": "Lust mitzumachen?",
-                "subline": "Mandari lebt von Menschen, die unsere Werte teilen. Ob als Entwickler:in, Kommune, Förderer oder einfach mit einer Idee — jeder Beitrag zählt.",
-                "ctas": [cta("Mitmachen", "/mitmachen/", "heart", "primary"),
-                         cta("Partner werden", "/partner/", "handshake", "outline"),
-                         cta("Kontakt", "/kontakt/", "mail", "outline")],
-                "gradient_from": "primary",
-            }),
-        ],
-
-        # ════════════════════════════════════════════════════════════
-        # /presse/ — kompakte Version
-        # ════════════════════════════════════════════════════════════
-        "presse": [
-            ("hero", {
-                "badge_text": "Für Journalist:innen", "badge_icon": "megaphone", "badge_color": "primary",
-                "title": "Presse-", "title_highlight": "Material",
-                "subline": "Pressemitteilungen, Hintergrund-Material, Logos und direkter Kontakt für eure Berichterstattung über Civic-Tech und Mandari.",
-                "subline_secondary": "Anfragen mit Deadline behandeln wir mit Priorität.",
-                "ctas": [cta("Presse-Anfrage", "mailto:presse@mandari.de", "mail", "primary"),
-                         cta("Interview anfragen", "/kontakt/?subject=Presse-Interview", "user-circle", "secondary")],
-                "background_color": "primary",
-            }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("clock", "Deadline-Anfragen", "priorisiert"),
-                trust_item("user", "Direkter Draht", "keine PR-Agentur"),
-                trust_item("download", "Logos & Bilder", "frei verwendbar (CC-BY)"),
-                trust_item("file-text", "Hintergrund", "auf Anfrage"),
-            ]}),
-            ("mandari_cards", {
-                "header": hdr(badge_text="Was wir bereitstellen", badge_icon="package",
-                              title="Material für eure Berichterstattung", align="center"),
-                "columns": "3", "background": "white",
-                "cards": [
-                    card(color="primary", icon="image", title="Logos & Brand-Assets",
-                         description="Wordmark, Icon, Farben — alles unter CC-BY frei verwendbar.",
-                         cta_label="Downloads ansehen", cta_url="#logo-wortmarke", cta_icon="download"),
-                    card(color="green", icon="user-circle", title="Interviews & Hintergrund",
-                         description="Wir stehen für Interviews und Hintergrund-Gespräche zur Verfügung — Civic-Tech, Open Source, Demokratie & Software.",
-                         cta_label="Termin anfragen", cta_url="/kontakt/?subject=Presse-Interview", cta_icon="calendar"),
-                    card(color="blue", icon="newspaper", title="Pressemitteilungen",
-                         description="Aktuelle Releases, Pilot-Kommunen-Updates, Förder-Meilensteine — alle Mitteilungen im Blog mit RSS-Feed.",
-                         cta_label="Blog ansehen", cta_url="/blog/", cta_icon="external-link"),
-                ],
-            }),
-            ("richtext_section", {
-                "header": hdr(badge_text="Brand", badge_icon="image", badge_color="primary",
-                              title="Logo & Wortmarke",
-                              subline="Die mandari-Wortmarke zum Download — SVG für Web und Druck, PNG für Präsentationen. Alle Dateien CC-BY.",
-                              anchor_id="logo-wortmarke"),
-                "background": "gray",
-                "body": (
-                    "<h3>Downloads</h3>"
-                    "<ul>"
-                    '<li><a href="/wstatic/brand/mandari-logo.svg">Wortmarke als SVG — dunkel, für helle Hintergründe</a></li>'
-                    '<li><a href="/wstatic/brand/mandari-logo-white.svg">Wortmarke als SVG — weiß, für dunkle Hintergründe</a></li>'
-                    '<li><a href="/wstatic/brand/mandari-logo.png">Wortmarke als PNG — dunkel, 2400 px, transparent</a></li>'
-                    '<li><a href="/wstatic/brand/mandari-logo-white.png">Wortmarke als PNG — weiß, 2400 px, transparent</a></li>'
-                    '<li><a href="/wstatic/brand/favicon.svg">Bildmarke „m.“ als SVG — Favicon/Avatar</a></li>'
-                    "</ul>"
-                    "<h3>Nutzungshinweise</h3>"
-                    "<ul>"
-                    "<li><strong>Schutzraum:</strong> Rund um die Wortmarke mindestens die Breite des Punkts freihalten.</li>"
-                    "<li><strong>Keine Verzerrung:</strong> Nicht strecken, stauchen, drehen oder mit Effekten (Schatten, Kontur, Verlauf) versehen.</li>"
-                    "<li><strong>Keine Umfärbung:</strong> Der Punkt steht immer in Indigo (#4F46E5, auf dunklem Grund #818CF8); der Schriftzug in Grau-900 (#111827) bzw. Weiß.</li>"
-                    "<li><strong>Varianten:</strong> Dunkle Variante auf hellen, weiße Variante auf dunklen Hintergründen verwenden.</li>"
-                    "</ul>"
-                ),
-            }),
-            ("gradient_cta", {
-                "title": "Frage übrig?",
-                "subline": "Schreib direkt an presse@mandari.de — oder vereinbare ein Hintergrund-Gespräch.",
-                "ctas": [cta("presse@mandari.de", "mailto:presse@mandari.de", "mail", "primary"),
-                         cta("Interview-Termin", "/kontakt/#termin-buchen", "calendar", "outline")],
-                "gradient_from": "primary",
-            }),
-        ],
+        **get_company_page_definitions(),
 
         # ════════════════════════════════════════════════════════════
         # /vergabe/ — Unterlagen für Beschaffung und Prüfung (B2G, Sie-Form)
@@ -2441,6 +2044,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from marketing.models import LegalPage, MarketingPage
         from marketing.blocks import MarketingStreamBlock
+        from marketing.management.commands.setup_initial_pages import seeded_custom_template
 
         marketing_defs = get_marketing_definitions()
         legal_defs = get_legal_definitions()
@@ -2468,12 +2072,13 @@ class Command(BaseCommand):
             new_value = StreamValue(stream_block, blocks_data, is_lazy=False)
             setattr(page, body_field, new_value)
             old_template = page.custom_template
-            page.custom_template = ""
+            # Standard-Template, außer der Seed nennt ein eigenes (MARKETING_PAGE_META)
+            page.custom_template = seeded_custom_template(slug)
             page.save()
             page.save_revision().publish()
 
             self.stdout.write(self.style.SUCCESS(
-                f"  ✓ {slug}/ - {len(blocks_data)} Blöcke (custom_template '{old_template}' → leer)"
+                f"  ✓ {slug}/ - {len(blocks_data)} Blöcke (custom_template '{old_template}' → '{page.custom_template}')"
             ))
             return True
 

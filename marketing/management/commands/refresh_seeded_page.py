@@ -56,6 +56,11 @@ class Command(BaseCommand):
         slug = options["slug"].strip().strip("/")
         force = options["force"]
 
+        # Kontaktseite (eigener Seitentyp ohne StreamField): nur Titel und SEO-Felder
+        if slug == "kontakt":
+            self._refresh_contact_meta(force)
+            return
+
         marketing_defs = get_marketing_definitions()
         legal_defs = get_legal_definitions()
         release_defs = get_release_definitions()
@@ -131,15 +136,19 @@ class Command(BaseCommand):
             ))
             return
 
+        from marketing.management.commands.setup_initial_pages import (
+            MARKETING_PAGE_META,
+            seeded_custom_template,
+        )
+
         setattr(page, body_field, StreamValue(stream_block, blocks_data, is_lazy=False))
-        # Seed-Definitionen werden über die Standard-Templates gerendert —
-        # ein evtl. gesetztes custom_template würde sie verdecken.
-        page.custom_template = ""
+        # Seed-Definitionen werden über die Standard-Templates gerendert – außer der
+        # Seed nennt ein eigenes (z. B. company/unternehmen.html); ein anderes, früher
+        # gesetztes custom_template würde sie verdecken.
+        page.custom_template = seeded_custom_template(slug)
 
         # Titel / SEO-Metadaten aus dem Seed mitziehen (Slug bleibt stabil) —
         # sonst behalten Live-Seiten nach Umbenennungen den alten Titel.
-        from marketing.management.commands.setup_initial_pages import MARKETING_PAGE_META
-
         meta = next((m for m in MARKETING_PAGE_META if m["slug"] == slug), None)
         if meta:
             page.title = meta.get("title", page.title)
@@ -151,6 +160,29 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"  ✓ {slug}/ neu geseedet ({len(blocks_data)} Blöcke, veröffentlicht)"
         ))
+
+    # ── Kontaktseite (ContactPage — nur Titel und SEO-Felder) ───────────
+
+    def _refresh_contact_meta(self, force):
+        """`refresh_seeded_page kontakt --force`: Titel und SEO-Felder aus CONTACT_PAGE_META."""
+        from marketing.management.commands.setup_initial_pages import CONTACT_PAGE_META
+        from marketing.models import ContactPage
+
+        page = ContactPage.objects.first()
+        if not page:
+            raise CommandError(
+                "Keine Kontaktseite in der DB — zuerst `python manage.py setup_initial_pages` ausführen."
+            )
+        if not force:
+            self.stdout.write(self.style.WARNING(
+                "  ◯ kontakt/ existiert — nutze --force, um Titel und SEO-Felder aus dem Seed zu übernehmen."
+            ))
+            return
+        for field in ("title", "seo_title", "search_description"):
+            setattr(page, field, CONTACT_PAGE_META[field])
+        page.save()
+        page.save_revision().publish()
+        self.stdout.write(self.style.SUCCESS("  ✓ kontakt/ Titel und SEO-Felder aktualisiert (veröffentlicht)"))
 
     # ── Release-Seiten (blog.ReleasePage — Meta + body) ─────────────────
 

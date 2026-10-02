@@ -1,0 +1,6 @@
+{% load wagtailcore_tags company_tags %}
+{# StreamField-Inhalt mit einem festen Abschnitt (abschnitt) nach dem Block mit dem Anker nach_anker #}
+{% with stelle=page.body|insert_position:nach_anker %}
+{% for block in page.body %}{% if forloop.counter0 == stelle %}{% include abschnitt %}{% endif %}{% include_block block with last_block=forloop.last %}{% endfor %}
+{% if stelle >= page.body|length %}{% include abschnitt %}{% endif %}
+{% endwith %}

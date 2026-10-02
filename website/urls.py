@@ -56,6 +56,8 @@ urlpatterns = [
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
     # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
     path("crawler/", crawler_info_view, name="crawler_info"),
+    # Unternehmensseiten (Relaunch 2026): Logo-Paket der Presse, /ueber-uns/ → /unternehmen/
+    path("", include("company.urls")),
     # Dokumentation lebt auf docs.mandari.de (Repo mandariOSS/docs); alte Pfade leiten dauerhaft weiter
     path("docs/", docs_redirect, name="docs_index"),
     path("docs/<path:rest>", docs_redirect, name="docs_page"),
