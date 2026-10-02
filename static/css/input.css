@@ -62,6 +62,48 @@
 }
 :is(.produkt-session, .produkt-work, .produkt-insight) .textlink:hover { text-decoration-color: currentColor; }
 
+/* ── Hero der Startseite: drei echte Bildschirme, leicht versetzt ──────────
+   Hinten Session, dann Work, vorne Insight – flach übereinander, ohne Neigung.
+   Ein feiner Rand und ein weicher Schatten trennen die Ebenen. Am Handy zwei
+   Bildschirme im Hochformat (Work hinten, Insight vorne), Session entfällt. */
+.hero-stapel {
+  position: relative;
+  aspect-ratio: 100 / 105;   /* zwei Hochformate, je 58 % breit, das vordere 10 % tiefer */
+  max-width: 26rem;
+}
+.hero-karte {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(17 24 39 / 0.1);
+  background-color: #faf9f7;   /* Grund der Anwendungen, bis das Bild geladen ist */
+  box-shadow: 0 1px 2px rgb(17 24 39 / 0.04), 0 18px 40px -20px rgb(17 24 39 / 0.28);
+}
+.hero-karte img { display: block; width: 100%; height: auto; }
+.hero-karte-session { display: none; }
+.hero-karte-work { left: 0; top: 0; width: 58%; }
+.hero-karte-insight { right: 0; top: 10%; width: 58%; }
+.dark .hero-karte {
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+}
+.dark .hero-karte img { filter: brightness(0.92); }   /* helle Bildschirme blenden auf dunklem Grund nicht */
+
+@media (min-width: 640px) {
+  .hero-stapel {
+    aspect-ratio: 100 / 64.25;   /* drei Querformate (16:10), je 74 % breit, Versatz 13 % nach rechts und 9 % nach unten */
+    max-width: 40rem;
+  }
+  .hero-karte-session { display: block; left: 0; top: 0; width: 74%; }
+  .hero-karte-work { left: 13%; top: 14%; width: 74%; }
+  .hero-karte-insight { left: 26%; right: auto; top: 28%; width: 74%; }
+}
+@media (min-width: 1024px) {
+  .hero-stapel { max-width: none; }
+  /* Zweispaltig: Überschrift etwas kleiner, damit sie in zwei Zeilen neben das Bild passt */
+  .hero-titel { font-size: clamp(3.1rem, 1.5rem + 2.6vw, 4.1rem); }
+}
+
 /* Kernsatz: der erste Satz einer längeren Beschreibung trägt, der Rest erklärt */
 .kernsatz { color: #111827; font-weight: 520; }
 .dark .kernsatz { color: #f3f4f6; }
