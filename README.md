@@ -14,7 +14,7 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **Marketing-Pages** — Startseite, Produkt, Preise, Kommunen, Migration,
+- **Marketing-Pages** — Startseite, Produkte, Für Fraktionen, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
@@ -27,9 +27,9 @@ separat gehostet und entwickelt werden.
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
-  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Gradient-CTA u. v. m.)
-- **Mandari Design System** — konsistentes UI mit Tailwind CSS, Hero-Banner,
-  Trust-Banner, Border-2-Cards mit Decorative Corner Circles
+  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Zeilen, Einladung u. v. m.)
+- **Ruhige Gestaltung** mit Tailwind CSS — Schriftstufen, ein Button-Stil und
+  Textlinks als Komponenten, Inhalte offen auf der Fläche (siehe [Gestaltung](#-gestaltung))
 - **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
   `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
   `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
@@ -238,7 +238,8 @@ Weniger ist mehr: Typografie trägt die Seite, nicht Effekte.
 - **Inhalte offen auf der Fläche** statt in Karten; Status als leiser Text,
   Gruppierung über Abstand. Linien nur, wo sie Tabellen und Listen lesbarer machen.
 - **Zustände** ändern Farbe oder Unterstreichung, nie die Position
-  (die CI prüft: kein Hover mit `translate-y`, keine Verläufe in den Bausteinen).
+  (die CI prüft alle Templates außer dem ruhenden Blog: kein Hover mit
+  `translate-y`, keine Verläufe, keine Pillen-Etiketten, keine Deko-Viertelkreise).
 
 Die StreamField-Blocktypen bleiben aus Kompatibilitätsgründen definiert, auch
 wenn einzelne Felder (z. B. `badge_text`, `gradient_from`) nicht mehr angezeigt
