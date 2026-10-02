@@ -188,6 +188,56 @@ MARKETING_PAGE_META = [
 ]
 
 
+# ── Blog ──────────────────────────────────────────────────────────────────
+# Der Blog ruht (keine Beiträge): /blog/ und /blog/feed/ leiten auf /releases/
+# (website/urls.py), ein vorhandener Blog-Index wird mit
+# `retire_page /blog/ --redirect /releases/` zurückgezogen. Neue Datenbanken
+# bekommen keinen Blog-Index mehr. Reaktivieren: README, Abschnitt „Blog reaktivieren“.
+BLOG_ENABLED = False
+
+# ── Meta-Descriptions für Seiten ohne eigene Seed-Beschreibung ─────────────
+# Werden nur in LEERE search_description-Felder geschrieben (neue und bestehende
+# Seiten); im CMS gepflegte Texte bleiben unangetastet.
+SEO_DESCRIPTION_DEFAULTS = {
+    "impressum": (
+        "Impressum von mandari: Anbieter nach § 5 DDG, Kontakt, Umsatzsteuer-Identifikationsnummer "
+        "und inhaltlich Verantwortliche."
+    ),
+    "datenschutz": (
+        "Datenschutzerklärung von mandari: welche Daten wir beim Besuch der Website und bei der "
+        "Nutzung unserer Dienste verarbeiten, wozu und welche Rechte Sie haben."
+    ),
+    "agb": (
+        "Allgemeine Geschäftsbedingungen für mandari Work und mandari Session: Leistungen, Preise, "
+        "Laufzeit und Kündigung, Verfügbarkeit, Datenschutz und Haftung."
+    ),
+    "quellen": (
+        "Quellennachweise von mandari: OParl-Schnittstellen der Kommunen, Lizenzen der "
+        "Ratsinformationen, Karten, Geokodierung und KI-Komponenten."
+    ),
+}
+
+# ── Release-Übersicht ─────────────────────────────────────────────────────
+# Frühere Seed-Fassungen werden ersetzt, im CMS geänderte Texte bleiben.
+RELEASE_INDEX_META = {
+    "seo_title": "Releases",
+    "search_description": (
+        "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
+        "Fraktionen und Bürgerportal."
+    ),
+    "intro": (
+        "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
+        "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
+        '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
+    ),
+}
+RELEASE_INDEX_LEGACY = {
+    "seo_title": {"Releases – Mandari"},
+    "search_description": {"Versionshistorie und Changelogs."},
+    "intro": {"<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>"},
+}
+
+
 class Command(BaseCommand):
     help = "Erstellt die initiale Seitenstruktur für die Marketing-Website"
 
@@ -372,8 +422,16 @@ class Command(BaseCommand):
 
         for page_data in legal_pages:
             slug = page_data.pop("slug")
+            if slug in SEO_DESCRIPTION_DEFAULTS:
+                page_data.setdefault("search_description", SEO_DESCRIPTION_DEFAULTS[slug])
 
             existing = LegalPage.objects.filter(slug=slug).first()
+            if existing and not existing.search_description and page_data.get("search_description"):
+                existing.search_description = page_data["search_description"]
+                existing.save()
+                if existing.live:
+                    existing.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  {page_data['title']}: Meta-Description ergänzt"))
             if existing:
                 new_body = page_data.get("body", "")
                 if new_body and (not existing.body or placeholder_marker in existing.body):
@@ -396,7 +454,9 @@ class Command(BaseCommand):
 
         # ── Blog ──────────────────────────────────────────────────────────
 
-        if not BlogIndexPage.objects.exists():
+        if not BLOG_ENABLED:
+            self.stdout.write("  Blog ruht (BLOG_ENABLED = False) – kein Blog-Index angelegt")
+        elif not BlogIndexPage.objects.exists():
             blog = BlogIndexPage(
                 title="Blog",
                 slug="blog",
@@ -413,20 +473,31 @@ class Command(BaseCommand):
 
         # ── Releases ──────────────────────────────────────────────────────
 
-        if not ReleaseIndexPage.objects.exists():
+        releases = ReleaseIndexPage.objects.first()
+        if not releases:
             releases = ReleaseIndexPage(
                 title="Releases",
                 slug="releases",
-                seo_title="Releases – Mandari",
-                search_description="Versionshistorie und Changelogs.",
-                intro="<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>",
                 show_in_menus=True,
+                **RELEASE_INDEX_META,
             )
             home.add_child(instance=releases)
             releases.save_revision().publish()
             self.stdout.write(self.style.SUCCESS("  Releases erstellt"))
         else:
-            self.stdout.write("  Releases existiert bereits")
+            changed = [
+                field for field, value in RELEASE_INDEX_META.items()
+                if getattr(releases, field) in RELEASE_INDEX_LEGACY[field] and getattr(releases, field) != value
+            ]
+            for field in changed:
+                setattr(releases, field, RELEASE_INDEX_META[field])
+            if changed:
+                releases.save()
+                if releases.live:
+                    releases.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  Releases: {', '.join(changed)} aktualisiert"))
+            else:
+                self.stdout.write("  Releases existiert bereits")
 
         # ── Release-Einträge (aus get_release_definitions) ────────────────
         # Idempotent: nur fehlende ReleasePages werden angelegt. Updates an

@@ -1,9 +1,10 @@
 """
 Marketing-specific Django views.
 
-Most marketing pages are rendered by Wagtail. This module is reserved for
-pages that need server-side data fetching beyond a simple template — e.g.
-the live system-status page, which pulls data from the Kener API.
+Most marketing pages are rendered by Wagtail. This module holds the few routes
+that live outside the page tree: Altcha challenges, robots.txt, security.txt,
+the Responsible-Disclosure policy and the crawler info page. /status/ is a plain
+301 to the public status page (see website/urls.py).
 """
 
 from __future__ import annotations
@@ -14,11 +15,8 @@ import hmac
 import json
 import logging
 import secrets
-from typing import Any
 
-import httpx
 from django.conf import settings
-from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_http_methods
@@ -114,164 +112,6 @@ def verify_altcha_payload(payload_b64: str) -> bool:
         hashlib.sha256,
     ).hexdigest()
     return hmac.compare_digest(expected_signature, signature)
-
-
-# ─────────────────────────── Kener (Status-Page Integration) ─────────────────
-
-KENER_CACHE_KEY = "kener:monitors:v2"
-KENER_CACHE_TTL = 60  # seconds — uptime windows pull a lot of data, cache longer
-KENER_UPTIME_WINDOW_S = 24 * 3600  # uptime is computed over the last 24 hours
-
-
-def _fetch_kener_status() -> dict[str, Any] | None:
-    """Fetch live monitor status from the local Kener instance.
-
-    Returns a normalized dict the template can render directly:
-
-        {
-          "available": True,
-          "overall":   "UP" | "DEGRADED" | "DOWN" | "UNKNOWN",
-          "summary":   {"up": N, "degraded": N, "down": N, "unknown": N},
-          "monitors":  [{"name": str, "status": str, "tag": str, "uptime": float|None}, …],
-        }
-
-    Returns ``None`` when Kener is not configured or unreachable — the
-    template falls back to a "open status page directly" card.
-    """
-    cached = cache.get(KENER_CACHE_KEY)
-    if cached is not None:
-        return cached or None  # negative-cache value is False/None
-
-    token = getattr(settings, "KENER_API_TOKEN", "") or ""
-    base = (getattr(settings, "KENER_INTERNAL_URL", "") or "").rstrip("/")
-    if not token or not base:
-        return None
-
-    monitors_url = f"{base}/api/v4/monitors"
-    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
-
-    # Kener splits "what monitors exist" (cheap) from "monitoring history per
-    # monitor" (one call per monitor). We do both in a single httpx client to
-    # reuse the TCP connection.
-    import time
-
-    now_ts = int(time.time())
-    start_ts = now_ts - KENER_UPTIME_WINDOW_S  # 24h window
-
-    try:
-        with httpx.Client(timeout=5.0, headers=headers) as client:
-            list_resp = client.get(monitors_url)
-            list_resp.raise_for_status()
-            list_payload = list_resp.json()
-            raw_monitors = (
-                list_payload if isinstance(list_payload, list) else list_payload.get("monitors", [])
-            )
-
-            monitors: list[dict[str, Any]] = []
-            for entry in raw_monitors:
-                if not isinstance(entry, dict):
-                    continue
-                tag = entry.get("tag", "")
-                if not tag or entry.get("is_hidden") == "YES":
-                    continue
-
-                live_status = "UNKNOWN"
-                latency = None
-                uptime_pct: float | None = None
-                sample_count = 0
-
-                try:
-                    data_resp = client.get(
-                        f"{base}/api/v4/monitors/{tag}/data",
-                        params={"start_ts": start_ts, "end_ts": now_ts},
-                    )
-                    if data_resp.status_code == 200:
-                        data_payload = data_resp.json()
-                        points = (
-                            data_payload
-                            if isinstance(data_payload, list)
-                            else data_payload.get("data", [])
-                        )
-                        if points:
-                            # Most recent point = current status
-                            latest = max(points, key=lambda p: p.get("timestamp", 0))
-                            live_status = str(latest.get("status", "UNKNOWN")).upper()
-                            latency = latest.get("latency")
-
-                            # Uptime % over the window — Kener's default formula:
-                            #   (UP + MAINTENANCE) / (UP + MAINTENANCE + DOWN + DEGRADED)
-                            # Points with status outside these are ignored (e.g.
-                            # PAUSED, missing data — treated as "no signal").
-                            counted = 0
-                            up_like = 0
-                            for p in points:
-                                s = str(p.get("status", "")).upper()
-                                if s in ("UP", "MAINTENANCE"):
-                                    up_like += 1
-                                    counted += 1
-                                elif s in ("DOWN", "DEGRADED", "WARN", "WARNING"):
-                                    counted += 1
-                            sample_count = counted
-                            if counted:
-                                uptime_pct = (up_like / counted) * 100.0
-                except httpx.HTTPError:
-                    pass  # leave defaults — partial data is acceptable
-
-                monitors.append(
-                    {
-                        "name": entry.get("name") or tag,
-                        "status": live_status,
-                        "tag": tag,
-                        "latency": latency,
-                        "uptime_pct": uptime_pct,
-                        "sample_count": sample_count,
-                        "description": entry.get("description", ""),
-                        "category": entry.get("category_name", ""),
-                    }
-                )
-    except (httpx.HTTPError, ValueError) as exc:
-        logger.warning("Kener API call failed (%s): %s", monitors_url, exc)
-        # Negative cache for a short window to avoid hammering during outages
-        cache.set(KENER_CACHE_KEY, False, 10)
-        return None
-
-    counts = {"up": 0, "degraded": 0, "down": 0, "unknown": 0}
-    for monitor in monitors:
-        status = monitor["status"]
-        if status == "UP":
-            counts["up"] += 1
-        elif status in ("DEGRADED", "WARN", "WARNING"):
-            counts["degraded"] += 1
-        elif status == "DOWN":
-            counts["down"] += 1
-        else:
-            counts["unknown"] += 1
-
-    # Overall uptime = average of monitor uptimes that have data
-    monitors_with_uptime = [m["uptime_pct"] for m in monitors if m["uptime_pct"] is not None]
-    overall_uptime_pct = (
-        sum(monitors_with_uptime) / len(monitors_with_uptime) if monitors_with_uptime else None
-    )
-
-    if counts["down"]:
-        overall = "DOWN"
-    elif counts["degraded"]:
-        overall = "DEGRADED"
-    elif counts["up"]:
-        overall = "UP"
-    else:
-        overall = "UNKNOWN"
-
-    data = {
-        "available": True,
-        "overall": overall,
-        "summary": counts,
-        "monitors": monitors,
-        "uptime_pct": overall_uptime_pct,
-        "uptime_window_hours": KENER_UPTIME_WINDOW_S // 3600,
-    }
-    cache.set(KENER_CACHE_KEY, data, KENER_CACHE_TTL)
-    return data
 
 
 # ─────────────────────────── robots.txt (RFC 9309) ──────────────────────────
@@ -381,21 +221,3 @@ Acknowledgments: {site_url}/sicherheit/disclosure/#hall-of-fame
 #   postmaster@mandari.de    — E-Mail-Probleme
 """
     return HttpResponse(body, content_type="text/plain; charset=utf-8")
-
-
-def status_view(request):
-    """Public system-status page.
-
-    Server-side renders Kener data so we never depend on iframes (which
-    most browsers block via X-Frame-Options, CSP, or third-party-cookie
-    rules). When the Kener API is not reachable, the template degrades
-    gracefully to a prominent link to the live status page.
-    """
-    return render(
-        request,
-        "marketing/status.html",
-        {
-            "kener": _fetch_kener_status(),
-            "STATUS_PAGE_URL": getattr(settings, "STATUS_PAGE_URL", ""),
-        },
-    )

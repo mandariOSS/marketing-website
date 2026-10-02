@@ -1328,8 +1328,7 @@ def get_marketing_definitions() -> dict:
                     "(<a href=\"https://github.com/mandariOSS/mandari/issues/93\">öffentlich nachverfolgbar</a>). "
                     "Was wir heute bieten:</p>"
                     "<ul>"
-                    "<li>Öffentliche Live-Statusseite: <a href=\"https://status.mandari.de\">status.mandari.de</a> "
-                    "(auch unter <a href=\"/status/\">/status/</a> eingebunden)</li>"
+                    "<li>Öffentliche Live-Statusseite: <a href=\"https://status.mandari.de/\">status.mandari.de</a></li>"
                     "<li>Wartungsfenster werden vorab angekündigt</li>"
                     "<li>Vorfälle werden transparent dokumentiert — siehe <a href=\"/transparenz/\">Transparenzbericht</a></li>"
                     "</ul>"
@@ -2199,7 +2198,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="Ratsinformationen aus OParl-Schnittstellen"),
                 "background": "white",
-                "body": "<p>Mandari nutzt den offenen Standard <a href=\"https://oparl.org/\" target=\"_blank\" rel=\"noopener\">OParl</a> (Versionen 1.0 und 1.1), um Daten aus den Ratsinformationssystemen deutscher Kommunen strukturiert abzurufen. Es werden ausschließlich öffentlich zugängliche Daten verarbeitet.</p><p>Die jeweilige Kommune bleibt rechtlich verantwortliche Stelle für die bereitgestellten Inhalte. Mandari nimmt keine inhaltlichen Veränderungen vor und verlinkt grundsätzlich auf die Originalquelle.</p><p><a href=\"/kommunen/\">→ Liste aller aktuell aggregierten Kommunen</a></p>",
+                "body": "<p>Mandari nutzt den offenen Standard <a href=\"https://oparl.org/\" target=\"_blank\" rel=\"noopener\">OParl</a> (Versionen 1.0 und 1.1), um Daten aus den Ratsinformationssystemen deutscher Kommunen strukturiert abzurufen. Es werden ausschließlich öffentlich zugängliche Daten verarbeitet.</p><p>Die jeweilige Kommune bleibt rechtlich verantwortliche Stelle für die bereitgestellten Inhalte. Mandari nimmt keine inhaltlichen Veränderungen vor und verlinkt grundsätzlich auf die Originalquelle.</p><p>Wie unser Crawler die Daten abruft, welche Regeln er einhält und wie Kommunen Kontakt aufnehmen können, steht auf der Seite <a href=\"/crawler/\">Über unseren Crawler</a>.</p><p><a href=\"/kommunen/\">→ Liste aller aktuell aggregierten Kommunen</a></p>",
             }),
             ("richtext_section", {
                 "header": hdr(title="Lizenz der Ratsinformationen"),
@@ -2229,6 +2228,11 @@ def get_legal_definitions() -> dict:
     }
 
 
+def _release_section(title, body):
+    """Abschnitt einer Release-Seite: Zwischenüberschrift + Fließtext (gerendert von blog/release.html)."""
+    return ("richtext_section", {"header": hdr(title=title), "background": "white", "body": body})
+
+
 def get_release_definitions() -> dict:
     """Release-Seiten (blog.ReleasePage) → Meta-Felder + body StreamField.
 
@@ -2236,9 +2240,84 @@ def get_release_definitions() -> dict:
     Neue Releases werden hier einfach als weiterer Eintrag ergänzt —
     `setup_initial_pages` legt fehlende ReleasePages unter /releases/ an,
     `refresh_seeded_page <slug> --force` aktualisiert bestehende.
+
+    Release-Seiten erklären eine Version für Laien: was neu ist und für wen, in
+    Sie-Form. Technische Update-Hinweise für den Selbstbetrieb und Details zu
+    Sicherheitskorrekturen stehen nur in den Release-Notes auf GitHub.
     """
 
     return {
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-11/ — mandari 0.11, 27.09.2026
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-11": {
+            "meta": {
+                "title": "mandari 0.11",
+                "version": "0.11.0",
+                "release_type": "minor",
+                "release_date": "2026-09-27",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.11.0",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.11 – Release-Notes",
+                "search_description": (
+                    "mandari 0.11 vom 27. September 2026: gemeinsame Sitzungen, geschützte "
+                    "Niederschriften, Rückmeldungen zu Anträgen und Umkreissuche im Bürgerportal."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.11 ist das erste Release nach der Beta vom Juli. Es bringt vor allem den "
+                    "Sitzungsdienst voran: mandari Session begleitet eine Sitzung jetzt von der Ladung bis zur "
+                    "genehmigten Niederschrift. Fraktionen sehen in mandari Work, was aus ihren Anträgen wird, "
+                    "und das Bürgerportal findet Vorgänge in Ihrer Nachbarschaft.</p>"
+                    "<p>Alle Neuerungen liefen vor der Veröffentlichung bereits im Betrieb. Eine eigene "
+                    "Version 0.10 gibt es nicht, ihre Inhalte sind in 0.11 aufgegangen.</p>"
+                )),
+                _release_section("Für Verwaltungen: mandari Session", (
+                    "<ul>"
+                    "<li>Gemeinsame Sitzungen mehrerer Gremien. Mehrere Körperschaften lassen sich als Gruppe "
+                    "mit einer gemeinsamen Leitstelle führen.</li>"
+                    "<li>Ladungen mit Empfangsbestätigung und Rückmeldung. Den Zustellweg legen Sie für jede "
+                    "Person fest.</li>"
+                    "<li>Nach der Genehmigung ist die Niederschrift geschützt. Korrekturen laufen als "
+                    "nachvollziehbare Berichtigung, die öffentliche Fassung erscheint im Bürgerportal und in "
+                    "der OParl-Schnittstelle.</li>"
+                    "<li>Vorlagen und Anlagen behalten jede Fassung – mit Vergleich und Wiederherstellung.</li>"
+                    "<li>Freigaben und Genehmigungen nach dem Vier-Augen-Prinzip, mit Vertretungen.</li>"
+                    "<li>Die Sitzungsmappe als ein PDF oder ZIP-Archiv, eigene Nummernkreise für Vorlagen und "
+                    "Drucksachen.</li>"
+                    "<li>Jede Änderung wird lückenlos und manipulationssicher protokolliert, mit Prüfexport "
+                    "und Archiv.</li>"
+                    "<li>Neue Mandanten sind mit einem Assistenten in wenigen Schritten arbeitsfähig.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<p>Ihre Fraktion sieht direkt in mandari Work, was die Verwaltung aus einem eingereichten "
+                    "Antrag macht: Vorlagennummer, Beratungsfolge und Beschluss. Neue Mitglieder registrieren "
+                    "sich selbst, die Fraktion gibt den Zugang frei. Die Anmeldung schützt ein zweiter Faktor – "
+                    "ein Code aus einer App oder ein Sicherheitsschlüssel.</p>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<p>Jede Körperschaft hat im <a href=\"/insight/\">Bürgerportal</a> einen eigenen "
+                    "Einstieg. Neue Kommunen werden automatisch auf der Karte verortet, bis zur Hausnummer, "
+                    "und die Umkreissuche findet Vorgänge rund um Ihre Adresse. Das Portal liest jetzt auch "
+                    "Ratsinformationssysteme, die noch den älteren Standard OParl 1.0 verwenden.</p>"
+                )),
+                _release_section("Sicherheit und Betrieb", (
+                    "<p>Rechte und Sichtbarkeit prüft mandari in allen Portalen und Schnittstellen "
+                    "durchgängig auf dem Server, sensible Einstellungen liegen verschlüsselt. Updates spielen "
+                    "wir mit automatischer Prüfung und Rückfall ein, Schlüssel wechseln wir ohne "
+                    "Ausfallzeit.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.11.0\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
         # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-9-beta/ — mandari 0.9 (Beta), 19.07.2026
         # ════════════════════════════════════════════════════════════
@@ -2252,92 +2331,53 @@ def get_release_definitions() -> dict:
                 "breaking_changes": False,
                 "seo_title": "mandari 0.9 (Beta) – Release-Notes",
                 "search_description": (
-                    "mandari 0.9 (Beta), veröffentlicht am 19. Juli 2026: drei Portale, "
-                    "OParl-API mit Tombstones, Geo-Verortung, kollaborativer Editor, "
-                    "Verschlüsselung und Zwei-Faktor-Authentifizierung."
+                    "mandari 0.9 (Beta) vom 19. Juli 2026: drei Produkte, OParl-Schnittstelle mit "
+                    "Tombstones, Karte, gemeinsamer Editor und Zwei-Faktor-Anmeldung."
                 ),
             },
             "blocks": [
-                ("richtext_section", {
-                    "header": hdr(badge_text="Erstes öffentliches Release", badge_icon="tag", badge_color="green",
-                                  title="Der erste öffentlich versionierte Stand der Plattform"),
-                    "background": "white",
-                    "body": (
-                        "<p><strong>mandari 0.9 (Beta)</strong> ist das erste öffentlich versionierte Release "
-                        "von mandari — veröffentlicht am 19. Juli 2026. Es bündelt den Stand aller drei Portale "
-                        "(Insight, Work, Session), die neue OParl-API und die Sicherheits-Grundausstattung "
-                        "der Plattform. Der Funktionsumfang ist produktiv im Einsatz; einzelne Bereiche werden "
-                        "bis zur Version 1.0 weiter verfeinert.</p>"
-                    ),
-                }),
-                ("mandari_cards", {
-                    "header": hdr(badge_text="Highlights", badge_icon="sparkles",
-                                  title="Drei Portale, ein Ökosystem",
-                                  subline="Bürgerportal, Fraktions-Arbeitsbereich und Verwaltungs-RIS — alle drei Module sind Teil dieses Releases."),
-                    "columns": "3", "background": "gray",
-                    "cards": [
-                        card(color="green", icon="eye", title="Insight", subtitle="Bürgerportal",
-                             description="Öffentlicher Zugang zu kommunalen Ratsinformationen — ohne Anmeldung, ohne Tracker.",
-                             bullets=[bullet("OParl-Aggregation mit Volltextsuche (Elasticsearch, deutsche Synonyme, Fehlertoleranz)"),
-                                      bullet("Automatische Texterkennung (OCR) für Sitzungsdokumente"),
-                                      bullet("Geo-Verortung von Vorgängen: Karte, Nachbarschaftssuche, DSGVO-konformer Karten-Proxy"),
-                                      bullet("Sitemaps und strukturierte Detailseiten je Kommune")]),
-                        card(color="primary", icon="briefcase", title="Work", subtitle="Fraktions-Arbeitsbereich",
-                             description="Professionelle Sitzungsvorbereitung und Zusammenarbeit im Team.",
-                             bullets=[bullet("Sitzungsvorbereitung mit Positionen, Notizen und Echtzeit-Diskussion"),
-                                      bullet("Antragsdatenbank mit Status-Pipeline, Fristen, Checklisten und Freigaben"),
-                                      bullet("Kollaborativer Editor: Live-Zusammenarbeit, Versionshistorie, Briefkopf-Export"),
-                                      bullet("Gastzugänge mit strikter Mandanten-Isolation, modulares Rechtesystem")]),
-                        card(color="blue", icon="building-2", title="Session", subtitle="Verwaltungs-RIS",
-                             description="Sitzungsmanagement für Verwaltungen — von der Vorlage bis zum Protokoll.",
-                             bullets=[bullet("Sitzungsverwaltung, Vorlagen/Drucksachen, Anträge, Tagesordnungen"),
-                                      bullet("Protokolle mit Genehmigungsworkflow"),
-                                      bullet("Anwesenheit und Sitzungsgelder"),
-                                      bullet("Vollständiges Audit-Log")]),
-                    ],
-                }),
-                ("richtext_section", {
-                    "header": hdr(badge_text="Offene Schnittstelle", badge_icon="plug", badge_color="primary",
-                                  title="OParl-API mit Tombstones"),
-                    "background": "white",
-                    "body": (
-                        "<p>mandari stellt die aggregierten Daten selbst als "
-                        "<b>OParl-1.1-konforme Schnittstelle</b> bereit: "
-                        "<a href=\"https://oparl.mandari.de/oparl/v1/system\">oparl.mandari.de</a> "
-                        "— inklusive <b>Tombstones</b> für zurückgezogene Objekte, damit nachnutzende "
-                        "Systeme Löschungen sauber nachvollziehen können. Alle 12 OParl-Objekttypen, "
-                        "Pagination und modified_since-Filter sind enthalten.</p>"
-                    ),
-                }),
-                ("richtext_section", {
-                    "header": hdr(badge_text="Sicherheit & Betrieb", badge_icon="shield-check", badge_color="green",
-                                  title="Sicherheits-Grundausstattung"),
-                    "background": "gray",
-                    "body": (
-                        "<ul>"
-                        "<li>Mandantenspezifische Verschlüsselung sensibler Inhalte (AES-256-GCM)</li>"
-                        "<li>Zwei-Faktor-Authentifizierung und Sitzungsverwaltung</li>"
-                        "<li>Rate-Limiting für alle öffentlichen Schnittstellen</li>"
-                        "<li>Docker-basiertes Deployment, Health-Checks, Statusüberwachung</li>"
-                        "</ul>"
-                    ),
-                }),
-                ("disclaimer_box", {
-                    "icon": "flask-conical", "color": "amber",
-                    "body": (
-                        "<p><strong>Beta-Hinweis:</strong> Der Funktionsumfang ist produktiv im Einsatz, "
-                        "einzelne Bereiche werden bis zur 1.0 weiter verfeinert. Fehlerberichte gern über die "
-                        "<a href=\"https://github.com/mandariOSS/mandari/issues\">GitHub-Issues</a>.</p>"
-                    ),
-                }),
-                ("gradient_cta", {
-                    "title": "Release im Detail",
-                    "subline": "Die vollständigen Release-Notes, der Quellcode und alle Änderungen — offen auf GitHub.",
-                    "ctas": [cta("Release auf GitHub", "https://github.com/mandariOSS/mandari/releases/tag/v0.9.0-beta", "github", "primary"),
-                             cta("Roadmap ansehen", "/roadmap/", "map", "outline"),
-                             cta("Insight ausprobieren", "/insight/", "eye", "outline")],
-                    "gradient_from": "primary",
-                }),
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.9 ist das erste öffentlich versionierte Release, veröffentlicht am "
+                    "19. Juli 2026. Es bündelt den Stand aller drei Produkte – Bürgerportal, Fraktionsarbeit "
+                    "und Sitzungsdienst – mit einer offenen OParl-Schnittstelle und der Sicherheitsausstattung "
+                    "der Plattform. Die Funktionen sind im Einsatz, einzelne Bereiche verfeinern wir bis zur "
+                    "Version 1.0.</p>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<p>Das <a href=\"/insight/\">Bürgerportal</a> macht Ratsinformationen ohne Anmeldung und "
+                    "ohne Tracking zugänglich. Die Volltextsuche versteht kommunale Begriffe und verzeiht "
+                    "Tippfehler, eingescannte Sitzungsdokumente werden automatisch lesbar. Eine Karte zeigt "
+                    "Vorgänge in Ihrer Nachbarschaft, jede Kommune hat eigene Seiten.</p>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<p>Fraktionen bereiten Sitzungen gemeinsam vor – mit Positionen, Notizen und Diskussion "
+                    "in Echtzeit. Anträge durchlaufen eine Antragsdatenbank mit Status, Fristen, Checklisten "
+                    "und Freigaben. Im gemeinsamen Editor schreiben mehrere Personen zugleich, mit "
+                    "Versionshistorie und Export im eigenen Briefkopf. Gastzugänge und ein modulares "
+                    "Rechtesystem halten jede Fraktion strikt getrennt.</p>"
+                )),
+                _release_section("Für Verwaltungen: mandari Session", (
+                    "<p>Der Sitzungsdienst verwaltet Sitzungen, Vorlagen und Drucksachen, Anträge und "
+                    "Tagesordnungen. Niederschriften durchlaufen eine Genehmigung, Anwesenheit und "
+                    "Sitzungsgelder sind erfasst, jede Änderung steht im Protokoll.</p>"
+                )),
+                _release_section("Offene Schnittstelle: OParl mit Tombstones", (
+                    "<p>mandari stellt die zusammengeführten Daten selbst als OParl-1.1-Schnittstelle bereit: "
+                    "<a href=\"https://oparl.mandari.de/oparl/v1/system\">oparl.mandari.de</a>. Tombstones "
+                    "markieren zurückgezogene Objekte, damit nachnutzende Systeme Löschungen nachvollziehen "
+                    "können. Enthalten sind alle zwölf OParl-Objekttypen, seitenweise Abfragen und der Filter "
+                    "modified_since.</p>"
+                )),
+                _release_section("Sicherheit und Betrieb", (
+                    "<p>Sensible Inhalte verschlüsselt mandari je Mandant (AES-256-GCM). Die Anmeldung "
+                    "unterstützt einen zweiten Faktor, aktive Sitzungen lassen sich verwalten, öffentliche "
+                    "Schnittstellen begrenzen die Zahl der Anfragen.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständigen Release-Notes und den Quellcode finden Sie "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.9.0-beta\">auf GitHub</a>. "
+                    "Wie es weitergeht, zeigt die <a href=\"/roadmap/\">Roadmap</a>.</p>"
+                )),
             ],
         },
     }

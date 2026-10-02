@@ -30,6 +30,9 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases)
+        run: python manage.py test --buffer
+
       - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
         run: python scripts/check_template_comments.py templates
 
@@ -100,7 +103,8 @@ jobs:
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
               "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium"],
               "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat", "Funktion / Kriterium"],
-              "/releases/": ["mandari 0.9 (Beta)"],
+              "/releases/": ["mandari 0.11", "mandari 0.9 (Beta)"],
+              "/releases/mandari-0-11/": ["Sitzungsdienst", "v0.11.0", "Vorherige Version"],
               "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
               "/trust/": ["Subprocessoren"],
               "/transparenz/": ["Transparenzbericht"],
@@ -108,7 +112,12 @@ jobs:
               "/datenschutz/": ["Datenschutz"],
               "/agb/": ["AGB"],
               "/kontakt/": ["Kontakt"],
-              "/blog/": ["Blog"],
+          }
+          # Dauerhafte Weiterleitungen (Blog ruht, Statusseite extern)
+          redirects = {
+              "/status/": "https://status.mandari.de/",
+              "/blog/": "/releases/",
+              "/blog/feed/": "/releases/",
           }
           errors = []
           for url, needles in checks.items():
@@ -120,9 +129,23 @@ jobs:
               for n in needles:
                   if n not in body:
                       errors.append(f"{url}: '{n}' fehlt")
+          for url, target in redirects.items():
+              r = c.get(url)
+              if r.status_code != 301 or r.get("Location") != target:
+                  errors.append(f"{url}: HTTP {r.status_code} -> {r.get('Location')} (erwartet 301 -> {target})")
+          releases = c.get("/releases/").content.decode("utf-8")
+          if releases.find("mandari 0.11") > releases.find("mandari 0.9 (Beta)"):
+              errors.append("/releases/: neueste Version steht nicht zuerst")
           assert not errors, "Render-Smoke fehlgeschlagen: " + "; ".join(errors)
-          print(f"OK: {len(checks)} Seiten gerendert und geprueft")
+          print(f"OK: {len(checks)} Seiten gerendert, {len(redirects)} Weiterleitungen geprueft")
           EOF
+
+      - name: Struktur-Test (alle Seiten verlinkt, keine toten Links, eindeutige Titel, Kopf- und Fußzeile)
+        # Ausstehende Ziele der parallelen Relaunch-PRs sind Warnungen, siehe AUSSTEHENDE_PFADE im Skript;
+        # nach dem Merge aller Relaunch-PRs mit --strict aufrufen.
+        env:
+          SITE_URL: "https://mandari.de"
+        run: python scripts/check_site_structure.py
 
       - name: Sicherheitsfristen (security.txt und Policy wie SECURITY.md im mandari-Repository)
         # Eingangsbestätigung, Korrekturfristen und Offenlegung müssen mit der SECURITY.md von

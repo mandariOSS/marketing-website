@@ -22,24 +22,14 @@ if shared_env_path.exists():
 SECRET_KEY = os.environ.get("WEBSITE_SECRET_KEY", os.environ.get("SECRET_KEY", "django-insecure-change-me"))
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
+# Öffentliche Basisadresse. Canonical, og:url, og:image, Sitemap, robots.txt und
+# security.txt bauen ihre absoluten Adressen daraus – nie aus dem Host-Header.
+# Produktion: SITE_URL=https://mandari.de
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8001")
-MANDARI_API_URL = os.environ.get("MANDARI_API_URL", "http://mandari:8000/api")
 
-# Public URL of the Kener status page — used as the "open status page directly"
-# fallback link. Default is the public production status page; the local
-# docker-compose stack overrides this with its bundled Kener instance.
-STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de")
-
-# Server-side URL the marketing-site backend uses to call Kener's REST API.
-# In Docker this is the internal service name; in local dev outside Docker
-# this is typically the same host as STATUS_PAGE_URL.
-KENER_INTERNAL_URL = os.environ.get("KENER_INTERNAL_URL", "http://kener:3000")
-
-# API token for the Kener REST API. Generate one in the Kener admin under
-# Settings → API Keys after logging in at /account/signin.
-# Without a token the /status/ page degrades to a "open status page directly"
-# fallback — it never breaks.
-KENER_API_TOKEN = os.environ.get("KENER_API_TOKEN", "")
+# Öffentliche Statusseite. /status/ leitet dauerhaft dorthin weiter,
+# die Fußzeile verlinkt sie.
+STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de/").rstrip("/") + "/"
 
 # Booking URL for "Call buchen" CTAs across the site.
 # Defaults to the internal /kontakt/#termin-buchen anchor (native form on the
@@ -184,7 +174,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Wagtail settings
-WAGTAIL_SITE_NAME = "Mandari"
+WAGTAIL_SITE_NAME = "mandari"
 WAGTAILADMIN_BASE_URL = SITE_URL
 WAGTAIL_ADMIN_URL = "cms-admin/"
 
