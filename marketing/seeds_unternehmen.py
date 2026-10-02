@@ -54,8 +54,10 @@ def _hero(title, subline, *, cta_label="", cta_url="", secondary=""):
     })
 
 
-def _section(title, body, *, anchor="", subline="", background="white"):
-    return ("richtext_section", {"header": _hdr(title, subline, anchor), "body": body, "background": background})
+def _section(title, body, *, anchor="", subline="", background="white", aside=""):
+    """Fließtext (Block richtext_section); ``aside`` steht rechts daneben (Randspalte)."""
+    return ("richtext_section", {"header": _hdr(title, subline, anchor), "body": body, "aside": aside,
+                                 "background": background})
 
 
 def _row(title, text, *, label="", status="", link_label="", link_url=""):
@@ -69,15 +71,15 @@ def _split_rows_available() -> bool:
     return "split_rows" in MarketingStreamBlock.base_blocks
 
 
-def _rows(title, rows, *, anchor="", subline="", note="", background="white"):
-    """Zeilen „Titel links, Text rechts“ (Block split_rows).
+def _rows(title, rows, *, anchor="", subline="", note="", background="white", layout="raster"):
+    """Einträge (Block split_rows): Titel über dem Text im Raster oder als Zeitleiste (``layout``).
 
     Übergang: Solange der Block split_rows im Code fehlt, entsteht derselbe Inhalt als
     Richtext-Abschnitt (Zwischenüberschrift und Absatz je Zeile).
     """
     if _split_rows_available():
-        return ("split_rows", {"header": _hdr(title, subline, anchor), "rows": rows, "note": note,
-                               "background": background})
+        return ("split_rows", {"header": _hdr(title, subline, anchor), "layout": layout, "rows": rows,
+                               "note": note, "background": background})
     body = ""
     for row in rows:
         heading = f"{row['title']}: {row['label']}" if row["label"] else row["title"]
@@ -127,18 +129,6 @@ def get_company_page_definitions() -> dict:
                 "Gemeinwesen trägt, muss offen, sicher und für alle verständlich sein.",
                 cta_label="Erstgespräch vereinbaren", cta_url="/kontakt/#termin",
             ),
-            _rows(
-                "Mission und Vision",
-                [
-                    _row("Unsere Mission",
-                         "Wir machen Kommunalpolitik für alle zugänglich – und geben Verwaltungen die Werkzeuge, "
-                         "die sie dafür brauchen."),
-                    _row("Unsere Vision",
-                         "Eine offene Verwaltungswelt: Jede Kommune arbeitet mit Software, deren Code sie kennt, "
-                         "deren Daten ihr gehören und deren Anbieter sie frei wählen kann."),
-                ],
-                anchor="mission",
-            ),
             _section(
                 "Warum wir das tun",
                 "<p>Was den Alltag einer Stadt bestimmt, entscheidet sich im Rat und in seinen Ausschüssen: "
@@ -150,6 +140,14 @@ def get_company_page_definitions() -> dict:
                 "<p><strong>Das geht besser.</strong> Wir bauen Software, die alle drei Seiten zusammenbringt – "
                 "und wir bauen sie offen, damit sie den Kommunen gehört und nicht uns.</p>",
                 anchor="warum",
+                aside=(
+                    "<h3>Unsere Mission</h3>"
+                    "<p>Wir machen Kommunalpolitik für alle zugänglich – und geben Verwaltungen die Werkzeuge, "
+                    "die sie dafür brauchen.</p>"
+                    "<h3>Unsere Vision</h3>"
+                    "<p>Eine offene Verwaltungswelt: Jede Kommune arbeitet mit Software, deren Code sie kennt, "
+                    "deren Daten ihr gehören und deren Anbieter sie frei wählen kann.</p>"
+                ),
             ),
             _rows(
                 "Unser Wertekompass",
@@ -211,12 +209,12 @@ def get_company_page_definitions() -> dict:
                          "Anmeldung.",
                          label="Transparenz wird Standard"),
                     _row("2027",
-                         "Übernahme aus Bestandssystemen, vereinbarte Service-Level, externer Penetrationstest. "
-                         "Dazu Wahlen, mandari Data, hybride Sitzungen und die App.",
-                         label="Version 1.0 und die nächsten Produkte", status="Geplant",
+                         "Übernahme aus Bestandssystemen, vereinbarte Service-Level, externer Penetrationstest.",
+                         label="Version 1.0", status="Geplant",
                          link_label="Zur Roadmap", link_url="/roadmap/"),
                 ],
                 anchor="wegmarken", subline="Vom ersten öffentlichen Commit zur Plattform für die offene Verwaltung.",
+                layout="zeitleiste",
             ),
             _invitation(
                 "Lernen wir uns kennen.",
@@ -324,36 +322,38 @@ def get_company_page_definitions() -> dict:
                 "und Bürger:innen. Die Plattform startet dort, wo kommunale Demokratie entschieden wird: im Rat. Das "
                 "Bürgerportal mandari Insight macht Sitzungen, Vorlagen und Beschlüsse im Volltext durchsuchbar – "
                 "kostenlos und ohne Anmeldung. mandari Work ist der digitale Arbeitsplatz für Fraktionen, mandari "
-                "Session das Ratsinformationssystem für Verwaltungen. Weitere Werkzeuge für Wahlen und offene Daten "
-                "sind in Arbeit. Der gesamte Code steht unter der freien Lizenz AGPL-3.0, betrieben wird mandari in "
-                "Rechenzentren in Deutschland. Das Unternehmen ist unabhängig finanziert.</p>"
-                "<p><em>Zur Übernahme freigegeben, auch gekürzt.</em></p>"
-                "<h3>Schreibweise</h3>"
-                "<p>Der Name wird klein geschrieben: <strong>mandari</strong>, auch am Satzanfang. Die Produkte heißen "
-                "<strong>mandari Insight</strong>, <strong>mandari Work</strong> und "
-                "<strong>mandari Session</strong>.</p>",
+                "Session das Ratsinformationssystem für Verwaltungen. Der gesamte Code steht unter der freien Lizenz "
+                "AGPL-3.0, betrieben wird mandari in Rechenzentren in Deutschland. Das Unternehmen ist unabhängig "
+                "finanziert.</p>"
+                "<p>Zur Übernahme freigegeben, auch gekürzt.</p>",
                 anchor="kurzprofil",
+                aside=(
+                    "<h3>Schreibweise</h3>"
+                    "<p>Der Name wird klein geschrieben: <strong>mandari</strong>, auch am Satzanfang. Die Produkte "
+                    "heißen <strong>mandari Session</strong>, <strong>mandari Work</strong> und "
+                    "<strong>mandari Insight</strong>.</p>"
+                ),
             ),
             _section(
                 "Fakten und Kennzahlen",
-                "<h3>Fakten</h3>"
                 "<ul>"
                 "<li><strong>Sitz:</strong> Münster (Westfalen)</li>"
                 "<li><strong>Was wir tun:</strong> offene Software für Verwaltung, Politik und Bürger:innen "
                 "(GovTech)</li>"
-                "<li><strong>Produkte:</strong> mandari Insight, mandari Work, mandari Session – weitere in "
-                "Entwicklung</li>"
+                "<li><strong>Produkte:</strong> mandari Session, mandari Work, mandari Insight</li>"
                 "<li><strong>Lizenz:</strong> AGPL-3.0 (freie Software), Quellcode auf "
                 '<a href="https://github.com/mandariOSS/mandari">GitHub</a></li>'
                 "<li><strong>Aktuelle Version:</strong> mandari 0.11.0 vom 27. September 2026 "
                 '(<a href="/releases/">Releases</a>)</li>'
                 "<li><strong>Rechtsträger und Anschrift:</strong> "
                 '<a href="/unternehmen/#angaben">Angaben zum Unternehmen</a></li>'
-                "</ul>"
-                "<h3>Kennzahlen</h3>"
-                f"<p>Aus dem Bürgerportal mandari Insight, Stand {KENNZAHLEN_STAND}:</p>"
-                f"<ul>{kennzahlen}</ul>",
+                "</ul>",
                 anchor="fakten", background="gray",
+                aside=(
+                    "<h3>Kennzahlen</h3>"
+                    f"<p>Aus dem Bürgerportal mandari Insight, Stand {KENNZAHLEN_STAND}:</p>"
+                    f"<ul>{kennzahlen}</ul>"
+                ),
             ),
             _section(
                 "Themen, zu denen wir sprechen",
@@ -504,24 +504,24 @@ def get_company_page_definitions() -> dict:
                 "<p>Mitwirken können Sie mit einem Fehlerbericht ebenso wie mit Code. Wie das geht, steht in der Datei "
                 'CONTRIBUTING im jeweiligen Repository und unter <a href="/mitmachen/">Mitmachen</a>.</p>',
                 anchor="repositories",
-            ),
-            _section(
-                "Auf wessen Schultern wir stehen",
-                "<p>mandari wäre ohne diese freien Projekte nicht möglich. Sie verdienen Sichtbarkeit – und Beiträge "
-                "zurück.</p>"
-                "<ul>"
-                '<li><a href="https://www.python.org">Python</a> – Programmiersprache (PSF-Lizenz)</li>'
-                '<li><a href="https://www.djangoproject.com/">Django</a> – Web-Framework (BSD-3)</li>'
-                '<li><a href="https://wagtail.org/">Wagtail</a> – Redaktionssystem dieser Website (BSD-3)</li>'
-                '<li><a href="https://www.postgresql.org/">PostgreSQL</a> – Datenbank (PostgreSQL-Lizenz)</li>'
-                '<li><a href="https://oparl.org/">OParl</a> – Standard für offene Ratsdaten (CC BY-SA)</li>'
-                '<li><a href="https://htmx.org/">HTMX</a> – Oberfläche ohne schwere Skripte (BSD-2)</li>'
-                '<li><a href="https://tailwindcss.com/">Tailwind CSS</a> – Gestaltung (MIT)</li>'
-                '<li><a href="https://lucide.dev/">Lucide</a> – Symbole (ISC)</li>'
-                '<li><a href="https://altcha.org/">Altcha</a> – Spamschutz ohne Captcha (MIT)</li>'
-                '<li><a href="https://www.docker.com/">Docker</a> – Container für den Betrieb (Apache-2.0)</li>'
-                "</ul>",
-                anchor="danke",
+                # Randspalte: die freien Projekte, auf denen mandari aufbaut (ein Band statt zwei halbleerer)
+                aside=(
+                    '<h3 id="danke">Auf wessen Schultern wir stehen</h3>'
+                    "<p>mandari wäre ohne diese freien Projekte nicht möglich. Sie verdienen Sichtbarkeit – und "
+                    "Beiträge zurück.</p>"
+                    "<ul>"
+                    '<li><a href="https://www.python.org">Python</a> – Programmiersprache (PSF-Lizenz)</li>'
+                    '<li><a href="https://www.djangoproject.com/">Django</a> – Web-Framework (BSD-3)</li>'
+                    '<li><a href="https://wagtail.org/">Wagtail</a> – Redaktionssystem dieser Website (BSD-3)</li>'
+                    '<li><a href="https://www.postgresql.org/">PostgreSQL</a> – Datenbank (PostgreSQL-Lizenz)</li>'
+                    '<li><a href="https://oparl.org/">OParl</a> – Standard für offene Ratsdaten (CC BY-SA)</li>'
+                    '<li><a href="https://htmx.org/">HTMX</a> – Oberfläche ohne schwere Skripte (BSD-2)</li>'
+                    '<li><a href="https://tailwindcss.com/">Tailwind CSS</a> – Gestaltung (MIT)</li>'
+                    '<li><a href="https://lucide.dev/">Lucide</a> – Symbole (ISC)</li>'
+                    '<li><a href="https://altcha.org/">Altcha</a> – Spamschutz ohne Captcha (MIT)</li>'
+                    '<li><a href="https://www.docker.com/">Docker</a> – Container für den Betrieb (Apache-2.0)</li>'
+                    "</ul>"
+                ),
             ),
             _invitation(
                 "Fragen aus IT und Informationssicherheit?",

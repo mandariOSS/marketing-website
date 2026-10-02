@@ -408,22 +408,8 @@ def get_marketing_definitions() -> dict:
                          text="<p>Kommunalpolitik, die man findet und versteht. Sitzungen, Vorlagen und Beschlüsse einer Kommune an einem Ort – im Volltext durchsuchbar, auf der Karte verortet, ohne Anmeldung und kostenlos.</p>",
                          link_label="Bürgerportal öffnen", link_url="/insight/"),
                 ],
-            }),
-            ("split_rows", {
-                "header": hdr(title="Als Nächstes", anchor_id="als-naechstes",
-                              subline="Der Rat ist der Anfang. Überall, wo Verwaltung Daten öffnet und Entscheidungen erklärt, entsteht das nächste Werkzeug."),
-                "background": "gray",
-                "rows": [
-                    srow("Wahlen", label="Wahlergebnisse live", status="In Entwicklung",
-                         text="<p>Auszählungsstand, Karten und offene Daten – am Wahlabend für alle nachvollziehbar.</p>"),
-                    srow("mandari Data", label="Das Open-Data-Portal", status="Geplant 2027",
-                         text="<p>Tabellen, Geodaten und Dokumente veröffentlichen, nach DCAT-AP.de und mit Anbindung an GovData. Die Ratsdaten fließen automatisch ein.</p>"),
-                    srow("Hybride Sitzungen", label="Im Saal und online tagen", status="Geplant 2027",
-                         text="<p>Teilnahme, Abstimmung und Niederschrift für Gremien, die im Saal und online zugleich tagen.</p>"),
-                    srow("mandari App", label="Ratsarbeit mobil", status="Geplant 2027",
-                         text="<p>Unterlagen, Termine und Abstimmungen für Mandatsträger:innen – auf Android und iOS.</p>"),
-                ],
-                "note": "<p>Sie haben einen Bedarf, den keine Software gut löst? Sprechen Sie mit uns. Gute Verwaltungssoftware beginnt oft mit einer Kommune, die sagt: Das müsste es geben. <a href=\"/roadmap/\">Roadmap ansehen</a></p>",
+                # Weitere Werkzeuge kündigen wir nicht auf den Produktseiten an; was geplant ist, steht in der Roadmap.
+                "note": "<p>Was wir als Nächstes bauen, steht mit Zeitraum und Verbindlichkeit in der <a href=\"/roadmap/\">Roadmap</a>.</p>",
             }),
             ("mandari_cards", {
                 "header": hdr(title="Ein Fundament für alles", anchor_id="fundament",
@@ -546,9 +532,9 @@ def get_marketing_definitions() -> dict:
                          status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
                          description="Einbindung von Sitzungs-Livestreams und Aufzeichnungen mit Sprungmarken je Tagesordnungspunkt im Bürgerportal. Die Adresse des Streams lässt sich schon heute je Sitzung hinterlegen.",
                          cta_label="Issue verfolgen", cta_url="https://github.com/mandariOSS/mandari/issues/146", cta_icon="github"),
-                    card(color="amber", icon="database", title="Open Data (mandari Data)",
+                    card(color="amber", icon="database", title="Open-Data-Portale",
                          status_badges=[sbadge("Geplant 2027", "calendar", "amber")],
-                         description="Ratsdaten automatisch als Open-Data-Katalog nach DCAT-AP.de, harvestbar durch Landesportale und GovData, plus eigene Verwaltungsdatensätze.",
+                         description="Ratsdaten automatisch als Open-Data-Katalog nach DCAT-AP.de, harvestbar durch Landesportale und GovData.",
                          cta_label="Epic ansehen", cta_url="https://github.com/mandariOSS/mandari/issues/112", cta_icon="github"),
                 ],
             }),
@@ -1050,9 +1036,9 @@ def get_marketing_definitions() -> dict:
         "kommunen": [
             ("hero", {
                 "badge_text": "Für Kommunen & Verwaltungen", "badge_icon": "building-2", "badge_color": "primary",
-                # Weiches Trennzeichen: mobil passt das lange Wort sonst nicht in die Zeile.
-                "title": "Ein Ratsinformations\u00adsystem,", "title_highlight": "das Ihrer Verwaltung Arbeit abnimmt.",
-                "subline": "mandari verbindet Sitzungsmanagement für die Verwaltung mit einem kostenlosen Bürgerportal — auf deutschen Servern, DSGVO-konform und vollständig Open Source.",
+                # Kurz genug für zwei Zeilen neben dem Bild von mandari Session (Hero mit Produktbild)
+                "title": "Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
+                "subline": "mandari Session ist das Ratsinformationssystem für Ihre Verwaltung: von der Tagesordnung bis zur freigegebenen Niederschrift, mit kostenlosem Bürgerportal – auf deutschen Servern und vollständig Open Source.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
                          cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary")],
