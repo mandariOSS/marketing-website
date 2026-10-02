@@ -453,12 +453,6 @@ def get_marketing_definitions() -> dict:
                 "subline_secondary": "Berichtszeitraum: 1. Januar bis 31. Dezember 2026 · Veröffentlicht: 26. April 2026 · Aktualisiert: 20. Juli 2026 · Nächste Aktualisierung: Oktober 2026",
                 "ctas": [], "background_color": "primary",
             }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("gavel", "0", "Behördenanfragen"),
-                trust_item("shield-check", "0", "Sicherheitsvorfälle"),
-                trust_item("server", "100 %", "Hosting in Deutschland"),
-                trust_item("git-pull-request", "100 %", "Code offen"),
-            ]}),
             ("stats_grid", {
                 "header": hdr(badge_text="01 · Behördenanfragen", badge_icon="gavel", badge_color="blue",
                               title="Behördenanfragen",
@@ -479,17 +473,19 @@ def get_marketing_definitions() -> dict:
                 "items": [stat("0", "Datenschutzvorfälle", "green"), stat("0", "Gemeldete CVEs", "green"),
                           stat("0", "DSGVO-Meldungen", "green")],
             }),
+            # Reichweite: dieselben Kennzahlen mit Stand wie auf /presse/ (KENNZAHLEN in
+            # marketing/seeds_unternehmen.py) – bei jeder Aktualisierung beide Stellen nachziehen.
             ("stats_grid", {
-                "header": hdr(badge_text="03 · Nutzung & Reichweite", badge_icon="bar-chart-3", badge_color="green",
-                              title="Nutzung & Reichweite",
-                              subline="Anonymisierte Aggregate, keine individuellen Profile, keine Tracker."),
+                "header": hdr(badge_text="03 · Reichweite", badge_icon="bar-chart-3", badge_color="green",
+                              title="Reichweite des Bürgerportals",
+                              subline="Was mandari Insight öffentlich zugänglich macht, Stand 2. Oktober 2026. "
+                                      "Ohne Tracker und ohne individuelle Profile."),
                 "columns": "4", "border_color": "primary",
-                "items": [stat("0", "Pilot-Kommunen live", "green"), stat("~12", "Erstgespräche", "amber"),
-                          stat("~3 k", "Insight-Aufrufe / Mon", "primary"), stat("8", "OParl-Quellen aktiv", "blue")],
-            }),
-            ("disclaimer_box", {
-                "icon": "info", "color": "amber",
-                "body": "<p><strong>Reality Check:</strong> Wir sind in der Beta-Phase. Diese Zahlen sind klein, und genau deshalb veröffentlichen wir sie. Wir gewinnen nichts, indem wir uns größer machen, als wir sind.</p>",
+                # Kurze Beschriftungen: Paare gleicher Zeilenzahl, damit die Zahlen auch mobil auf einer Höhe stehen.
+                "items": [stat("5", "Kommunen und Körperschaften", "primary"),
+                          stat("91.662", "Vorgänge und Vorlagen", "primary"),
+                          stat("204.819", "Dokumente", "primary"),
+                          stat("13.903", "Sitzungen", "primary")],
             }),
             ("two_column_use_case", {
                 "header": hdr(badge_text="04 · Finanztransparenz", badge_icon="banknote", badge_color="teal",
@@ -550,19 +546,13 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "Transparent · Open Source · Hosting in Deutschland", "badge_icon": "receipt-text", "badge_color": "primary",
                 "title": "Faire Preise für", "title_highlight": "faire Demokratie.",
-                "subline": "Insight ist kostenlos für Bürger:innen. Work kostet so viel, wie eine Person zum Bauen braucht. Session verhandeln wir individuell.",
-                "subline_secondary": "Keine versteckten Kosten, keine „Enterprise pricing on request\"-Tricks, kein Lock-in. Sie können alles auch selbst betreiben.",
+                "subline": "Das Bürgerportal ist kostenlos, mandari Work hat einen festen Preis je Fraktion, "
+                            "mandari Session kalkulieren wir je Kommune – ohne versteckte Kosten und ohne Lock-in.",
+                "subline_secondary": "",
                 "ctas": [cta("Beta-Zugang anfragen", "/kontakt/?subject=Beta-Zugang-Work", "zap", "primary"),
-                         cta("Erstgespräch vereinbaren", "/kontakt/#termin", "calendar", "secondary"),
-                         cta("Häufige Fragen", "#faq", "help-circle", "outline")],
+                         cta("Erstgespräch vereinbaren", "/kontakt/#termin", "calendar", "secondary")],
                 "background_color": "primary",
             }),
-            ("trust_banner", {"color": "green", "items": [
-                trust_item("shield-check", "30 Tage", "rückerstattbar"),
-                trust_item("eye", "Keine", "versteckten Kosten"),
-                trust_item("github", "Code immer", "offen (AGPL-3.0)"),
-                trust_item("server", "Hosting", "in Deutschland"),
-            ]}),
             ("pricing_table", {
                 "header": hdr(badge_text="Drei Produkte, klare Preise", badge_icon="layout-grid",
                               title="Was mandari kostet", align="center",
@@ -712,7 +702,7 @@ def get_marketing_definitions() -> dict:
                     {"question": "Kann ich mandari komplett selbst hosten?",
                      "answer": "<p>Ja. mandari ist AGPL-3.0 lizenziert. Laden Sie den Code von GitHub und starten Sie den Docker-Compose-Stack auf Ihrem Server.</p>"},
                     {"question": "Was kostet mandari Session und wann ist es verfügbar?",
-                     "answer": "<p>Session richtet sich an Verwaltungen und wird pro Kommune individuell kalkuliert. Verfügbar ab Q3-Q4 2026 für die ersten Pilot-Kommunen. Sprechen Sie uns früh an, Pilot-Konditionen sind verhandelbar.</p>"},
+                     "answer": "<p>Session richtet sich an Verwaltungen und wird pro Kommune individuell kalkuliert. Pilotkommunen starten jetzt und erhalten Sonderkonditionen. Sprechen Sie uns früh an.</p>"},
                 ],
             }),
             ("gradient_cta", {
@@ -1405,20 +1395,14 @@ def get_marketing_definitions() -> dict:
         "kommunen": [
             ("hero", {
                 "badge_text": "Für Kommunen & Verwaltungen", "badge_icon": "building-2", "badge_color": "primary",
-                "title": "Ein Ratsinformationssystem,", "title_highlight": "das Ihrer Verwaltung Arbeit abnimmt.",
+                # Weiches Trennzeichen: mobil passt das lange Wort sonst nicht in die Zeile.
+                "title": "Ein Ratsinformations\u00adsystem,", "title_highlight": "das Ihrer Verwaltung Arbeit abnimmt.",
                 "subline": "mandari verbindet Sitzungsmanagement für die Verwaltung mit einem kostenlosen Bürgerportal — auf deutschen Servern, DSGVO-konform und vollständig Open Source.",
-                "subline_secondary": "Diese Seite richtet sich an Hauptamt, Ratsbüro, IT-Leitung und Digitalisierungsbeauftragte.",
-                "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden", "calendar", "primary"),
-                         cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary"),
-                         cta("Trust Center", "/trust/", "shield-check", "outline")],
+                "subline_secondary": "",
+                "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
+                         cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary")],
                 "background_color": "primary",
             }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("server", "Hosting", "in Deutschland"),
-                trust_item("file-signature", "AVV", "nach Art. 28 DSGVO"),
-                trust_item("file-json", "OParl-konform", "Import & Export"),
-                trust_item("unlock", "Open Source", "kein Vendor-Lock-in"),
-            ]}),
             ("mandari_cards", {
                 "header": hdr(badge_text="Was Ihre Kommune davon hat", badge_icon="building-2",
                               title="Drei Bausteine, ein Ziel: weniger Aufwand, mehr Transparenz",
@@ -1483,14 +1467,10 @@ def get_marketing_definitions() -> dict:
                                             bullet("Adapter-Entwicklung, ggf. mit Förderung")],
                                    cta_label="Beratung anfragen", cta_url="/kontakt/?subject=Custom-Adapter", cta_icon="mail"),
             }),
-            ("disclaimer_box", {
-                "icon": "info", "color": "amber",
-                "body": "<p><strong>Ehrlicher Stand (Beta 0.9):</strong> mandari ist in der Pilot-Phase — aktuell ist noch keine Kommune produktiv live, zwei sind in Anbindung, weitere Gespräche laufen. Pilot-Kommunen erhalten Sonderkonditionen und gestalten die Roadmap mit. <a href=\"/kontakt/?subject=Pilot-Kommune#termin\">Pilot-Kommune werden</a></p>",
-            }),
             ("gradient_cta", {
-                "title": "Sprechen Sie mit uns.",
-                "subline": "In einem unverbindlichen Erstgespräch klären wir Anbindbarkeit, Zeitplan und Konditionen — kostenlos, ohne Vertriebsdruck.",
-                "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden", "calendar", "primary"),
+                "title": "Pilotkommunen gestalten mit.",
+                "subline": "Sonderkonditionen, kurze Wege in die Entwicklung und die Übernahme Ihrer bestehenden Daten. Im Erstgespräch klären wir Anbindbarkeit, Zeitplan und Konditionen.",
+                "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Pilot-Kommune#termin", "calendar", "primary"),
                          cta("Migration ansehen", "/migration/", "move-right", "outline"),
                          cta("RIS-Vergleich ansehen", "/vergleich/", "scale", "outline")],
                 "gradient_from": "primary",
