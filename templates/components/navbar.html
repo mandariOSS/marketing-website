@@ -43,7 +43,7 @@ scripts/check_site_structure.py prüft die Einträge.
                 <a href="/work/" class="hidden lg:inline py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline underline-offset-[6px] decoration-[1.5px] transition-colors">Anmelden</a>
 
                 <button type="button" @click="darkMode = !darkMode"
-                        class="p-2.5 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+                        class="hidden min-[360px]:inline-flex p-2.5 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
                         aria-label="Dunkler Modus"
                         aria-pressed="false" :aria-pressed="darkMode.toString()">
                     <i x-show="!darkMode" data-lucide="moon" class="w-5 h-5" aria-hidden="true"></i>
@@ -75,5 +75,9 @@ scripts/check_site_structure.py prüft die Einträge.
             <li><a href="/insight/" class="block py-2 text-gray-900 dark:text-white">Bürgerportal</a></li>
             <li><a href="/work/" class="block py-2 text-gray-900 dark:text-white">Anmelden</a></li>
         </ul>
+        {# Auf sehr schmalen Geräten (unter 360 px) sitzt der Schalter hier statt in der Leiste. #}
+        <button type="button" @click="darkMode = !darkMode"
+                class="min-[360px]:hidden mt-4 py-2 text-gray-600 dark:text-gray-300"
+                aria-pressed="false" :aria-pressed="darkMode.toString()">Dunkler Modus</button>
     </nav>
 </div>

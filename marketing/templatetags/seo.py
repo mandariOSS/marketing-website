@@ -14,8 +14,11 @@ ein Block, den Unterseiten überschreiben (``title``, ``meta_description``,
 in der Twitter-Card – ohne dass Django den Block doppelt rendern muss.
 """
 
+from html import unescape
+
 from django import template
 from django.templatetags.static import static
+from django.utils.html import escape, strip_tags
 from django.utils.safestring import mark_safe
 
 from marketing import seo
@@ -45,10 +48,15 @@ def full_title(value, is_home=False):
     return seo.full_title(value, is_home=bool(is_home))
 
 
-@register.filter(is_safe=True)
+@register.filter
 def meta_text(value):
-    """Beschreibungstext einzeilig, Marke klein, höchstens 160 Zeichen."""
-    return seo.truncate(seo.normalize_brand(" ".join(str(value or "").split())))
+    """Beschreibungstext einzeilig, ohne Tags, Marke klein, höchstens 160 Zeichen.
+
+    Gekürzt wird der entschlüsselte Text (keine halben HTML-Entitäten), danach wird
+    er wieder maskiert.
+    """
+    text = unescape(strip_tags(str(value or "")))
+    return mark_safe(escape(seo.truncate(seo.normalize_brand(text))))
 
 
 class CaptureNode(template.Node):

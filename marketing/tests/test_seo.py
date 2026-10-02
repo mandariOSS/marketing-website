@@ -147,3 +147,17 @@ class ReleaseUndSitemapTests(TestCase):
         datum = neu.date().isoformat()
         self.assertIn(f"<loc>https://mandari.de/</loc><lastmod>{datum}</lastmod>", body)
         self.assertIn(f"<loc>https://mandari.de/releases/</loc><lastmod>{datum}</lastmod>", body)
+
+
+class MetaTextTests(SimpleTestCase):
+    def test_kuerzt_ohne_halbe_entitaeten_und_maskiert(self):
+        from django.utils.safestring import mark_safe
+
+        from marketing.templatetags.seo import meta_text
+
+        text = mark_safe("Vergabe &amp; Unterlagen " * 12 + '<b>"fett"</b>')
+        ergebnis = meta_text(text)
+        self.assertNotRegex(ergebnis, r"&[a-z]*…")
+        self.assertIn("&amp;", ergebnis)
+        self.assertNotIn("<b>", ergebnis)
+        self.assertLessEqual(len(ergebnis.replace("&amp;", "&")), 160)
