@@ -93,7 +93,7 @@ jobs:
           checks = {
               "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "insight-muenster-1280.webp"],
               "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt"],
-              "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90"],
+              "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
               "/kommunen/": ["Ratsinformationssystem"],
               "/migration/": ["Bestandsaufnahme"],
@@ -113,6 +113,8 @@ jobs:
               "/datenschutz/": ["Datenschutz"],
               "/agb/": ["AGB"],
               "/kontakt/": ["Kontakt"],
+              "/sicherheit/disclosure/": ["Sagen Sie es uns", "In Scope", 'id="hall-of-fame"', "5D06 A2BC B71C 6095 7A23"],
+              "/crawler/": ["mandari-ingestor (+https://mandari.de/crawler)", "Kontakt und Widerspruch"],
           }
           # Dauerhafte Weiterleitungen (Blog ruht, Statusseite extern)
           redirects = {
@@ -229,19 +231,28 @@ jobs:
           print(f"OK: {len(redirects)} Weiterleitungen")
           EOF
 
-      - name: Ruhige Oberflaeche (kein Hover-Sprung, keine Verlaeufe in den Bausteinen)
-        # Gestaltungsregeln: Zustaende aendern Farbe oder Unterstreichung, nie die Position;
-        # die StreamField-Bausteine kommen ohne Farbverlauf aus.
+      - name: Ruhige Oberflaeche (kein Hover-Sprung, keine Verlaeufe, Pillen oder Viertelkreise)
+        # Gestaltungsregeln: Zustaende aendern Farbe oder Unterstreichung, nie die Position. Alle Templates
+        # kommen ohne Farbverlauf, Pillen-Etikett und Deko-Viertelkreis aus. Ausgenommen ist nur der ruhende
+        # Blog (templates/blog/, siehe README „Blog reaktivieren“); vor dem Reaktivieren angleichen.
         run: |
           python - <<'EOF'
           import pathlib, re
-          errors = []
-          for f in pathlib.Path("templates").rglob("*.html"):
+          pille = re.compile(r'<span class="[^"]*\brounded-full\b[^"]*\bbg-[a-z]+-(?:50|100)\b')
+          errors, geprueft = [], 0
+          for f in sorted(pathlib.Path("templates").rglob("*.html")):
               text = f.read_text(encoding="utf-8")
               if re.search(r"hover:-?translate-y", text):
                   errors.append(f"{f}: Hover mit translate-y")
-              if f.parent.name == "blocks" and "bg-gradient" in text:
-                  errors.append(f"{f}: Farbverlauf im Baustein")
+              if f.parts[1] == "blog":
+                  continue
+              geprueft += 1
+              if "bg-gradient" in text:
+                  errors.append(f"{f}: Farbverlauf")
+              if "rounded-bl-full" in text:
+                  errors.append(f"{f}: Deko-Viertelkreis")
+              if pille.search(text):
+                  errors.append(f"{f}: Pillen-Etikett")
           assert not errors, "; ".join(errors)
-          print("OK: keine Hover-Spruenge, Bausteine ohne Verlauf")
+          print(f"OK: keine Hover-Spruenge; {geprueft} Templates ohne Verlauf, Pille und Viertelkreis")
           EOF
