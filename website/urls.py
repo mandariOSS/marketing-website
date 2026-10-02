@@ -14,15 +14,14 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
-from blog.feeds import BlogFeed
 from marketing.docs_redirects import docs_redirect
+from marketing.sitemaps import MandariSitemap
 from marketing.views import (
     altcha_challenge,
     crawler_info_view,
     robots_txt,
     security_disclosure_view,
     security_txt,
-    status_view,
 )
 
 
@@ -36,15 +35,15 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("cms-admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
-    path("sitemap.xml", sitemap, name="sitemap"),
+    path("sitemap.xml", sitemap, {"sitemaps": {"wagtail": MandariSitemap}}, name="sitemap"),
     # RFC 9309 robots.txt — Crawl-Direktiven für Suchmaschinen und Bots.
     # Plain text, MUSS unter /robots.txt erreichbar sein, referenziert sitemap.xml.
     path("robots.txt", robots_txt, name="robots_txt"),
-    path("blog/feed/", BlogFeed(), name="blog_feed"),
-    # Live status page — server-side rendered with data from the Kener API.
-    # MUST come BEFORE the Wagtail catch-all so it overrides any /status/
-    # CMS page that might exist.
-    path("status/", status_view, name="status"),
+    # Statusseite: eigene Instanz unter status.mandari.de, /status/ leitet dauerhaft dorthin.
+    path("status/", RedirectView.as_view(url=settings.STATUS_PAGE_URL, permanent=True), name="status"),
+    # Blog ruht (keine Beiträge): Index und Feed leiten auf die Releases. Reaktivieren: siehe README.
+    path("blog/", RedirectView.as_view(url="/releases/", permanent=True), name="blog_index"),
+    path("blog/feed/", RedirectView.as_view(url="/releases/", permanent=True), name="blog_feed"),
     # Altcha (DSGVO-konformer Captcha-Ersatz) — Challenge-Endpoint für das
     # JS-Widget. Form-Handler verifizieren mit verify_altcha_payload().
     path("altcha/challenge/", altcha_challenge, name="altcha_challenge"),
