@@ -1,0 +1,105 @@
+{% comment %}
+Druckoptimierte, eigenständige Ansicht des Service Level Agreement.
+Wird unter /sla/druck/ ausgeliefert (marketing.views.sla_print_view) und von
+scripts/build_sla_pdf.py für die PDF-Fassung gerendert. Inhalt kommt aus
+marketing/sla_content.py — hier nichts hardcoden.
+{% endcomment %}<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, follow">
+    <title>Service Level Agreement (SLA) – Version {{ sla_version }} vom {{ sla_date }} | mandari</title>
+    <link rel="canonical" href="{{ canonical_url }}">
+    <style>
+        @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
+        * { box-sizing: border-box; }
+        html { font-size: 11pt; }
+        body {
+            margin: 0; padding: 0; color: #111827; background: #fff;
+            font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.5;
+        }
+        .page { max-width: 180mm; margin: 0 auto; padding: 12mm 0 16mm; }
+        header.doc { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+                     border-bottom: 2px solid #4f46e5; padding-bottom: 10px; margin-bottom: 18px; }
+        header.doc img { height: 34px; width: auto; }
+        header.doc .meta { text-align: right; font-size: 9pt; color: #4b5563; }
+        header.doc .meta strong { color: #111827; }
+        h1 { font-size: 20pt; line-height: 1.2; margin: 0 0 6px; color: #111827; }
+        .subtitle { color: #4b5563; margin: 0 0 14px; }
+        .stand { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 6px; padding: 8px 12px;
+                 font-size: 9.5pt; margin: 0 0 18px; }
+        nav.toc { margin: 0 0 20px; font-size: 9.5pt; }
+        nav.toc ol { margin: 4px 0 0; padding-left: 18px; columns: 2; column-gap: 24px; }
+        nav.toc li { break-inside: avoid; margin: 0 0 2px; }
+        section.article { margin: 0 0 16px; break-inside: avoid-page; }
+        section.article h2 { font-size: 13pt; margin: 14px 0 6px; color: #111827; }
+        section.article h2 .num { display: inline-block; min-width: 22px; color: #4f46e5; }
+        section.article h3 { font-size: 10.5pt; margin: 10px 0 4px; }
+        section.article p { margin: 0 0 8px; }
+        section.article ul { margin: 0 0 8px; padding-left: 18px; }
+        section.article li { margin: 0 0 3px; }
+        table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.5pt; page-break-inside: auto; }
+        th, td { border: 1px solid #d1d5db; padding: 5px 7px; vertical-align: top; text-align: left; }
+        th { background: #f3f4f6; font-weight: 600; }
+        tr { page-break-inside: avoid; }
+        a { color: #4338ca; text-decoration: none; }
+        code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; }
+        footer.doc { margin-top: 24px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 8.5pt; color: #6b7280; }
+        .print-hint { background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px; padding: 8px 12px;
+                      font-size: 9.5pt; margin: 0 0 16px; }
+        @media print { .print-hint { display: none; } .page { padding: 0; max-width: none; } }
+        @media screen { body { background: #f3f4f6; } .page { background: #fff; padding: 16mm; box-shadow: 0 1px 4px rgba(0,0,0,.12); margin: 16px auto; } }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="print-hint">
+        Druckansicht — mit Strg+P bzw. ⌘+P als PDF speichern.
+        Die Webfassung mit Navigation finden Sie unter <a href="{{ web_url }}">{{ web_url }}</a>{% if pdf_url %},
+        die PDF-Fassung unter <a href="{{ pdf_url }}">{{ pdf_url }}</a>{% endif %}.
+    </div>
+
+    <header class="doc">
+        <img src="{{ logo_url }}" alt="mandari">
+        <div class="meta">
+            <strong>Vertragsanlage „Service Level“</strong><br>
+            Version {{ sla_version }} vom {{ sla_date }}<br>
+            mandari.de/sla/
+        </div>
+    </header>
+
+    <h1>Service Level Agreement (SLA) für mandari Managed Hosting</h1>
+    <p class="subtitle">{{ sla_intro }}</p>
+
+    <p class="stand">
+        <strong>Stand:</strong> Version {{ sla_version }}, beschlossen am {{ sla_date }}.
+        Verbindlich mit Veröffentlichung auf mandari.de/sla/ und Aufnahme in die AGB.
+        Messquelle ist die öffentliche Statusseite <a href="{{ status_url }}">status.mandari.de</a>.
+        Preise stehen bewusst nicht hier.
+    </p>
+
+    <nav class="toc" aria-label="Inhalt">
+        <strong>Inhalt</strong>
+        <ol>
+            {% for section in sections %}
+            <li><a href="#{{ section.anchor }}">{{ section.title }}</a></li>
+            {% endfor %}
+        </ol>
+    </nav>
+
+    {% for section in sections %}
+    <section class="article" id="{{ section.anchor }}">
+        <h2><span class="num">{{ section.number }}.</span> {{ section.title }}</h2>
+        {{ section.body|safe }}
+    </section>
+    {% endfor %}
+
+    <footer class="doc">
+        Service Level Agreement für mandari Managed Hosting · Version {{ sla_version }} vom {{ sla_date }} ·
+        Webfassung: {{ web_url }} · Verbindlicher Quelltext: {{ source_url }}
+    </footer>
+</div>
+</body>
+</html>

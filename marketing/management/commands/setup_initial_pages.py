@@ -119,6 +119,16 @@ MARKETING_PAGE_META = [
         "search_description": "Muster-AVV, TOM, Löschkonzept, Subprozessoren, SBOM, Barrierefreiheitserklärung und Funktionsübersicht für Vergabestellen, IT-Leitungen und Datenschutzbeauftragte.",
     },
     {
+        "title": "Service Level Agreement",
+        "slug": "sla",
+        "show_in_menus": False,
+        "seo_title": "Service Level Agreement (SLA) – Managed Hosting | mandari",
+        "search_description": (
+            "Verfügbarkeitszusage, Wartungsfenster, Störungsklassen, Reaktions- und Wiederherstellungszeiten, "
+            "Datensicherung und Gutschriften für das Managed Hosting von mandari. Version 1.0 vom 17.09.2026."
+        ),
+    },
+    {
         "title": "Trust Center",
         "slug": "trust",
         "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",

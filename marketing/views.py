@@ -324,6 +324,53 @@ def security_disclosure_view(request):
     return render(request, "marketing/sicherheit_disclosure.html")
 
 
+def sla_print_context(*, logo_url: str) -> dict:
+    """Kontext der SLA-Druckansicht — geteilt mit scripts/build_sla_pdf.py.
+
+    Inhalt kommt vollständig aus marketing/sla_content.py, damit Webseite,
+    Druckansicht und PDF-Fassung denselben Text ausspielen.
+    """
+    from marketing.sla_content import (
+        SLA_DATE,
+        SLA_INTRO,
+        SLA_PDF_URL,
+        SLA_SECTIONS,
+        SLA_SOURCE_URL,
+        SLA_VERSION,
+        STATUS_PAGE_URL,
+    )
+
+    site_url = (getattr(settings, "SITE_URL", "") or "https://mandari.de").rstrip("/")
+    return {
+        "sections": SLA_SECTIONS,
+        "sla_version": SLA_VERSION,
+        "sla_date": SLA_DATE,
+        "sla_intro": SLA_INTRO,
+        "status_url": STATUS_PAGE_URL,
+        "source_url": SLA_SOURCE_URL,
+        "web_url": f"{site_url}/sla/",
+        "canonical_url": f"{site_url}/sla/",
+        "pdf_url": f"{site_url}{SLA_PDF_URL}",
+        "logo_url": logo_url,
+    }
+
+
+def sla_print_view(request):
+    """Render /sla/druck/ — druckoptimierte Fassung des Service Level Agreement.
+
+    Eigenständiges Template ohne Navigation; via Django-View vor dem
+    Wagtail-Catch-all registriert, weil die Wagtail-Seite /sla/ keine
+    Unterseiten hat.
+    """
+    from django.templatetags.static import static
+
+    return render(
+        request,
+        "marketing/sla_print.html",
+        sla_print_context(logo_url=static("brand/mandari-logo-print.png")),
+    )
+
+
 def crawler_info_view(request):
     """Render /crawler/ — Infoseite zum mandari-ingestor.
 

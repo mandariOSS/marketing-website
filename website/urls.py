@@ -22,6 +22,7 @@ from marketing.views import (
     robots_txt,
     security_disclosure_view,
     security_txt,
+    sla_print_view,
     status_view,
 )
 
@@ -57,6 +58,8 @@ urlpatterns = [
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
     # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
     path("crawler/", crawler_info_view, name="crawler_info"),
+    # Druckansicht des SLA (Unterpfad der Wagtail-Seite /sla/, daher Django-View).
+    path("sla/druck/", sla_print_view, name="sla_print"),
     # Dokumentation lebt auf docs.mandari.de (Repo mandariOSS/docs); alte Pfade leiten dauerhaft weiter
     path("docs/", docs_redirect, name="docs_index"),
     path("docs/<path:rest>", docs_redirect, name="docs_page"),
