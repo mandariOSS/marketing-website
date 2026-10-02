@@ -30,6 +30,11 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      - name: Migrationen vollständig (makemigrations --check)
+        # Jede Änderung an Modellen oder StreamField-Bausteinen braucht eine Migration; sonst
+        # meldet makemigrations offene Änderungen und der Schritt schlägt fehl.
+        run: python manage.py makemigrations --check --dry-run
+
       - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases)
         run: python manage.py test --buffer
 
