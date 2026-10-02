@@ -69,7 +69,8 @@ urlpatterns = [
     path("sicherheit/", RedirectView.as_view(url="/trust/", permanent=True)),
     path("faq/", RedirectView.as_view(url="/kontakt/#faq", permanent=True)),
     # Relaunch 2026 — Produkte: /produkt/ ist aufgeteilt in /produkte/ (Plattform, Modulübersicht,
-    # Bürgerportal) und /fraktionen/ (mandari Work); Wagtail-Seite per `retire_page produkt` zurückziehen
+    # Bürgerportal) und /fraktionen/ (mandari Work); Wagtail-Seite per
+    # `retire_page produkt --redirect /fraktionen/` zurückziehen
     path("produkt/", RedirectView.as_view(url="/fraktionen/", permanent=True)),
     # Wagtail catch-all (serves all CMS pages)
     path("", include(wagtail_urls)),

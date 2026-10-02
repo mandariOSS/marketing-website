@@ -8,7 +8,7 @@
    ändern Farbe oder Unterstreichung, nie die Position. */
 @layer components {
   .wrap {
-    @apply max-w-7xl mx-auto px-5 sm:px-6 lg:px-8;
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
   /* Schriftstufen: eine Schrift (Inter), klare Größen, linksbündig */

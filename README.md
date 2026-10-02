@@ -14,7 +14,7 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **Marketing-Pages** — Startseite, Produkte, Für Fraktionen, Preise, Kommunen, Migration,
+- **Marketing-Pages** — Startseite, Produkt, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
@@ -27,9 +27,9 @@ separat gehostet und entwickelt werden.
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
-  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Zeilen, Einladung u. v. m.)
-- **Ruhige Gestaltung** mit Tailwind CSS — Schriftstufen, ein Button-Stil und
-  Textlinks als Komponenten, Inhalte offen auf der Fläche (siehe „Gestaltung“)
+  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Gradient-CTA u. v. m.)
+- **Mandari Design System** — konsistentes UI mit Tailwind CSS, Hero-Banner,
+  Trust-Banner, Border-2-Cards mit Decorative Corner Circles
 - **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
   `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
   `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
@@ -46,7 +46,7 @@ alle Seeds sind deshalb **idempotent**:
 |---|---|
 | `setup_initial_pages` | Erstellt den Wagtail-Page-Tree (überspringt vorhandene Seiten), seedet Rechtstexte aus `.legal-content/` |
 | `migrate_pages_to_streamfield` | Seedet die StreamField-Inhalte aller Marketing-/Legal-Pages (überspringt Seiten, die bereits Blöcke haben; `--force` überschreibt) |
-| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force`; `startseite` zieht Titel und SEO-Felder der Startseite nach |
+| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force` |
 | `retire_page <pfad\|slug> --redirect <ziel> [--dry-run]` | Zieht eine Seite samt Unterseiten zurück (unpublish, bleibt im CMS) und legt eine dauerhafte Weiterleitung an bzw. korrigiert sie; prüft danach per Anfrage, dass der alte Pfad mit 301 auf das Ziel zeigt. Idempotent, z. B. `retire_page /blog/ --redirect /releases/` |
 
 **Seiten zurückziehen:** Fällt eine Seite bei einem Umbau weg, zuerst die

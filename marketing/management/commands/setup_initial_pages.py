@@ -14,21 +14,36 @@ from django.template.loader import get_template as load_template
 from wagtail.models import Page, Site
 
 
+# ── Startseite: Metadaten ─────────────────────────────────────────────────
+# Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
+# SEO-Felder hier, damit `refresh_seeded_page startseite --force` sie auf
+# bestehenden Datenbanken nachzieht.
+HOME_PAGE_META = {
+    "title": "mandari",
+    "subtitle": "Software für die offene Verwaltung",
+    "seo_title": "mandari – Software für die offene Verwaltung",
+    "search_description": (
+        "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
+        "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
+    ),
+}
+
+
 # ── Marketing-Seiten: Metadaten (Titel, SEO) ──────────────────────────────
 # Modul-Level, damit `refresh_seeded_page` bei Live-Updates auch Titel und
 # SEO-Felder auf den aktuellen Seed-Stand bringen kann.
 MARKETING_PAGE_META = [
     # ── Produkt / Lösungen ────────────────────────────────────────────
     # /produkte/ (Plattform-Übersicht) und /fraktionen/ (mandari Work) ersetzen
-    # das frühere /produkt/ — es leitet per 301 auf /fraktionen/ und wird mit
-    # `retire_page produkt` zurückgezogen (siehe website/urls.py).
+    # das frühere /produkt/ — es leitet per 301 auf /fraktionen/ (website/urls.py)
+    # und wird mit `retire_page produkt --redirect /fraktionen/` zurückgezogen.
     {
         "title": "Produkte",
         "slug": "produkte",
         "seo_title": "Produkte für die offene Verwaltung",
         "search_description": (
-            "mandari Session, Work und Insight: Ratsinformationssystem, Fraktionsarbeit und "
-            "Bürgerportal auf einer offenen Plattform. Funktionen, Schnittstellen und Ausblick."
+            "Ratsinformationssystem, Fraktionsarbeit und Bürgerportal auf einer offenen Plattform: "
+            "mandari Session, Work und Insight mit allen Funktionen im Überblick."
         ),
     },
     {
@@ -250,21 +265,6 @@ RELEASE_INDEX_LEGACY = {
     "seo_title": {"Releases – Mandari"},
     "search_description": {"Versionshistorie und Changelogs."},
     "intro": {"<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>"},
-}
-
-
-# ── Startseite: Metadaten ─────────────────────────────────────────────────
-# Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
-# SEO-Felder hier, damit `refresh_seeded_page startseite --force` sie auf
-# bestehenden Datenbanken nachzieht.
-HOME_PAGE_META = {
-    "title": "mandari",
-    "subtitle": "Software für die offene Verwaltung",
-    "seo_title": "mandari – Software für die offene Verwaltung",
-    "search_description": (
-        "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
-        "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
-    ),
 }
 
 
