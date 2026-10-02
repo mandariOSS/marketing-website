@@ -3,6 +3,7 @@
 import io
 import re
 import zipfile
+from html.parser import HTMLParser
 from io import StringIO
 
 from django.contrib.auth import get_user_model
@@ -17,12 +18,37 @@ DU_FORM = re.compile(r"\b(du|dich|dir|dein|deine|deinen|deinem|deiner|deines|euc
                      re.IGNORECASE)
 
 
+class _MainText(HTMLParser):
+    """Sammelt den sichtbaren Text innerhalb von <main> (ohne Skripte und Styles)."""
+
+    def __init__(self):
+        super().__init__()
+        self.depth = 0
+        self.skip = 0
+        self.parts = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "main":
+            self.depth += 1
+        elif tag in ("script", "style"):
+            self.skip += 1
+
+    def handle_endtag(self, tag):
+        if tag == "main":
+            self.depth -= 1
+        elif tag in ("script", "style"):
+            self.skip -= 1
+
+    def handle_data(self, data):
+        if self.depth and not self.skip:
+            self.parts.append(data)
+
+
 def main_text(response):
     """Sichtbarer Text des Hauptbereichs (ohne Kopf- und Fußzeile)."""
-    html = response.content.decode("utf-8")
-    main = html.split("<main", 1)[1].split("</main>", 1)[0]
-    main = re.sub(r"<script.*?</script>", " ", main, flags=re.S)
-    return " ".join(re.sub(r"<[^>]+>", " ", main).split())
+    parser = _MainText()
+    parser.feed(response.content.decode("utf-8"))
+    return " ".join(" ".join(parser.parts).split())
 
 
 class UnternehmensseitenTests(TestCase):
