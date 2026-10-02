@@ -51,6 +51,26 @@ class DatenTests(SimpleTestCase):
             self.assertTrue(sv.anbieter_mit(luecke) or luecke.get("auch"), luecke["key"])
             if luecke["link"]:
                 self.assertTrue(luecke["link"][1].startswith("https://github.com/mandariOSS/mandari/issues/"))
+            if luecke["art"] == "geplant":
+                self.assertTrue(luecke.get("karten"), f"{luecke['key']}: geplante Lücke ohne Roadmap-Karte")
+
+    def test_weitere_anbieter_nur_mit_quelle(self):
+        # Auch Anbieter außerhalb der vier stehen nur mit belegter Angabe auf der Seite.
+        for luecke in sv.LUECKEN:
+            for name, kuerzel, status in luecke.get("auch", []):
+                self.assertIn(status, ("yes", "partial"), f"{luecke['key']}/{name}")
+                for k in kuerzel.split(", "):
+                    self.assertIn(k, sv.QUELLEN, f"{luecke['key']}/{name}: unbekannte Quelle {k}")
+                    self.assertTrue(k.startswith(tuple(sv.PRAEFIXE_WEITERE)), f"{luecke['key']}/{name}: {k}")
+
+    def test_vorhanden_nur_wenn_alle_zeilen_ja(self):
+        # „Vorhanden bei“ nur für Anbieter mit „Ja“ in allen Zeilen der Lücke, sonst „teilweise bei“.
+        for luecke in sv.LUECKEN:
+            label = sv._beleg_label(luecke)
+            vorhanden = label.split(";")[0] if label.startswith("Vorhanden bei") else ""
+            for slug in sv.anbieter_mit(luecke):
+                name = sv.ANBIETER[slug]["spalte"]
+                self.assertEqual(name in vorhanden, sv.anbieter_voll(luecke, slug), f"{luecke['key']}/{name}: {label}")
 
     def test_hoechstens_acht_zeilen_je_abschnitt(self):
         for slug in [None, *sv.ANBIETER]:
@@ -74,6 +94,12 @@ class SeitenTests(TestCase):
         self.assertIn("Was mandari noch fehlt: in Prüfung", html)
         for kuerzel in sv.QUELLEN:
             self.assertIn(f"[{kuerzel}]", html)
+        # Kürzel in den Lücken (auch die weiteren Anbieter) stehen im Quellenverzeichnis der Seite.
+        haupt = html[html.find('role="main"'):]
+        quellen = haupt[haupt.find('id="quellen"'):]
+        for k in set(kuerzel_in(haupt[:haupt.find('id="quellen"')])):
+            self.assertIn(f"[{k}]", quellen, f"Quelle {k} fehlt im Quellenverzeichnis")
+        self.assertNotIn("PROVOX", html)
 
     def test_anbieterseiten_zitieren_nur_aufgefuehrte_quellen(self):
         for slug in sv.ANBIETER:
@@ -94,5 +120,19 @@ class SeitenTests(TestCase):
     def test_roadmap_fuehrt_die_luecken(self):
         html = self.client.get("/roadmap/").content.decode("utf-8")
         self.assertIn('id="marktvergleich"', html)
+        self.assertIn('href="/vergleich/#fehlt"', html)
+        self.assertNotIn("Aus dem Marktvergleich: zugesagt und geplant", html)
         for luecke in sv.LUECKEN:
-            self.assertIn(luecke["titel"], html)
+            if luecke["art"] == "pruefung":
+                self.assertIn(luecke["titel"], html)
+            else:
+                # Zugesagte und geplante Lücken stehen als Karte auf der Roadmap, nicht noch einmal als Zeile.
+                for karte in luecke["karten"]:
+                    self.assertIn(karte, html, f"{luecke['key']}: Karte {karte} fehlt auf der Roadmap")
+
+    def test_barrierefreiheit_ohne_unbelegte_zusage(self):
+        # Zugesagt ist die Selbstbewertung (#44), nicht eine unabhängige Prüfung.
+        for url in ("/vergleich/", "/roadmap/", "/vergleich/mandari-vs-regisafe/"):
+            html = self.client.get(url).content.decode("utf-8")
+            self.assertNotIn("lassen wir die Barrierefreiheit", html, url)
+        self.assertTrue(sv.MANDARI["bitv"][1].startswith("In Prüfung"))

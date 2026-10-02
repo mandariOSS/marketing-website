@@ -498,7 +498,7 @@ def get_marketing_definitions() -> dict:
                         frow("Schwärzung für die Veröffentlichung", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
                         frow("Einbindung in die Website der Kommune", cell("partial", "Kalender-Feed, OParl; Bausteine in Prüfung"), cell("no"), cell("info", "über das Bürgerportal")),
                         frow("OParl-1.1-Schnittstelle", cell("yes", "Aggregations-API mit Änderungsfeed"), cell("no"), cell("yes", "je Kommune")),
-                        frow("Datenkatalog nach DCAT-AP.de", cell("partial", "Katalog vorhanden, Anbindung an Datenportale folgt"), cell("no"), cell("yes", "je Kommune, zuschaltbar")),
+                        frow("Datenkatalog nach DCAT-AP.de", cell("partial", "Katalog vorhanden, in der Installation einschaltbar; Anbindung an Datenportale folgt"), cell("no"), cell("partial", "je Kommune, in der Installation einschaltbar; Anbindung an Datenportale folgt")),
                         frow("Öffentliche Fraktions-API für die eigene Webseite", cell("no"), cell("yes"), cell("no")),
                         frow("Ratsfragen an Mandatsträger:innen", cell("yes"), cell("no"), cell("no")),
                         frow("Einwohnerfragestunde und Eingaben", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
@@ -515,7 +515,7 @@ def get_marketing_definitions() -> dict:
                         frow("Aufbewahrungsfristen und Löschlauf", cell("no"), cell("info", "Löschung bei Vertragsende"), cell("yes", "je Mandant konfigurierbar")),
                         frow("Datenexport (OParl, CSV, JSON)", cell("yes"), cell("yes"), cell("yes")),
                         frow("Self-Hosting mit Docker", cell("yes"), cell("yes"), cell("yes")),
-                        frow("Barrierefreiheit nach BITV 2.0", cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung Q4/2026")),
+                        frow("Barrierefreiheit nach BITV 2.0", cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung 2026/27"), cell("planned", "Selbstbewertung mit Prüfbericht Q4/2026")),
                         frow("Externer Penetrationstest", cell("planned", "2027"), cell("planned", "2027"), cell("planned", "2027")),
                     ),
                 ],
@@ -1237,9 +1237,9 @@ def get_marketing_definitions() -> dict:
         # ════════════════════════════════════════════════════════════
         "roadmap": [
             ("hero", {
-                "badge_text": "Zuletzt aktualisiert: 2. Oktober 2026 · nächste Aktualisierung: Dezember 2026", "badge_icon": "map", "badge_color": "primary",
+                "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
-                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Aktualisiert nach jedem Quartal, Verschiebungen werden offen benannt.",
+                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 2. Oktober 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
                          cta("Releases", "/releases/", "tag", "secondary")],
@@ -1289,7 +1289,7 @@ def get_marketing_definitions() -> dict:
                          cta_label="Pilot-Kommune werden", cta_url="/kontakt/?subject=Pilot-Kommune", cta_icon="mail"),
                     card(color="blue", icon="accessibility", title="Barrierefreiheit nach BITV 2.0", subtitle="Q4/2026",
                          status_badges=[sbadge("Zugesagt", "badge-check", "green")],
-                         description="Screenreader, Tastatur, Kontraste, Formulare; Erklärung mit Prüfbericht.",
+                         description="Screenreader, Tastatur, Kontraste, Formulare; Selbstbewertung nach BITV 2.0 mit veröffentlichtem Prüfbericht. Eine unabhängige Prüfung ist in Prüfung.",
                          cta_label="Issue #44", cta_url="https://github.com/mandariOSS/mandari/issues/44", cta_icon="github"),
                     card(color="blue", icon="database", title="Import aus Bestandssystemen", subtitle="Version 1.0",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
@@ -1302,7 +1302,7 @@ def get_marketing_definitions() -> dict:
                     card(color="blue", icon="mic", title="KI-Entwurf der Niederschrift", subtitle="2027",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Entwurf je Tagesordnungspunkt aus der Audioaufzeichnung, Transkription ohne Übermittlung in Drittländer, Nichtöffentliches nur mit selbst betriebenem Sprachmodell. Der Sitzungsdienst prüft und übernimmt.",
-                         cta_label="Issue #49", cta_url="https://github.com/mandariOSS/mandari/issues/49", cta_icon="github"),
+                         cta_label="Issue #180", cta_url="https://github.com/mandariOSS/mandari/issues/180", cta_icon="github"),
                     card(color="blue", icon="video", title="Hybride und digitale Gremiensitzungen", subtitle="2027",
                          status_badges=[sbadge("Geplant", "calendar", "amber")],
                          description="Sitzungsformat mit Landesprofil, Teilnahmeart und Live-Cockpit sind geliefert. Es folgen Abstimmung am eigenen Gerät mit zertifizierungsfähigem Modul, Rednerliste, Saalanzeige, Videokonferenz-Anbindung, Livestream mit Sprungmarken und automatische Niederschriftsvermerke.",
@@ -1389,8 +1389,9 @@ def get_marketing_definitions() -> dict:
                 "body": (
                     "<h3>Oktober 2026</h3>"
                     "<ul>"
-                    "<li><strong>Marktvergleich:</strong> Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht, stehen jetzt gesammelt in der Roadmap. Acht davon sind neu und in Prüfung: eigener Bereich für Ratsmitglieder, Freigabe unterwegs, Umlaufverfahren mit Stimmabgabe online, Mitteilungen an das Finanzamt, Bekanntmachung und Amtsblatt, Einbindung in die Website der Kommune, Saaltechnik und KI-Schreibhilfe im Sitzungsdienst.</li>"
-                    "<li><strong>KI-Entwurf der Niederschrift:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, weil er zum Vorhaben „Vollständige Ratsarbeit“ gehört.</li>"
+                    "<li><strong>Marktvergleich:</strong> Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht, sind jetzt der Roadmap zugeordnet: die zugesagten und geplanten in den Karten oben, acht neue in Prüfung im Abschnitt „Aus dem Marktvergleich“: eigener Bereich für Ratsmitglieder, Freigabe unterwegs, Umlaufverfahren mit Stimmabgabe online, Mitteilungen an das Finanzamt, Bekanntmachung und Amtsblatt, Einbindung in die Website der Kommune, Saaltechnik und KI-Schreibhilfe im Sitzungsdienst.</li>"
+                    "<li><strong>Barrierefreiheit Session:</strong> präzisiert. Zugesagt für Q4/2026 ist die Selbstbewertung nach BITV 2.0 mit veröffentlichtem Prüfbericht; eine Prüfung durch eine unabhängige Stelle ist in Prüfung.</li>"
+                    "<li><strong>KI-Entwurf der Niederschrift:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, weil der Protokollentwurf (#180) zum Vorhaben „Vollständige Ratsarbeit“ (#496) gehört.</li>"
                     "<li><strong>Livestream mit Sprungmarken:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, gleichgezogen mit dem Vorhaben „Hybride und digitale Gremiensitzungen“.</li>"
                     "<li><strong>Hybride Sitzungen:</strong> Sitzungsformat, Teilnahmeart und Live-Cockpit sind geliefert.</li>"
                     "</ul>"

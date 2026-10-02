@@ -40,7 +40,7 @@ QUELLEN = {
     "ST2": ("STERNBERG: Infosystem SD.NET RIM", "https://www.sitzungsdienst.net/informationssystem-sdnet-rim/"),
     "ST3": ("STERNBERG: RICH SitzungsApps für SD.NET", "https://www.sitzungsdienst.net/sdnet-rich-sitzungsapps/"),
     "ST4": ("STERNBERG: Protokoll-Erstellung mit KI", "https://www.sitzungsdienst.net/ki-audiomanagement/"),
-    "ST5": ("ekom21: Broschüre SD.NET Sitzungsmanagement", "https://www.ekom21.de/infocenter/mediathek/broschueren/ekom21-sd-net-broschuere-04062018-dig.pdf"),
+    "ST5": ("ekom21: Broschüre SD.NET Sitzungsmanagement (undatiert, PDF-Fassung Juni 2025)", "https://www.ekom21.de/infocenter/mediathek/broschueren/ekom21-sd-net-broschuere-04062018-dig.pdf"),
     "ST6": ("STERNBERG: Modul „Interaktive Virtuelle Sitzung“ GPA-NRW-zertifiziert", "https://www.sitzungsdienst.net/unser-modul-interaktive-virtuelle-sitzung-jetzt-gpa-nrw-zertifiziert/"),
     "ST7": ("kommunal-edv.de: Anbieterprofil Sternberg SD.NET", "https://www.kommunal-edv.de/anbieter/sitzungsdienst/sternberg-sd-net/"),
     "ST8": ("STERNBERG: S24-Cloud", "https://www.sitzungsdienst.net/s24-cloud/"),
@@ -55,7 +55,17 @@ QUELLEN = {
     "RS3": ("regisafe: Digitales Verfahren Ratsinformation", "https://www.regisafe.de/produkt/digitales-verfahren-ratsinformation/"),
     "RS4": ("regisafe: GenAI-Niederschrift", "https://www.regisafe.de/genai-niederschrift/"),
     "RS5": ("regisafe: regisafe in der Cloud", "https://www.regisafe.de/produkt/regisafe-in-der-cloud/"),
+    # Weitere Anbieter, nur bei einzelnen Lücken genannt (LUECKEN, Feld „auch“).
+    "MR1": ("more! software: more! rubin Zusatzmodule", "https://www.more-rubin.de/module"),
+    "MR2": ("more! software: more! KI-Module", "https://www.more-rubin.de/ki-module"),
+    "OS1": ("OpenSlides (Intevation GmbH)", "https://openslides.com/de/"),
+    "OS2": ("OpenSlides: OpenSlides 4.3 mit zertifiziertem Live-Voting (2. Juni 2026)", "https://openslides.com/de/openslides-4-3-mit-zertifiziertem-live-voting/"),
+    "OS3": ("OpenSlides: Redeliste", "https://openslides.com/de/funktionen/redeliste/"),
 }
+
+# Präfixe der vier verglichenen Anbieter und der Anbieter, die nur bei einzelnen Lücken vorkommen.
+PRAEFIXE_VERGLEICH = ["SO", "ST", "AL", "RS"]
+PRAEFIXE_WEITERE = ["MR", "OS"]
 
 # ── Funktionen ───────────────────────────────────────────────────────────────
 GRUPPEN = [
@@ -170,11 +180,11 @@ MANDARI = {
     "schwaerzung": ("open", "Geplant 2027"),
     "ki_buerger": ("partial", "Zusammenfassungen und Fragen an die Ratsdaten, für ausgewählte Kommunen"),
     "oparl": ("yes", "OParl 1.1 je Kommune und über alle Kommunen, mit Änderungsfeed"),
-    "dcat": ("partial", "Katalog je Kommune vorhanden und zuschaltbar; Anbindung an Datenportale folgt"),
+    "dcat": ("partial", "Katalog je Kommune, in der Installation einschaltbar; Anbindung an Datenportale folgt"),
     "dms": ("open", "Geplant 2027; heute Export als PDF, JSON und OParl"),
     "verzeichnis": ("open", "Geplant 2027 (SAML 2.0, OpenID Connect)"),
     "kalender": ("yes", "ICS-Feeds für Outlook und andere Kalender"),
-    "bitv": ("open", "Prüfbericht für Session zugesagt für Q4/2026"),
+    "bitv": ("open", "In Prüfung: unabhängige Prüfung. Zugesagt für Q4/2026 ist die Selbstbewertung nach BITV 2.0 mit Prüfbericht für Session"),
     "zwei_faktor": ("yes", "App-Codes oder Sicherheitsschlüssel, als Pflicht einstellbar"),
     "protokoll": ("yes", "Änderungen, Anmeldungen und Lesezugriffe, mit Prüfexport"),
     "pruefung": ("open", "Geplant 2027: externer Penetrationstest; Quellcode öffentlich prüfbar"),
@@ -188,7 +198,7 @@ MANDARI_KURZ = {
     "signatur": "Geplant 2027", "app": "Geplant 2027",
     "abstimmung": "Geplant 2027", "zertifikat": "Geplant 2027", "redner": "Geplant 2027",
     "saaltechnik": "In Prüfung", "buergerapp": "Geplant 2027", "schwaerzung": "Geplant 2027",
-    "dms": "Geplant 2027", "verzeichnis": "Geplant 2027", "bitv": "Zugesagt Q4/2026",
+    "dms": "Geplant 2027", "verzeichnis": "Geplant 2027", "bitv": "In Prüfung; Selbstbewertung zugesagt Q4/2026",
     "pruefung": "Geplant 2027", "ki_protokoll": "Geplant 2027",
 }
 
@@ -220,6 +230,7 @@ ANBIETER = {
             "gremieninfo": ("yes", "SessionNet mit Rollen- und Rechtesystem [SO3]"),
             "app": ("yes", "Mandatos für Windows, iOS und Android, offline [SO4]"),
             "notizen": ("yes", "Kommentare und Markierungen, geräteübergreifend abgeglichen [SO4]"),
+            "hybrid": ("partial", "Online-Abstimmung auch für Online- und Hybridsitzungen [SO6]"),
             "abstimmung": ("yes", "Offen, namentlich oder geheim [SO6]"),
             "zertifikat": ("yes", "Zertifiziert durch die gpaNRW [SO6]"),
             "redner": ("partial", "Präsentationsmodus für den Saal [SO6]"),
@@ -248,7 +259,7 @@ ANBIETER = {
             "eigenbetrieb": ("yes", "Autonomer Betrieb [ST5]"),
             "cloud": ("yes", "S24-Cloud, Serverstandort Deutschland, ISO 27001 [ST8]"),
             "sitzung": ("yes", "Automatische Tagesordnung, Nachträge, Einladung [ST1, ST5]"),
-            "niederschrift": ("yes", "Protokoll, Auszüge und Beschlussblätter [ST5]"),
+            "niederschrift": ("yes", "Protokoll mit Anwesenheit und Abstimmungsergebnissen, Auszüge und Beschlussblätter [ST1, ST5]"),
             "beschlusskontrolle": ("yes", "Beschluss- und Antragskontrolle [ST1]"),
             "sitzungsgeld": ("yes", "SEPA und Schnittstellen zu Finanzverfahren [ST1]"),
             "mitteilung": ("yes", "Übermittlung im KONSENS-Mitteilungsverfahren [ST1]"),
@@ -258,17 +269,18 @@ ANBIETER = {
             "bekanntmachung": ("yes", "Amtsblattinformationssystem ABI.NET [ST1]"),
             "freigabe": ("yes", "Freigabestatus und Workflow [ST1]"),
             "ablaeufe": ("yes", "Individuell anpassbare Workflows [ST7]"),
-            "word": ("yes", "Ganzheitliche Textverarbeitung, Import aus Word [ST5]"),
+            "word": ("yes", "Vorlagen auch außerhalb in Word schreiben, Import und Export per Drag & Drop [ST1, ST5]"),
             "mobilfreigabe": ("yes", "WorkflowPlus im Gremieninfosystem und in der App [ST2]"),
             "gremieninfo": ("yes", "Geschützter Bereich in SD.NET RIM [ST2]"),
             "app": ("yes", "RICH für iOS, Android und Windows, offline [ST3]"),
             "notizen": ("yes", "Randnotizen mit anderen Mitgliedern teilen, Modul Akte [ST2, ST3]"),
-            "antraege": ("yes", "Anträge über den Formularmanager [ST5]"),
+            "antraege": ("yes", "Anträge und Anfragen über den Formularmanager [ST1, ST5]"),
             "fraktion": ("partial", "Fraktionssitzungen im Gremieninfosystem [ST2]"),
             "hybrid": ("yes", "Modul Interaktive Virtuelle Sitzung [ST6]"),
             "abstimmung": ("yes", "App voteRICH [ST1]"),
             "zertifikat": ("yes", "Interaktive Virtuelle Sitzung, zertifiziert durch die gpaNRW [ST6]"),
-            "redner": ("partial", "Präsentation der Tagesordnung in der Sitzung [ST5]"),
+            "redner": ("yes", "Rednerliste in der Sitzungsaufzeichnung, Präsentation der Tagesordnung [ST1, ST5]"),
+            "stream": ("partial", "Sprachaufzeichnung mit Sprungmarken je Tagesordnungspunkt; zu einem Livestream keine Angabe [ST1]"),
             "portal": ("yes", "SD.NET RIM [ST2]"),
             "suche": ("yes", "Recherche mit markierter Fundstelle [ST2]"),
             "abo": ("partial", "E-Mail über neue Dokumente, Newsletter [ST2]"),
@@ -276,11 +288,12 @@ ANBIETER = {
             "buergerapp": ("yes", "BürgerApp für iOS und Android [ST3]"),
             "schwaerzung": ("yes", "Automatisches Schwärzen einzelner Passagen [ST2]"),
             "oparl": ("yes", "OParl-Schnittstelle [ST2]"),
-            "dms": ("yes", "DMS-Schnittstelle [ST5]"),
-            "verzeichnis": ("yes", "Active Directory [ST7]"),
-            "kalender": ("yes", "Outlook, GroupWise, Tobit [ST5]"),
+            "dms": ("yes", "Schnittstellen zu mehreren DMS, auch ganze Sitzungsmappen [ST1]"),
+            "verzeichnis": ("yes", "Active Directory, LDAP, Single Sign-on über den Netzwerk-Login [ST1, ST7]"),
+            "kalender": ("yes", "Outlook, GroupWise, Tobit [ST1]"),
             "bitv": ("unknown", "Entwicklung nach BITV 2.0 (Eigenangabe), zu einer Prüfung keine Angabe [ST2]"),
             "zwei_faktor": ("yes", "Auf Wunsch [ST2]"),
+            "protokoll": ("partial", "Chronologischer Verlauf und Historie; zu Zugriffsprotokollen keine Angabe [ST1]"),
             "pruefung": ("yes", "Regelmäßige Penetrationstests durch unabhängige Stellen (Eigenangabe) [ST2]"),
             "ki_protokoll": ("yes", "Schnittstelle zu wählbaren KI-Anbietern [ST4]"),
         },
@@ -306,6 +319,8 @@ ANBIETER = {
             "freigabe": ("yes", "Mitzeichnungs- und Freigabeprozesse [AL1]"),
             "ablaeufe": ("yes", "Konfigurierbare Workflow-Engine mit Terminüberwachung [AL2]"),
             "word": ("yes", "MS Word oder integrierter Editor [AL2]"),
+            "mobilfreigabe": ("partial", "Apps auch für die Arbeit in der Verwaltung, Webseiten im Responsive Design; "
+                                         "Freigabe nicht ausdrücklich genannt [AL2]"),
             "signatur": ("yes", "Signaturvorgänge [AL1]"),
             "gremieninfo": ("yes", "Personenbezogene Zugriffssteuerung [AL2]"),
             "app": ("yes", "Apps für iOS, Android und Windows, offline [AL2]"),
@@ -322,11 +337,12 @@ ANBIETER = {
             "website": ("yes", "Schnittstellen zur Einbindung in die Website [AL2]"),
             "buergerapp": ("yes", "Bürger-App [AL2]"),
             "oparl": ("yes", "OParl-Schnittstelle [AL2]"),
+            "dms": ("yes", "Anbindung des eigenen DMS CC ECM an ALLRIS, laut Referenzliste [AL6]"),
             "kalender": ("yes", "WebCal-Funktion [AL2]"),
             "bitv": ("yes", "Gutachten: BITV-konform (Produktbeschreibung 2022) [AL2]"),
             "zwei_faktor": ("yes", "Einmalkennwort-App oder SMS [AL1]"),
             "protokoll": ("yes", "ALLRIS Audit-Log [AL1]"),
-            "pruefung": ("yes", "Datenschutz-Zertifikat der datenschutz cert GmbH [AL2]"),
+            "pruefung": ("yes", "Datenschutz-Zertifikat der datenschutz cert GmbH (Produktbeschreibung 2022) [AL2]"),
             "ki_protokoll": ("yes", "Protokollvorschläge direkt im System [AL4]"),
         },
     },
@@ -357,11 +373,15 @@ ANBIETER = {
             "ablaeufe": ("yes", "Anpassbare Workflows [RS2]"),
             "signatur": ("yes", "Elektronische Signatur [RS2]"),
             "gremieninfo": ("yes", "Unterlagen je Öffentlichkeitsstatus [RS3]"),
+            "mappe": ("partial", "Gesamtdokument je Tagesordnungspunkt oder Sitzung; zum Wasserzeichen keine Angabe [RS1]"),
             "app": ("yes", "Apps für iOS und Android, offline [RS1]"),
+            "notizen": ("yes", "Notizen mit anderen Personen teilen, Kommunikation im Portal [RS1]"),
             "abstimmung": ("partial", "Einfache Abstimmungen elektronisch [RS1, RS3]"),
             "portal": ("yes", "Bürgerinfoportal [RS1]"),
+            "suche": ("partial", "Granulare Suche mit Filtern; zur Volltextsuche in Dokumenten keine Angabe [RS1]"),
             "dms": ("yes", "Verknüpfung mit der E-Akte [RS2]"),
             "bitv": ("yes", "Zertifiziert barrierefrei seit 7. Oktober 2024 [RS1]"),
+            "pruefung": ("yes", "System- und Webanwendungsprüfung durch einen BSI-zertifizierten Dienstleister (Eigenangabe) [RS1]"),
             "ki_protokoll": ("yes", "GenAI-Niederschrift auf deutschen Servern, Löschung nach einer Woche [RS4]"),
         },
     },
@@ -382,21 +402,31 @@ def zelle(slug, key):
 
 # ── Lücken: was andere Systeme können und mandari noch nicht ─────────────────
 # stufe: Text der Roadmap-Stufe; art: "geplant" (zugesagt oder geplant) oder "pruefung".
-# zeilen: Funktionen aus GRUPPEN, an denen die Lücke hängt. Ein Anbieter zählt, wenn er dort „Ja“ oder
-# „Teilweise“ hat. auch: weitere Anbieter aus der internen Analyse (öffentlich belegt).
+# zeilen: Funktionen aus GRUPPEN, an denen die Lücke hängt. Ein Anbieter gilt als „vorhanden“, wenn er bei
+# allen Zeilen „Ja“ hat, sonst als „teilweise“, sobald eine Zeile „Ja“ oder „Teilweise“ ist.
+# karten: Titel der Roadmap-Karten, die eine zugesagte oder geplante Lücke abdecken (die Roadmap zeigt
+# diese Lücken nicht noch einmal, der Test prüft, dass die Karten dort stehen).
+# auch: weitere Anbieter außerhalb der vier, je (Name, Quellenkürzel, Status yes/partial); die Kürzel stehen
+# in QUELLEN und im Quellenblock der Übersicht.
 LUECKEN = [
     {
         "key": "bitv", "art": "geplant", "stufe": "Zugesagt für Q4/2026",
-        "titel": "Barrierefreiheit mit Prüfbericht",
+        "karten": ["Barrierefreiheit nach BITV 2.0"],
+        "titel": "Barrierefreiheit: Selbstbewertung mit Prüfbericht",
         "zeilen": ["bitv"],
-        "text": "Für mandari Session lassen wir die Barrierefreiheit nach BITV 2.0 prüfen und "
-                "veröffentlichen den Prüfbericht. Bürgerportal und Work folgen 2026/27.",
+        "text": "Für mandari Session bewerten wir die Barrierefreiheit selbst nach den Prüfschritten der "
+                "BITV 2.0, beheben die Befunde und veröffentlichen den Prüfbericht. Eine Prüfung durch eine "
+                "unabhängige Stelle sagen wir damit nicht zu; ob und wann sie folgt, prüfen wir. Für Bürgerportal "
+                "und Work sind Selbstbewertung und danach ein externer BITV-Test vorgesehen "
+                "(<a href=\"https://github.com/mandariOSS/mandari/issues/98\">Issue #98</a>).",
         "link": ("Issue #44 ansehen", "https://github.com/mandariOSS/mandari/issues/44"),
     },
     {
         "key": "abstimmung", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Hybride und digitale Gremiensitzungen"],
         "titel": "Stimmabgabe am eigenen Gerät",
-        "zeilen": ["abstimmung", "zertifikat"], "auch": "OpenSlides",
+        "zeilen": ["abstimmung", "zertifikat"],
+        "auch": [("more! software", "MR1", "yes"), ("OpenSlides", "OS2", "yes")],
         "text": "Heute erfasst der Sitzungsdienst die Stimmen im Live-Cockpit. Geplant ist die "
                 "Stimmabgabe am eigenen Gerät, offen und namentlich, mit Freigabe, Zeitfenster und "
                 "Prüfpfad – so gebaut, dass eine Prüfstelle sie zertifizieren kann.",
@@ -404,8 +434,9 @@ LUECKEN = [
     },
     {
         "key": "sitzungsleitung", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Hybride und digitale Gremiensitzungen", "Livestream und Video mit Sprungmarken"],
         "titel": "Rednerliste, Saalanzeige und Livestream mit Sprungmarken",
-        "zeilen": ["redner", "stream"], "auch": "OpenSlides",
+        "zeilen": ["redner", "stream"], "auch": [("OpenSlides", "OS3", "partial")],
         "text": "Teil des Vorhabens „Hybride und digitale Gremiensitzungen“: Wortmeldungen mit "
                 "Redezeit, Anzeige im Saal und Aufzeichnungen, die sich je Tagesordnungspunkt "
                 "abspielen lassen.",
@@ -413,15 +444,18 @@ LUECKEN = [
     },
     {
         "key": "ki_protokoll", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["KI-Entwurf der Niederschrift"],
         "titel": "KI-Entwurf der Niederschrift",
-        "zeilen": ["ki_protokoll"], "auch": "more! software",
+        "zeilen": ["ki_protokoll"], "auch": [("more! software", "MR2", "yes")],
         "text": "Aus der Aufzeichnung entsteht ein Entwurf je Tagesordnungspunkt, den der Sitzungsdienst "
                 "prüft und übernimmt. Transkription ohne Übermittlung in Drittländer, Nichtöffentliches "
-                "nur mit einem selbst betriebenen Sprachmodell.",
-        "link": ("Issue #49 ansehen", "https://github.com/mandariOSS/mandari/issues/49"),
+                "nur mit einem selbst betriebenen Sprachmodell. Teil des Vorhabens „Vollständige Ratsarbeit“ "
+                "(<a href=\"https://github.com/mandariOSS/mandari/issues/496\">#496</a>).",
+        "link": ("Issue #180 ansehen", "https://github.com/mandariOSS/mandari/issues/180"),
     },
     {
         "key": "app", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Native App für Android und iOS"],
         "titel": "App für Ratsmitglieder und Bürger:innen",
         "zeilen": ["app", "buergerapp"],
         "text": "Eine App für Android und iOS: zuerst für Bürger:innen, danach ein Modus für "
@@ -430,6 +464,7 @@ LUECKEN = [
     },
     {
         "key": "vorlagen", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Vollständige Ratsarbeit"],
         "titel": "Vorlagen und Abläufe im vollen Umfang",
         "zeilen": ["ablaeufe", "word", "signatur", "schwaerzung", "raeume"],
         "text": "Vorlagenarten mit Word-Import, parallele Mitzeichnung mit Stellvertretung und "
@@ -439,6 +474,7 @@ LUECKEN = [
     },
     {
         "key": "anbindung", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Vollständige Ratsarbeit", "Single Sign-on (SAML, OpenID Connect)"],
         "titel": "Anbindung an E-Akte und Verzeichnisdienst",
         "zeilen": ["dms", "verzeichnis"],
         "text": "Übergabe von Vorlagen, Niederschriften und Beschlüssen an DMS und E-Akte "
@@ -448,6 +484,7 @@ LUECKEN = [
     },
     {
         "key": "pruefung", "art": "geplant", "stufe": "Geplant für 2027",
+        "karten": ["Externer Penetrationstest"],
         "titel": "Unabhängige Sicherheitsprüfung",
         "zeilen": ["pruefung"],
         "text": "Externer Penetrationstest von Anwendung, Schnittstellen, Anmeldung und "
@@ -511,7 +548,7 @@ LUECKEN = [
     {
         "key": "saaltechnik", "art": "pruefung", "stufe": "In Prüfung",
         "titel": "Konferenz- und Abstimmungsanlagen im Saal",
-        "zeilen": ["saaltechnik"], "auch": "PROVOX",
+        "zeilen": ["saaltechnik"],
         "text": "Anbindung vorhandener Saaltechnik, damit Wortmeldungen und Stimmen aus der Anlage "
                 "in Rednerliste, Abstimmung und Niederschrift einfließen.",
         "link": None,
@@ -519,7 +556,7 @@ LUECKEN = [
     {
         "key": "ki_schreiben", "art": "pruefung", "stufe": "In Prüfung",
         "titel": "KI-Schreibhilfe im Sitzungsdienst",
-        "zeilen": ["ki_schreiben"], "auch": "more! software",
+        "zeilen": ["ki_schreiben"], "auch": [("more! software", "MR2", "yes")],
         "text": "In mandari Work hilft eine KI beim Formulieren von Anträgen. Geprüft wird dieselbe "
                 "Hilfe für Vorlagen im Sitzungsdienst, mit wählbarem Anbieter und Betrieb in der EU.",
         "link": None,
@@ -534,6 +571,26 @@ def anbieter_mit(luecke):
         if any(zelle(slug, key)[0] in ("yes", "partial") for key in luecke["zeilen"]):
             treffer.append(slug)
     return treffer
+
+
+def anbieter_voll(luecke, slug):
+    """True, wenn der Anbieter bei allen Zeilen der Lücke laut Quelle „Ja“ hat."""
+    return all(zelle(slug, key)[0] == "yes" for key in luecke["zeilen"])
+
+
+def _beleg_label(luecke):
+    """„Vorhanden bei …; teilweise bei …“ für Übersicht und Roadmap, weitere Anbieter mit Quellenkürzel."""
+    voll, teil = [], []
+    for slug in anbieter_mit(luecke):
+        (voll if anbieter_voll(luecke, slug) else teil).append(ANBIETER[slug]["spalte"])
+    for name, kuerzel, status in luecke.get("auch", []):
+        (voll if status == "yes" else teil).append(f"{name} [{kuerzel}]")
+    teile = []
+    if voll:
+        teile.append("Vorhanden bei " + _aufzaehlung(voll))
+    if teil:
+        teile.append(("teilweise bei " if voll else "Teilweise bei ") + _aufzaehlung(teil))
+    return "; ".join(teile)
 
 
 def _aufzaehlung(namen):
@@ -677,12 +734,9 @@ def _luecken_zeilen(art, slug=None):
                       if zelle(slug, key)[0] in ("yes", "partial")]
             label = f"Bei {ANBIETER[slug]['spalte']}: " + "; ".join(b for b in belege if b)
         else:
-            namen = [ANBIETER[s]["spalte"] for s in mit]
-            if luecke.get("auch"):
-                namen.append(luecke["auch"])
-            if not namen:
+            label = _beleg_label(luecke)
+            if not label:
                 continue
-            label = "Vorhanden bei " + _aufzaehlung(namen)
         link_label, link_url = luecke["link"] or ("", "")
         zeilen.append({
             "title": luecke["titel"], "label": label, "status": luecke["stufe"],
@@ -827,14 +881,15 @@ def uebersichtsseite():
                 f"Broschüren, abgerufen am {ABRUF}. Kundenzahlen und Leistungsmerkmale sind Eigenangaben der "
                 "Anbieter. Wo wir nichts gefunden haben, schreiben wir „keine öffentliche Angabe“. Die Lücken "
                 "von mandari nennen wir ausdrücklich, mit der Stufe aus der Roadmap: zugesagt, geplant mit "
-                "Zeitraum oder in Prüfung. Weitere Anbieter wie more! software, PROVOX und OpenSlides haben "
-                "wir in die Lückenanalyse einbezogen.</p>"
+                "Zeitraum oder in Prüfung. Bei einzelnen Lücken nennen wir zusätzlich more! software und "
+                "OpenSlides, ebenfalls mit Quelle. „Teilweise“ heißt dort: Der Anbieter nennt einen Teil der "
+                "Funktionen oder sie nur eingeschränkt.</p>"
                 "<p>Bei den Preisen gilt: Keiner der vier Anbieter veröffentlicht eine Preisliste; die Angebote "
                 "kommen auf Anfrage. mandari nennt die Preise für Work und das kostenlose Bürgerportal öffentlich, "
                 "die Preisliste für Session ist in Vorbereitung.</p>"
             ),
         }),
-        quellen_block(["SO", "ST", "AL", "RS"]),
+        quellen_block(PRAEFIXE_VERGLEICH + PRAEFIXE_WEITERE),
         ("gradient_cta", {
             "title": "Die beste Entscheidung ist eine informierte.",
             "subline": "Sprechen Sie mit uns über Ihre Anforderungen – wir sagen Ihnen auch offen, wenn mandari "
@@ -847,19 +902,24 @@ def uebersichtsseite():
 
 
 def roadmap_luecken():
-    """Abschnitt für /roadmap/: alle Lücken aus dem Vergleich, nach Stufe."""
-    bloecke = []
-    for art, titel, sub, bg in (
-        ("geplant", "Aus dem Marktvergleich: zugesagt und geplant",
-         f"Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht (Stand {STAND}). "
-         "Details im RIS-Vergleich.", "white"),
-        ("pruefung", "Aus dem Marktvergleich: in Prüfung",
-         "Lücken ohne Termin. Wir nennen einen Zeitraum, sobald er belastbar ist.", "gray"),
-    ):
-        bloecke.append(("split_rows", {
-            "header": _hdr(titel, sub, "marktvergleich" if art == "geplant" else ""),
-            "rows": _luecken_zeilen(art)[:8],
-            "note": ("<p><a href=\"/vergleich/\">Zum RIS-Vergleich mit Quellen</a></p>" if art == "pruefung" else ""),
-            "background": bg,
-        }))
-    return bloecke
+    """Abschnitt für /roadmap/: die Lücken aus dem Vergleich, die noch in Prüfung sind.
+
+    Die zugesagten und geplanten Lücken stehen auf der Roadmap bereits als Karten (BITV, Single Sign-on,
+    KI-Entwurf, hybride Sitzungen, Vollständige Ratsarbeit, App, Livestream, Penetrationstest); hier nur der
+    Verweis auf die Übersicht im Vergleich, damit nichts doppelt steht.
+    """
+    return [("split_rows", {
+        "header": _hdr(
+            "Aus dem Marktvergleich: in Prüfung",
+            f"Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht (Stand {STAND}), "
+            "ohne Termin. Wir nennen einen Zeitraum, sobald er belastbar ist.",
+            "marktvergleich",
+        ),
+        "rows": _luecken_zeilen("pruefung")[:8],
+        "note": (
+            "<p>Die zugesagten und geplanten Lücken aus dem Vergleich stehen oben in den Karten, gesammelt unter "
+            "<a href=\"/vergleich/#fehlt\">Was mandari noch fehlt</a>. Die Kürzel in eckigen Klammern verweisen auf "
+            "die <a href=\"/vergleich/#quellen\">Quellen im RIS-Vergleich</a>.</p>"
+        ),
+        "background": "gray",
+    })]
