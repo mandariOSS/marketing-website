@@ -99,6 +99,51 @@ class ContactPage(Page):
     class Meta:
         verbose_name = "Kontaktseite"
 
+    def get_context(self, request, *args, **kwargs):
+        from django.utils import timezone
+
+        from . import contact
+
+        context = super().get_context(request, *args, **kwargs)
+        subject = contact.clean_line(request.GET.get("subject", ""), 80)
+        initial = {"thema": contact.topic_for_subject(subject), "anlass": subject}
+        sent = request.GET.get("gesendet", "")
+        context.update(
+            {
+                "termin_form": contact.AppointmentForm(initial=initial),
+                "nachricht_form": contact.MessageForm(initial=initial),
+                "contact_status": {"kind": sent, "result": "gesendet"} if sent in contact.FORMS else None,
+                "contact_topics": contact.TOPICS,
+                "contact_time_slots": contact.TIME_SLOTS,
+                "contact_formats": contact.FORMATS,
+                "contact_min_date": timezone.localdate().isoformat(),
+                "contact_fallback": contact.FALLBACK_ADDRESS,
+                "contact_directory": contact.DIRECTORY,
+                "kontakt_hero": contact.HERO,
+            }
+        )
+        return context
+
+    def serve(self, request, *args, **kwargs):
+        """POST verarbeitet die Formulare; Erfolg leitet um (keine Doppelsendung beim Neuladen)."""
+        if request.method != "POST":
+            return super().serve(request, *args, **kwargs)
+
+        from django.http import HttpResponseRedirect
+        from django.template.response import TemplateResponse
+
+        from . import contact
+
+        kind, form, result = contact.handle_submission(request)
+        if result == "gesendet":
+            return HttpResponseRedirect(f"{self.url}?gesendet={kind}#{kind}")
+
+        context = self.get_context(request, *args, **kwargs)
+        if form is not None:
+            context[f"{kind}_form"] = form
+        context["contact_status"] = {"kind": kind or "nachricht", "result": result}
+        return TemplateResponse(request, self.get_template(request, *args, **kwargs), context)
+
 
 class LegalPage(Page):
     """Impressum, Datenschutz, AGB, Quellen — StreamField-basiert."""
