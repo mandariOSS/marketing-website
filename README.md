@@ -297,9 +297,9 @@ und [SECURITY.md](SECURITY.md).
 
 ## 📞 Kontakt
 
-- **Allgemein**: [hi@mandari.de](mailto:hi@mandari.de)
+- **Allgemein**: [hello@mandari.de](mailto:hello@mandari.de)
 - **Sicherheit**: [security@mandari.de](mailto:security@mandari.de)
-- **Datenschutz**: [privacy@mandari.de](mailto:privacy@mandari.de)
+- **Datenschutz**: [datenschutz@mandari.de](mailto:datenschutz@mandari.de)
 - **Missbrauch**: [abuse@mandari.de](mailto:abuse@mandari.de)
 - **Founder**: Sven Konopka, [topixmedia.de](https://topixmedia.de), Münster
 

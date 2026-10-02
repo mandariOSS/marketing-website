@@ -232,7 +232,7 @@ Acknowledgments: {site_url}/sicherheit/disclosure/#hall-of-fame
 # Andere Meldewege (RFC 2142):
 #   abuse@mandari.de         — Spam, illegaler Content, Belästigung, Urheberrecht
 #                              ({site_url}/abuse/)
-#   privacy@mandari.de       — DSGVO-Anfragen, Auskunft, Löschung
+#   datenschutz@mandari.de   — DSGVO-Anfragen, Auskunft, Löschung
 #   legal@mandari.de         — Behörden-Anfragen, Rechtliches
 #   conduct@mandari.de       — Code-of-Conduct-Verstöße in der Community
 #   barrierefreiheit@mandari.de — BFSG-Feedback ({site_url}/barrierefreiheit/)

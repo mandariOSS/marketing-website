@@ -82,7 +82,10 @@ MARKETING_PAGE_META = [
         "title": "Preise",
         "slug": "preise",
         "seo_title": "Preise – Mandari",
-        "search_description": "Transparente Preisgestaltung. Insight ist kostenlos, Work ab 39,90€/Monat.",
+        "search_description": (
+            "Was mandari kostet: Das Bürgerportal ist kostenlos, mandari Work gibt es ab 39,90 € im Monat, "
+            "mandari Session kalkulieren wir je Kommune."
+        ),
     },
     {
         "title": "Für Kommunen & Verwaltungen",
