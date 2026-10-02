@@ -118,6 +118,7 @@ class ContactPage(Page):
                 "contact_formats": contact.FORMATS,
                 "contact_min_date": timezone.localdate().isoformat(),
                 "contact_fallback": contact.FALLBACK_ADDRESS,
+                "contact_ready": contact.delivery_ready(),
                 "contact_directory": contact.DIRECTORY,
                 "kontakt_hero": contact.HERO,
             }

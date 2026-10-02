@@ -64,12 +64,12 @@ urlpatterns = [
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
     path("loesungen/", RedirectView.as_view(url="/produkte/", permanent=True)),
-    path("team/", RedirectView.as_view(url="/ueber-uns/", permanent=True)),
+    path("team/", RedirectView.as_view(url="/unternehmen/", permanent=True)),
     path("danksagungen/", RedirectView.as_view(url="/open-source/#danke", permanent=True)),
     # Phase 2 — weitere Konsolidierungen (Sicherheit komplett in Trust integriert,
     # FAQ aufgelöst — Page-spezifische FAQs direkt auf den jeweiligen Pages)
     path("sicherheit/", RedirectView.as_view(url="/trust/", permanent=True)),
-    path("faq/", RedirectView.as_view(url="/kontakt/#faq", permanent=True)),
+    path("faq/", RedirectView.as_view(url="/kontakt/", permanent=True)),
     # Relaunch 2026 — Produkte: /produkt/ ist aufgeteilt in /produkte/ (Plattform, Modulübersicht,
     # Bürgerportal) und /fraktionen/ (mandari Work); Wagtail-Seite per
     # `retire_page produkt --redirect /fraktionen/` zurückziehen

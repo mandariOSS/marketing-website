@@ -2,7 +2,7 @@
 {% load static company_tags %}
 
 {% block extra_head %}
-<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>
+{% if contact_ready %}<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -18,6 +18,7 @@
         <div id="termin" class="lg:col-span-7 scroll-mt-24">
             <span id="termin-buchen" class="block scroll-mt-24" aria-hidden="true"></span>
             <h2 class="t-h3 text-gray-900 dark:text-white">Erstgespräch vereinbaren</h2>
+            {% if contact_ready %}
             <p class="t-body text-gray-600 dark:text-gray-300 mt-3 max-w-xl">30 Minuten, unverbindlich. Wählen Sie Ihren Wunschtermin – wir bestätigen ihn innerhalb eines Werktags per E-Mail oder schlagen eine Alternative vor.</p>
             <p class="t-body text-gray-600 dark:text-gray-300 mt-2 lg:hidden">Lieber schriftlich? <a href="#nachricht" class="textlink">Nachricht schreiben</a></p>
 
@@ -49,12 +50,18 @@
                 <div class="pt-2"><button type="submit" class="btn-primary">Terminanfrage senden</button></div>
             </form>
             {% endwith %}
+            {% else %}
+            <p class="t-body text-gray-600 dark:text-gray-300 mt-3 max-w-xl">30 Minuten, unverbindlich. Nennen Sie uns zwei, drei Wunschtermine per E-Mail – wir bestätigen innerhalb eines Werktags oder schlagen eine Alternative vor.</p>
+            {% if contact_status.kind == "termin" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+            <p class="mt-8"><a href="mailto:{{ contact_fallback }}?subject=Erstgespr%C3%A4ch" class="btn-primary">Termin per E-Mail anfragen</a></p>
+            {% endif %}
         </div>
 
         {# ── Nachricht ───────────────────────────────────────────────── #}
         <div id="nachricht" class="lg:col-span-5 scroll-mt-24">
             <h2 class="t-h3 text-gray-900 dark:text-white">Nachricht schreiben</h2>
             <p class="t-body text-gray-600 dark:text-gray-300 mt-3">Eine Frage, eine Idee, ein Vorhaben? Sie erhalten eine persönliche Antwort, keine automatische.</p>
+            {% if contact_ready %}
 
             {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
 
@@ -74,9 +81,15 @@
                 <div class="pt-2"><button type="submit" class="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-6 py-[0.95rem] font-semibold leading-tight text-gray-900 dark:text-white transition-colors hover:border-gray-900 dark:hover:border-white">Nachricht senden</button></div>
             </form>
             {% endwith %}
+            {% else %}
+            <p class="t-body text-gray-600 dark:text-gray-300 mt-3">Schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="textlink">{{ contact_fallback }}</a>.</p>
+            {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+            {% endif %}
         </div>
 
+        {% if contact_ready %}
         <p class="lg:col-span-12 text-[0.9375rem] text-gray-600 dark:text-gray-400 max-w-3xl">Ihre Angaben gehen direkt an unser Team – ohne Tracking und ohne Drittanbieter. Den Spamschutz rechnet Ihr Browser selbst aus, ein Captcha gibt es nicht. Mehr dazu in der <a href="/datenschutz/#formular" class="textlink">Datenschutzerklärung</a>.</p>
+        {% endif %}
     </div>
 </section>
 
