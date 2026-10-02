@@ -4,32 +4,50 @@
 {# Titel und Meta-Description kommen aus den Seitenfeldern seo_title und search_description (Quelle: HOME_PAGE_META, base.html) #}
 
 {% block content %}
-{# Hero: Überschrift, ein Satz, ein Aufruf; der Weg zum Bürgerportal als ruhiger Textlink; ein echtes Produktbild #}
+{# Hero: Überschrift, ein Satz, ein Aufruf und der Weg zum Bürgerportal als Textlink; rechts die drei Produkte als echte Bilder #}
 <section class="band-hell pt-14 pb-16 lg:pt-24 lg:pb-24">
-    <div class="wrap">
-        <h1 class="t-display text-gray-900 dark:text-white max-w-[13ch]">Software für die offene Verwaltung<span class="punkt">.</span></h1>
-        <p class="t-lead text-gray-600 dark:text-gray-300 mt-7 max-w-[38rem]">
-            mandari verbindet Sitzungsdienst, Fraktionsarbeit und Bürgerportal auf einer offenen Plattform – vom ersten Antrag bis zum Beschluss, den alle nachlesen können.
-        </p>
-        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
-            <a class="btn-primary" href="/kontakt/#termin">Erstgespräch vereinbaren</a>
-            <a class="textlink" href="/insight/">Ratsinformationen im Bürgerportal ansehen</a>
+    <div class="wrap grid gap-y-14 lg:grid-cols-12 lg:gap-x-10 lg:items-center">
+        <div class="lg:col-span-6">
+            <h1 class="t-display hero-titel text-gray-900 dark:text-white max-w-[13ch]">Software für die offene Verwaltung<span class="punkt">.</span></h1>
+            <p class="t-lead text-gray-600 dark:text-gray-300 mt-7 max-w-[38rem]">
+                mandari verbindet Sitzungsdienst, Fraktionsarbeit und Bürgerportal auf einer offenen Plattform – vom ersten Antrag bis zum Beschluss, den alle nachlesen können.
+            </p>
+            <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+                <a class="btn-primary" href="/kontakt/#termin">Erstgespräch vereinbaren</a>
+                <a class="textlink" href="/insight/">Ratsinformationen im Bürgerportal ansehen</a>
+            </div>
         </div>
 
-        <figure class="mt-16 lg:mt-20">
-            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
-                <picture>
-                    <source media="(max-width: 640px)" type="image/webp"
-                            srcset="{% static 'images/startseite/insight-muenster-mobil-780.webp' %}"
-                            width="780" height="1266">
-                    <source type="image/webp"
-                            srcset="{% static 'images/startseite/insight-muenster-1280.webp' %} 1280w, {% static 'images/startseite/insight-muenster-2560.webp' %} 2560w"
-                            sizes="(min-width: 1280px) 1216px, 100vw"
-                            width="1280" height="800">
-                    <img src="{% static 'images/startseite/insight-muenster-1280.webp' %}" width="1280" height="800"
-                         alt="mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste Vorgänge der Stadt"
-                         fetchpriority="high" decoding="async"
-                         class="block w-full h-auto">
+        {# Eine Figur aus drei echten Bildschirmen, leicht versetzt: hinten Session, dann Work, vorne Insight. Am Handy zwei Bildschirme im Hochformat (Work und Insight), Session entfällt dort. #}
+        <figure class="lg:col-span-6">
+            <figcaption class="sr-only">Die drei Produkte von mandari mit echten Bildschirmen: mandari Session für den Sitzungsdienst, mandari Work für die Fraktion und vorne das Bürgerportal mandari Insight für Münster.</figcaption>
+            <div class="hero-stapel">
+                <picture class="hero-karte hero-karte-session">
+                    <img src="{% static 'images/startseite/hero-session-800.webp' %}"
+                         srcset="{% static 'images/startseite/hero-session-800.webp' %} 800w, {% static 'images/startseite/hero-session-1600.webp' %} 1600w"
+                         sizes="(min-width: 1280px) 440px, (min-width: 1024px) 34vw, 70vw"
+                         width="800" height="500" loading="lazy" decoding="async"
+                         alt="mandari Session: Sitzungsübersicht der Stadtverwaltung mit kommenden Sitzungen von Rat und Ausschüssen und ihrem Stand">
+                </picture>
+                <picture class="hero-karte hero-karte-work">
+                    <source media="(max-width: 639px)"
+                            srcset="{% static 'images/startseite/hero-work-mobil-400.webp' %} 400w, {% static 'images/startseite/hero-work-mobil-780.webp' %} 780w"
+                            sizes="58vw" width="780" height="1266">
+                    <img src="{% static 'images/startseite/hero-work-800.webp' %}"
+                         srcset="{% static 'images/startseite/hero-work-800.webp' %} 800w, {% static 'images/startseite/hero-work-1600.webp' %} 1600w"
+                         sizes="(min-width: 1280px) 440px, (min-width: 1024px) 34vw, 70vw"
+                         width="800" height="500" decoding="async"
+                         alt="mandari Work: Die Fraktion bereitet die Ratssitzung vor, mit Tagesordnung, Position je Tagesordnungspunkt und Diskussion">
+                </picture>
+                <picture class="hero-karte hero-karte-insight">
+                    <source media="(max-width: 639px)"
+                            srcset="{% static 'images/startseite/hero-insight-muenster-mobil-400.webp' %} 400w, {% static 'images/startseite/hero-insight-muenster-mobil-780.webp' %} 780w"
+                            sizes="58vw" width="780" height="1266">
+                    <img src="{% static 'images/startseite/hero-insight-muenster-800.webp' %}"
+                         srcset="{% static 'images/startseite/hero-insight-muenster-800.webp' %} 800w, {% static 'images/startseite/hero-insight-muenster-1600.webp' %} 1600w"
+                         sizes="(min-width: 1280px) 440px, (min-width: 1024px) 34vw, 70vw"
+                         width="800" height="500" fetchpriority="high" decoding="async"
+                         alt="mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste Vorgänge der Stadt">
                 </picture>
             </div>
         </figure>

@@ -96,7 +96,7 @@ jobs:
           c = Client()
           # URL -> Textbausteine, die im gerenderten HTML stehen muessen
           checks = {
-              "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "insight-muenster-1280.webp"],
+              "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "hero-insight-muenster-800.webp", "hero-work-800.webp", "hero-session-800.webp"],
               "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt"],
               "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
