@@ -258,8 +258,11 @@ Weniger ist mehr: Typografie trägt die Seite, nicht Effekte.
   Textlinks (`textlink`) und den Punkt der Wortmarke (`punkt`).
 - **Schrift:** Inter, Stufen `t-display`, `t-h1`, `t-h2`, `t-h3`, `t-lead`,
   `t-body` (Komponenten in `static/css/input.css`), linksbündig.
-- **Hero:** Überschrift, ein erklärender Satz, ein Button, höchstens ein
-  Textlink. Keine Pillen, keine Zähler-Leiste.
+- **Hero und Einladung am Seitenende:** Überschrift, ein erklärender Satz,
+  ein Button, höchstens ein Textlink. Keine Pillen, keine Zähler-Leiste.
+- **Versionsangaben** stehen nur in den Release-Notes (`/releases/`). Andere
+  Seiten nennen den Stand ohne Nummer („Beta-Phase“) und verlinken dorthin,
+  damit sie mit dem nächsten Release nicht veralten (die CI prüft das).
 - **Inhalte offen auf der Fläche** statt in Karten; Status als leiser Text,
   Gruppierung über Abstand. Linien nur, wo sie Tabellen und Listen lesbarer machen.
 - **Zustände** ändern Farbe oder Unterstreichung, nie die Position

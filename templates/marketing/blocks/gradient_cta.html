@@ -1,4 +1,4 @@
-{# Einladung: ein gefüllter Aufruf, weitere Wege als Textlink, kein Verlauf. Am Seitenende auf ruhiger dunkler Fläche, mitten auf der Seite auf heller Fläche (last_block kommt aus marketing_page.html). #}
+{# Einladung: ein gefüllter Aufruf, höchstens ein Textlink (wie im Hero), kein Verlauf. Am Seitenende auf ruhiger dunkler Fläche, mitten auf der Seite auf heller Fläche (last_block kommt aus marketing_page.html). #}
 {% if last_block == False %}
 <section class="bg-mist py-16 lg:py-20">
     <div class="wrap">
@@ -13,7 +13,7 @@
             {% if self.subline %}<p class="t-lead text-gray-300 mt-6">{{ self.subline }}</p>{% endif %}
 {% endif %}
             <div class="{% if last_block == False %}mt-7{% else %}mt-10{% endif %} flex flex-wrap items-center gap-x-8 gap-y-5">
-                {% for cta in self.ctas %}{% if forloop.counter <= 3 %}
+                {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
                 {% if forloop.first %}
                 <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
                 {% else %}

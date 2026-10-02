@@ -314,6 +314,45 @@ jobs:
           print(f"OK: {len(redirects)} Weiterleitungen")
           EOF
 
+      - name: Render-Smoke Versionsangaben (keine veraltete Version außerhalb der Release-Notes)
+        # Seiten nennen den Entwicklungsstand ohne Versionsnummer und verweisen auf /releases/. Nur die
+        # Release-Notes selbst nennen Versionen. Geprüft wird der sichtbare Text jeder veröffentlichten Seite.
+        # AUSNAHMEN: Seiten, deren Bereinigung in einem offenen PR liegt; der Schritt meldet, sobald eine
+        # Ausnahme überflüssig ist, dann hier streichen.
+        run: |
+          python - <<'EOF'
+          import os, re, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          from wagtail.models import Page
+          c = Client()
+          veraltet = re.compile(r"\b(?:Version|Beta)\s+0\.9\b|\b0\.9\s+Beta\b")
+          AUSNAHMEN = {"/kommunen/"}  # „Ehrlicher Stand (Beta 0.9)“ entfällt mit der Sie-Form-Überarbeitung
+          pflicht = {"/vergleich/", "/vergleich/mandari-vs-sternberg/", "/vergleich/mandari-vs-allris/",
+                     "/vergleich/mandari-vs-somacos/", "/vergleich/mandari-vs-regisafe/", "/roadmap/"}
+          urls = {p.url for p in Page.objects.live().specific() if p.url}
+          errors = [f"{u}: Seite fehlt" for u in sorted(pflicht - urls)]
+          geprueft = 0
+          for url in sorted(urls):
+              if url.startswith("/releases/"):
+                  continue
+              r = c.get(url)
+              if r.status_code != 200:
+                  continue
+              text = " ".join(re.sub(r"<[^>]+>", " ", r.content.decode("utf-8")).split())
+              treffer = veraltet.findall(text)
+              geprueft += 1
+              if url in AUSNAHMEN:
+                  if not treffer:
+                      print(f"Hinweis: {url} ist bereinigt, Ausnahme streichen")
+                  continue
+              errors += [f"{url}: veraltete Versionsangabe '{t}'" for t in treffer]
+          assert not errors, "Versionsangaben: " + "; ".join(errors)
+          print(f"OK: {geprueft} Seiten ohne veraltete Versionsangabe")
+          EOF
+
       - name: Ruhige Oberflaeche (kein Hover-Sprung, keine Verlaeufe, Pillen oder Viertelkreise)
         # Gestaltungsregeln: Zustaende aendern Farbe oder Unterstreichung, nie die Position. Alle Templates
         # kommen ohne Farbverlauf, Pillen-Etikett und Deko-Viertelkreis aus. Ausgenommen ist nur der ruhende

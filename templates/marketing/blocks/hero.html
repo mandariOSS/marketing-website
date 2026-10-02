@@ -1,7 +1,7 @@
-{# Hero: Überschrift, ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Keine Pille, kein Verlauf. #}
+{# Hero: Überschrift (heading aus HeroBlock.get_context), ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Keine Pille, kein Verlauf. #}
 <section class="pt-14 pb-12 lg:pt-24 lg:pb-16">
     <div class="wrap">
-        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">{% if self.title_highlight and self.title|slice:"-1:" == "-" %}{% with first=self.title_highlight|slice:":1" %}{% if first|lower == first %}{{ self.title|slice:":-1" }}{% else %}{{ self.title }}{% endif %}{% endwith %}{{ self.title_highlight }}{% else %}{{ self.title }}{% if self.title_highlight %} {{ self.title_highlight }}{% endif %}{% endif %}</h1>
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">{{ heading }}</h1>
         {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[42rem]">{{ self.subline }}</p>{% endif %}
         {% if self.subline_secondary %}<p class="t-body text-gray-600 dark:text-gray-400 mt-4 max-w-[42rem]">{{ self.subline_secondary }}</p>{% endif %}
         {% if self.ctas %}

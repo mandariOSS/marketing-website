@@ -200,6 +200,24 @@ class EmailEntryBlock(StructBlock):
 # ──────────────────────────── Section blocks ───────────────────────────
 
 
+def hero_title(title, highlight=""):
+    """Setzt Titel und title_highlight zur Überschrift zusammen.
+
+    Normalfall: mit Leerzeichen anhängen („mandari“ + „Roadmap“ → „mandari Roadmap“).
+    Endet der Titel auf Bindestrich, ist er ein Wortanfang: Beginnt die Ergänzung klein, entsteht
+    ein Wort („Quellen-“ + „nachweise“ → „Quellennachweise“); beginnt sie groß, bleibt der
+    Bindestrich („Presse-“ + „Material“ → „Presse-Material“).
+    """
+    title = title or ""
+    if not highlight:
+        return title
+    if title.endswith("-"):
+        if highlight[0].islower():
+            return title[:-1] + highlight
+        return title + highlight
+    return f"{title} {highlight}" if title else highlight
+
+
 class HeroBlock(StructBlock):
     """Linksbündiger Hero: H1, ein erklärender Satz, ein gefüllter Aufruf und höchstens ein Textlink.
 
@@ -228,6 +246,11 @@ class HeroBlock(StructBlock):
         default="primary",
         help_text="Ohne Wirkung (Hero ohne Verlauf)",
     )
+
+    def get_context(self, value, parent_context=None):
+        context = super().get_context(value, parent_context=parent_context)
+        context["heading"] = hero_title(value.get("title"), value.get("title_highlight"))
+        return context
 
     class Meta:
         template = "marketing/blocks/hero.html"
@@ -361,7 +384,7 @@ class GradientCTABlock(StructBlock):
         CTAButtonBlock(),
         min_num=1,
         max_num=4,
-        help_text="Erster Eintrag = gefüllter Button, die nächsten zwei = Textlinks",
+        help_text="Erster Eintrag = gefüllter Button, zweiter = Textlink; weitere werden nicht angezeigt",
     )
     gradient_from = ChoiceBlock(choices=COLOR_CHOICES, default="primary", help_text="Ohne Wirkung (flache Fläche)")
 

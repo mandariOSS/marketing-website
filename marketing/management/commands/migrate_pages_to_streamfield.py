@@ -136,16 +136,18 @@ _VERGLEICH_GRUPPEN = [
     ]),
 ]
 
-# mandari-Spalte — überall identisch, ehrlich inkl. Beta-Status.
+# mandari-Spalte — überall identisch, ehrlich inkl. Beta-Status. Bewusst ohne
+# Versionsnummer: Der aktuelle Stand steht auf /releases/, damit diese Seiten
+# nicht mit jedem Release veralten.
 _MANDARI_CELLS = {
     "open_source": ("yes", "Komplette Plattform unter AGPL-3.0 auf GitHub"),
     "preis": ("yes", "Insight kostenlos, Work 39,90 €/Monat inkl. MwSt., Session individuell"),
     "oparl": ("yes", "Import aus Alt-RIS + eigene OParl-1.1-API mit Tombstones (oparl.mandari.de)"),
     "portal": ("yes", "mandari Insight — kostenlos, ohne Anmeldung, ohne Tracking"),
     "fraktion": ("yes", "mandari work: Antragsdatenbank, Sitzungsvorbereitung, Gastzugänge"),
-    "ris": ("yes", "mandari Session (Beta 0.9, Pilot-Kommunen gesucht)"),
-    "kollab": ("yes", "Editor mit Versionshistorie und Briefkopf-Export (Beta 0.9)"),
-    "ki": ("yes", "Zusammenfassungen in mandari work (Beta 0.9)"),
+    "ris": ("yes", "mandari Session (Pilotphase, Pilot-Kommunen gesucht)"),
+    "kollab": ("yes", "Editor mit Versionshistorie und Briefkopf-Export (offene Beta)"),
+    "ki": ("yes", "Zusammenfassungen in mandari work (offene Beta)"),
     "suche": ("yes", "Elasticsearch, deutsche Synonyme, Fehlertoleranz, OCR"),
     "hosting_de": ("yes", "Deutsche Rechenzentren (Hetzner)"),
     "vertrag": ("yes", "Work: 3 Monate Mindestlaufzeit, dann monatlich; Online-Kündigung nach § 312k BGB"),
@@ -295,7 +297,8 @@ def _build_vergleich_tabelle(slug):
             "Auf der Website des Anbieters bzw. auf oparl.org war zum Abrufzeitpunkt keine "
             "entsprechende Angabe auffindbar. Das ist keine Aussage über den tatsächlichen "
             "Funktionsumfang des Produkts. Angaben in der mandari-Spalte sind Eigenangaben; "
-            "mandari ist Beta-Software (Version 0.9).</p>"
+            "mandari ist in der Beta-Phase, den aktuellen Stand zeigen die "
+            "<a href=\"/releases/\">Release-Notes</a>.</p>"
         ),
     })
 
@@ -314,7 +317,6 @@ def _build_vergleich_page(slug):
                 f"mandari und {name} in einer Funktionstabelle — zwölf Kriterien, sachlich, "
                 "auf Basis öffentlich verfügbarer Informationen, Lücken klar gekennzeichnet."
             ),
-            "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9) — auch das gehört zu einem ehrlichen Vergleich.",
             "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
                      cta("Alle Vergleiche", "/vergleich/", "scale", "secondary")],
             "background_color": "primary",
@@ -325,7 +327,7 @@ def _build_vergleich_page(slug):
                           title=f"mandari und {name} im Überblick", align="center",
                           subline="Zwei unterschiedliche Ansätze — hier die Eckdaten beider Anbieter."),
             "left_card": card(color="primary", icon="sparkles", title="mandari",
-                              subtitle="Open-Source-Plattform · Beta 0.9",
+                              subtitle="Open-Source-Plattform in der Beta-Phase",
                               description="Drei Module (Insight, Work, Session) auf einer offenen Plattform — Open Source, deutsche Server, öffentliche Preise.",
                               bullets=[bullet("Quellcode öffentlich (AGPL-3.0)"),
                                        bullet("Bürgerportal immer inklusive"),
@@ -345,7 +347,7 @@ def _build_vergleich_page(slug):
             "body": (
                 "<p><strong>Fairerweise:</strong> " + name + " ist ein etabliertes Produkt mit "
                 "langjähriger Praxis im Verwaltungsalltag — diesen Erfahrungsvorsprung hat mandari "
-                "als Beta-Software (Version 0.9) nicht. Dafür bietet mandari Offenheit, die es im "
+                "als junge Plattform in der Beta-Phase noch nicht. Dafür bietet mandari Offenheit, die es im "
                 "RIS-Markt bisher selten gibt: öffentlicher Quellcode, öffentliche Preise, "
                 "öffentliche Roadmap und ein kostenloses Bürgerportal."
                 + v.get("fairness_extra", "") + "</p>"
@@ -355,8 +357,7 @@ def _build_vergleich_page(slug):
             "title": "Selbst vergleichen ist besser.",
             "subline": "Sehen Sie sich mandari im Bürgerportal live an oder vereinbaren Sie eine Demo — unverbindlich und ohne Vertriebsdruck.",
             "ctas": [cta("Demo anfragen", "/kontakt/?subject=Demo-RIS-Vergleich", "mail", "primary"),
-                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline"),
-                     cta("Migration vom Alt-RIS", "/migration/", "move-right", "outline")],
+                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline")],
             "gradient_from": "primary",
         }),
     ]
@@ -384,17 +385,10 @@ def _build_vergleich_uebersicht():
                 "Hier stellen wir mandari den etablierten Anbietern gegenüber: als Funktionstabelle "
                 "mit zwölf Kriterien, ausschließlich auf Basis öffentlich verfügbarer Informationen."
             ),
-            "subline_secondary": "mandari ist in der Beta-Phase (Version 0.9). Wir vergleichen ehrlich — inklusive der Punkte, in denen etablierte Anbieter vorn liegen.",
             "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
                      cta("Migration ansehen", "/migration/", "move-right", "outline")],
             "background_color": "primary",
         }),
-        ("trust_banner", {"color": "primary", "items": [
-            trust_item("list-checks", "12 Kriterien", "pro Vergleich"),
-            trust_item("file-search", "Nur öffentliche", "Quellen"),
-            trust_item("scale", "Sachlich", "ohne Herabsetzung"),
-            trust_item("mail-check", "Korrekturen", "an hello@mandari.de"),
-        ]}),
         ("mandari_cards", {
             "header": hdr(badge_text="Vier Vergleiche", badge_icon="layout-grid",
                           title="Anbieter auswählen", align="center",
@@ -417,7 +411,8 @@ def _build_vergleich_uebersicht():
                 "Juli 2026. Eigenangaben der Anbieter (z. B. Kundenzahlen) kennzeichnen wir als solche. "
                 "Wo keine öffentliche Angabe existiert, schreiben wir genau das — und behaupten nichts. "
                 "Eine Feststellung vorweg: Keiner der verglichenen Anbieter veröffentlicht eine "
-                "Preisliste (Stand Juli 2026); mandari tut es.</p>"
+                "Preisliste (Stand Juli 2026); mandari tut es. Wo etablierte Anbieter vorn liegen, "
+                "schreiben wir das ebenso dazu.</p>"
             ),
         }),
         _vergleich_disclaimer("die verglichenen Anbieter"),
@@ -425,8 +420,7 @@ def _build_vergleich_uebersicht():
             "title": "Die beste Entscheidung ist eine informierte.",
             "subline": "Sprechen Sie mit uns über Ihre Anforderungen — wir sagen Ihnen auch ehrlich, wenn mandari (noch) nicht passt.",
             "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich", "calendar", "primary"),
-                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline"),
-                     cta("Preise ansehen", "/preise/", "credit-card", "outline")],
+                     cta("Bürgerportal live ansehen", "/insight/", "eye", "outline")],
             "gradient_from": "primary",
         }),
     ]
@@ -1425,7 +1419,6 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "Für Vergabestellen, IT-Leitungen und Datenschutzbeauftragte", "badge_icon": "folder-check", "badge_color": "primary",
                 "title": "Unterlagen für", "title_highlight": "Beschaffung und Prüfung",
                 "subline": "Alles, was Sie für Markterkundung, Vergabe und Datenschutzprüfung brauchen, an einem Ort und ohne Anfrageformular.",
-                "subline_secondary": "Fehlt ein Dokument, sagen wir das hier offen und nennen den Stand.",
                 "ctas": [cta("Muster-AVV", "/avv/", "file-signature", "primary"),
                          cta("Trust Center", "/trust/", "shield-check", "secondary")],
                 "background_color": "primary",
@@ -1524,8 +1517,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Fragen zur Beschaffung?",
                 "subline": "Wir beantworten Fragebögen, füllen Ihre Formulare aus und stellen Arbeitsfassungen fehlender Dokumente bereit. Antwort in der Regel innerhalb eines Werktags.",
                 "ctas": [cta("Kontakt aufnehmen", "/kontakt/?subject=Vergabe", "mail", "primary"),
-                         cta("Gespräch vereinbaren", "/kontakt/#termin-buchen", "calendar", "outline"),
-                         cta("Für Kommunen", "/kommunen/", "building-2", "outline")],
+                         cta("Für Verwaltungen", "/kommunen/", "building-2", "outline")],
                 "gradient_from": "primary",
             }),
         ],
@@ -1540,16 +1532,9 @@ def get_marketing_definitions() -> dict:
                 "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Aktualisiert nach jedem Quartal, Verschiebungen werden offen benannt.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
-                         cta("Releases", "/releases/", "tag", "secondary"),
-                         cta("Idee einreichen", "https://github.com/mandariOSS/mandari/issues/new?template=feature_request.md", "lightbulb", "outline")],
+                         cta("Releases", "/releases/", "tag", "secondary")],
                 "background_color": "primary",
             }),
-            ("trust_banner", {"color": "primary", "items": [
-                trust_item("badge-check", "Zugesagt", "vertraglich referenzierbar"),
-                trust_item("calendar", "Geplant", "Quartal genannt"),
-                trust_item("search", "In Prüfung", "Idee ohne Termin"),
-                trust_item("tag", "0.9 Beta", "seit Juli 2026"),
-            ]}),
             ("mandari_cards", {
                 "header": hdr(badge_text="Seit der letzten Aktualisierung geliefert", badge_icon="check-circle", badge_color="green",
                               title="Neu seit Juli 2026",
