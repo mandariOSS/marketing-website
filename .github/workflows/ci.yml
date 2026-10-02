@@ -226,6 +226,40 @@ jobs:
           print(f"OK: {len(pages)} Seiten in Sie-Form")
           EOF
 
+      - name: Ruhige Bestandsseiten (keine Leiste unter dem Hero, Pilotangebot einmal, eine Datenschutzadresse)
+        # Was dort stehen muss und was nicht zurückkehren darf: Faktenleisten unter dem Hero, gelbe
+        # Pilot-Kästen, zwei Aufrufe zum selben Formular, privacy@ statt datenschutz@, „Mandari“ groß.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          pages = {
+              "/abuse/": (["Was möchten Sie melden?", "mailto:datenschutz@mandari.de"],
+                          ["DSA &amp; NetzDG", "privacy@mandari.de", "Notfall-Kontakte"]),
+              "/migration/": (["Bestandsaufnahme", "Pilotkommunen erhalten Sonderkonditionen", "/kontakt/?subject=Migration-Beratung#termin"],
+                              ["Migrations-Gespräch", "Pilot-Kommunen bekommen Sonderkonditionen", "ersten 5", "Rollback"]),
+              "/barrierefreiheit/": (["teilweise konform mit der BITV 2.0"], ["Letzte Prüfung:", "Wir sind ehrlich"]),
+              "/mitmachen/": (["Such dir aus, was zu dir passt"], ["100 % Open Source", "IONOS"]),
+              "/preise/": (["Pilotkommunen starten jetzt", "Rechenzentren in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
+              "/kommunen/": (["Drei Bausteine", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
+              "/quellen/": (["mandari aggregiert", "mandari nutzt", "mandari nimmt"], ["Mandari "]),
+          }
+          errors = []
+          for url, (present, absent) in pages.items():
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}"); continue
+              body = r.content.decode("utf-8")
+              errors += [f"{url}: '{n}' fehlt" for n in present if n not in body]
+              errors += [f"{url}: '{n}' ist zurück" for n in absent if n in body]
+          assert not errors, "Bestandsseiten: " + "; ".join(errors)
+          print(f"OK: {len(pages)} Bestandsseiten ruhig")
+          EOF
+
       - name: Urheber- und Lizenzangabe (Fußzeile wie in mandariOSS/mandari)
         # Urheber ist Sven Konopka, Lizenz AGPL-3.0-or-later. Die Fußzeile muss das nennen, und jedes
         # Urheberzeichen in einer versionierten HTML-Datei muss den Urheber nennen (Ausnahme:
