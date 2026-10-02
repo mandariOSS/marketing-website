@@ -32,10 +32,14 @@ class BandFolgeTests(SimpleTestCase):
         for links, rechts in zip(baender, baender[1:]):
             self.assertNotEqual(links, rechts)
 
-    def test_zusaetze_und_fortlaufende_artikel_bleiben_auf_dem_band(self):
+    def test_zusaetze_bleiben_auf_dem_band_artikel_wechseln(self):
         typen = ["hero", "trust_banner", "mandari_cards", "numbered_article", "disclaimer_box",
                  "numbered_article", "numbered_article", "gradient_cta"]
-        self.assertEqual(band_folge(typen), ["hell", "hell", "grau", "hell", "hell", "hell", "hell", "tinte"])
+        self.assertEqual(band_folge(typen), ["hell", "hell", "grau", "hell", "hell", "grau", "hell", "tinte"])
+
+    def test_rechtstexte_mit_artikeln_bleiben_weiss(self):
+        typen = ["hero", "table_of_contents", "numbered_article", "numbered_article", "disclaimer_box"]
+        self.assertEqual(band_folge(typen, ruhig=True), ["grau", "hell", "hell", "hell", "hell"])
 
     def test_produktseite_hero_in_der_produktflaeche(self):
         typen = ["hero", "mandari_cards", "two_column_use_case", "gradient_cta"]
@@ -96,6 +100,13 @@ class SeitenTests(TestCase):
         self.assertIn("insight-muenster-1280.webp", insight[:insight.find("</article>")])
         self.assertEqual(produkte.count("insight-muenster-1280.webp"), 1)
 
+    def test_trust_center_keine_textwand(self):
+        # Zusätze (Leiste unter dem Hero, Hinweis nach Artikel 1) setzen das Band davor fort; jeder
+        # nummerierte Artikel bekommt im Wechsel ein eigenes Band.
+        baender = baender_der_seite(self.seite("/trust/"))
+        zusammengefasst = [b for i, b in enumerate(baender) if i == 0 or baender[i - 1] != b]
+        self.assertEqual(zusammengefasst, ["hell", "grau", "hell", "grau", "hell", "grau", "hell", "grau", "tinte"])
+
     def test_produktseiten_tragen_ihre_flaeche(self):
         self.assertEqual(baender_der_seite(self.seite("/fraktionen/"))[0], "work")
         self.assertEqual(baender_der_seite(self.seite("/kommunen/"))[0], "session")
@@ -106,3 +117,14 @@ class SeitenTests(TestCase):
 
     def test_kontakt_hat_ueberschrift(self):
         self.assertIn(">Sprechen wir über Ihre Verwaltung.</h1>", self.seite("/kontakt/"))
+
+    def test_kontakt_hilfetexte_lesbar_auf_hellgrau(self):
+        # Das Formular liegt auf Hellgrau; Grau 500 erreicht dort nur 4,2:1, Grau 600 erreicht 6,6:1.
+        html = self.seite("/kontakt/")
+        formular = html[html.find('id="termin"'):html.find("Direkt zur richtigen Stelle")]
+        self.assertIn("(optional)", formular)
+        self.assertNotIn("text-gray-500", formular)
+
+    def test_eintrag_mit_produktbezug_traegt_die_kennfarbe(self):
+        html = self.seite("/kommunen/")
+        self.assertRegex(html, r'class="flex flex-col produkt-insight"')

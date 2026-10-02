@@ -6,16 +6,18 @@ auch am Handy klar voneinander abheben. ``baender`` legt die Bänder für Stream
 Reihenfolge der Blöcke fest – ohne dass Redaktion oder Seeds etwas einstellen müssen:
 
 * Hero hell (auf den Produktseiten in der Fläche des Produkts),
-* danach abwechselnd Hellgrau und Weiß, nie zwei gleiche Bänder nebeneinander,
+* danach abwechselnd Hellgrau und Weiß, nie zwei gleiche Bänder nebeneinander – auch die nummerierten
+  Artikel im Trust Center, damit lange Seiten am Handy nicht zu einer Textwand werden,
 * eine Einladung mitten auf der Seite auf der zarten Markenfläche, die abschließende Einladung dunkel,
-* kleine Zusätze (Eckdaten, Hinweis, Warrant Canary) und fortlaufende Artikel bleiben auf dem Band davor,
+* kleine Zusätze (Eckdaten, Hinweis, Warrant Canary) bleiben auf dem Band davor,
 * Rechtstexte ruhig: Titel auf Hellgrau, der Text durchgehend auf Weiß.
 
 Die Farben selbst stehen in ``static/css/input.css`` (Klassen ``band-*`` und ``produkt-*``, hell und dunkel).
 
-Produktfarben (aus den Anwendungen abgeleitet): Session trägt das Blau des Sitzungsdienstes
-(Standardfarbe der Kommune in Session), Work das Indigo des Fraktionsbereichs (Standardfarbe der
-Organisation in Work), Insight ein ruhiges Grün, wie bisher auf der Preisseite.
+Produktfarben (aus den Anwendungen abgeleitet): Session trägt ein Petrol, abgeleitet vom Blau des
+Sitzungsdienstes (Standardfarbe der Kommune in Session) und so weit ins Petrol geschoben, dass es sich
+am Handy klar vom Indigo abhebt; Work das Indigo des Fraktionsbereichs (Standardfarbe der Organisation
+in Work), Insight ein ruhiges Grün, wie bisher auf der Preisseite.
 """
 
 import re
@@ -30,8 +32,6 @@ HELL, GRAU, MARKE, TINTE = "hell", "grau", "marke", "tinte"
 
 # Gehören zum Abschnitt davor und bekommen kein eigenes Band.
 ANGEHAENGT = {"trust_banner", "disclaimer_box", "warrant_canary"}
-# Fortlaufender Text: Folgen sie aufeinander, bleiben sie auf einem Band.
-FORTLAUFEND = {"numbered_article", "table_of_contents"}
 
 # Seiten, die ganz einem Produkt gehören: Hero in der Fläche des Produkts.
 PRODUKT_JE_SEITE = {"fraktionen": "work", "kommunen": "session"}
@@ -80,8 +80,6 @@ def band_folge(typen, produkt=None, ruhig=False):
         if index == 0 and typ == "hero":
             band = GRAU if ruhig else (produkt or HELL)
         elif vorher and typ in ANGEHAENGT:
-            band = vorher
-        elif vorher and typ in FORTLAUFEND and typen[index - 1] in FORTLAUFEND | ANGEHAENGT:
             band = vorher
         elif typ == "gradient_cta" and letzter:
             band = TINTE

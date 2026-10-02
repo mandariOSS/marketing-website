@@ -14,8 +14,8 @@
   --band-fuss: #0a0e18;   /* Fußzeile, eine Stufe dunkler als die Einladung */
 
   /* Produkte: Kennfarbe (Name, Links) und Fläche */
-  --session: #1e40af;     /* Blau des Sitzungsdienstes (Standardfarbe in Session) */
-  --session-flaeche: #e1edf9;
+  --session: #0f5e8c;     /* Petrol: Blau des Sitzungsdienstes, klar abgesetzt vom Indigo von Work */
+  --session-flaeche: #e0f0f7;
   --work: #4f46e5;        /* Indigo des Fraktionsbereichs (Standardfarbe in Work) */
   --work-flaeche: #ebeafd;
   --insight: #17703f;     /* ruhiges Grün des Bürgerportals */
@@ -28,8 +28,8 @@
   --band-tinte: #0a0e18;
   --band-fuss: #05070d;
 
-  --session: #93b9f5;
-  --session-flaeche: #132541;
+  --session: #7cc4e6;
+  --session-flaeche: #0f2a3a;
   --work: #a5b4fc;
   --work-flaeche: #211f4e;
   --insight: #86d6a4;
@@ -50,17 +50,17 @@
 .band-hell .flaeche,
 .band-marke .flaeche { background-color: var(--band-grau); }
 
-/* Produktfläche: Name und Links in der Kennfarbe des Produkts */
+/* Produktfläche und Einträge mit Produktbezug: Name und Links in der Kennfarbe des Produkts */
 .produkt-session { --kenn: var(--session); --flaeche: var(--session-flaeche); }
 .produkt-work { --kenn: var(--work); --flaeche: var(--work-flaeche); }
 .produkt-insight { --kenn: var(--insight); --flaeche: var(--insight-flaeche); }
 .produkt { background-color: var(--flaeche); }
 .kenn { color: var(--kenn); }
-.produkt .textlink {
+:is(.produkt-session, .produkt-work, .produkt-insight) .textlink {
   color: var(--kenn);
   text-decoration-color: color-mix(in srgb, var(--kenn) 40%, transparent);
 }
-.produkt .textlink:hover { text-decoration-color: currentColor; }
+:is(.produkt-session, .produkt-work, .produkt-insight) .textlink:hover { text-decoration-color: currentColor; }
 
 /* Kernsatz: der erste Satz einer längeren Beschreibung trägt, der Rest erklärt */
 .kernsatz { color: #111827; font-weight: 520; }
