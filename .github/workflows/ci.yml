@@ -149,6 +149,16 @@ jobs:
           releases = c.get("/releases/").content.decode("utf-8")
           if releases.find("mandari 0.11") > releases.find("mandari 0.9 (Beta)"):
               errors.append("/releases/: neueste Version steht nicht zuerst")
+          # Kopfzeile: „Für Bürger:innen“ im Produkte-Menü, „Bürgerportal“ genau einmal als direkter Link,
+          # mobil ein Slide-Menü als modaler Dialog
+          kopf = c.get("/preise/").content.decode("utf-8")
+          kopf = kopf[kopf.find('role="banner"'):kopf.find('role="main"')]
+          if kopf.count('href="/produkte/#insight"') != 2 or kopf.count("Für Bürger:innen") != 2:
+              errors.append("Kopfzeile: 'Für Bürger:innen' fehlt im Produkte-Menü (Desktop und mobil)")
+          if kopf.count("Bürgerportal") != 1 or kopf.count('href="/insight/"') != 1:
+              errors.append("Kopfzeile: 'Bürgerportal' nicht genau einmal als direkter Link")
+          if 'role="dialog" aria-modal="true"' not in kopf or 'aria-controls="mobilmenue"' not in kopf:
+              errors.append("Kopfzeile: Slide-Menü ohne role=dialog, aria-modal und Menü-Knopf")
           assert not errors, "Render-Smoke fehlgeschlagen: " + "; ".join(errors)
           print(f"OK: {len(checks)} Seiten gerendert, {len(redirects)} Weiterleitungen geprueft")
           EOF

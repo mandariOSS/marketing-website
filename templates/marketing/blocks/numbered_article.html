@@ -1,7 +1,7 @@
 {# Nummerierter Artikel (Rechtstexte, Trust Center): Nummer als Teil der Überschrift, ohne Kachel. #}
 <section class="py-8">
     <div class="wrap">
-        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-4xl scroll-mt-24 mb-8 prose-a:text-primary-700 dark:prose-a:text-primary-300">
+        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-4xl mb-8 prose-a:text-primary-700 dark:prose-a:text-primary-300">
             <h2 class="not-prose text-2xl font-semibold tracking-tight text-gray-900 dark:text-white mb-4"><span class="text-gray-400 dark:text-gray-500 tabular-nums mr-2">{{ self.number }}</span>{{ self.title }}</h2>
             {{ self.body|safe }}
         </article>
