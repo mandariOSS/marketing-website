@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        {# Eine Figur aus drei echten Bildschirmen, leicht versetzt: hinten Session, dann Work, vorne Insight. Am Handy zwei Bildschirme im Hochformat (Work und Insight), Session entfällt dort. #}
+        {# Eine Figur aus drei echten Bildschirmen, leicht versetzt: hinten Session, dann Work, vorne Insight. Am Handy zwei Bildschirme im Hochformat (Work und Insight), Session entfällt dort. Das Hochformat zeigt jeweils denselben Bildschirm wie am Desktop, damit der Alt-Text an beiden passt. #}
         <figure class="lg:col-span-6">
             <figcaption class="sr-only">Die drei Produkte von mandari mit echten Bildschirmen: mandari Session für den Sitzungsdienst, mandari Work für die Fraktion und vorne das Bürgerportal mandari Insight für Münster.</figcaption>
             <div class="hero-stapel">
@@ -36,8 +36,8 @@
                     <img src="{% static 'images/startseite/hero-work-800.webp' %}"
                          srcset="{% static 'images/startseite/hero-work-800.webp' %} 800w, {% static 'images/startseite/hero-work-1600.webp' %} 1600w"
                          sizes="(min-width: 1280px) 440px, (min-width: 1024px) 34vw, 70vw"
-                         width="800" height="500" decoding="async"
-                         alt="mandari Work: Die Fraktion bereitet die Ratssitzung vor, mit Tagesordnung, Position je Tagesordnungspunkt und Diskussion">
+                         width="800" height="500" fetchpriority="high" decoding="async"
+                         alt="mandari Work: Die Fraktion bereitet die Ratssitzung vor und legt zu jedem Tagesordnungspunkt ihre Position fest">
                 </picture>
                 <picture class="hero-karte hero-karte-insight">
                     <source media="(max-width: 639px)"

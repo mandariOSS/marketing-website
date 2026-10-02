@@ -49,7 +49,10 @@ class StartseitenHeroTests(TestCase):
         insight = self.bilder()[-1]
         self.assertNotIn('loading="lazy"', insight)
         self.assertIn('fetchpriority="high"', insight)
-        self.assertNotIn('loading="lazy"', self.bilder()[1])
+        # Work ist am Handy das größte sichtbare Bild und wird ebenfalls bevorzugt geladen
+        work = self.bilder()[1]
+        self.assertNotIn('loading="lazy"', work)
+        self.assertIn('fetchpriority="high"', work)
 
     def test_kein_zweiter_grosser_screenshot(self):
         # Der frühere Screenshot über volle Breite entfällt; Insight steht nur noch in der Figur.
