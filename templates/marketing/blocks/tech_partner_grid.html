@@ -1,20 +1,15 @@
 {% load wagtailcore_tags %}
-{# Tech-Partner-Grid (8-Kachel-Layout mit Lucide-Icons) #}
-<section class="py-16 lg:py-20 bg-white dark:bg-gray-800 border-y border-gray-200 dark:border-gray-700">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+{# Werkzeuge, auf denen mandari aufbaut: Name und ein kurzer Zusatz, verlinkt. Ohne Kacheln und Symbole. #}
+<section class="py-20 lg:py-24">
+    <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-8 max-w-5xl">
             {% for p in self.partners %}
-            <a {% if p.url %}href="{{ p.url }}" target="_blank" rel="noopener noreferrer"{% endif %} class="group bg-gray-50 dark:bg-gray-900/50 hover:bg-white dark:hover:bg-gray-700 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:border-{{ p.color|default:'primary' }}-300 dark:hover:border-{{ p.color|default:'primary' }}-700 hover:shadow-md transition-all">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-10 h-10 rounded-lg bg-{{ p.color|default:'primary' }}-100 dark:bg-{{ p.color|default:'primary' }}-900/50 flex items-center justify-center">
-                        <i data-lucide="{{ p.icon }}" class="w-5 h-5 text-{{ p.color|default:'primary' }}-700 dark:text-{{ p.color|default:'primary' }}-400"></i>
-                    </div>
-                    <p class="font-bold text-gray-900 dark:text-white">{{ p.name }}</p>
-                </div>
-                {% if p.description %}<p class="text-xs text-gray-500 dark:text-gray-400">{{ p.description }}</p>{% endif %}
-            </a>
+            <li>
+                {% if p.url %}<a href="{{ p.url }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-900 dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4 hover:decoration-current">{{ p.name }}</a>{% else %}<span class="font-semibold text-gray-900 dark:text-white">{{ p.name }}</span>{% endif %}
+                {% if p.description %}<p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ p.description }}</p>{% endif %}
+            </li>
             {% endfor %}
-        </div>
+        </ul>
     </div>
 </section>

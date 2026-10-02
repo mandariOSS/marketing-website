@@ -1,11 +1,8 @@
-{# Nummerierter Artikel-Block — Legal-Pages, Transparenzbericht #}
+{# Nummerierter Artikel (Rechtstexte, Trust Center): Nummer als Teil der Überschrift, ohne Kachel. #}
 <section class="py-8">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-none scroll-mt-20 mb-12">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3 not-prose">
-                <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-bold">{{ self.number }}</span>
-                <span class="text-2xl font-bold">{{ self.title }}</span>
-            </h2>
+    <div class="wrap">
+        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-4xl scroll-mt-24 mb-8 prose-a:text-primary-700 dark:prose-a:text-primary-300">
+            <h2 class="not-prose text-2xl font-semibold tracking-tight text-gray-900 dark:text-white mb-4"><span class="text-gray-400 dark:text-gray-500 tabular-nums mr-2">{{ self.number }}</span>{{ self.title }}</h2>
             {{ self.body|safe }}
         </article>
     </div>

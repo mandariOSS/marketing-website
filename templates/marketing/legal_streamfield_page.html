@@ -2,7 +2,9 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
+<div class="bg-white dark:bg-gray-900">
 {% for block in page.body_stream %}
     {% include_block block %}
 {% endfor %}
+</div>
 {% endblock %}

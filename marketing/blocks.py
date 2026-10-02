@@ -201,29 +201,38 @@ class EmailEntryBlock(StructBlock):
 
 
 class HeroBlock(StructBlock):
-    """Linksbündige Hero-Sektion mit Badge, H1, Subline, CTAs."""
+    """Linksbündiger Hero: H1, ein erklärender Satz, ein gefüllter Aufruf und höchstens ein Textlink.
 
-    badge_text = CharBlock(required=False, help_text="Pill über dem Titel")
+    Badge-Felder und Hintergrundfarbe bleiben für bestehende Inhalte definiert, werden aber nicht mehr
+    angezeigt (keine Pillen, keine Verläufe).
+    """
+
+    badge_text = CharBlock(required=False, help_text="Wird nicht angezeigt (Hero ohne Pille)")
     badge_icon = CharBlock(required=False, help_text="Lucide-Icon")
     badge_color = ChoiceBlock(choices=COLOR_CHOICES, default="primary")
     title = CharBlock(required=True, help_text="H1 — kann <span>highlight</span> enthalten")
     title_highlight = CharBlock(
         required=False,
-        help_text="Text der farbig hervorgehoben wird (am Ende des Titels)",
+        help_text="Wird ohne eigene Farbe an den Titel angehängt",
     )
     subline = TextBlock(required=False, help_text="Erste Subline (text-xl)")
     subline_secondary = TextBlock(required=False, help_text="Optionale zweite Subline (text-lg, ausgegraut)")
-    ctas = ListBlock(CTAButtonBlock(), required=False, default=[])
+    ctas = ListBlock(
+        CTAButtonBlock(),
+        required=False,
+        default=[],
+        help_text="Erster Eintrag = gefüllter Button, zweiter = Textlink; weitere werden nicht angezeigt",
+    )
     background_color = ChoiceBlock(
         choices=COLOR_CHOICES,
         default="primary",
-        help_text="Gradient-Farbe oben links (Default: primary)",
+        help_text="Ohne Wirkung (Hero ohne Verlauf)",
     )
 
     class Meta:
         template = "marketing/blocks/hero.html"
         icon = "image"
-        label = "Hero (linksbündig)"
+        label = "Hero (linksbündig, ein Aufruf)"
 
 
 class TrustBannerBlock(StructBlock):
@@ -341,17 +350,65 @@ class StatsGridBlock(StructBlock):
 
 
 class GradientCTABlock(StructBlock):
-    """Final CTA mit Gradient-Background."""
+    """Einladung am Seitenende auf ruhiger dunkler Fläche (ohne Verlauf).
+
+    Der Name bleibt für bestehende Inhalte erhalten; `gradient_from` hat keine Wirkung mehr.
+    """
 
     title = CharBlock(required=True)
     subline = TextBlock(required=False)
-    ctas = ListBlock(CTAButtonBlock(), min_num=1, max_num=4)
-    gradient_from = ChoiceBlock(choices=COLOR_CHOICES, default="primary")
+    ctas = ListBlock(
+        CTAButtonBlock(),
+        min_num=1,
+        max_num=4,
+        help_text="Erster Eintrag = gefüllter Button, die nächsten zwei = Textlinks",
+    )
+    gradient_from = ChoiceBlock(choices=COLOR_CHOICES, default="primary", help_text="Ohne Wirkung (flache Fläche)")
 
     class Meta:
         template = "marketing/blocks/gradient_cta.html"
         icon = "pick"
-        label = "Final CTA (gradient)"
+        label = "Einladung (Seitenende)"
+
+
+class SplitRowBlock(StructBlock):
+    """Eine Zeile: Titel links (mit Etikett und Status), Text und ein Textlink rechts."""
+
+    title = CharBlock(required=True, help_text="Überschrift der Zeile, z. B. 'mandari Session' oder 'Verwaltung'")
+    label = CharBlock(required=False, help_text="Kleine Zeile unter dem Titel, z. B. 'Für Verwaltungen'")
+    status = CharBlock(
+        required=False,
+        help_text="Leiser Status unter dem Etikett, z. B. 'Offene Beta' oder 'Geplant 2027'",
+    )
+    text = RichTextBlock(required=True, features=["bold", "italic", "link"])
+    link_label = CharBlock(required=False, help_text="Text des einen Links, sagt, was passiert")
+    link_url = CharBlock(required=False, help_text="Ziel des Links, z. B. /kommunen/")
+    anchor_id = CharBlock(required=False, help_text="Optionale HTML-id für Sprungmarken (ohne #, z. B. 'insight')")
+
+    class Meta:
+        icon = "list-ul"
+        label = "Zeile"
+
+
+class SplitRowsBlock(StructBlock):
+    """Ruhige Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts."""
+
+    header = SectionHeaderBlock(required=False)
+    rows = ListBlock(SplitRowBlock(), min_num=1, max_num=8)
+    note = RichTextBlock(
+        required=False,
+        features=["bold", "italic", "link"],
+        help_text="Optionaler Absatz unter den Zeilen (z. B. Ausblick mit Link zur Roadmap)",
+    )
+    background = ChoiceBlock(
+        choices=[("white", "Weiß"), ("gray", "Hell (ruhige Fläche)")],
+        default="white",
+    )
+
+    class Meta:
+        template = "marketing/blocks/split_rows.html"
+        icon = "list-ul"
+        label = "Zeilen (Titel links, Text rechts)"
 
 
 class AccordionFAQBlock(StructBlock):
@@ -640,6 +697,7 @@ class MarketingStreamBlock(StreamBlock):
     # Page-Layout-Bausteine (häufigste oben)
     hero = HeroBlock()
     trust_banner = TrustBannerBlock()
+    split_rows = SplitRowsBlock()
     mandari_cards = MandariCardsBlock()
     two_column_use_case = TwoColumnUseCaseBlock()
     step_process = StepProcessBlock()

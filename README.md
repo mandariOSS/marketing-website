@@ -14,7 +14,7 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **Marketing-Pages** — Startseite, Produkt, Preise, Kommunen, Migration,
+- **Marketing-Pages** — Startseite, Produkte, Für Fraktionen, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
@@ -27,9 +27,9 @@ separat gehostet und entwickelt werden.
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
-  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Gradient-CTA u. v. m.)
-- **Mandari Design System** — konsistentes UI mit Tailwind CSS, Hero-Banner,
-  Trust-Banner, Border-2-Cards mit Decorative Corner Circles
+  Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Zeilen, Einladung u. v. m.)
+- **Ruhige Gestaltung** mit Tailwind CSS — Schriftstufen, ein Button-Stil und
+  Textlinks als Komponenten, Inhalte offen auf der Fläche (siehe [Gestaltung](#-gestaltung))
 - **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
   `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
   `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
@@ -223,18 +223,27 @@ marketing-website/
 | `ALTCHA_HMAC_KEY` | dev-Wert | HMAC-Secret für Altcha-Challenges |
 | `TZ` | `Europe/Berlin` | Zeitzone |
 
-## 🎨 Mandari Design System
+## 🎨 Gestaltung
 
-Alle Pages folgen demselben visuellen Vokabular:
+Weniger ist mehr: Typografie trägt die Seite, nicht Effekte.
 
-- **Hero linksbündig** mit Badge + H1 + highlighted span + Subline + CTAs
-- **Trust-Banner** mit 4 Eckdaten (Icon + Bold-Label + Erklärung)
-- **3- oder 6-Spalten-Cards** mit `border-2 border-{color}-200` + Decorative
-  Corner Circle (`absolute top-0 right-0 w-32 h-32 rounded-bl-full -mr-8 -mt-8`)
-- **Color-System**: green / primary (Indigo) / blue als Trio, plus amber, rose,
-  teal als sekundäre Akzente
-- **Final CTA** mit `bg-gradient-to-br from-primary-600 to-primary-800`
-- Standard-Tailwind-Klassen (lg:, md:, sm:) — keine xl: oder col-span-N-Tricks
+- **Flächen:** Weiß als Grund, eine ruhige helle Fläche (`bg-mist`) für
+  Abschnitte, Tinte `#111827` für die Einladung am Seitenende. Keine Verläufe.
+- **Akzent:** Indigo nur für den einen gefüllten Button (`btn-primary`),
+  Textlinks (`textlink`) und den Punkt der Wortmarke (`punkt`).
+- **Schrift:** Inter, Stufen `t-display`, `t-h1`, `t-h2`, `t-h3`, `t-lead`,
+  `t-body` (Komponenten in `static/css/input.css`), linksbündig.
+- **Hero:** Überschrift, ein erklärender Satz, ein Button, höchstens ein
+  Textlink. Keine Pillen, keine Zähler-Leiste.
+- **Inhalte offen auf der Fläche** statt in Karten; Status als leiser Text,
+  Gruppierung über Abstand. Linien nur, wo sie Tabellen und Listen lesbarer machen.
+- **Zustände** ändern Farbe oder Unterstreichung, nie die Position
+  (die CI prüft alle Templates außer dem ruhenden Blog: kein Hover mit
+  `translate-y`, keine Verläufe, keine Pillen-Etiketten, keine Deko-Viertelkreise).
+
+Die StreamField-Blocktypen bleiben aus Kompatibilitätsgründen definiert, auch
+wenn einzelne Felder (z. B. `badge_text`, `gradient_from`) nicht mehr angezeigt
+werden.
 
 ## 🤝 Mitmachen
 

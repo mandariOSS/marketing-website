@@ -1,20 +1,18 @@
-{# Mandari Hero — linksbündig, Badge + H1 + Subline + CTAs #}
-<section class="pt-16 pb-10 lg:pt-24 lg:pb-12 bg-gradient-to-br from-{{ self.background_color|default:'primary' }}-50 to-white dark:from-gray-800 dark:to-gray-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {% if self.badge_text %}
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-{{ self.badge_color|default:'primary' }}-100 dark:bg-{{ self.badge_color|default:'primary' }}-900/50 text-{{ self.badge_color|default:'primary' }}-700 dark:text-{{ self.badge_color|default:'primary' }}-300 text-sm font-medium mb-6">
-            {% if self.badge_icon %}<i data-lucide="{{ self.badge_icon }}" class="w-4 h-4"></i>{% endif %}
-            {{ self.badge_text }}
-        </span>
-        {% endif %}
-        <h1 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            {{ self.title }}{% if self.title_highlight %} <span class="text-primary-600 dark:text-primary-400">{{ self.title_highlight }}</span>{% endif %}
-        </h1>
-        {% if self.subline %}<p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mb-4">{{ self.subline }}</p>{% endif %}
-        {% if self.subline_secondary %}<p class="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mb-8">{{ self.subline_secondary }}</p>{% endif %}
+{# Hero: Überschrift, ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Keine Pille, kein Verlauf. #}
+<section class="pt-14 pb-12 lg:pt-24 lg:pb-16">
+    <div class="wrap">
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">{% if self.title_highlight and self.title|slice:"-1:" == "-" %}{% with first=self.title_highlight|slice:":1" %}{% if first|lower == first %}{{ self.title|slice:":-1" }}{% else %}{{ self.title }}{% endif %}{% endwith %}{{ self.title_highlight }}{% else %}{{ self.title }}{% if self.title_highlight %} {{ self.title_highlight }}{% endif %}{% endif %}</h1>
+        {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[42rem]">{{ self.subline }}</p>{% endif %}
+        {% if self.subline_secondary %}<p class="t-body text-gray-600 dark:text-gray-400 mt-4 max-w-[42rem]">{{ self.subline_secondary }}</p>{% endif %}
         {% if self.ctas %}
-        <div class="flex flex-wrap gap-4">
-            {% for cta in self.ctas %}{% include "marketing/blocks/_cta_button.html" with cta=cta %}{% endfor %}
+        <div class="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
+            {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
+            {% if forloop.first %}
+            <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
+            {% else %}
+            <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
+            {% endif %}
+            {% endif %}{% endfor %}
         </div>
         {% endif %}
     </div>

@@ -1,0 +1,27 @@
+{% load wagtailcore_tags %}
+{# Zeilen statt Karten: Titel links, ein Satz und ein Textlink rechts. Gruppierung über Abstand, ohne Rahmen. #}
+<section class="py-20 lg:py-28 {% if self.background == 'gray' %}bg-mist{% endif %}">
+    <div class="wrap">
+        {% if self.header %}{% include_block self.header %}{% endif %}
+        <div class="space-y-14 lg:space-y-16">
+            {% for row in self.rows %}
+            <article{% if row.anchor_id %} id="{{ row.anchor_id }}"{% endif %} class="grid lg:grid-cols-12 gap-x-10 gap-y-3 scroll-mt-24">
+                <div class="lg:col-span-4">
+                    <h3 class="t-h3 text-gray-900 dark:text-white">{{ row.title }}</h3>
+                    {% if row.label %}<p class="mt-2 font-semibold text-gray-900 dark:text-gray-100">{{ row.label }}</p>{% endif %}
+                    {% if row.status %}<p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ row.status }}</p>{% endif %}
+                </div>
+                <div class="lg:col-span-7 lg:col-start-6">
+                    <div class="t-body text-gray-600 dark:text-gray-300 max-w-[38rem] richtext">{{ row.text|richtext }}</div>
+                    {% if row.link_label and row.link_url %}<p class="mt-4"><a class="textlink" href="{{ row.link_url }}">{{ row.link_label }}</a></p>{% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        {% if self.note %}
+        <div class="grid lg:grid-cols-12 gap-x-10 mt-16 lg:mt-20">
+            <div class="lg:col-span-7 lg:col-start-6 t-body text-gray-600 dark:text-gray-300 max-w-[38rem] richtext">{{ self.note|richtext }}</div>
+        </div>
+        {% endif %}
+    </div>
+</section>

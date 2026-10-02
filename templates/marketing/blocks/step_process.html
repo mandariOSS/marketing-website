@@ -1,39 +1,21 @@
 {% load wagtailcore_tags %}
-{# Numerierte Schritte 3 oder 4 — z.B. „So läuft's" #}
-<section class="py-16 lg:py-20{% if self.background == 'gray' %} bg-gray-50 dark:bg-gray-800/50{% endif %}">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+{# Schritte einer echten Abfolge: Nummer, Titel, ein Satz. Ohne Karten und Symbolkacheln. #}
+<section class="py-20 lg:py-24 {% if self.background == 'gray' %}bg-mist{% endif %}">
+    <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <div class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% else %}lg:grid-cols-3{% endif %} gap-6 max-w-6xl mx-auto">
+        <ol class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% else %}lg:grid-cols-3{% endif %} gap-x-10 gap-y-12">
             {% for step in self.steps %}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-{{ step.color|default:'primary' }}-200 dark:border-{{ step.color|default:'primary' }}-800 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-{{ step.color|default:'primary' }}-100 dark:bg-{{ step.color|default:'primary' }}-900/30 rounded-bl-full -mr-6 -mt-6" aria-hidden="true"></div>
-                <div class="relative">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-4xl font-bold text-{{ step.color|default:'primary' }}-200 dark:text-{{ step.color|default:'primary' }}-800 leading-none">{{ step.number }}</span>
-                        <div class="w-10 h-10 bg-{{ step.color|default:'primary' }}-100 dark:bg-{{ step.color|default:'primary' }}-900/50 rounded-lg flex items-center justify-center flex-none">
-                            <i data-lucide="{{ step.icon }}" class="w-5 h-5 text-{{ step.color|default:'primary' }}-600 dark:text-{{ step.color|default:'primary' }}-400"></i>
-                        </div>
-                    </div>
-                    <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ step.title }}</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">{{ step.description }}</p>
-                    {% if step.duration %}
-                    <div class="flex items-center gap-2 text-xs">
-                        <i data-lucide="clock" class="w-3.5 h-3.5 text-{{ step.color|default:'primary' }}-500"></i>
-                        <span class="text-{{ step.color|default:'primary' }}-600 dark:text-{{ step.color|default:'primary' }}-400 font-medium">{{ step.duration }}</span>
-                    </div>
-                    {% endif %}
-                    {% if step.meta_text %}
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-3 font-medium">{{ step.meta_text }}</p>
-                    {% endif %}
-                </div>
-            </div>
+            <li class="flex flex-col">
+                <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">{{ step.number }}</span>
+                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ step.title }}</h3>
+                <p class="mt-3 t-body text-gray-600 dark:text-gray-300">{{ step.description }}</p>
+                {% if step.duration %}<p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">{{ step.duration }}</p>{% endif %}
+                {% if step.meta_text %}<p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ step.meta_text }}</p>{% endif %}
+            </li>
             {% endfor %}
-        </div>
+        </ol>
         {% if self.note_html %}
-        <div class="max-w-3xl mx-auto mt-10 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 flex items-start gap-3">
-            <i data-lucide="info" class="w-5 h-5 text-primary-500 mt-0.5 flex-none"></i>
-            <div class="text-sm text-gray-600 dark:text-gray-400">{{ self.note_html|richtext }}</div>
-        </div>
+        <div class="mt-14 max-w-3xl t-body text-gray-600 dark:text-gray-300 richtext">{{ self.note_html|richtext }}</div>
         {% endif %}
     </div>
 </section>

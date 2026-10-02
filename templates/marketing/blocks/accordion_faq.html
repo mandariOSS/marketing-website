@@ -1,16 +1,16 @@
 {% load wagtailcore_tags %}
-{# FAQ-Akkordeon mit Alpine.js #}
-<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="py-16 lg:py-20{% if self.background == 'gray' %} bg-gray-50 dark:bg-gray-800/50{% endif %} scroll-mt-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+{# Häufige Fragen: Liste mit Trennlinien zwischen den Fragen (Lesbarkeit), ohne Kästen. #}
+<section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="py-20 lg:py-24 {% if self.background == 'gray' %}bg-mist{% endif %} scroll-mt-20">
+    <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <div class="space-y-3" x-data="{ open: 1 }">
+        <div class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700" x-data="{ open: 1 }">
             {% for item in self.items %}
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <button @click="open = open === {{ forloop.counter }} ? null : {{ forloop.counter }}" class="w-full px-6 py-4 flex items-center justify-between text-left">
-                    <span class="font-medium text-gray-900 dark:text-white pr-4">{{ item.question }}</span>
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === {{ forloop.counter }} ? 'rotate-180' : ''"></i>
+            <div>
+                <button type="button" @click="open = open === {{ forloop.counter }} ? null : {{ forloop.counter }}" class="w-full py-5 flex items-center justify-between gap-6 text-left" :aria-expanded="(open === {{ forloop.counter }}).toString()">
+                    <span class="text-lg font-medium text-gray-900 dark:text-white">{{ item.question }}</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-gray-500 transition-transform flex-none" :class="open === {{ forloop.counter }} ? 'rotate-180' : ''" aria-hidden="true"></i>
                 </button>
-                <div x-show="open === {{ forloop.counter }}" x-collapse class="px-6 pb-5 text-gray-600 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">{{ item.answer|safe }}</div>
+                <div x-show="open === {{ forloop.counter }}" x-collapse class="pb-6 pr-10 text-gray-600 dark:text-gray-300 prose dark:prose-invert max-w-none prose-a:text-primary-700 dark:prose-a:text-primary-300">{{ item.answer|safe }}</div>
             </div>
             {% endfor %}
         </div>

@@ -1,319 +1,125 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Mandari - Open Source Ratsinformationssystem{% endblock %}
-
-{% block meta_description %}Mandari macht Kommunalpolitik transparent. Open Source Plattform für Bürger, Fraktionen und Verwaltungen.{% endblock %}
+{# Titel und Meta-Description kommen aus den Seitenfeldern seo_title und search_description (Quelle: HOME_PAGE_META, base.html) #}
 
 {% block content %}
-<!-- Hero: ein Satz Nutzenversprechen + ein Untersatz -->
-<section class="py-20 lg:py-32 bg-gradient-to-br from-primary-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 relative overflow-hidden">
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-primary-200/30 dark:bg-primary-900/20 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl"></div>
-    </div>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div class="text-center max-w-4xl mx-auto">
-            <a href="https://github.com/mandariOSS/mandari/releases/tag/v0.9.0-beta"
-               target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-sm font-medium mb-6 hover:bg-amber-200 dark:hover:bg-amber-900/70 transition-colors"
-               aria-label="mandari 0.9 Beta — Release-Notes auf GitHub (öffnet in neuem Tab)">
-                <i data-lucide="tag" class="w-4 h-4"></i>
-                mandari 0.9 (Beta) · 100 % Open Source
-            </a>
-
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                Das offene Ratsinformationssystem<br>
-                <span class="text-primary-600 dark:text-primary-400">für Kommunalpolitik</span>
-            </h1>
-
-            <p class="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto">
-                Beschlüsse finden, Sitzungen vorbereiten, Gremien verwalten —
-                Open Source, deutsche Server, öffentliche Preise.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 mb-12 max-w-2xl mx-auto sm:max-w-none">
-                <a href="/insight/"
-                   class="group relative inline-flex shrink-0 items-center justify-center gap-2.5 px-6 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl whitespace-nowrap shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/40 hover:-translate-y-0.5 transition-all duration-200">
-                    <i data-lucide="eye" class="w-5 h-5 shrink-0" aria-hidden="true"></i>
-                    <span>Zum Bürgerportal</span>
-                </a>
-                <a href="/kontakt/?subject=Demo"
-                   class="group inline-flex shrink-0 items-center justify-center gap-2.5 px-6 py-3.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 font-semibold rounded-xl whitespace-nowrap shadow-lg shadow-gray-900/20 dark:shadow-white/10 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-                    <i data-lucide="calendar" class="w-5 h-5 shrink-0" aria-hidden="true"></i>
-                    <span>Demo anfragen</span>
-                </a>
-                <a href="/produkt/"
-                   class="group inline-flex shrink-0 items-center justify-center gap-1.5 px-3 py-3.5 text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-semibold whitespace-nowrap transition-colors">
-                    <span>Mehr erfahren</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true"></i>
-                </a>
-            </div>
-
-            <!-- Zielgruppen-Schnellwahl -->
-            <div class="flex flex-wrap justify-center gap-2 mb-12 text-sm" aria-label="Direkt zum passenden Angebot">
-                <a href="/insight/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-300 font-medium hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors">
-                    <i data-lucide="eye" class="w-3.5 h-3.5" aria-hidden="true"></i>
-                    Ich bin Bürger:in
-                </a>
-                <a href="/produkt/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-primary-300 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/30 text-primary-800 dark:text-primary-300 font-medium hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors">
-                    <i data-lucide="briefcase" class="w-3.5 h-3.5" aria-hidden="true"></i>
-                    Wir sind eine Fraktion
-                </a>
-                <a href="/kommunen/" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
-                    <i data-lucide="building-2" class="w-3.5 h-3.5" aria-hidden="true"></i>
-                    Wir sind eine Verwaltung
-                </a>
-            </div>
-
-            <!-- Zahlen aus dem laufenden Bürgerportal -->
-            <div class="flex flex-wrap justify-center gap-x-10 gap-y-6 text-center">
-                <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">259.000+</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Dokumente durchsuchbar</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">111.000+</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Vorgänge &amp; Vorlagen</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">24.500+</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Sitzungen erfasst</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400">8</div>
-                    <div class="text-sm text-gray-500 dark:text-gray-400">Kommunen &amp; Körperschaften</div>
-                </div>
-            </div>
-            <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">
-                Zahlen aus dem laufenden Bürgerportal, Stand Juli 2026.
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- Drei Module -->
-<section class="py-20 lg:py-28">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-                Drei Module, ein Ziel
-            </h2>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Insight -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-green-200 dark:border-green-800 relative overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-bl-full -mr-6 -mt-6"></div>
-                <div class="relative">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-medium rounded-full mb-4">
-                        <i data-lucide="eye" class="w-4 h-4"></i>
-                        Kostenlos
-                    </span>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Insight</h3>
-                    <p class="text-sm font-medium text-green-600 dark:text-green-400 mb-4">Das Bürgerportal</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            Alle Ratsinformationen, ohne Anmeldung
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            Volltextsuche mit Synonymen &amp; OCR
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-green-500"></i>
-                            Kartenansicht &amp; Nachbarschaftssuche
-                        </li>
-                    </ul>
-                    <a href="/insight/"
-                       class="inline-flex items-center gap-2 text-green-600 dark:text-green-400 font-medium hover:underline">
-                        Portal öffnen
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Work -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-primary-200 dark:border-primary-800 relative overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-primary-100 dark:bg-primary-900/30 rounded-bl-full -mr-6 -mt-6"></div>
-                <div class="relative">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-sm font-medium rounded-full mb-4">
-                        <i data-lucide="flask-conical" class="w-4 h-4"></i>
-                        Beta · 39,90 €/Mon
-                    </span>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Work</h3>
-                    <p class="text-sm font-medium text-primary-600 dark:text-primary-400 mb-4">Für Fraktionen</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            Sitzungsvorbereitung im Team
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            Antragsdatenbank mit Fristen &amp; Freigaben
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-primary-500"></i>
-                            Kollaborativer Editor in Echtzeit
-                        </li>
-                    </ul>
-                    <a href="/preise/"
-                       class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 font-medium hover:underline">
-                        Preise ansehen
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Session -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 border-2 border-blue-200 dark:border-blue-800 relative overflow-hidden hover:shadow-xl transition-shadow">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-bl-full -mr-6 -mt-6"></div>
-                <div class="relative">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-sm font-medium rounded-full mb-4">
-                        <i data-lucide="rocket" class="w-4 h-4"></i>
-                        Beta · Pilot-Kommunen gesucht
-                    </span>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Mandari Session</h3>
-                    <p class="text-sm font-medium text-blue-600 dark:text-blue-400 mb-4">Das Verwaltungs-RIS</p>
-                    <ul class="space-y-2 mb-6">
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
-                            Sitzungsplanung &amp; Tagesordnungen
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
-                            Protokolle mit Genehmigungsworkflow
-                        </li>
-                        <li class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-500"></i>
-                            Anwesenheit &amp; Sitzungsgelder
-                        </li>
-                    </ul>
-                    <a href="/kommunen/"
-                       class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium hover:underline">
-                        Für Kommunen &amp; Verwaltungen
-                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Warum mandari: sechs Punkte, je eine Zeile -->
-<section class="py-20 lg:py-28 bg-gray-50 dark:bg-gray-900/50 border-y border-gray-200 dark:border-gray-800">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-                Warum Mandari?
-            </h2>
-        </div>
-
-        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="package-open" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>100 % Open Source</strong> — AGPL-3.0, kein Vendor-Lock-in</span>
-            </li>
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="sparkles" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>Volltextsuche</strong> mit OCR, Synonymen und Fehlertoleranz</span>
-            </li>
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="plug" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>OParl-Standard 1.1</strong> — API-first</span>
-            </li>
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="server" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>Self-Hosting</strong> per Docker Compose — volle Datenhoheit</span>
-            </li>
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="shield-check" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>Deutsche Server</strong> — DSGVO-konform, AES-256</span>
-            </li>
-            <li class="flex items-center gap-3 bg-white dark:bg-gray-800 rounded-xl px-5 py-4 border border-gray-200 dark:border-gray-700">
-                <i data-lucide="zap" class="w-5 h-5 text-primary-600 dark:text-primary-400 shrink-0"></i>
-                <span class="text-gray-800 dark:text-gray-200 text-sm"><strong>Moderner Stack</strong> — Django, PostgreSQL, Elasticsearch, HTMX</span>
-            </li>
-        </ul>
-    </div>
-</section>
-
-<!-- Beta-Transparenz + Vergleichs-Teaser -->
-<section class="py-16 bg-white dark:bg-gray-900">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-sm font-medium mb-4">
-                    <i data-lucide="flask-conical" class="w-4 h-4"></i>
-                    Ehrlich in Beta
-                </span>
-                <h2 class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                    mandari 0.9 (Beta) — offen gesagt
-                </h2>
-                <p class="text-gray-600 dark:text-gray-300 mb-4">
-                    Quellcode, Preise, Roadmap und Transparenzbericht sind öffentlich.
-                    Produktiv im Einsatz, aktiv weiterentwickelt — Pilot-Partner gestalten mit.
-                </p>
-                <div class="flex flex-wrap gap-4 text-sm font-medium">
-                    <a href="https://github.com/mandariOSS/mandari" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
-                        <i data-lucide="github" class="w-4 h-4"></i> GitHub
-                    </a>
-                    <a href="/releases/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
-                        <i data-lucide="tag" class="w-4 h-4"></i> Release-Notes
-                    </a>
-                    <a href="/roadmap/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
-                        <i data-lucide="map" class="w-4 h-4"></i> Roadmap
-                    </a>
-                    <a href="/transparenz/" class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 hover:underline">
-                        <i data-lucide="eye" class="w-4 h-4"></i> Transparenzbericht
-                    </a>
-                </div>
-            </div>
-            <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 lg:p-8">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                    <i data-lucide="scale" class="w-5 h-5 text-primary-500"></i>
-                    mandari im RIS-Vergleich
-                </h3>
-                <p class="text-gray-600 dark:text-gray-400 text-sm mb-5">
-                    Funktionstabelle gegen Sternberg SD.NET, ALLRIS, Somacos Session und
-                    regisafe — zwölf Kriterien, nur öffentlich Belegbares.
-                </p>
-                <a href="/vergleich/"
-                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-lg transition-colors">
-                    Zum RIS-Vergleich
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="py-16 lg:py-24 bg-primary-600 dark:bg-primary-900">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4">
-            Bereit für mehr Transparenz?
-        </h2>
-        <p class="text-primary-100 mb-8 max-w-2xl mx-auto">
-            Insight ist kostenlos — Mandari Work gibt es für 39,90 €/Monat inkl. MwSt.
+{# Hero: Überschrift, ein Satz, ein Aufruf; der Weg zum Bürgerportal als ruhiger Textlink; ein echtes Produktbild #}
+<section class="bg-white dark:bg-gray-900 pt-14 lg:pt-24">
+    <div class="wrap">
+        <h1 class="t-display text-gray-900 dark:text-white max-w-[13ch]">Software für die offene Verwaltung<span class="punkt">.</span></h1>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-7 max-w-[38rem]">
+            mandari verbindet Sitzungsdienst, Fraktionsarbeit und Bürgerportal auf einer offenen Plattform – vom ersten Antrag bis zum Beschluss, den alle nachlesen können.
         </p>
-        <div class="flex flex-wrap justify-center gap-3">
-            <a href="/insight/"
-               class="inline-flex items-center gap-2 px-7 py-4 bg-white text-primary-700 font-medium rounded-xl hover:bg-gray-100 transition-colors">
-                <i data-lucide="eye" class="w-5 h-5"></i>
-                Zum Bürgerportal
-            </a>
-            <a href="https://portal.mandari.de/buchen/"
-               class="inline-flex items-center gap-2 px-7 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors">
-                <i data-lucide="zap" class="w-5 h-5"></i>
-                Work jetzt buchen
-            </a>
-            <a href="/preise/"
-               class="inline-flex items-center gap-2 px-7 py-4 bg-transparent hover:bg-white/10 text-white font-medium rounded-xl border border-white/30 transition-colors">
-                <i data-lucide="tag" class="w-5 h-5"></i>
-                Preise ansehen
-            </a>
+        <div class="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+            <a class="btn-primary" href="/kontakt/#termin">Erstgespräch vereinbaren</a>
+            <a class="textlink" href="/insight/">Ratsinformationen im Bürgerportal ansehen</a>
+        </div>
+
+        <figure class="mt-16 lg:mt-20">
+            <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
+                <picture>
+                    <source media="(max-width: 640px)" type="image/webp"
+                            srcset="{% static 'images/startseite/insight-muenster-mobil-780.webp' %}"
+                            width="780" height="1266">
+                    <source type="image/webp"
+                            srcset="{% static 'images/startseite/insight-muenster-1280.webp' %} 1280w, {% static 'images/startseite/insight-muenster-2560.webp' %} 2560w"
+                            sizes="(min-width: 1280px) 1216px, 100vw"
+                            width="1280" height="800">
+                    <img src="{% static 'images/startseite/insight-muenster-1280.webp' %}" width="1280" height="800"
+                         alt="mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste Vorgänge der Stadt"
+                         fetchpriority="high" decoding="async"
+                         class="block w-full h-auto">
+                </picture>
+            </div>
+        </figure>
+    </div>
+</section>
+
+{# Drei Seiten des Ratssaals: je Zielgruppe ein Produkt, ein Satz, ein Weg #}
+<section class="bg-white dark:bg-gray-900 py-24 lg:py-36">
+    <div class="wrap">
+        <h2 class="t-h2 text-gray-900 dark:text-white max-w-[18ch]">Eine Plattform für alle Seiten des Ratssaals.</h2>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[41rem]">
+            Verwaltung, Politik und Öffentlichkeit arbeiten mit denselben Ratsdaten – jede Seite mit dem Werkzeug, das zu ihrem Alltag passt.
+        </p>
+
+        <div class="mt-16 lg:mt-24 space-y-16 lg:space-y-20">
+            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
+                <div class="lg:col-span-4">
+                    <h3 class="t-h3 text-gray-900 dark:text-white">Verwaltung</h3>
+                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Session</p>
+                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Pilotphase</p>
+                </div>
+                <div class="lg:col-span-7 lg:col-start-6">
+                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
+                        Einladungsfristen, Vorlagen aus fünf Ämtern, die Niederschrift bis Freitag. Session ist das Ratsinformationssystem für Ihren Sitzungsdienst: von der Tagesordnung bis zur freigegebenen Niederschrift, ohne Medienbruch.
+                    </p>
+                    <p class="mt-4"><a class="textlink" href="/kommunen/">mandari Session ansehen</a></p>
+                </div>
+            </article>
+
+            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
+                <div class="lg:col-span-4">
+                    <h3 class="t-h3 text-gray-900 dark:text-white">Politik</h3>
+                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Work</p>
+                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Offene Beta</p>
+                </div>
+                <div class="lg:col-span-7 lg:col-start-6">
+                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
+                        Hunderte Seiten Unterlagen, Abstimmung per Mailkette, Ratsarbeit nach Feierabend. Work bündelt Sitzungsvorbereitung, Anträge und Fristen Ihrer Fraktion an einem Ort, der die Ratsdaten schon kennt.
+                    </p>
+                    <p class="mt-4"><a class="textlink" href="/fraktionen/">mandari Work ansehen</a></p>
+                </div>
+            </article>
+
+            <article class="grid lg:grid-cols-12 gap-x-10 gap-y-4">
+                <div class="lg:col-span-4">
+                    <h3 class="t-h3 text-gray-900 dark:text-white">Bürger:innen</h3>
+                    <p class="mt-3 font-semibold text-gray-900 dark:text-gray-100">mandari Insight</p>
+                    <p class="text-[0.9375rem] text-gray-600 dark:text-gray-400">Im Einsatz</p>
+                </div>
+                <div class="lg:col-span-7 lg:col-start-6">
+                    <p class="t-body text-gray-600 dark:text-gray-300 max-w-[36rem]">
+                        Was wurde zu meiner Straße beschlossen? Insight findet Beschlüsse im Volltext und zeigt sie auf der Karte – kostenlos und ohne Anmeldung.
+                    </p>
+                    <p class="mt-4"><a class="textlink" href="/insight/">Bürgerportal öffnen</a></p>
+                </div>
+            </article>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-x-10 mt-20 lg:mt-24">
+            <p class="t-body text-gray-600 dark:text-gray-300 lg:col-span-7 lg:col-start-6 max-w-[36rem]">
+                Als Nächstes bauen wir auf demselben Fundament weiter: Wahlergebnisse live, das Open-Data-Portal mandari Data und die App für Mandatsträger:innen.
+                <a class="textlink whitespace-nowrap" href="/roadmap/">Roadmap ansehen</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Werte als Zusage: offener Code, eigene Daten, Betrieb nach Wahl #}
+<section class="bg-mist py-24 lg:py-32">
+    <div class="wrap grid lg:grid-cols-12 gap-x-10 gap-y-8">
+        <h2 class="t-h2 text-gray-900 dark:text-white lg:col-span-5">Öffentliches Geld.<br>Öffentlicher Code.</h2>
+        <div class="lg:col-span-6 lg:col-start-7 lg:pt-2">
+            <p class="t-lead text-gray-800 dark:text-gray-200">
+                Jede Zeile von mandari ist unter der AGPL-3.0 öffentlich einsehbar. Ihre Daten bleiben exportierbar, die Schnittstellen folgen dem Standard OParl. Sie entscheiden, ob mandari bei uns in Deutschland läuft oder in Ihrem eigenen Rechenzentrum.
+            </p>
+            <p class="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+                <a class="textlink" href="https://github.com/mandariOSS/mandari">Quellcode ansehen</a>
+                <a class="textlink" href="/trust/">Sicherheit und Datenschutz prüfen</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Einladung: ruhige dunkle Fläche, derselbe Aufruf wie im Hero #}
+<section class="on-ink bg-gray-900 dark:bg-gray-950 text-white py-24 lg:py-32">
+    <div class="wrap">
+        <div class="max-w-[40rem]">
+            <h2 class="t-h2">Lassen Sie uns über Ihre Verwaltung sprechen.</h2>
+            <p class="t-lead text-gray-300 mt-6">30 Minuten, unverbindlich: Wir zeigen Ihnen mandari an Ihren eigenen Fragen – per Video, am Telefon oder persönlich in Münster.</p>
+            <div class="mt-10"><a class="btn-primary" href="/kontakt/#termin">Erstgespräch vereinbaren</a></div>
         </div>
     </div>
 </section>

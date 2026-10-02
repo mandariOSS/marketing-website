@@ -1,3 +1,131 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Gestaltung ohne Effekte: Schriftstufen, ein Button, Textlinks ──────────
+   Grundlage: Startseiten-Prototyp (Weiß, Tinte #111827, helle Fläche #F5F6F8,
+   Indigo nur für Button, Textlinks und den Punkt der Wortmarke). Zustände
+   ändern Farbe oder Unterstreichung, nie die Position. */
+@layer components {
+  .wrap {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Schriftstufen: eine Schrift (Inter), klare Größen, linksbündig */
+  .t-display {
+    font-size: clamp(2.6rem, 1.55rem + 4.2vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.038em;
+    font-weight: 650;
+  }
+  .t-h1 {
+    font-size: clamp(2.25rem, 1.7rem + 2.3vw, 3.6rem);
+    line-height: 1.06;
+    letter-spacing: -0.032em;
+    font-weight: 650;
+  }
+  .t-h2 {
+    font-size: clamp(1.85rem, 1.45rem + 1.6vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.028em;
+    font-weight: 650;
+  }
+  .t-h3 {
+    font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 620;
+  }
+  .t-lead {
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
+    line-height: 1.6;
+  }
+  .t-body {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  /* Der Punkt der Wortmarke – einziges Akzent-Detail einer Überschrift */
+  .punkt {
+    color: #4f46e5;
+  }
+  .dark .punkt {
+    color: #818cf8;
+  }
+
+  /* Ruhige helle Fläche für einen Abschnitt */
+  .bg-mist {
+    background-color: #f5f6f8;
+  }
+  .dark .bg-mist {
+    background-color: rgb(31 41 55 / 0.5);
+  }
+
+  /* Genau ein gefüllter Aufruf je Abschnitt */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.25;
+    padding: 0.95rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.15s;
+  }
+  .btn-primary:hover {
+    background-color: #4338ca;
+  }
+
+  /* Weitere Wege als Textlink: Farbe und Unterstreichung, keine Bewegung */
+  .textlink,
+  .richtext a {
+    color: #4338ca;
+    font-weight: 560;
+    text-decoration-line: underline;
+    text-decoration-color: #a5b4fc;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 5px;
+    transition: text-decoration-color 0.15s, color 0.15s;
+  }
+  .textlink:hover,
+  .richtext a:hover {
+    text-decoration-color: currentColor;
+  }
+  .dark .textlink,
+  .dark .richtext a {
+    color: #a5b4fc;
+    text-decoration-color: rgb(165 180 252 / 0.45);
+  }
+  .dark .textlink:hover,
+  .dark .richtext a:hover {
+    text-decoration-color: currentColor;
+  }
+  .richtext p + p {
+    margin-top: 1em;
+  }
+
+  /* Dunkle Fläche (Einladung): Textlinks hell */
+  .on-ink .textlink,
+  .on-ink .richtext a {
+    color: #e0e7ff;
+    text-decoration-color: rgb(224 231 255 / 0.4);
+  }
+  .on-ink .textlink:hover,
+  .on-ink .richtext a:hover {
+    text-decoration-color: currentColor;
+  }
+  .on-ink a:focus-visible {
+    outline-color: #a5b4fc;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary,
+    .textlink {
+      transition: none;
+    }
+  }
+}

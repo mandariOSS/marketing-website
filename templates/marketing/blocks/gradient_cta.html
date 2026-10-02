@@ -1,23 +1,25 @@
-{# Final-CTA mit Gradient-Background #}
-<section class="py-16 lg:py-20 bg-gradient-to-br from-{{ self.gradient_from|default:'primary' }}-600 to-{{ self.gradient_from|default:'primary' }}-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-white mb-6">{{ self.title }}</h2>
-            {% if self.subline %}<p class="text-xl text-white/90 mb-10">{{ self.subline }}</p>{% endif %}
-            <div class="flex flex-wrap justify-center gap-4">
-                {% for cta in self.ctas %}
+{# Einladung: ein gefüllter Aufruf, weitere Wege als Textlink, kein Verlauf. Am Seitenende auf ruhiger dunkler Fläche, mitten auf der Seite auf heller Fläche (last_block kommt aus marketing_page.html). #}
+{% if last_block == False %}
+<section class="bg-mist py-16 lg:py-20">
+    <div class="wrap">
+        <div class="max-w-[42rem]">
+            <h2 class="t-h3 text-gray-900 dark:text-white">{{ self.title }}</h2>
+            {% if self.subline %}<p class="t-body text-gray-600 dark:text-gray-300 mt-3">{{ self.subline }}</p>{% endif %}
+{% else %}
+<section class="on-ink bg-gray-900 dark:bg-gray-950 text-white py-20 lg:py-28">
+    <div class="wrap">
+        <div class="max-w-[42rem]">
+            <h2 class="t-h2 text-white">{{ self.title }}</h2>
+            {% if self.subline %}<p class="t-lead text-gray-300 mt-6">{{ self.subline }}</p>{% endif %}
+{% endif %}
+            <div class="{% if last_block == False %}mt-7{% else %}mt-10{% endif %} flex flex-wrap items-center gap-x-8 gap-y-5">
+                {% for cta in self.ctas %}{% if forloop.counter <= 3 %}
                 {% if forloop.first %}
-                <a href="{{ cta.url }}" class="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-100 text-{{ self.gradient_from|default:'primary' }}-700 font-medium rounded-xl transition-colors text-lg">
-                    {% if cta.icon %}<i data-lucide="{{ cta.icon }}" class="w-5 h-5 mr-2"></i>{% endif %}
-                    {{ cta.label }}
-                </a>
+                <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
                 {% else %}
-                <a href="{{ cta.url }}" class="inline-flex items-center gap-2 px-8 py-4 bg-white/15 hover:bg-white/25 text-white font-medium rounded-xl border border-white/30 transition-colors text-lg">
-                    {% if cta.icon %}<i data-lucide="{{ cta.icon }}" class="w-5 h-5"></i>{% endif %}
-                    {{ cta.label }}
-                </a>
+                <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
                 {% endif %}
-                {% endfor %}
+                {% endif %}{% endfor %}
             </div>
         </div>
     </div>
