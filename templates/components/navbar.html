@@ -11,7 +11,7 @@ scripts/check_site_structure.py prüft die Einträge.
     <div x-ref="leiste"
          class="border-b bg-white/95 dark:bg-gray-900/95 backdrop-blur-md transition-[box-shadow,border-color] duration-200 motion-reduce:transition-none"
          :class="gescrollt ? 'border-gray-200 dark:border-gray-700 shadow-[0_8px_24px_-14px_rgba(17,24,39,0.28)] dark:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.9)]' : 'border-gray-200/70 dark:border-gray-800'">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 h-16 lg:h-[4.5rem]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 min-[375px]:gap-3 h-16 lg:h-[4.5rem]">
             <a href="/" class="shrink-0 text-[1.4rem] font-bold tracking-tight leading-none text-gray-900 dark:text-white" aria-label="mandari Startseite">mandari<span class="text-primary-600 dark:text-primary-400" aria-hidden="true">.</span></a>
 
             <div class="flex items-center lg:gap-14">
@@ -32,8 +32,8 @@ scripts/check_site_structure.py prüft die Einträge.
                             x-transition:enter="transition-opacity ease-out duration-150 motion-reduce:transition-none" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                             x-transition:leave="transition-opacity ease-in duration-100 motion-reduce:transition-none" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                             @keydown.arrow-down.prevent="bewegen(1)" @keydown.arrow-up.prevent="bewegen(-1)"
-                            @keydown.home.prevent="eintraege().at(0).focus()" @keydown.end.prevent="eintraege().at(-1).focus()"
-                            @click="if ($event.target.closest('a')) schliessen()"
+                            @keydown.home.prevent="fokussieren(0)" @keydown.end.prevent="fokussieren(-1)"
+                            @click="linkGewaehlt($event)"
                             class="absolute -left-5 top-full mt-6 z-50 w-64 p-2 space-y-0.5 rounded-xl bg-white dark:bg-gray-800 shadow-xl shadow-gray-900/10 dark:shadow-black/50 ring-1 ring-gray-900/10 dark:ring-white/10">
                             <li><a href="/produkte/"{% current_page request "/produkte/" %} class="flex items-center px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 hover:text-gray-900 focus-visible:bg-primary-50 focus-visible:rounded-lg dark:hover:bg-primary-400/10 dark:hover:text-white dark:focus-visible:bg-primary-400/10 aria-[current=page]:font-semibold aria-[current=page]:text-primary-700 dark:aria-[current=page]:text-primary-300 transition-colors">Übersicht</a></li>
                             <li><a href="/kommunen/"{% current_page request "/kommunen/" %} class="flex items-center px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-primary-50 hover:text-gray-900 focus-visible:bg-primary-50 focus-visible:rounded-lg dark:hover:bg-primary-400/10 dark:hover:text-white dark:focus-visible:bg-primary-400/10 aria-[current=page]:font-semibold aria-[current=page]:text-primary-700 dark:aria-[current=page]:text-primary-300 transition-colors">Für Verwaltungen</a></li>
@@ -48,7 +48,7 @@ scripts/check_site_structure.py prüft die Einträge.
                 </nav>
 
                 <div class="flex items-center gap-0.5 sm:gap-2 lg:gap-6 text-[0.95rem] font-medium">
-                    <a href="/insight/" class="px-2 py-3 lg:px-0 text-gray-900 dark:text-white hover:underline underline-offset-[6px] decoration-[1.5px] decoration-primary-400">Bürgerportal</a>
+                    <a href="/insight/" class="px-1.5 min-[375px]:px-2 py-3 lg:px-0 text-gray-900 dark:text-white hover:underline underline-offset-[6px] decoration-[1.5px] decoration-primary-400">Bürgerportal</a>
                     <a href="/work/" class="hidden lg:inline py-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:underline underline-offset-[6px] decoration-[1.5px] transition-colors">Anmelden</a>
 
                     <button type="button" @click="darkMode = !darkMode"
@@ -60,7 +60,7 @@ scripts/check_site_structure.py prüft die Einträge.
                     </button>
 
                     <button type="button" x-ref="menueKnopf" @click="oeffnen()"
-                            class="lg:hidden inline-flex items-center gap-1.5 h-11 ml-1 pl-2.5 pr-3 rounded-lg ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            class="lg:hidden inline-flex items-center gap-1.5 h-11 min-[375px]:ml-1 pl-2.5 pr-3 rounded-lg ring-1 ring-inset ring-gray-300 dark:ring-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                             aria-expanded="false" :aria-expanded="menueOffen.toString()" aria-controls="mobilmenue">
                         <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
                         Menü

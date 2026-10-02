@@ -2,6 +2,7 @@
 
 import re
 
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.test import RequestFactory, SimpleTestCase
 
@@ -56,3 +57,13 @@ class KopfzeileTests(SimpleTestCase):
         self.assertIn('role="dialog"', dialog)
         self.assertIn('aria-modal="true"', dialog)
         self.assertIn('aria-label="Menü"', dialog)
+
+
+class AbstandZurKopfzeileTests(SimpleTestCase):
+    def test_scroll_margin_im_inhalt_statt_scroll_padding_am_html(self):
+        # Mit scroll-padding am html hält Chrome die haftende Kopfzeile für verdeckt und scrollt bei jedem
+        # Fokus darin (Tab, Pfeiltasten im Produkte-Menü) die Seite nach oben.
+        quelle = (settings.BASE_DIR / "templates" / "base.html").read_text(encoding="utf-8")
+        html_tag = re.search(r"<html[^>]*>", quelle, re.S).group(0)
+        self.assertNotIn("scroll-p", html_tag)
+        self.assertIn("main, main *, footer * { scroll-margin-top: 5rem; }", quelle)
