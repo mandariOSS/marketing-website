@@ -1,7 +1,8 @@
-{# Eckdaten unter dem Hero: eine ruhige Zeile Text, ohne Band, Linien oder Symbole. #}
-<section class="pb-14 lg:pb-20 band-{{ band|default:'hell' }}">
+{% load baender %}
+{# Eckdaten unter dem Hero: eine ruhige Zeile Text auf dem Band des Hero, ohne Linien oder Symbole. #}
+<section class="{% abschnitt band band_anfang band_ende art='kompakt' %}">
     <div class="wrap">
-        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-3 max-w-6xl text-[0.9375rem]">
+        <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-3 text-base">
             {% for item in self.items %}
             <div><dt class="inline font-semibold text-gray-900 dark:text-white">{{ item.label_bold }}</dt>{% if item.label_normal %} <dd class="inline text-gray-600 dark:text-gray-400">{{ item.label_normal }}</dd>{% endif %}</div>
             {% endfor %}

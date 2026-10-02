@@ -63,6 +63,26 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
+      // Rich Text (Prosa) auf der Skala des Gestaltungssystems: Text #4B5563, Überschriften 28/22/18 px,
+      // Aufzählungspunkte wie in den Bausteinen. Links gestaltet static/css/input.css (eine Linkgestalt).
+      typography: {
+        DEFAULT: {
+          css: {
+            '--tw-prose-body': '#4b5563',
+            '--tw-prose-bullets': '#9ca3af',
+            '--tw-prose-counters': '#4b5563',
+            '--tw-prose-invert-body': '#d1d5db',
+            '--tw-prose-invert-bullets': '#6b7280',
+          },
+        },
+        lg: {
+          css: {
+            h2: { fontSize: '1.75rem', lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '630', marginTop: '2.25em', marginBottom: '0.75em' },
+            h3: { fontSize: '1.375rem', lineHeight: '1.3', letterSpacing: '-0.014em', fontWeight: '620', marginTop: '1.75em', marginBottom: '0.5em' },
+            h4: { fontSize: '1.125rem', lineHeight: '1.4', fontWeight: '620', marginTop: '1.5em', marginBottom: '0.5em' },
+          },
+        },
+      },
     },
   },
   plugins: [

@@ -2,15 +2,11 @@
 {% load wagtailcore_tags %}
 
 {% block content %}
-{# Rechtstext ruhig: Titel auf hellgrauem Band, der Text durchgehend auf Weiß #}
-<div class="band-grau pt-14 pb-12 lg:pt-20 lg:pb-14">
+{# Rechtstext als Dokument: derselbe Seitenkopf wie überall (weiß, H1), der Text direkt darunter auf demselben Band, Überschriften in der Dokumentstufe #}
+<article class="band-hell hero">
     <div class="wrap">
-        <h1 class="t-h1 text-gray-900 dark:text-white max-w-3xl">{{ page.title }}</h1>
-    </div>
-</div>
-<article class="band-hell pt-12 pb-24 lg:pt-16 lg:pb-32">
-    <div class="wrap">
-        <div class="max-w-3xl prose prose-lg dark:prose-invert prose-headings:tracking-tight prose-headings:font-semibold prose-h2:text-2xl prose-h3:text-xl prose-a:text-primary-700 dark:prose-a:text-primary-300 prose-a:decoration-primary-300 prose-a:underline-offset-4">
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-5xl">{{ page.title }}</h1>
+        <div class="mt-10 lg:mt-12 max-w-[45rem] prose prose-lg dark:prose-invert">
             {{ page.body|richtext }}
         </div>
     </div>

@@ -1,5 +1,5 @@
-{# Abschnittsüberschrift: H2 und ein Satz, linksbündig. Keine Pille darüber. #}
-<div{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="max-w-3xl mb-12 lg:mb-14 ">
-    <h2 class="t-h2 text-gray-900 dark:text-white">{{ self.title }}</h2>
+{# Abschnittskopf: H2 und höchstens ein Satz, linksbündig, 48 px bis zum Inhalt. dicht: direkt vor Fließtext (24 px). dok: Überschriftstufe für Dokumente (28 px). Keine Pille darüber. #}
+<div{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="kopf{% if dicht %} kopf-dicht{% endif %}">
+    <h2 class="{% if dok %}t-h2-dok{% else %}t-h2{% endif %} text-gray-900 dark:text-white">{{ self.title }}</h2>
     {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-5">{{ self.subline }}</p>{% endif %}
 </div>

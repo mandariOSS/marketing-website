@@ -3,19 +3,19 @@
 {% company_settings as company %}
 {% section_header "Angaben zum Unternehmen" "Für Eignungsprüfungen, Verträge und Vergabeverfahren – alles an einem Ort." "angaben" as kopf %}
 {% with entity=company.entity %}
-<section class="band-{{ band|default:'grau' }} py-16 lg:py-20">
+<section class="band-{{ band|default:'grau' }} abschnitt">
     <div class="wrap">
         {% block_template "marketing/blocks/section_header.html" kopf %}
-        <dl class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700">
+        <dl class="max-w-5xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700">
             {% for label, wert in entity.rows %}
-            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">{{ label }}</dt><dd class="sm:col-span-2 t-body text-gray-700 dark:text-gray-300">{{ wert }}</dd></div>
+            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">{{ label }}</dt><dd class="sm:col-span-2 t-body text-gray-600 dark:text-gray-300">{{ wert }}</dd></div>
             {% endfor %}
-            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Rechenzentrum</dt><dd class="sm:col-span-2 t-body text-gray-700 dark:text-gray-300">Hetzner Online GmbH, ausschließlich Standorte in Deutschland, zertifiziert nach ISO 27001</dd></div>
-            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Quellcode</dt><dd class="sm:col-span-2 t-body text-gray-700 dark:text-gray-300">Öffentlich unter AGPL-3.0: <a href="https://github.com/mandariOSS/mandari" rel="noopener" class="textlink">github.com/mandariOSS/mandari</a>. Der Code bleibt dauerhaft verfügbar – eine Hinterlegung beim Treuhänder ist nicht nötig.</dd></div>
-            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Unterlagen für Vergaben</dt><dd class="sm:col-span-2 t-body text-gray-700 dark:text-gray-300">Muster-AVV, TOM, Subprozessoren und Funktionsübersicht unter <a href="/vergabe/" class="textlink">Vergabe und Unterlagen</a></dd></div>
+            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Rechenzentrum</dt><dd class="sm:col-span-2 t-body text-gray-600 dark:text-gray-300">Hetzner Online GmbH, ausschließlich Standorte in Deutschland, zertifiziert nach ISO 27001</dd></div>
+            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Quellcode</dt><dd class="sm:col-span-2 t-body text-gray-600 dark:text-gray-300">Öffentlich unter AGPL-3.0: <a href="https://github.com/mandariOSS/mandari" rel="noopener" class="textlink">github.com/mandariOSS/mandari</a>. Der Code bleibt dauerhaft verfügbar – eine Hinterlegung beim Treuhänder ist nicht nötig.</dd></div>
+            <div class="py-4 grid sm:grid-cols-3 gap-x-8 gap-y-1"><dt class="t-body font-semibold text-gray-900 dark:text-white">Unterlagen für Vergaben</dt><dd class="sm:col-span-2 t-body text-gray-600 dark:text-gray-300">Muster-AVV, TOM, Subprozessoren und Funktionsübersicht unter <a href="/vergabe/" class="textlink">Vergabe und Unterlagen</a></dd></div>
         </dl>
         {% if company.show_founding_notice %}
-        <p class="mt-8 max-w-3xl t-body text-gray-700 dark:text-gray-300"><strong class="text-gray-900 dark:text-white">mandari wird eigenständig.</strong> Heute entwickelt und betreibt {{ entity.name }} ({{ entity.addition }}) die Plattform. Die Gründung einer eigenen Gesellschaft ist in Vorbereitung; Kund:innen informieren wir vorab und schriftlich.</p>
+        <p class="mt-8 max-w-[45rem] t-body text-gray-600 dark:text-gray-300"><strong class="text-gray-900 dark:text-white">mandari wird eigenständig.</strong> Heute entwickelt und betreibt {{ entity.name }} ({{ entity.addition }}) die Plattform. Die Gründung einer eigenen Gesellschaft ist in Vorbereitung; Kund:innen informieren wir vorab und schriftlich.</p>
         {% endif %}
     </div>
 </section>

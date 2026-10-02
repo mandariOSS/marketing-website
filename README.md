@@ -256,42 +256,59 @@ marketing-website/
 
 ## 🎨 Gestaltung
 
-Weniger ist mehr: Typografie trägt die Seite, nicht Effekte.
+Weniger ist mehr: Typografie trägt die Seite, nicht Effekte. Alle Seiten folgen einem
+Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel ruhig wirken.
 
+| | Stufen |
+|---|---|
+| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px |
+| **Abstand** | Abschnitt 96 px (Handy 64) · kompakt 64 px (48) für Hinweise · Unterabschnitt 48 px · Abschnittskopf → Inhalt 48 px, vor Fließtext 24 px |
+| **Raster** | Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen); Einträge in zwei Spalten, bei genau drei Einträgen in drei |
+| **Farbe** | Tinte `#111827`, Text `#4B5563`, Weiß, Hellgrau `#EEF0F4`; Indigo `#4F46E5` nur für den gefüllten Button, Textlinks und den Punkt der Wortmarke |
+
+- **Ein Seitenkopf für alle Seiten** (`marketing/blocks/hero.html`): weiß, Überschrift,
+  ein erklärender Satz, ein Button, höchstens ein Textlink, keine Pillen, keine Zähler-Leiste.
+  Produktseiten zeigen rechts ein echtes Bild in derselben Rahmung wie die Startseite:
+  `/produkte/` den Stapel aus Session, Work und Insight (`_hero_stapel.html`), `/kommunen/`
+  Session und `/fraktionen/` Work (`_hero_einzel.html`, Zuordnung `HERO_BILD` in
+  `marketing/templatetags/baender.py`). Alle anderen Seiten haben einen kompakten Kopf
+  ohne Bild mit Mindesthöhe; Rechtstexte, Quellen und Releases sind Dokumente: Kopf und Text
+  durchgehend auf Weiß.
 - **Bänder:** Jeder Abschnitt liegt auf einem vollbreiten Band, benachbarte
-  Bänder haben nie denselben Grund: Weiß, kühles Hellgrau (`#EEF0F4`), zarte
-  Markenfläche (Indigo, für Einladungen mitten auf der Seite), Tinte `#111827`
-  für die Einladung am Seitenende, die Fußzeile eine Stufe dunkler. Auf
-  StreamField-Seiten legt `marketing/templatetags/baender.py` die Bänder nach der
-  Reihenfolge der Blöcke fest (Hero hell, dann abwechselnd, auch die nummerierten
-  Artikel im Trust Center; Zusätze wie Eckdaten oder Hinweise bleiben auf dem
-  Band davor; Rechtstexte ruhig: Titel grau, Text weiß). Das Feld „Hintergrund“ einzelner Blöcke wirkt nur noch ohne diese
-  Automatik. Farben hell und dunkel als Variablen in `static/css/input.css`.
-  Keine Verläufe.
+  Bänder haben nie denselben Grund: Weiß, kühles Hellgrau, Markenfläche (Indigo, für
+  eine Einladung mitten auf der Seite, nie neben Hellgrau), Tinte für die Einladung am
+  Seitenende, die Fußzeile eine Stufe dunkler. Auf StreamField-Seiten legt
+  `marketing/templatetags/baender.py` die Bänder nach der Reihenfolge der Blöcke fest, das
+  Tag `{% abschnitt %}` setzt Band und Innenabstand aus der Skala (Zusätze wie Eckdaten oder
+  Hinweise setzen das Band davor fort, ohne doppelten Abstand). Das Feld „Hintergrund“
+  einzelner Blöcke wirkt nur noch ohne diese Automatik. Farben hell und dunkel als
+  Variablen in `static/css/input.css`. Keine Verläufe.
+- **Einträge:** Titel über dem Text, offen auf der Fläche (`split_rows`, `mandari_cards`,
+  Schritte). Kein Muster „Überschrift links, Text rechts“ mehr; Daten in zeitlicher Folge
+  als Zeitleiste (`split_rows` mit Darstellung „Zeitleiste“). Fließtext kann eine
+  **Randspalte** tragen (`richtext_section`, Feld „Randspalte“) für Kernsätze, Kennzahlen
+  mit Stand oder Kontakt – statt einer leeren rechten Hälfte.
 - **Produktfarben:** Session Petrol `#0F5E8C` (vom Blau in Session abgeleitet,
   bewusst vom Indigo abgesetzt), Work Indigo `#4F46E5` (Standardfarbe in Work),
-  Insight Grün `#17703F`. Jedes Produkt erscheint auf Startseite und `/produkte/`
-  als eigene Fläche in seiner Farbe (`_produkt.html`), `/fraktionen/` und
-  `/kommunen/` tragen die Fläche im Hero, Preisstufen, Spalten der
-  Funktionsübersicht und Einträge mit Produktbezug Namen und Link in der
-  Kennfarbe.
-- **Akzent:** Indigo nur für den einen gefüllten Button (`btn-primary`),
-  Textlinks (`textlink`) und den Punkt der Wortmarke (`punkt`).
-- **Schrift:** Inter, Stufen `t-display`, `t-h1`, `t-h2`, `t-h3`, `t-lead`,
-  `t-body` (Komponenten in `static/css/input.css`), linksbündig.
-- **Hero und Einladung am Seitenende:** Überschrift, ein erklärender Satz,
-  ein Button, höchstens ein Textlink. Keine Pillen, keine Zähler-Leiste.
+  Insight Grün `#17703F`. Startseite und `/produkte/` zeigen jedes Produkt als eigene Fläche
+  (`_produkt.html`): hell zart getönt, dunkel neutral mit Namen und Link in der Kennfarbe.
+  Überall dieselbe Reihenfolge: Session, Work, Insight (auch Funktionsübersicht und Preise).
+- **Formulare** (`/kontakt/`): ein Umschalter „Termin | Nachricht“, beide Formulare im selben
+  Raster, alle Felder 48 px (Klasse `feld`), ein gefüllter Aufruf je Formular.
+- **Links:** eine Gestalt für Textlinks und Links im Fließtext; Aufrufe im Rich Text
+  (`<a class="btn-primary">`, z. B. der Kündigungsbutton) bleiben Aufrufe.
+- **Weitere Werkzeuge** kündigen Produkt-, Presse- und Unternehmensseiten nicht an; was
+  geplant ist, steht in der Roadmap (`/roadmap/`).
 - **Versionsangaben** stehen nur in den Release-Notes (`/releases/`). Andere
   Seiten nennen den Stand ohne Nummer („Beta-Phase“) und verlinken dorthin,
   damit sie mit dem nächsten Release nicht veralten (die CI prüft das).
-- **Inhalte offen auf der Fläche** statt in Karten; Status als leiser Text,
-  Gruppierung über Abstand. Linien nur, wo sie Tabellen und Listen lesbarer machen.
 - **Zustände** ändern Farbe oder Unterstreichung, nie die Position
   (die CI prüft alle Templates außer dem ruhenden Blog: kein Hover mit
-  `translate-y`, keine Verläufe, keine Pillen-Etiketten, keine Deko-Viertelkreise).
+  `translate-y`, keine Verläufe, keine Pillen-Etiketten, keine Deko-Viertelkreise,
+  Abstände nur aus der Skala).
 
 Die StreamField-Blocktypen bleiben aus Kompatibilitätsgründen definiert, auch
-wenn einzelne Felder (z. B. `badge_text`, `gradient_from`) nicht mehr angezeigt
+wenn einzelne Felder (z. B. `badge_text`, `gradient_from`, `background_color`) nicht mehr angezeigt
 werden.
 
 ## 🤝 Mitmachen

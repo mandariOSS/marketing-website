@@ -2,7 +2,8 @@
 {% load static company_tags %}
 
 {% block extra_head %}
-{% if contact_ready %}<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>{% endif %}
+{% if contact_ready %}<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>
+<noscript><style>[data-ohne-js] { display: block !important; }</style></noscript>{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -11,120 +12,134 @@
 
 {% block_template "marketing/blocks/hero.html" kontakt_hero %}
 
-<section class="band-grau pt-16 pb-20 lg:pt-20 lg:pb-28">
-    <div class="wrap grid lg:grid-cols-12 gap-x-16 gap-y-20">
+{# Ein Formularsystem: Umschalter „Termin | Nachricht“, beide Formulare im selben Raster (zwei Spalten, Felder 48 px, ein Aufruf). Rechts Anschrift und Datenschutzhinweis. Ohne JavaScript stehen beide Formulare untereinander. #}
+<section class="band-grau abschnitt">
+    <div class="wrap grid lg:grid-cols-12 gap-x-8 gap-y-14">
 
-        {# ── Terminanfrage ───────────────────────────────────────────── #}
-        <div id="termin" class="lg:col-span-7 ">
-            <span id="termin-buchen" class="block " aria-hidden="true"></span>
-            <h2 class="t-h3 text-gray-900 dark:text-white">Erstgespräch vereinbaren</h2>
+        <div class="lg:col-span-7"{% if contact_ready %} x-data="{ ansicht: '{% if contact_status.kind == 'nachricht' %}nachricht{% else %}termin{% endif %}' }"
+             x-init="const wahl = () => { if (location.hash === '#nachricht') { ansicht = 'nachricht' } else if (location.hash.startsWith('#termin')) { ansicht = 'termin' } }; wahl(); if (location.hash === '#nachricht' || location.hash.startsWith('#termin')) { $nextTick(() => $refs.umschalter.scrollIntoView()) }; window.addEventListener('hashchange', () => { wahl(); $nextTick(() => $refs.umschalter.scrollIntoView()) })"{% endif %}>
+
             {% if contact_ready %}
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-3 max-w-xl">30 Minuten, unverbindlich. Wählen Sie Ihren Wunschtermin – wir bestätigen ihn innerhalb eines Werktags per E-Mail oder schlagen eine Alternative vor.</p>
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-2 lg:hidden">Lieber schriftlich? <a href="#nachricht" class="textlink">Nachricht schreiben</a></p>
+            <div role="tablist" aria-label="Art der Anfrage" x-ref="umschalter" x-cloak
+                 class="flex gap-x-6 sm:gap-x-8 border-b border-gray-300 dark:border-gray-600 mb-8">
+                <button type="button" role="tab" id="tab-termin" aria-controls="termin" x-ref="tabTermin"
+                        :aria-selected="(ansicht === 'termin').toString()" :tabindex="ansicht === 'termin' ? 0 : -1"
+                        @click="ansicht = 'termin'" @keydown.arrow-right.prevent="ansicht = 'nachricht'; $refs.tabNachricht.focus()" @keydown.arrow-left.prevent="ansicht = 'nachricht'; $refs.tabNachricht.focus()"
+                        class="-mb-px border-b-2 pb-3 t-body font-semibold transition-colors"
+                        :class="ansicht === 'termin' ? 'border-primary-600 text-gray-900 dark:border-primary-400 dark:text-white' : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'"><span class="sm:hidden">Termin anfragen</span><span class="hidden sm:inline">Erstgespräch vereinbaren</span></button>
+                <button type="button" role="tab" id="tab-nachricht" aria-controls="nachricht" x-ref="tabNachricht"
+                        :aria-selected="(ansicht === 'nachricht').toString()" :tabindex="ansicht === 'nachricht' ? 0 : -1"
+                        @click="ansicht = 'nachricht'" @keydown.arrow-right.prevent="ansicht = 'termin'; $refs.tabTermin.focus()" @keydown.arrow-left.prevent="ansicht = 'termin'; $refs.tabTermin.focus()"
+                        class="-mb-px border-b-2 pb-3 t-body font-semibold transition-colors"
+                        :class="ansicht === 'nachricht' ? 'border-primary-600 text-gray-900 dark:border-primary-400 dark:text-white' : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'">Nachricht schreiben</button>
+            </div>
+            {% endif %}
 
-            {% if contact_status.kind == "termin" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+            {# ── Terminanfrage ───────────────────────────────────────────── #}
+            <div id="termin"{% if contact_ready %} role="tabpanel" aria-labelledby="tab-termin" x-show="ansicht === 'termin'"{% if contact_status.kind == "nachricht" %} x-cloak data-ohne-js{% endif %}{% endif %}>
+                <span id="termin-buchen" class="block" aria-hidden="true"></span>
+                <h2 class="t-h2 text-gray-900 dark:text-white"{% if contact_ready %} :class="'sr-only'"{% endif %}>Erstgespräch vereinbaren</h2>
+                {% if contact_ready %}
+                <p class="t-body text-gray-600 dark:text-gray-300 max-w-[45rem]">30 Minuten, unverbindlich. Wählen Sie Ihren Wunschtermin – wir bestätigen ihn innerhalb eines Werktags per E-Mail oder schlagen eine Alternative vor.</p>
 
-            {% with f=termin_form %}
-            <form method="post" action="{{ page.url }}#termin" class="mt-8 space-y-5" novalidate>
-                {% csrf_token %}
-                <input type="hidden" name="art" value="termin">
-                <input type="hidden" name="anlass" value="{{ f.anlass.value|default_if_none:'' }}">
+                {% if contact_status.kind == "termin" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
 
-                <div class="grid sm:grid-cols-2 gap-5">
+                {% with f=termin_form %}
+                <form method="post" action="{{ page.url }}#termin" class="mt-8 grid sm:grid-cols-2 gap-x-6 gap-y-6" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="art" value="termin">
+                    <input type="hidden" name="anlass" value="{{ f.anlass.value|default_if_none:'' }}">
+
                     {% include "marketing/_kontakt_feld.html" with field=f.datum id="t-datum" label="Wunschtermin" type="date" hint="Montag bis Freitag" min=contact_min_date required=True %}
                     {% include "marketing/_kontakt_auswahl.html" with field=f.zeitfenster id="t-zeit" label="Uhrzeit" choices=contact_time_slots placeholder="Bitte wählen" %}
-                </div>
-                {% include "marketing/_kontakt_auswahl.html" with field=f.format id="t-format" label="Gesprächsform" choices=contact_formats %}
-                {% include "marketing/_kontakt_auswahl.html" with field=f.thema id="t-thema" label="Worum geht es?" choices=contact_topics placeholder="Bitte wählen" %}
-                <div class="grid sm:grid-cols-2 gap-5">
+                    {% include "marketing/_kontakt_auswahl.html" with field=f.format id="t-format" label="Gesprächsform" choices=contact_formats %}
+                    {% include "marketing/_kontakt_auswahl.html" with field=f.thema id="t-thema" label="Worum geht es?" choices=contact_topics placeholder="Bitte wählen" %}
                     {% include "marketing/_kontakt_feld.html" with field=f.name id="t-name" label="Ihr Name" autocomplete="name" required=True %}
                     {% include "marketing/_kontakt_feld.html" with field=f.email id="t-email" label="E-Mail-Adresse" type="email" autocomplete="email" required=True %}
-                </div>
-                <div class="grid sm:grid-cols-2 gap-5">
                     {% include "marketing/_kontakt_feld.html" with field=f.organisation id="t-org" label="Organisation" optional=True autocomplete="organization" placeholder="z. B. Stadt Musterstadt" %}
                     {% include "marketing/_kontakt_feld.html" with field=f.telefon id="t-telefon" label="Telefon" type="tel" optional=True autocomplete="tel" hint="Für Rückfragen und Telefontermine" %}
-                </div>
-                {% include "marketing/_kontakt_feld.html" with field=f.nachricht id="t-nachricht" label="Was sollten wir vorab wissen?" optional=True rows=3 placeholder="z. B. Ihr heutiges System, die Zahl der Gremien, Ihr Zeitplan" %}
-                {% include "marketing/_kontakt_einwilligung.html" with field=f.datenschutz id="t-datenschutz" %}
+                    <div class="sm:col-span-2">{% include "marketing/_kontakt_feld.html" with field=f.nachricht id="t-nachricht" label="Was sollten wir vorab wissen?" optional=True rows=5 placeholder="z. B. Ihr heutiges System, die Zahl der Gremien, Ihr Zeitplan" %}</div>
+                    <div class="sm:col-span-2">{% include "marketing/_kontakt_einwilligung.html" with field=f.datenschutz id="t-datenschutz" %}</div>
 
-                <div class="pt-2"><button type="submit" class="btn-primary">Terminanfrage senden</button></div>
-            </form>
-            {% endwith %}
-            {% else %}
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-3 max-w-xl">30 Minuten, unverbindlich. Nennen Sie uns zwei, drei Wunschtermine per E-Mail – wir bestätigen innerhalb eines Werktags oder schlagen eine Alternative vor.</p>
-            {% if contact_status.kind == "termin" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
-            <p class="mt-8"><a href="mailto:{{ contact_fallback }}?subject=Erstgespr%C3%A4ch" class="btn-primary">Termin per E-Mail anfragen</a></p>
-            {% endif %}
+                    <div class="sm:col-span-2"><button type="submit" class="btn-primary">Terminanfrage senden</button></div>
+                </form>
+                {% endwith %}
+                {% else %}
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-4 max-w-[45rem]">30 Minuten, unverbindlich. Nennen Sie uns zwei, drei Wunschtermine per E-Mail – wir bestätigen innerhalb eines Werktags oder schlagen eine Alternative vor.</p>
+                {% if contact_status.kind == "termin" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+                <p class="mt-8"><a href="mailto:{{ contact_fallback }}?subject=Erstgespr%C3%A4ch" class="btn-primary">Termin per E-Mail anfragen</a></p>
+                {% endif %}
+            </div>
+
+            {# ── Nachricht ───────────────────────────────────────────────── #}
+            <div id="nachricht"{% if contact_ready %} role="tabpanel" aria-labelledby="tab-nachricht" x-show="ansicht === 'nachricht'"{% if contact_status.kind != "nachricht" %} x-cloak data-ohne-js{% endif %}{% else %} class="mt-14"{% endif %}>
+                <h2 class="t-h2 text-gray-900 dark:text-white"{% if contact_ready %} :class="'sr-only'"{% endif %}>Nachricht schreiben</h2>
+                {% if contact_ready %}
+                <p class="t-body text-gray-600 dark:text-gray-300 max-w-[45rem]">Eine Frage, eine Idee, ein Vorhaben? Sie erhalten innerhalb eines Werktags eine persönliche Antwort, keine automatische.</p>
+
+                {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+
+                {% with f=nachricht_form %}
+                <form method="post" action="{{ page.url }}#nachricht" class="mt-8 grid sm:grid-cols-2 gap-x-6 gap-y-6" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="art" value="nachricht">
+                    <input type="hidden" name="anlass" value="{{ f.anlass.value|default_if_none:'' }}">
+
+                    {% include "marketing/_kontakt_feld.html" with field=f.name id="n-name" label="Ihr Name" autocomplete="name" required=True %}
+                    {% include "marketing/_kontakt_feld.html" with field=f.email id="n-email" label="E-Mail-Adresse" type="email" autocomplete="email" required=True %}
+                    {% include "marketing/_kontakt_feld.html" with field=f.organisation id="n-org" label="Organisation" optional=True autocomplete="organization" placeholder="z. B. Stadt Musterstadt" %}
+                    {% include "marketing/_kontakt_auswahl.html" with field=f.thema id="n-thema" label="Worum geht es?" choices=contact_topics placeholder="Bitte wählen" %}
+                    <div class="sm:col-span-2">{% include "marketing/_kontakt_feld.html" with field=f.nachricht id="n-nachricht" label="Ihre Nachricht" rows=5 required=True %}</div>
+                    <div class="sm:col-span-2">{% include "marketing/_kontakt_einwilligung.html" with field=f.datenschutz id="n-datenschutz" %}</div>
+
+                    <div class="sm:col-span-2"><button type="submit" class="btn-primary">Nachricht senden</button></div>
+                </form>
+                {% endwith %}
+                {% else %}
+                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">Schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="textlink">{{ contact_fallback }}</a>.</p>
+                {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
+                {% endif %}
+            </div>
         </div>
 
-        {# ── Nachricht ───────────────────────────────────────────────── #}
-        <div id="nachricht" class="lg:col-span-5 ">
-            <h2 class="t-h3 text-gray-900 dark:text-white">Nachricht schreiben</h2>
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-3">Eine Frage, eine Idee, ein Vorhaben? Sie erhalten eine persönliche Antwort, keine automatische.</p>
-            {% if contact_ready %}
-
-            {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
-
-            {% with f=nachricht_form %}
-            <form method="post" action="{{ page.url }}#nachricht" class="mt-8 space-y-5" novalidate>
-                {% csrf_token %}
-                <input type="hidden" name="art" value="nachricht">
-                <input type="hidden" name="anlass" value="{{ f.anlass.value|default_if_none:'' }}">
-
-                {% include "marketing/_kontakt_auswahl.html" with field=f.thema id="n-thema" label="Worum geht es?" choices=contact_topics placeholder="Bitte wählen" %}
-                {% include "marketing/_kontakt_feld.html" with field=f.name id="n-name" label="Ihr Name" autocomplete="name" required=True %}
-                {% include "marketing/_kontakt_feld.html" with field=f.email id="n-email" label="E-Mail-Adresse" type="email" autocomplete="email" required=True %}
-                {% include "marketing/_kontakt_feld.html" with field=f.organisation id="n-org" label="Organisation" optional=True autocomplete="organization" %}
-                {% include "marketing/_kontakt_feld.html" with field=f.nachricht id="n-nachricht" label="Ihre Nachricht" rows=7 required=True %}
-                {% include "marketing/_kontakt_einwilligung.html" with field=f.datenschutz id="n-datenschutz" %}
-
-                <div class="pt-2"><button type="submit" class="inline-flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-6 py-[0.95rem] font-semibold leading-tight text-gray-900 dark:text-white transition-colors hover:border-gray-900 dark:hover:border-white">Nachricht senden</button></div>
-            </form>
-            {% endwith %}
-            {% else %}
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-3">Schreiben Sie uns an <a href="mailto:{{ contact_fallback }}" class="textlink">{{ contact_fallback }}</a>.</p>
-            {% if contact_status.kind == "nachricht" %}{% include "marketing/_kontakt_status.html" with status=contact_status %}{% endif %}
-            {% endif %}
-        </div>
-
-        {% if contact_ready %}
-        <p class="lg:col-span-12 text-[0.9375rem] text-gray-600 dark:text-gray-400 max-w-3xl">Ihre Angaben gehen direkt an unser Team – ohne Tracking und ohne Drittanbieter. Den Spamschutz rechnet Ihr Browser selbst aus, ein Captcha gibt es nicht. Mehr dazu in der <a href="/datenschutz/#formular" class="textlink">Datenschutzerklärung</a>.</p>
-        {% endif %}
-    </div>
-</section>
-
-{# ── Adressen nach Anliegen ──────────────────────────────────────────── #}
-<section class="band-hell py-16 lg:py-24">
-    <div class="wrap grid lg:grid-cols-12 gap-x-16 gap-y-12">
-        <div class="lg:col-span-8">
-            <h2 class="t-h3 text-gray-900 dark:text-white">Direkt zur richtigen Stelle</h2>
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-3">Für jedes Anliegen die passende Adresse.</p>
-            <dl class="mt-8 divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700">
-                {% for eintrag in contact_directory %}
-                <div class="py-4 grid sm:grid-cols-12 gap-x-6 gap-y-1">
-                    <dt class="sm:col-span-7">
-                        <span class="font-semibold text-gray-900 dark:text-white">{{ eintrag.anliegen }}</span>
-                        <span class="block text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ eintrag.hinweis }}{% if eintrag.link %} – <a href="{{ eintrag.link }}" class="underline underline-offset-4 decoration-gray-300 dark:decoration-gray-600 hover:decoration-current">{{ eintrag.link_text }}</a>{% endif %}</span>
-                    </dt>
-                    <dd class="sm:col-span-5 sm:text-right"><a href="mailto:{{ eintrag.adresse }}" class="textlink">{{ eintrag.adresse }}</a></dd>
-                </div>
-                {% endfor %}
-            </dl>
-            <p class="t-body text-gray-600 dark:text-gray-300 mt-8">Fehler gefunden oder eine Funktion vermisst? Auf GitHub sehen alle, woran wir arbeiten: <a href="https://github.com/mandariOSS/mandari/issues" rel="noopener" class="textlink">Issue eröffnen</a></p>
-        </div>
-
-        <div class="lg:col-span-4">
+        {# ── Anschrift und Hinweis zum Formular ──────────────────────────── #}
+        <aside class="lg:col-span-4 lg:col-start-9">
             <h2 class="t-h3 text-gray-900 dark:text-white">So finden Sie uns</h2>
-            <address class="mt-4 not-italic t-body text-gray-700 dark:text-gray-300">
+            <address class="mt-3 not-italic t-body text-gray-600 dark:text-gray-300">
                 mandari<br>
                 {{ entity.display_name }}<br>
                 {% if entity.street %}{{ entity.street }}<br>{% endif %}
                 {% if entity.postal_city %}{{ entity.postal_city }}<br>{% endif %}
-                {% if entity.phone %}<a href="tel:{{ entity.phone|cut:' ' }}" class="hover:underline underline-offset-4">{{ entity.phone }}</a><br>{% endif %}
-                <a href="mailto:hello@mandari.de" class="hover:underline underline-offset-4">hello@mandari.de</a>
+                {% if entity.phone %}<a href="tel:{{ entity.phone|cut:' ' }}" class="textlink">{{ entity.phone }}</a><br>{% endif %}
+                <a href="mailto:hello@mandari.de" class="textlink">hello@mandari.de</a>
             </address>
-            <p class="mt-6"><a href="/unternehmen/#angaben" class="textlink">Angaben zum Unternehmen</a></p>
+            <p class="mt-5"><a href="/unternehmen/#angaben" class="textlink">Angaben zum Unternehmen</a></p>
+            {% if contact_ready %}
+            <p class="mt-10 text-base text-gray-600 dark:text-gray-400">Ihre Angaben gehen direkt an unser Team – ohne Tracking und ohne Drittanbieter. Den Spamschutz rechnet Ihr Browser selbst aus, ein Captcha gibt es nicht. Mehr dazu in der <a href="/datenschutz/#formular" class="textlink">Datenschutzerklärung</a>.</p>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+
+{# ── Adressen nach Anliegen ──────────────────────────────────────────── #}
+<section class="band-hell abschnitt">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 text-gray-900 dark:text-white">Direkt zur richtigen Stelle</h2>
+            <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">Für jedes Anliegen die passende Adresse.</p>
         </div>
+        <dl class="max-w-5xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700">
+            {% for eintrag in contact_directory %}
+            <div class="py-4 grid sm:grid-cols-12 gap-x-8 gap-y-1">
+                <dt class="sm:col-span-8">
+                    <span class="t-body font-semibold text-gray-900 dark:text-white">{{ eintrag.anliegen }}</span>
+                    <span class="block text-base text-gray-600 dark:text-gray-400">{{ eintrag.hinweis }}{% if eintrag.link %} – <a href="{{ eintrag.link }}" class="underline underline-offset-4 decoration-gray-300 dark:decoration-gray-600 hover:decoration-current">{{ eintrag.link_text }}</a>{% endif %}</span>
+                </dt>
+                <dd class="sm:col-span-4 sm:text-right t-body"><a href="mailto:{{ eintrag.adresse }}" class="textlink">{{ eintrag.adresse }}</a></dd>
+            </div>
+            {% endfor %}
+        </dl>
+        <p class="t-body text-gray-600 dark:text-gray-300 mt-8 max-w-[45rem]">Fehler gefunden oder eine Funktion vermisst? Auf GitHub sehen alle, woran wir arbeiten: <a href="https://github.com/mandariOSS/mandari/issues" rel="noopener" class="textlink">Issue eröffnen</a></p>
     </div>
 </section>
 

@@ -1,8 +1,9 @@
-{# Nummerierter Artikel (Rechtstexte, Trust Center): Nummer als Teil der Überschrift, ohne Kachel. #}
-<section class="band-{{ band|default:'hell' }} {% if band_anfang %}pt-16 lg:pt-20{% else %}pt-6{% endif %} {% if band_ende %}pb-12 lg:pb-16{% else %}pb-6{% endif %}">
+{% load baender %}
+{# Nummerierter Artikel (Rechtstexte, Trust Center): Nummer als Teil der Überschrift (Dokumentstufe 28 px), ohne Kachel. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
     <div class="wrap">
-        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-4xl prose-a:text-primary-700 dark:prose-a:text-primary-300">
-            <h2 class="not-prose text-2xl font-semibold tracking-tight text-gray-900 dark:text-white mb-4"><span class="text-gray-500 dark:text-gray-400 tabular-nums mr-2">{{ self.number }}</span>{{ self.title }}</h2>
+        <article id="{{ self.anchor }}" class="prose prose-lg dark:prose-invert max-w-[45rem]">
+            <h2 class="not-prose t-h2-dok text-gray-900 dark:text-white mb-6"><span class="text-gray-500 dark:text-gray-400 tabular-nums mr-2">{{ self.number }}</span>{{ self.title }}</h2>
             {{ self.body|safe }}
         </article>
     </div>

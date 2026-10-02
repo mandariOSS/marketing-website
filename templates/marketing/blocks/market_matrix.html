@@ -1,13 +1,13 @@
-{% load wagtailcore_tags %}
+{% load baender wagtailcore_tags %}
 {% comment %} Marktübersicht: Zeilen = Funktionen, Spalten = mandari und Anbieter. Nur Status und kurze Zusätze,
    Erläuterungen und Belege stehen in den Einzelvergleichen (die Spaltenköpfe verlinken dorthin).
    Die erste Spalte bleibt beim seitlichen Verschieben stehen, damit man am Handy weiß, welche Zeile man liest.
    "k. A." heißt keine öffentliche Angabe, nie "fehlt". Nur statische Tailwind-Klassen. {% endcomment %}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+<section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
-        <p class="lg:hidden mb-3 text-[0.9375rem] text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
+        <p class="lg:hidden mb-3 text-base text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
         <div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="{{ self.header.title|default:"Marktübersicht" }}">
             <table class="w-full min-w-[780px] sm:min-w-[860px] text-sm border-collapse">
                 <caption class="sr-only">{{ self.header.title|default:"Marktübersicht" }}: je Funktion vorhanden, teilweise, bei mandari noch nicht verfügbar oder keine öffentliche Angabe</caption>
@@ -40,7 +40,7 @@
                             {% else %}
                             <span class="inline-flex items-center gap-1.5 whitespace-nowrap text-gray-500 dark:text-gray-400"><i data-lucide="circle-help" class="w-4 h-4 flex-none" aria-hidden="true"></i><abbr title="keine öffentliche Angabe" class="no-underline">k. A.</abbr></span>
                             {% endif %}
-                            {% if cell.note %}<span class="block mt-0.5 text-xs text-gray-600 dark:text-gray-400">{{ cell.note }}</span>{% endif %}
+                            {% if cell.note %}<span class="block mt-0.5 text-sm text-gray-600 dark:text-gray-400">{{ cell.note }}</span>{% endif %}
                         </td>
                         {% endfor %}
                     </tr>
@@ -57,7 +57,7 @@
             <span class="inline-flex items-center gap-1.5"><i data-lucide="circle-help" class="w-3.5 h-3.5" aria-hidden="true"></i>keine öffentliche Angabe gefunden</span>
         </div>
         {% if self.footnote %}
-        <div class="mt-3 max-w-4xl text-sm text-gray-600 dark:text-gray-400 richtext">{{ self.footnote|richtext }}</div>
+        <div class="mt-3 max-w-[45rem] text-sm text-gray-600 dark:text-gray-400 richtext">{{ self.footnote|richtext }}</div>
         {% endif %}
     </div>
 </section>

@@ -3,16 +3,17 @@
 
 {% block content %}
 <article>
-<div class="band-grau pt-14 pb-12 lg:pt-20 lg:pb-14">
+{# Release-Notes als Dokument: derselbe Seitenkopf wie überall (weiß), der Text direkt darunter auf demselben Band #}
+<div class="band-hell hero fortgesetzt">
     <div class="wrap">
-        <div class="max-w-3xl">
-            <p class="text-[0.95rem]">
+        <div class="max-w-[45rem]">
+            <p class="text-base">
                 <a href="{{ page.get_parent.url }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:underline underline-offset-4">Alle Releases</a>
             </p>
             <h1 class="mt-4 t-h1 text-gray-900 dark:text-white">{{ page.title }}</h1>
-            <p class="mt-5 text-gray-600 dark:text-gray-300">
+            <p class="mt-6 t-body text-gray-600 dark:text-gray-300">
                 Veröffentlicht am <time datetime="{{ page.release_date|date:'Y-m-d' }}">{{ page.release_date|date:"j. F Y" }}</time>, Version {{ page.version }}{% if page.github_url %}.
-                <a href="{{ page.github_url }}" class="text-primary-700 dark:text-primary-300 underline decoration-primary-300 underline-offset-4 hover:decoration-current">Release v{{ page.version }} auf GitHub</a>{% endif %}
+                <a href="{{ page.github_url }}" class="textlink">Release v{{ page.version }} auf GitHub</a>{% endif %}
             </p>
 
             {% if page.breaking_changes %}
@@ -24,18 +25,18 @@
         </div>
     </div>
 </div>
-{# Release-Notes auf Weiß, darunter die Wege zu den Nachbarversionen #}
-<div class="band-hell pt-12 pb-24 lg:pt-16 lg:pb-32">
+{# Release-Notes, darunter die Wege zu den Nachbarversionen #}
+<div class="band-hell abschnitt fortsetzung">
     <div class="wrap">
-        <div class="max-w-3xl">
-            <div class="space-y-14">
+        <div class="max-w-[45rem]">
+            <div class="space-y-12">
                 {% for block in page.body %}
                 {% if block.block_type == "richtext_section" %}
                 <section>
                     {% if block.value.header and block.value.header.title %}
-                    <h2 class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ block.value.header.title }}</h2>
+                    <h2 class="t-h2-dok text-gray-900 dark:text-white">{{ block.value.header.title }}</h2>
                     {% endif %}
-                    <div class="mt-4 prose prose-lg dark:prose-invert max-w-none prose-a:text-primary-700 dark:prose-a:text-primary-300 prose-a:decoration-primary-300 prose-a:underline-offset-4 prose-li:my-1">
+                    <div class="mt-5 prose prose-lg dark:prose-invert max-w-none prose-li:my-1">
                         {{ block.value.body }}
                     </div>
                 </section>
@@ -49,13 +50,13 @@
             <nav class="mt-20 grid gap-8 sm:grid-cols-2" aria-label="Weitere Releases">
                 {% if older_release %}
                 <a href="{% pageurl older_release %}" class="group">
-                    <span class="block text-sm text-gray-500 dark:text-gray-400">Vorherige Version</span>
+                    <span class="block text-sm text-gray-600 dark:text-gray-400">Vorherige Version</span>
                     <span class="mt-1 block font-medium text-gray-900 dark:text-white group-hover:underline underline-offset-4">{{ older_release.title }}</span>
                 </a>
                 {% endif %}
                 {% if newer_release %}
                 <a href="{% pageurl newer_release %}" class="group sm:col-start-2 sm:text-right">
-                    <span class="block text-sm text-gray-500 dark:text-gray-400">Neuere Version</span>
+                    <span class="block text-sm text-gray-600 dark:text-gray-400">Neuere Version</span>
                     <span class="mt-1 block font-medium text-gray-900 dark:text-white group-hover:underline underline-offset-4">{{ newer_release.title }}</span>
                 </a>
                 {% endif %}

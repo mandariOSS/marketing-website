@@ -2,9 +2,9 @@
 {% load wagtailcore_tags baender %}
 
 {% block content %}
-{# Rechtstexte ruhig: Titel auf Hellgrau, der Text durchgehend auf Weiß #}
+{# Dokumente (Quellen, Rechtstexte aus Blöcken): Kopf und Text durchgehend auf Weiß, Abschnitte mit Unterabschnittsabstand und Überschriften in der Dokumentstufe #}
 {% baender page.body_stream ruhig=True as abschnitte %}
 {% for a in abschnitte %}
-    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}
+    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter dokument=True %}
 {% endfor %}
 {% endblock %}

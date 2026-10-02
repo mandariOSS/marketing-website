@@ -1,13 +1,13 @@
-{% load wagtailcore_tags %}
+{% load baender wagtailcore_tags %}
 {# Werkzeuge, auf denen mandari aufbaut: Name und ein kurzer Zusatz, verlinkt. Ohne Kacheln und Symbole. #}
-<section class="py-20 lg:py-24 band-{{ band|default:'hell' }}">
+<section class="{% abschnitt band band_anfang band_ende %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
         <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-8 max-w-5xl">
             {% for p in self.partners %}
             <li>
                 {% if p.url %}<a href="{{ p.url }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-900 dark:text-white underline decoration-gray-300 dark:decoration-gray-600 underline-offset-4 hover:decoration-current">{{ p.name }}</a>{% else %}<span class="font-semibold text-gray-900 dark:text-white">{{ p.name }}</span>{% endif %}
-                {% if p.description %}<p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ p.description }}</p>{% endif %}
+                {% if p.description %}<p class="mt-1 text-base text-gray-600 dark:text-gray-400">{{ p.description }}</p>{% endif %}
             </li>
             {% endfor %}
         </ul>

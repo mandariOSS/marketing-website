@@ -1,10 +1,11 @@
+{% load baender %}
 {# Inhaltsverzeichnis: Überschrift und Sprungmarken, ohne Kasten. #}
-<nav class="band-{{ band|default:'hell' }} {% if band_anfang %}pt-16 lg:pt-20{% else %}pt-6{% endif %} {% if band_ende %}pb-16 lg:pb-20{% else %}pb-6{% endif %}" aria-label="{{ self.title }}">
+<nav class="{% abschnitt band band_anfang band_ende art='kompakt' %}" aria-label="{{ self.title }}">
     <div class="wrap">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ self.title }}</h2>
-        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-2 max-w-4xl text-[0.9375rem]">
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2 max-w-4xl text-base">
             {% for item in self.items %}
-            <li><a href="#{{ item.anchor }}" class="text-primary-700 dark:text-primary-300 hover:underline underline-offset-4">{{ item.number }} {{ item.text }}</a></li>
+            <li><a href="#{{ item.anchor }}" class="textlink">{{ item.number }} {{ item.text }}</a></li>
             {% endfor %}
         </ol>
     </div>

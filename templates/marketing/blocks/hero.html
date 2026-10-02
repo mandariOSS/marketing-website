@@ -1,19 +1,24 @@
-{# Hero: Überschrift (heading aus HeroBlock.get_context), ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Keine Pille, kein Verlauf. #}
-<section class="pt-14 pb-14 lg:pt-24 lg:pb-20 band-{{ band|default:'hell' }}">
-    <div class="wrap">
-        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">{% firstof heading self.title %}</h1>
-        {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[42rem]">{{ self.subline }}</p>{% endif %}
-        {% if self.subline_secondary %}<p class="t-body text-gray-600 dark:text-gray-400 mt-4 max-w-[42rem]">{{ self.subline_secondary }}</p>{% endif %}
-        {% if self.ctas %}
-        <div class="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
-            {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
-            {% if forloop.first %}
-            <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
-            {% else %}
-            <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
+{% load baender %}
+{# Seitenkopf – ein Baustein für alle Seiten: weiß, Überschrift (heading aus HeroBlock.get_context), ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Produktseiten zeigen rechts ein echtes Bild (hero_bild in marketing/templatetags/baender.py; Knopf und Textlink dürfen dort in den Spaltenabstand laufen, damit sie in einer Zeile stehen), alle anderen bleiben einspaltig und kompakt mit einer Mindesthöhe, damit Seitenwechsel ruhig wirken. Keine Pille, kein Verlauf. #}
+{% hero_bild as bild %}
+<section class="{% abschnitt band band_anfang band_ende art='hero' %}">
+    <div class="wrap{% if bild %} grid gap-y-14 lg:grid-cols-12 lg:gap-x-10 lg:items-center{% else %} lg:min-h-[16rem]{% endif %}">
+        <div{% if bild %} class="lg:col-span-6"{% endif %}>
+            <h1 class="t-h1 text-gray-900 dark:text-white {% if bild %}max-w-[15ch]{% else %}max-w-5xl{% endif %}">{% firstof heading self.title %}</h1>
+            {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">{{ self.subline }}</p>{% endif %}
+            {% if self.subline_secondary %}<p class="text-base text-gray-600 dark:text-gray-400 mt-4 max-w-[45rem]">{{ self.subline_secondary }}</p>{% endif %}
+            {% if self.ctas %}
+            <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4{% if bild %} lg:-mr-10{% endif %}">
+                {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
+                {% if forloop.first %}
+                <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
+                {% else %}
+                <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
+                {% endif %}
+                {% endif %}{% endfor %}
+            </div>
             {% endif %}
-            {% endif %}{% endfor %}
         </div>
-        {% endif %}
+        {% if bild == "stapel" %}{% include "marketing/_hero_stapel.html" %}{% elif bild %}{% include "marketing/_hero_einzel.html" with produkt=bild %}{% endif %}
     </div>
 </section>

@@ -60,8 +60,11 @@ class StartseitenHeroTests(TestCase):
         self.assertEqual(self.html.count("<figure"), 1)
 
     def test_bilddateien_vorhanden(self):
-        with open("templates/marketing/landing.html", encoding="utf-8") as fh:
-            vorlage = fh.read()
+        # Der Stapel steht in einer eigenen Vorlage, die auch der Seitenkopf von /produkte/ nutzt
+        vorlage = ""
+        for name in ["templates/marketing/landing.html", "templates/marketing/_hero_stapel.html"]:
+            with open(name, encoding="utf-8") as fh:
+                vorlage += fh.read()
         dateien = set(SRC.findall(vorlage))
         self.assertGreaterEqual(len([d for d in dateien if d.startswith("images/startseite/hero-")]), 10)
         for datei in dateien:

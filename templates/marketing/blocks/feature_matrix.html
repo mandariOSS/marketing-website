@@ -1,32 +1,33 @@
 {% load wagtailcore_tags baender %}
 {% comment %} Feature-Matrix: Zeilen = Funktionen, Spalten = Module oder Betriebsmodelle.
    Nur statische Tailwind-Klassen. Mobile: horizontal scrollbar. {% endcomment %}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+{% produkt_matrix self as matrix %}
+<section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
-        <p class="sm:hidden mb-3 text-[0.9375rem] text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
+        <p class="sm:hidden mb-3 text-base text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
         <div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}">
             <table class="w-full min-w-[640px] text-sm border-collapse">
                 <caption class="sr-only">Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}</caption>
                 <thead>
                     <tr class="border-b-2 border-gray-200 dark:border-gray-700">
                         <th scope="col" class="text-left py-4 px-4 sm:px-6 font-semibold text-gray-600 dark:text-gray-400 w-[34%]">Funktion</th>
-                        {% for col in self.columns %}
+                        {% for col in matrix.columns %}
                         {% with p=col|produkt %}<th scope="col" class="text-left py-4 px-4 sm:px-6 font-bold {% if p %}produkt-{{ p }} kenn{% else %}text-gray-900 dark:text-white{% endif %}">{{ col }}</th>{% endwith %}
                         {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for group in self.groups %}
+                    {% for group in matrix.groups %}
                     <tr class="bg-gray-50 dark:bg-gray-900/40">
-                        <th scope="colgroup" colspan="{{ self.columns|length|add:1 }}" class="text-left py-2.5 px-4 sm:px-6 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ group.title }}</th>
+                        <th scope="colgroup" colspan="{{ matrix.columns|length|add:1 }}" class="text-left py-2.5 px-4 sm:px-6 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ group.title }}</th>
                     </tr>
                     {% for row in group.rows %}
                     <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
                         <th scope="row" class="text-left py-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">
                             {{ row.label }}
-                            {% if row.description %}<span class="block text-xs font-normal text-gray-500 dark:text-gray-400 mt-0.5">{{ row.description }}</span>{% endif %}
+                            {% if row.description %}<span class="block text-sm font-normal text-gray-600 dark:text-gray-400 mt-0.5">{{ row.description }}</span>{% endif %}
                         </th>
                         {% for cell in row.cells %}
                         <td class="py-3.5 px-4 sm:px-6 align-top">
@@ -62,7 +63,7 @@
         </div>
         {% endif %}
         {% if self.footnote %}
-        <div class="mt-3 text-sm text-gray-600 dark:text-gray-400 richtext">{{ self.footnote|richtext }}</div>
+        <div class="mt-3 max-w-[45rem] text-sm text-gray-600 dark:text-gray-400 richtext">{{ self.footnote|richtext }}</div>
         {% endif %}
     </div>
 </section>

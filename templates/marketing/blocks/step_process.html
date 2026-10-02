@@ -1,21 +1,21 @@
-{% load wagtailcore_tags %}
-{# Schritte einer echten Abfolge: Nummer, Titel, ein Satz. Ohne Karten und Symbolkacheln. #}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% elif self.background == 'gray' %}bg-mist{% endif %}">
+{% load wagtailcore_tags baender %}
+{# Schritte einer echten Abfolge: Nummer, Titel, ein Satz. Vier Schritte stehen 2 × 2, drei oder fünf in drei Spalten – nie vier schmale Spalten Fließtext. Ohne Karten und Symbolkacheln. #}
+<section class="{% if self.background == 'gray' %}{% abschnitt band band_anfang band_ende standard='grau' %}{% else %}{% abschnitt band band_anfang band_ende %}{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
-        <ol class="grid grid-cols-1 md:grid-cols-2 {% if self.columns == '4' %}lg:grid-cols-4{% else %}lg:grid-cols-3{% endif %} gap-x-10 gap-y-12">
+        <ol class="grid grid-cols-1 md:grid-cols-2 {% if self.steps|length != 2 and self.steps|length != 4 %}lg:grid-cols-3{% endif %} gap-x-12 gap-y-12">
             {% for step in self.steps %}
             <li class="flex flex-col">
                 <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">{{ step.number }}</span>
-                <h3 class="mt-2 text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ step.title }}</h3>
+                <h3 class="mt-1.5 t-h3 text-gray-900 dark:text-white">{{ step.title }}</h3>
                 <p class="mt-3 t-body text-gray-600 dark:text-gray-300">{{ step.description }}</p>
-                {% if step.duration %}<p class="mt-3 text-[0.9375rem] font-medium text-gray-900 dark:text-gray-100">{{ step.duration }}</p>{% endif %}
-                {% if step.meta_text %}<p class="mt-1 text-[0.9375rem] text-gray-600 dark:text-gray-400">{{ step.meta_text }}</p>{% endif %}
+                {% if step.duration %}<p class="mt-3 text-base font-medium text-gray-900 dark:text-gray-100">{{ step.duration }}</p>{% endif %}
+                {% if step.meta_text %}<p class="mt-1 text-base text-gray-600 dark:text-gray-400">{{ step.meta_text }}</p>{% endif %}
             </li>
             {% endfor %}
         </ol>
         {% if self.note_html %}
-        <div class="mt-14 max-w-3xl t-body text-gray-600 dark:text-gray-300 richtext">{{ self.note_html|richtext }}</div>
+        <div class="mt-12 max-w-[45rem] t-body text-gray-600 dark:text-gray-300 richtext">{{ self.note_html|richtext }}</div>
         {% endif %}
     </div>
 </section>

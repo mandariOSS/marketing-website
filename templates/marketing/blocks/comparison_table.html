@@ -1,10 +1,10 @@
-{% load wagtailcore_tags %}
+{% load baender wagtailcore_tags %}
 {% comment %} Funktionstabelle mandari vs. Anbieter — Zeilen = Kriterien, Spalten = Systeme.
    Ab sm eine echte Tabelle. Darunter gestapelt: je Zeile die Funktion über die volle Breite, darunter mandari
    und der Anbieter nebeneinander, jede Zelle mit kleinem Spaltennamen. So sieht man am Handy beide Seiten
    ohne seitliches Verschieben.
    Nur statische Tailwind-Klassen — keine interpolierten Farbfragmente. {% endcomment %}
-<section class="py-20 lg:py-24 {% if band %}band-{{ band }}{% else %}bg-mist{% endif %}">
+<section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
@@ -38,7 +38,7 @@
         </div>
 
         {% if self.footnote %}
-        <div class="mt-4 max-w-5xl text-sm text-gray-600 dark:text-gray-400 richtext">
+        <div class="mt-4 max-w-[45rem] text-sm text-gray-600 dark:text-gray-400 richtext">
             {{ self.footnote|richtext }}
         </div>
         {% endif %}
