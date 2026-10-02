@@ -253,12 +253,10 @@ class ReleasePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        siblings = ReleasePage.objects.live().sibling_of(self).order_by("-release_date")
-        # Prev/Next Navigation
-        prev_release = siblings.filter(release_date__gt=self.release_date).order_by("release_date").first()
-        next_release = siblings.filter(release_date__lt=self.release_date).first()
-        context["prev_release"] = prev_release
-        context["next_release"] = next_release
+        siblings = ReleasePage.objects.live().sibling_of(self, inclusive=False)
+        # Nachbar-Releases: die nächstjüngere und die nächstältere Version
+        context["newer_release"] = siblings.filter(release_date__gt=self.release_date).order_by("release_date").first()
+        context["older_release"] = siblings.filter(release_date__lt=self.release_date).order_by("-release_date").first()
         return context
 
     class Meta:
