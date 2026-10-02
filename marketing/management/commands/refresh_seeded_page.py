@@ -17,8 +17,13 @@ Usage:
     python manage.py refresh_seeded_page <slug> --force    # überschreibt Live-Inhalt
 
 Beispiele:
-    python manage.py refresh_seeded_page trust --force     # Trust Center neu seeden
-    python manage.py refresh_seeded_page avv --force       # AVV-Text aus .legal-content/
+    python manage.py refresh_seeded_page trust --force       # Trust Center neu seeden
+    python manage.py refresh_seeded_page avv --force         # AVV-Text aus .legal-content/
+    python manage.py refresh_seeded_page startseite --force  # Titel/SEO der Startseite
+
+Die Startseite (`startseite`) hat keine StreamField-Inhalte (Template
+`marketing/landing.html`); der Befehl zieht dort nur Titel und SEO-Felder aus
+`setup_initial_pages.HOME_PAGE_META` nach.
 """
 
 from __future__ import annotations
@@ -55,7 +60,9 @@ class Command(BaseCommand):
         legal_defs = get_legal_definitions()
         release_defs = get_release_definitions()
 
-        if slug in marketing_defs:
+        if slug == "startseite":
+            self._refresh_home(force)
+        elif slug in marketing_defs:
             self._refresh_streamfield(
                 slug, marketing_defs[slug], MarketingPage, "body",
                 MarketingStreamBlock(), force,
@@ -71,12 +78,40 @@ class Command(BaseCommand):
             self._refresh_legal_richtext(slug, load_legal_content()[slug], LegalPage, force)
         else:
             known = sorted(
-                set(marketing_defs) | set(legal_defs) | set(release_defs) | set(LEGAL_FILES)
+                set(marketing_defs) | set(legal_defs) | set(release_defs) | set(LEGAL_FILES) | {"startseite"}
             )
             raise CommandError(
                 f"Keine Seed-Definition für Slug '{slug}' gefunden.\n"
                 f"Verfügbare Slugs: {', '.join(known)}"
             )
+
+    # ── Startseite (HomePage — nur Titel und SEO-Felder) ────────────────
+
+    def _refresh_home(self, force):
+        from marketing.management.commands.setup_initial_pages import HOME_PAGE_META
+        from marketing.models import HomePage
+
+        home = HomePage.objects.first()
+        if not home:
+            raise CommandError("Keine Startseite in der DB — zuerst `python manage.py setup_initial_pages` ausführen.")
+
+        changed = {k: v for k, v in HOME_PAGE_META.items() if getattr(home, k) != v}
+        if not changed:
+            self.stdout.write("  ◯ Startseite ist bereits auf dem Stand der Seed-Definition.")
+            return
+        if not force:
+            self.stdout.write(self.style.WARNING(
+                f"  ◯ Startseite weicht ab ({', '.join(sorted(changed))}) — nutze --force, um sie zu überschreiben."
+            ))
+            return
+
+        for field, value in changed.items():
+            setattr(home, field, value)
+        home.save()
+        home.save_revision().publish()
+        self.stdout.write(self.style.SUCCESS(
+            f"  ✓ Startseite aktualisiert ({', '.join(sorted(changed))}, veröffentlicht)"
+        ))
 
     # ── StreamField-Seiten (MarketingPage.body / LegalPage.body_stream) ──
 

@@ -61,13 +61,16 @@ urlpatterns = [
     path("docs/<path:rest>", docs_redirect, name="docs_page"),
     # ── 301-Redirects für konsolidierte Pages ───────────────────────────────
     # Phase 1 — Konsolidierungen
-    path("loesungen/", RedirectView.as_view(url="/produkt/#zielgruppen", permanent=True)),
+    path("loesungen/", RedirectView.as_view(url="/produkte/", permanent=True)),
     path("team/", RedirectView.as_view(url="/ueber-uns/", permanent=True)),
     path("danksagungen/", RedirectView.as_view(url="/open-source/#danke", permanent=True)),
     # Phase 2 — weitere Konsolidierungen (Sicherheit komplett in Trust integriert,
     # FAQ aufgelöst — Page-spezifische FAQs direkt auf den jeweiligen Pages)
     path("sicherheit/", RedirectView.as_view(url="/trust/", permanent=True)),
     path("faq/", RedirectView.as_view(url="/kontakt/#faq", permanent=True)),
+    # Relaunch 2026 — Produkte: /produkt/ ist aufgeteilt in /produkte/ (Plattform, Modulübersicht,
+    # Bürgerportal) und /fraktionen/ (mandari Work); Wagtail-Seite per `retire_page produkt` zurückziehen
+    path("produkt/", RedirectView.as_view(url="/fraktionen/", permanent=True)),
     # Wagtail catch-all (serves all CMS pages)
     path("", include(wagtail_urls)),
 ]

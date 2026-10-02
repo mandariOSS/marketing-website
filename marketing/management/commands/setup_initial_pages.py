@@ -19,11 +19,26 @@ from wagtail.models import Page, Site
 # SEO-Felder auf den aktuellen Seed-Stand bringen kann.
 MARKETING_PAGE_META = [
     # ── Produkt / Lösungen ────────────────────────────────────────────
+    # /produkte/ (Plattform-Übersicht) und /fraktionen/ (mandari Work) ersetzen
+    # das frühere /produkt/ — es leitet per 301 auf /fraktionen/ und wird mit
+    # `retire_page produkt` zurückgezogen (siehe website/urls.py).
     {
-        "title": "Produkt",
-        "slug": "produkt",
-        "seo_title": "Produkt – Mandari",
-        "search_description": "Drei Module für kommunalpolitische Transparenz: Insight, Work und Session.",
+        "title": "Produkte",
+        "slug": "produkte",
+        "seo_title": "Produkte für die offene Verwaltung",
+        "search_description": (
+            "mandari Session, Work und Insight: Ratsinformationssystem, Fraktionsarbeit und "
+            "Bürgerportal auf einer offenen Plattform. Funktionen, Schnittstellen und Ausblick."
+        ),
+    },
+    {
+        "title": "Für Fraktionen",
+        "slug": "fraktionen",
+        "seo_title": "Software für Fraktionen",
+        "search_description": (
+            "mandari Work für Fraktionen: Sitzungen im Team vorbereiten, Anträge mit Fristen "
+            "und Freigaben führen, mit jedem Ratsinformationssystem. 39,90 € im Monat."
+        ),
     },
     {
         "title": "Preise",
@@ -238,6 +253,21 @@ RELEASE_INDEX_LEGACY = {
 }
 
 
+# ── Startseite: Metadaten ─────────────────────────────────────────────────
+# Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
+# SEO-Felder hier, damit `refresh_seeded_page startseite --force` sie auf
+# bestehenden Datenbanken nachzieht.
+HOME_PAGE_META = {
+    "title": "mandari",
+    "subtitle": "Software für die offene Verwaltung",
+    "seo_title": "mandari – Software für die offene Verwaltung",
+    "search_description": (
+        "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
+        "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
+    ),
+}
+
+
 class Command(BaseCommand):
     help = "Erstellt die initiale Seitenstruktur für die Marketing-Website"
 
@@ -259,15 +289,9 @@ class Command(BaseCommand):
         home = HomePage.objects.first()
         if not home:
             home = HomePage(
-                title="Mandari",
                 slug="mandari",
-                subtitle="Kommunalpolitische Transparenz für Deutschland",
-                seo_title="Mandari – Kommunalpolitische Transparenz für Deutschland",
-                search_description=(
-                    "Mandari macht kommunalpolitische Entscheidungen transparent und zugänglich. "
-                    "Open Source unter AGPL-3.0."
-                ),
                 show_in_menus=True,
+                **HOME_PAGE_META,
             )
             root.add_child(instance=home)
             home.save_revision().publish()
