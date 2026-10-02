@@ -5,7 +5,8 @@
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
 
-        <div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <p class="sm:hidden mb-3 text-[0.9375rem] text-gray-600 dark:text-gray-400" aria-hidden="true">Tabelle seitlich verschieben, um alle Spalten zu sehen.</p>
+        <div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" tabindex="0" role="region" aria-label="Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}">
             <table class="w-full min-w-[640px] text-sm border-collapse">
                 <caption class="sr-only">Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}</caption>
                 <thead>
