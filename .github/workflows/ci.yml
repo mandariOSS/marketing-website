@@ -187,6 +187,45 @@ jobs:
           print("OK: security.txt und Disclosure-Policy nennen die Fristen aus SECURITY.md")
           EOF
 
+      - name: Anrede (Sie-Form auf Verwaltungs- und allgemeinen Seiten)
+        # Du-Form nur auf /karriere/ und /mitmachen/ (Leitfaden mandari-texte). Geprüft wird der
+        # sichtbare Text im Hauptbereich.
+        run: |
+          python - <<'EOF'
+          import os, re, django
+          from html.parser import HTMLParser
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+
+          class Main(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.depth = self.skip = 0; self.parts = []
+              def handle_starttag(self, tag, attrs):
+                  self.depth += tag == "main"; self.skip += tag in ("script", "style")
+              def handle_endtag(self, tag):
+                  self.depth -= tag == "main"; self.skip -= tag in ("script", "style")
+              def handle_data(self, data):
+                  if self.depth and not self.skip:
+                      self.parts.append(data)
+
+          du = re.compile(r"\b(du|dich|dir|dein\w*|euch|euer|eure\w*)\b", re.IGNORECASE)
+          pages = ["/preise/", "/kommunen/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
+                   "/barrierefreiheit/", "/abuse/", "/vergleich/", "/quellen/", "/agb/", "/avv/", "/kuendigung/",
+                   "/sicherheit/disclosure/", "/crawler/"]
+          c, errors = Client(), []
+          for url in pages:
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}"); continue
+              parser = Main(); parser.feed(r.content.decode("utf-8"))
+              text = " ".join(" ".join(parser.parts).replace("\u00ad", "").split())  # ohne weiche Trennstriche
+              errors += [f"{url}: …{text[max(0, m.start() - 30):m.end() + 20]}…" for m in du.finditer(text)]
+          assert not errors, "Du-Form auf Sie-Seiten: " + "; ".join(errors)
+          print(f"OK: {len(pages)} Seiten in Sie-Form")
+          EOF
+
       - name: Urheber- und Lizenzangabe (Fußzeile wie in mandariOSS/mandari)
         # Urheber ist Sven Konopka, Lizenz AGPL-3.0-or-later. Die Fußzeile muss das nennen, und jedes
         # Urheberzeichen in einer versionierten HTML-Datei muss den Urheber nennen (Ausnahme:
