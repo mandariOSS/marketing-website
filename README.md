@@ -16,23 +16,24 @@ separat gehostet und entwickelt werden.
 
 - **Marketing-Pages** — Startseite, Produkt, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
-  Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Blog, Releases
+  Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
+  (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
 - **Rechtliche Seiten** — Impressum, Datenschutz, AGB, AVV (Muster-Auftrags-
   verarbeitungsvertrag nach Art. 28 DSGVO), Quellennachweise — Texte liegen
   versioniert in `.legal-content/` (siehe unten)
-- **Django-Views** außerhalb von Wagtail — `/status/` (Live-Status via Kener-API)
-  und `/sicherheit/disclosure/` (Responsible Disclosure)
+- **Django-Views** außerhalb von Wagtail — `/sicherheit/disclosure/`
+  (Responsible Disclosure) und `/crawler/` (Infoseite zum Crawler);
+  `/status/` leitet dauerhaft auf <https://status.mandari.de/>
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
   Schritt-Prozess, FAQ-Akkordeon, Stats-Grid, Gradient-CTA u. v. m.)
 - **Mandari Design System** — konsistentes UI mit Tailwind CSS, Hero-Banner,
   Trust-Banner, Border-2-Cards mit Decorative Corner Circles
-- **Discoverability** — `robots.txt`, `sitemap.xml`, RFC 8288 Link-Header,
-  `.well-known/security.txt`
+- **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
+  `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
+  `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
 - **Compliance** — DSGVO, BFSG, DSA, NetzDG, RFC 9116 (Responsible Disclosure)
-- **Status Page** via [Kener](https://github.com/rajnandan1/kener) — produktiv
-  unter <https://status.mandari.de>, lokal im Compose-Stack enthalten
 - **DSGVO-konformer Spam-Schutz** via [Altcha](https://altcha.org)
   (selbst-gehostet, kein Captcha, kein Tracking)
 
@@ -46,6 +47,47 @@ alle Seeds sind deshalb **idempotent**:
 | `setup_initial_pages` | Erstellt den Wagtail-Page-Tree (überspringt vorhandene Seiten), seedet Rechtstexte aus `.legal-content/` |
 | `migrate_pages_to_streamfield` | Seedet die StreamField-Inhalte aller Marketing-/Legal-Pages (überspringt Seiten, die bereits Blöcke haben; `--force` überschreibt) |
 | `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force` |
+| `retire_page <pfad\|slug> --redirect <ziel> [--dry-run]` | Zieht eine Seite samt Unterseiten zurück (unpublish, bleibt im CMS) und legt eine dauerhafte Weiterleitung an bzw. korrigiert sie; prüft danach per Anfrage, dass der alte Pfad mit 301 auf das Ziel zeigt. Idempotent, z. B. `retire_page /blog/ --redirect /releases/` |
+
+**Seiten zurückziehen:** Fällt eine Seite bei einem Umbau weg, zuerst die
+Zielseite anlegen (`setup_initial_pages`), dann `retire_page` ausführen. Interne
+Ziele müssen existieren, sonst bricht der Befehl ab, bevor er etwas ändert. Ziele
+mit Anker (`/kontakt/#termin`) und externe Adressen sind erlaubt. Zurückgezogene
+Seiten verschwinden aus Sitemap und Struktur-Test; über den Wagtail-Admin lassen
+sie sich jederzeit wieder veröffentlichen.
+
+### Blog reaktivieren
+
+Der Blog ruht, solange es keine Beiträge gibt: `/blog/` und `/blog/feed/` leiten
+dauerhaft auf `/releases/` (`website/urls.py`), ein vorhandener Blog-Index wird
+mit `retire_page /blog/ --redirect /releases/` zurückgezogen. Der Code bleibt
+vollständig erhalten (`blog/models.py`, `blog/feeds.py`, `templates/blog/`).
+Zum Reaktivieren:
+
+1. In `website/urls.py` die beiden Weiterleitungen für `blog/` und `blog/feed/`
+   entfernen und den Feed wieder eintragen:
+   `path("blog/feed/", BlogFeed(), name="blog_feed")` (Import `from blog.feeds import BlogFeed`).
+2. Die Wagtail-Weiterleitung `/blog` im Admin unter *Einstellungen → Weiterleitungen* löschen.
+3. Den Blog-Index im Admin wieder veröffentlichen – oder auf neuen Datenbanken
+   `BLOG_ENABLED = True` in `marketing/management/commands/setup_initial_pages.py`
+   setzen und `setup_initial_pages` ausführen.
+4. Den Blog in Fußzeile (`templates/components/footer.html`) und Struktur-Test
+   (`scripts/check_site_structure.py`, Liste `FUSSZEILE`) aufnehmen; optional
+   `<link rel="alternate" type="application/rss+xml" href="/blog/feed/">` in `templates/base.html`.
+
+### Struktur-Test
+
+`scripts/check_site_structure.py` verfolgt ausgehend von `/` alle internen Links
+mit dem Django-Test-Client und prüft: keine internen Links auf 404, jede
+veröffentlichte Seite verlinkt (Unterseiten von ihrer Elternseite), eindeutige
+Titel der Form „<Titel> | mandari“, eindeutige Meta-Descriptions, Canonical aus
+`SITE_URL`, Kopf- und Fußzeile genau nach Zielstruktur. Die CI führt ihn nach den
+Seeds aus; lokal:
+
+```bash
+SITE_URL=https://mandari.de python scripts/check_site_structure.py   # --strict: ausstehende Ziele als Fehler
+python manage.py test --buffer                                         # Unit-Tests (retire_page, SEO, Weiterleitungen)
+```
 
 **Rechtstexte** (Impressum, Datenschutz, AGB, AVV) werden **nicht** in
 Templates oder im Code gepflegt: Die authoritative Fassung liegt als HTML in
@@ -65,7 +107,7 @@ cd marketing-website
 # 2. Optional: Eigene .env anlegen (Defaults reichen für lokal)
 cp .env.example .env
 
-# 3. Stack starten (Postgres + Wagtail + Kener)
+# 3. Stack starten (Postgres + Wagtail)
 docker compose up -d --build
 
 # 4. Initiale Wagtail-Seitenstruktur anlegen + Inhalte seeden
@@ -83,7 +125,6 @@ Anschließend:
 | <http://localhost:6500/> | Marketing-Website |
 | <http://localhost:6500/cms-admin/> | Wagtail-Admin (CMS) |
 | <http://localhost:6500/admin/> | Django-Admin |
-| <http://localhost:6501/> | Kener Status-Page |
 
 ## 🛠 Lokale Entwicklung (ohne Docker)
 
@@ -113,7 +154,6 @@ python manage.py runserver 8001
 | Frontend | HTMX + Alpine.js + Tailwind CSS 3 | MIT / BSD |
 | Icons | [Lucide](https://lucide.dev) | ISC |
 | Suche | Wagtail-Builtin | BSD-3 |
-| Status | [Kener](https://github.com/rajnandan1/kener) | MIT |
 | Spam-Schutz | [Altcha](https://altcha.org) v2 | MIT |
 | Deployment | Docker Compose, Gunicorn, WhiteNoise | Apache-2.0 |
 
@@ -126,12 +166,15 @@ marketing-website/
 │   ├── models.py             # HomePage, MarketingPage, ContactPage, LegalPage
 │   ├── blocks.py             # StreamField-Blöcke des Mandari Design Systems
 │   ├── legal_content.py      # Lädt Rechtstexte aus .legal-content/
-│   ├── views.py              # status_view, security_txt, robots_txt, altcha
+│   ├── views.py              # security_txt, robots_txt, altcha, Disclosure, Crawler
+│   ├── seo.py                # Titel, Meta-Description, Canonical aus SITE_URL
+│   ├── sitemaps.py           # Sitemap mit SITE_URL-Adressen und plausiblem lastmod
 │   ├── middleware.py         # LinkHeaderMiddleware (RFC 8288)
 │   └── management/commands/
 │       ├── setup_initial_pages.py          # Idempotenter Page-Tree + Legal-Seeds
 │       ├── migrate_pages_to_streamfield.py # StreamField-Inhalte aller Seiten
-│       └── refresh_seeded_page.py          # Re-Seed einer Seite (Live-Update)
+│       ├── refresh_seeded_page.py          # Re-Seed einer Seite (Live-Update)
+│       └── retire_page.py                  # Seite zurückziehen + 301-Weiterleitung
 ├── blog/                     # App: Blog + Releases (Wagtail BlogIndex)
 ├── .legal-content/           # Authoritative Rechtstexte (impressum, datenschutz, agb, avv)
 ├── templates/
@@ -142,9 +185,9 @@ marketing-website/
 │   ├── css/                  # Tailwind input + compiled output
 │   ├── vendor/               # alpine, lucide, altcha (lokal gehostet)
 │   └── security/             # PGP-Key
-├── scripts/                  # Kener-Bootstrap & Utilities
+├── scripts/                  # Prüfskripte (Struktur-Test, Template-Kommentare) & Utilities
 ├── .github/workflows/        # CI: Release-Build → ghcr.io/mandarioss/website
-├── docker-compose.yml        # Lokaler Stack: Wagtail + Postgres + Kener + Redis
+├── docker-compose.yml        # Lokaler Stack: Wagtail + Postgres
 ├── Dockerfile
 └── tailwind.config.js
 ```
@@ -172,13 +215,10 @@ marketing-website/
 |---|---|---|
 | `WEBSITE_SECRET_KEY` / `SECRET_KEY` | dev-Wert | Django Secret Key |
 | `DEBUG` | `True` | Debug-Modus (Production: `False`) |
-| `SITE_URL` | `http://localhost:8001` | Öffentliche Basis-URL (robots.txt, security.txt, CSRF) |
+| `SITE_URL` | `http://localhost:8001` | Öffentliche Basis-URL: Canonical, og:url, Sitemap, robots.txt, security.txt, CSRF (Produktion: `https://mandari.de`) |
 | `ALLOWED_HOSTS` / `CSRF_TRUSTED_ORIGINS` | localhost | Host-/Origin-Whitelist |
 | `WEBSITE_DATABASE_URL` / `DATABASE_URL` | lokaler Postgres | PostgreSQL-Verbindung |
-| `STATUS_PAGE_URL` | `https://status.mandari.de` | Öffentlicher Link zur Statuspage |
-| `KENER_INTERNAL_URL` | `http://kener:3000` | Interne Kener-API (für /status/) |
-| `KENER_API_TOKEN` | – | Token für die Kener-API (ohne: Fallback-Link) |
-| `MANDARI_API_URL` | `http://mandari:8000/api` | Stats-API der Haupt-App (Startseite) |
+| `STATUS_PAGE_URL` | `https://status.mandari.de/` | Öffentliche Statusseite: Ziel von `/status/` und Link in der Fußzeile |
 | `BOOKING_URL` | `/kontakt/#termin-buchen` | Ziel der „Call buchen"-CTAs |
 | `ALTCHA_HMAC_KEY` | dev-Wert | HMAC-Secret für Altcha-Challenges |
 | `TZ` | `Europe/Berlin` | Zeitzone |

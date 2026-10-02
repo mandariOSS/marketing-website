@@ -10,6 +10,8 @@ __pycache__/
 dist/
 build/
 .Python
+.venv/
+venv/
 .tox/
 .pytest_cache/
 .mypy_cache/
@@ -20,6 +22,7 @@ build/
 # =============================================================================
 db.sqlite3
 db.sqlite3-journal
+*.sqlite3
 staticfiles/
 media/
 local_settings.py
