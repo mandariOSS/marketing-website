@@ -1,4 +1,4 @@
-{% comment %} Eine Zelle der Vergleichstabelle: Status (yes / partial / open / no / unknown) + optionaler Zusatztext.
+{% load icons %}{% comment %} Eine Zelle der Vergleichstabelle: Status (yes / partial / open / no / unknown) + optionaler Zusatztext.
    "open" gibt es nur in der mandari-Spalte: noch nicht verfügbar, der Zusatz nennt die Roadmap-Stufe.
    "unknown" wird bewusst neutral-grau dargestellt und verweist auf die Fußnote –
    keine Negativbehauptung über den Anbieter.
@@ -8,23 +8,23 @@
     {% if spalte %}<span class="sm:hidden block mb-1 text-sm font-semibold text-gray-600 dark:text-gray-400">{{ spalte }}</span>{% endif %}
     {% if cell.status == 'yes' %}
     <span class="inline-flex items-center gap-1.5 font-semibold text-green-700 dark:text-green-400">
-        <i data-lucide="check" class="w-4 h-4 flex-none" aria-hidden="true"></i>Ja
+        {% icon "check" "w-4 h-4 flex-none" %}Ja
     </span>
     {% elif cell.status == 'partial' %}
     <span class="inline-flex items-center gap-1.5 font-semibold text-amber-700 dark:text-amber-400">
-        <i data-lucide="circle-dot" class="w-4 h-4 flex-none" aria-hidden="true"></i>Teilweise
+        {% icon "circle-dot" "w-4 h-4 flex-none" %}Teilweise
     </span>
     {% elif cell.status == 'open' %}
     <span class="inline-flex items-center gap-1.5 font-semibold text-primary-700 dark:text-primary-300">
-        <i data-lucide="circle-dashed" class="w-4 h-4 flex-none" aria-hidden="true"></i>Noch nicht verfügbar
+        {% icon "circle-dashed" "w-4 h-4 flex-none" %}Noch nicht verfügbar
     </span>
     {% elif cell.status == 'no' %}
     <span class="inline-flex items-center gap-1.5 font-medium text-gray-500 dark:text-gray-400">
-        <i data-lucide="minus" class="w-4 h-4 flex-none" aria-hidden="true"></i>Nein
+        {% icon "minus" "w-4 h-4 flex-none" %}Nein
     </span>
     {% else %}
     <span class="inline-flex items-start gap-1.5 text-gray-500 dark:text-gray-400">
-        <i data-lucide="circle-help" class="w-4 h-4 flex-none mt-0.5" aria-hidden="true"></i>
+        {% icon "circle-help" "w-4 h-4 flex-none mt-0.5" %}
         <span>keine öffentliche Angabe<sup>1</sup></span>
     </span>
     {% endif %}

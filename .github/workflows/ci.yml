@@ -46,11 +46,11 @@ jobs:
           npm ci
           npm run build:css
 
-      - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS)
-        # Die Block-Templates setzen Farbklassen dynamisch zusammen
-        # (bg-{{ card.color }}-600 u. ä.) — dieser Check stellt sicher, dass
-        # der Tailwind-Build alle Palette-Klassen enthält und nicht wieder
-        # Klassen wegpurged (Safelist in tailwind.config.js).
+      - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS, Größe)
+        # Zwei Block-Templates setzen Farbklassen dynamisch zusammen (bg-{{ self.color }}-50 in
+        # disclaimer_box.html, text-{{ e.color }}-600 in email_directory.html) — dieser Check stellt
+        # sicher, dass der Tailwind-Build sie enthält (Safelist in tailwind.config.js). Die Obergrenze
+        # hält ungenutztes CSS klein: Das Stylesheet blockiert auf jeder Seite das erste Rendern.
         run: |
           python - <<'EOF'
           css = open("static/css/styles.css", encoding="utf-8").read()
@@ -58,13 +58,14 @@ jobs:
           needles = []
           for c in colors:
               needles += [
-                  f".bg-{c}-100", f".bg-{c}-600",
-                  f".hover\\:bg-{c}-700:hover",
-                  f".text-{c}-600", f".border-{c}-200",
+                  f".bg-{c}-50", f".dark\\:bg-{c}-900\\/20",
+                  f".text-{c}-600", f".dark\\:text-{c}-400",
               ]
           missing = [n for n in needles if n not in css]
           assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
-          print(f"OK: {len(needles)} Klassen im CSS vorhanden")
+          groesse = len(css.encode("utf-8"))
+          assert groesse < 72_000, f"styles.css hat {groesse} Bytes (Grenze 72.000) – ungenutzte Klassen in der Safelist?"
+          print(f"OK: {len(needles)} Klassen im CSS vorhanden, {groesse} Bytes")
           EOF
 
       - name: Migrationen (frische SQLite)
@@ -90,6 +91,11 @@ jobs:
         # /ueber-uns/, Seed-Befehle sowie die Formulare mit Spamschutz, Prüfung und Zustellung.
         run: python manage.py test company --buffer
 
+      - name: Karriere zurückziehen (wie in Produktion)
+        # /karriere/ ruht: unpublish und 301 auf /unternehmen/. Der Seed bleibt erhalten, die Seite lässt
+        # sich im CMS wieder veröffentlichen (README, „Karriere reaktivieren“).
+        run: python manage.py retire_page karriere --redirect /unternehmen/
+
       - name: Render-Smoke (alle Kernseiten liefern 200 mit Inhalt)
         run: |
           python - <<'EOF'
@@ -110,7 +116,6 @@ jobs:
               "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
               "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
-              "/karriere/": ["Bau mit an der Software", "Initiativ bewerben"],
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
               "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
               "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
@@ -131,11 +136,12 @@ jobs:
               "/sicherheit/disclosure/": ["Sicherheitslücke gefunden?", "Safe Harbor", 'id="hall-of-fame"', "5D06 A2BC B71C 6095 7A23"],
               "/crawler/": ["mandari-ingestor (+https://mandari.de/crawler)", "Kontakt und Widerspruch"],
           }
-          # Dauerhafte Weiterleitungen (Blog ruht, Statusseite extern)
+          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern)
           redirects = {
               "/status/": "https://status.mandari.de/",
               "/blog/": "/releases/",
               "/blog/feed/": "/releases/",
+              "/karriere/": "/unternehmen/",
           }
           errors = []
           for url, needles in checks.items():

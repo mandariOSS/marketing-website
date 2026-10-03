@@ -6,7 +6,8 @@ from io import StringIO
 from django.core.management import call_command
 from django.test import TestCase
 
-MINUS = re.compile(r'<span class="([^"]*)"><i data-lucide="minus" class="w-4 h-4 flex-none"')
+# Symbol „minus“ als Inline-SVG (marketing/templatetags/icons.py)
+MINUS = re.compile(r'<span class="([^"]*)"><svg [^>]*class="w-4 h-4 flex-none"[^>]*><path d="M5 12h14"/></svg>')
 
 
 class NichtVorgesehenTests(TestCase):

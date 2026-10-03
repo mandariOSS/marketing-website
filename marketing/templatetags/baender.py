@@ -28,6 +28,7 @@ import re
 
 from django import template
 from django.templatetags.static import static
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -48,8 +49,7 @@ PRODUKTE = {
     "session": {
         "name": "mandari Session",
         "bild": {
-            "src": "images/startseite/hero-session-800.webp",
-            "src_gross": "images/startseite/hero-session-1600.webp",
+            "datei": "hero-session",
             "alt": "mandari Session: Sitzungsübersicht der Stadtverwaltung mit kommenden Sitzungen von Rat und "
                    "Ausschüssen und ihrem Stand",
         },
@@ -57,8 +57,7 @@ PRODUKTE = {
     "work": {
         "name": "mandari Work",
         "bild": {
-            "src": "images/startseite/hero-work-800.webp",
-            "src_gross": "images/startseite/hero-work-1600.webp",
+            "datei": "hero-work",
             "alt": "mandari Work: Die Fraktion bereitet die Ratssitzung vor und legt zu jedem Tagesordnungspunkt "
                    "ihre Position fest",
         },
@@ -66,13 +65,40 @@ PRODUKTE = {
     "insight": {
         "name": "mandari Insight",
         "bild": {
-            "src": "images/startseite/hero-insight-muenster-800.webp",
-            "src_gross": "images/startseite/hero-insight-muenster-1600.webp",
+            "datei": "hero-insight-muenster",
             "alt": "mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste "
                    "Vorgänge der Stadt",
         },
     },
 }
+
+# Bildschirme im Hero (static/images/startseite): Querformat 16:10 in vier Breiten, Work und Insight zusätzlich
+# als Hochformat für den Stapel am Handy. Die Breiten passen zu den angezeigten Größen bei 1x bis 3x Pixeldichte.
+BILD_ORDNER = "images/startseite"
+QUER_BREITEN = (600, 800, 1200, 1600)
+MOBIL_BREITEN = (400, 480, 640, 780)
+MOBIL_BIS = "(max-width: 639px)"   # Hochformat im Stapel; ab 640 px stehen drei Querformate nebeneinander
+
+# Angezeigte Breite je Bild (sizes), abgeleitet aus .wrap und .hero-* in static/css/input.css. Ändert sich das
+# Raster, hier nachziehen – sonst lädt der Browser zu große oder zu kleine Dateien.
+GROESSEN = {
+    # Stapel: je Karte 74 % der Figur; Figur höchstens 40rem, ab lg 95 % der halben Spalte
+    "stapel": "(min-width: 1280px) 414px, (min-width: 1024px) calc(35vw - 36px), (min-width: 688px) 474px, "
+              "calc(74vw - 36px)",
+    # Stapel am Handy: je Karte 58 % der Figur, Figur höchstens 26rem
+    "stapel_mobil": "(min-width: 448px) 242px, calc(58vw - 19px)",
+    # Ein Bildschirm: 92 % der Figur, Figur höchstens 36rem, ab lg 95 % der halben Spalte
+    "einzel": "(min-width: 1280px) 514px, (min-width: 1024px) calc(44vw - 45px), (min-width: 608px) 530px, "
+              "calc(92vw - 30px)",
+}
+
+# Bild, das als größtes sichtbares Element (LCP) zuerst geladen und im Kopf vorgeladen wird: im Stapel Work
+# (am Handy oben links und damit am weitesten sichtbar), sonst der eine Bildschirm der Seite.
+STAPEL_LCP = "work"
+
+
+def _srcset(datei, breiten, zusatz=""):
+    return ", ".join(f"{static(f'{BILD_ORDNER}/{datei}{zusatz}-{b}.webp')} {b}w" for b in breiten)
 
 _PRODUKT_MUSTER = {
     "session": re.compile(r"\bSession\b"),
@@ -203,11 +229,48 @@ def produkt_zeile(row):
 
 @register.simple_tag
 def produkt_bild(key):
-    """Bildschirm eines Produkts mit fertigen Adressen (``url``, ``url_gross``) und Alternativtext."""
+    """Bildschirm eines Produkts für den Hero: ``url`` (800 px), ``srcset`` (Querformat), bei Work und Insight
+    ``srcset_mobil`` (Hochformat für den Stapel am Handy), ``sizes`` je Einsatz und der Alternativtext."""
     bild = (PRODUKTE.get(key) or {}).get("bild")
     if not bild:
         return None
-    return {**bild, "url": static(bild["src"]), "url_gross": static(bild["src_gross"])}
+    datei = bild["datei"]
+    daten = {
+        **bild,
+        "url": static(f"{BILD_ORDNER}/{datei}-800.webp"),
+        "srcset": _srcset(datei, QUER_BREITEN),
+        "sizes": GROESSEN,
+        "mobil_bis": MOBIL_BIS,
+    }
+    if key in ("work", "insight"):
+        daten["srcset_mobil"] = _srcset(datei, MOBIL_BREITEN, "-mobil")
+    return daten
+
+
+@register.simple_tag(takes_context=True)
+def hero_vorladen(context, art=None):
+    """``<link rel="preload">`` für das LCP-Bild im Hero, passend zu ``srcset``/``sizes`` des Bildes, damit der
+    Browser genau die Datei vorlädt, die er danach anzeigt (sonst lädt er doppelt). ``art`` wie ``hero_bild``;
+    ohne Angabe gilt das Bild der aktuellen Seite."""
+    art = art if art is not None else hero_bild(context)
+    if not art:
+        return ""
+    if art == "stapel":
+        b = produkt_bild(STAPEL_LCP)
+        links = [
+            (b["srcset_mobil"], GROESSEN["stapel_mobil"], MOBIL_BIS),
+            (b["srcset"], GROESSEN["stapel"], "(min-width: 640px)"),
+        ]
+    else:
+        b = produkt_bild(art)
+        if not b:
+            return ""
+        links = [(b["srcset"], GROESSEN["einzel"], "")]
+    return format_html_join(
+        "\n    ",
+        '<link rel="preload" as="image" type="image/webp" imagesrcset="{}" imagesizes="{}"{} fetchpriority="high">',
+        ((srcset, sizes, format_html(' media="{}"', media) if media else "") for srcset, sizes, media in links),
+    )
 
 
 def _rang(schluessel):

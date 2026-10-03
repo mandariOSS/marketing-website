@@ -144,7 +144,7 @@ class ReleaseUndSitemapTests(TestCase):
         body = self.client.get("/sitemap.xml").content.decode()
         self.assertNotIn("<loc>http://", body)
         self.assertIn("<loc>https://mandari.de/releases/mandari-0-11/</loc>", body)
-        datum = neu.date().isoformat()
+        datum = timezone.localdate(neu).isoformat()  # Sitemap schreibt das Datum in TIME_ZONE (Europe/Berlin)
         self.assertIn(f"<loc>https://mandari.de/</loc><lastmod>{datum}</lastmod>", body)
         self.assertIn(f"<loc>https://mandari.de/releases/</loc><lastmod>{datum}</lastmod>", body)
 

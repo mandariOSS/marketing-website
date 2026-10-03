@@ -8,7 +8,6 @@ from django.core.management import call_command
 from django.test import TestCase
 
 IMG = re.compile(r"<img\b[^>]*>")
-SRC = re.compile(r"""\{% static '([^']+)' %\}""")
 
 
 class StartseitenHeroTests(TestCase):
@@ -60,12 +59,9 @@ class StartseitenHeroTests(TestCase):
         self.assertEqual(self.html.count("<figure"), 1)
 
     def test_bilddateien_vorhanden(self):
-        # Der Stapel steht in einer eigenen Vorlage, die auch der Seitenkopf von /produkte/ nutzt
-        vorlage = ""
-        for name in ["templates/marketing/landing.html", "templates/marketing/_hero_stapel.html"]:
-            with open(name, encoding="utf-8") as fh:
-                vorlage += fh.read()
-        dateien = set(SRC.findall(vorlage))
-        self.assertGreaterEqual(len([d for d in dateien if d.startswith("images/startseite/hero-")]), 10)
+        # Alle Breiten aus srcset und Preload (marketing/templatetags/baender.py) liegen als Datei vor:
+        # Session, Work und Insight je vier Querformate, Work und Insight je vier Hochformate.
+        dateien = set(re.findall(r"images/startseite/hero-[\w-]+\.webp", self.html))
+        self.assertGreaterEqual(len(dateien), 20)
         for datei in dateien:
             self.assertTrue(finders.find(datei), datei)

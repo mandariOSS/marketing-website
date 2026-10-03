@@ -93,6 +93,30 @@
   .kopf-dicht { margin-bottom: 1.5rem; }
 }
 
+/* ── Kopfzeile: Kante und Schatten beim Scrollen ─────────────────────────
+   Eine eigene Ebene, die nur ihre Deckkraft ändert: Der Übergang läuft auf dem Compositor, statt Rahmenfarbe
+   und Schatten bei jedem Bild neu zu zeichnen. Die Ebene deckt die Kante der Leiste genau ab. */
+.kopfleiste { position: relative; }
+.kopfleiste::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 -1px;
+  z-index: -1;
+  pointer-events: none;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px -14px rgb(17 24 39 / 0.28);
+  opacity: 0;
+  transition: opacity 200ms;
+}
+.dark .kopfleiste::after {
+  border-bottom-color: #374151;
+  box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.9);
+}
+.kopfleiste.gescrollt::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .kopfleiste::after { transition: none; }
+}
+
 /* ── Bilder im Hero: echte Bildschirme, leicht versetzt ───────────────────
    Startseite und /produkte/: hinten Session, dann Work, vorne Insight – flach übereinander, ohne Neigung.
    /kommunen/ und /fraktionen/: ein Bildschirm des Produkts in derselben Rahmung. Ein feiner Rand und ein
