@@ -1,12 +1,11 @@
 {% load baender %}
-{# Ein Bildschirm des Produkts, dem die Seite gehört – dieselbe Rahmung wie der Stapel der Startseite (Rand, Schatten, Markenfläche). #}
+{# Ein Bildschirm des Produkts, dem die Seite gehört – dieselbe Rahmung wie der Stapel der Startseite (Rand, Schatten, Markenfläche). Breiten und sizes in marketing/templatetags/baender.py, base.html lädt das Bild vor. #}
 {% produkt_bild produkt as b %}
 <figure class="lg:col-span-6">
     <div class="hero-einzel">
         <picture class="hero-karte">
-            <img src="{{ b.url }}" srcset="{{ b.url }} 800w, {{ b.url_gross }} 1600w"
-                 sizes="(min-width: 1280px) 530px, (min-width: 1024px) 42vw, 85vw"
-                 width="800" height="500" fetchpriority="high" decoding="async" alt="{{ b.alt }}">
+            <img src="{{ b.url }}" srcset="{{ b.srcset }}" sizes="{{ b.sizes.einzel }}"
+                 width="800" height="500" fetchpriority="high" alt="{{ b.alt }}">
         </picture>
     </div>
 </figure>

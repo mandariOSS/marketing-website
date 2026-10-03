@@ -79,7 +79,6 @@ FUSSZEILE = {
     ],
     "Unternehmen": [
         ("Über mandari", "/unternehmen/"),
-        ("Karriere", "/karriere/"),
         ("Partner", "/partner/"),
         ("Presse", "/presse/"),
         ("Open Source", "/open-source/"),
@@ -104,7 +103,7 @@ STARTSEITE_TITEL = "mandari – Software für die offene Verwaltung"
 # TODO(Relaunch-Abnahme): Diese Ziele legen die parallelen Relaunch-PRs an (Produkte/Fraktionen,
 # Unternehmen/Karriere, neue Startseite). Solange sie fehlen, meldet der Test Warnungen statt Fehler.
 # Nach dem Merge aller Relaunch-PRs die Mengen leeren (oder in der CI mit --strict aufrufen).
-AUSSTEHENDE_PFADE = {"/produkte/", "/fraktionen/", "/unternehmen/", "/karriere/"}
+AUSSTEHENDE_PFADE = {"/produkte/", "/fraktionen/", "/unternehmen/"}
 # Seiten, die die Relaunch-PRs mit `retire_page` zurückziehen; bis dahin dürfen sie unverlinkt sein.
 AUSSTEHENDE_RUECKZUEGE = {"/ueber-uns/", "/produkt/"}
 AUSSTEHEND_STARTSEITENTITEL = True

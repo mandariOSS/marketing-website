@@ -1,8 +1,5 @@
-{% load static wagtailcore_tags seo %}<!DOCTYPE html>
-<html lang="de" class="scroll-smooth"
-      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      :class="{ 'dark': darkMode }">
+{% load static wagtailcore_tags seo baender %}<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
 <head>
     {% seo_meta as seo %}
     {% capture as head_title %}{% block title %}{{ seo.title }}{% endblock %}{% endcapture %}
@@ -10,6 +7,9 @@
     {% capture as canonical_url %}{% block canonical %}{{ seo.canonical }}{% endblock %}{% endcapture %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Dunkler Modus vor dem ersten Zeichnen (kein heller Blitz); den Schalter verwaltet static/js/kopfzeile.js.
+         Bewusst kein x-data am <html>: Alpine durchliefe sonst beim Start jede Zeile jeder Tabelle. -->
+    <script>try { if (localStorage.getItem("darkMode") === "true") document.documentElement.classList.add("dark"); } catch (e) {}</script>
     <title>{{ head_title|full_title:seo.is_home }}</title>
     <meta name="description" content="{{ head_description|meta_text }}">
     <meta name="theme-color" content="#4f46e5">
@@ -34,7 +34,12 @@
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'brand/favicon-192.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'brand/apple-touch-icon.png' %}">
 
-    <!-- Inter lokal gehostet (Marken-Schrift der Wortmarke; DSGVO-konform) -->
+    <!-- Früh laden, was die erste Ansicht braucht: Schrift (latin, crossorigin wie bei @font-face) und das größte Hero-Bild -->
+    <link rel="preload" href="{% static 'fonts/inter-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+    {% block bild_vorladen %}{% hero_vorladen %}{% endblock %}
+
+    <!-- Inter lokal gehostet (Marken-Schrift der Wortmarke; DSGVO-konform). Variable Schrift, Achse wght auf 400–700
+         begrenzt (scripts/schrift_teilmenge.py) -->
     <style>
       @font-face {
         font-family: 'Inter';
@@ -62,9 +67,6 @@
 
     <!-- Alpine.js (lokal) -->
     <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
-
-    <!-- Lucide Icons (lokal) -->
-    <script src="{% static 'vendor/lucide/lucide.min.js' %}"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -122,10 +124,6 @@
     <footer role="contentinfo">
         {% include "components/footer.html" %}
     </footer>
-
-    <script>
-        lucide.createIcons();
-    </script>
 
     {% block extra_scripts %}{% endblock %}
 </body>

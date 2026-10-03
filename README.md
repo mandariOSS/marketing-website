@@ -111,6 +111,13 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
   `/open-source/` stehen in `marketing/seeds_unternehmen.py`, die Kennzahlen der
   Presseseite dort mit Stand. Das Logo-Paket (`/presse/mandari-logopaket.zip`) wird
   aus `static/brand/` gebaut.
+- **Karriere ruht** (keine offenen Stellen): `/karriere/` ist mit
+  `retire_page karriere --redirect /unternehmen/` zurückgezogen, Bewerbungen laufen über
+  `bewerbung@mandari.de` (`/kontakt/`). Seed und Seite bleiben erhalten. Reaktivieren: die Seite im
+  Wagtail-Admin wieder veröffentlichen, die Weiterleitung `/karriere` unter *Einstellungen →
+  Weiterleitungen* löschen, den Link in Fußzeile (`templates/components/footer.html`), Struktur-Test
+  (`scripts/check_site_structure.py`, `FUSSZEILE`) und Kontaktverzeichnis (`marketing/contact.py`)
+  wieder aufnehmen und den Rückzug-Schritt in `.github/workflows/ci.yml` entfernen.
 - **RIS-Vergleich** (`/vergleich/`, die vier Anbieterseiten und die Lücken auf `/roadmap/`): Funktionen,
   Zellen, Quellen und Lücken stehen in `marketing/seeds_vergleich.py`. Jede Angabe zu einem Anbieter trägt
   ein Quellenkürzel (z. B. `[ST2]`), über Anbieter steht nie „Nein“, sondern höchstens „keine öffentliche
@@ -180,7 +187,7 @@ python manage.py runserver 8001
 | Backend | Django 6, Wagtail 7 | BSD-3 |
 | Datenbank | PostgreSQL 16 | PostgreSQL |
 | Frontend | HTMX + Alpine.js + Tailwind CSS 3 | MIT / BSD |
-| Icons | [Lucide](https://lucide.dev) | ISC |
+| Icons | [Lucide](https://lucide.dev) als Inline-SVG (`marketing/templatetags/icons.py`), ohne JavaScript | ISC |
 | Suche | Wagtail-Builtin | BSD-3 |
 | Spam-Schutz | [Altcha](https://altcha.org) v2 | MIT |
 | Deployment | Docker Compose, Gunicorn, WhiteNoise | Apache-2.0 |
@@ -211,7 +218,8 @@ marketing-website/
 │   └── marketing/            # Page-Templates + blocks/ (StreamField-Block-Templates)
 ├── static/
 │   ├── css/                  # Tailwind input + compiled output
-│   ├── vendor/               # alpine, lucide, altcha (lokal gehostet)
+│   ├── fonts/                # Inter (latin, latin-ext), verkleinert mit scripts/schrift_teilmenge.py
+│   ├── vendor/               # alpine, altcha (lokal gehostet)
 │   └── security/             # PGP-Key
 ├── scripts/                  # Prüfskripte (Struktur-Test, Template-Kommentare) & Utilities
 ├── .github/workflows/        # CI: Release-Build → ghcr.io/mandarioss/website

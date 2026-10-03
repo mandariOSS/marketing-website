@@ -1,6 +1,9 @@
 {% extends "base.html" %}
+{% load baender %}
 
 {# Titel und Meta-Description kommen aus den Seitenfeldern seo_title und search_description (Quelle: HOME_PAGE_META, base.html) #}
+
+{% block bild_vorladen %}{% hero_vorladen "stapel" %}{% endblock %}
 
 {% block content %}
 {# Hero wie auf allen Seiten (marketing/blocks/hero.html): Überschrift, ein Satz, ein Aufruf und der Weg zum Bürgerportal als Textlink; rechts die drei Produkte als echte Bilder #}

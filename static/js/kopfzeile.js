@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //
 // Kopfzeile von mandari.de (templates/components/navbar.html):
-// * kopfzeile    – Schatten beim Scrollen und das Slide-Menü für schmale Bildschirme
-//                  (Dialog mit Fokusfalle, gesperrtem Seiten-Scroll, Escape und Klick auf den Hintergrund)
+// * kopfzeile    – Schatten beim Scrollen, Schalter für den dunklen Modus und das Slide-Menü für schmale
+//                  Bildschirme (Dialog mit Fokusfalle, gesperrtem Seiten-Scroll, Escape und Klick auf den Hintergrund)
 // * produkteMenue – Aufklappmenü „Produkte“ auf breiten Bildschirmen (Klick, Enter/Leertaste, Pfeiltasten)
 //
 // Wird vor Alpine geladen (beide mit defer, die Reihenfolge in base.html zählt).
@@ -31,12 +31,24 @@ document.addEventListener("alpine:init", () => {
     gescrollt: false,
     menueOffen: false,
     gesperrt: [],
+    // Gesetzt hat die Klasse schon das Skript im Kopf von base.html; hier nur der Schalter und das Merken.
+    darkMode: document.documentElement.classList.contains("dark"),
 
     init() {
+      this.$watch("darkMode", (dunkel) => {
+        document.documentElement.classList.toggle("dark", dunkel);
+        try {
+          localStorage.setItem("darkMode", dunkel);
+        } catch (e) {
+          // ohne Speicher gilt der Modus nur für diese Seite
+        }
+      });
       const pruefen = () => {
         this.gescrollt = window.scrollY > 4;
       };
-      pruefen();
+      // Erst im nächsten Bild: scrollY verlangt ein fertiges Layout und würde es sonst mitten im Start von Alpine
+      // erzwingen – eine lange Aufgabe, die das erste Antworten der Seite verzögert.
+      requestAnimationFrame(pruefen);
       window.addEventListener("scroll", pruefen, { passive: true });
       // Wird das Fenster breit genug für das Desktop-Menü, schließt das Slide-Menü.
       DESKTOP.addEventListener("change", (event) => {

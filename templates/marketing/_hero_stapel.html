@@ -1,34 +1,22 @@
-{% load static %}
-{# Eine Figur aus drei echten Bildschirmen, leicht versetzt: hinten Session, dann Work, vorne Insight (Startseite und /produkte/). Am Handy zwei Bildschirme im Hochformat (Work und Insight), Session entfällt dort. Das Hochformat zeigt jeweils denselben Bildschirm wie am Desktop, damit der Alt-Text an beiden passt. #}
+{% load baender %}
+{# Eine Figur aus drei echten Bildschirmen, leicht versetzt: hinten Session, dann Work, vorne Insight (Startseite und /produkte/). Am Handy zwei Bildschirme im Hochformat (Work und Insight), Session entfällt dort. Das Hochformat zeigt jeweils denselben Bildschirm wie am Desktop, damit der Alt-Text an beiden passt. Breiten, sizes und das vorgeladene Bild (Work) stehen in marketing/templatetags/baender.py. #}
+{% produkt_bild "session" as session %}{% produkt_bild "work" as work %}{% produkt_bild "insight" as insight %}
 <figure class="lg:col-span-6">
     <figcaption class="sr-only">Die drei Produkte von mandari mit echten Bildschirmen: mandari Session für den Sitzungsdienst, mandari Work für die Fraktion und vorne das Bürgerportal mandari Insight für Münster.</figcaption>
     <div class="hero-stapel">
         <picture class="hero-karte hero-karte-session">
-            <img src="{% static 'images/startseite/hero-session-800.webp' %}"
-                 srcset="{% static 'images/startseite/hero-session-800.webp' %} 800w, {% static 'images/startseite/hero-session-1600.webp' %} 1600w"
-                 sizes="(min-width: 1280px) 420px, (min-width: 1024px) 32vw, 70vw"
-                 width="800" height="500" loading="lazy" decoding="async"
-                 alt="mandari Session: Sitzungsübersicht der Stadtverwaltung mit kommenden Sitzungen von Rat und Ausschüssen und ihrem Stand">
+            <img src="{{ session.url }}" srcset="{{ session.srcset }}" sizes="{{ session.sizes.stapel }}"
+                 width="800" height="500" loading="lazy" decoding="async" alt="{{ session.alt }}">
         </picture>
         <picture class="hero-karte hero-karte-work">
-            <source media="(max-width: 639px)"
-                    srcset="{% static 'images/startseite/hero-work-mobil-400.webp' %} 400w, {% static 'images/startseite/hero-work-mobil-780.webp' %} 780w"
-                    sizes="58vw" width="780" height="1266">
-            <img src="{% static 'images/startseite/hero-work-800.webp' %}"
-                 srcset="{% static 'images/startseite/hero-work-800.webp' %} 800w, {% static 'images/startseite/hero-work-1600.webp' %} 1600w"
-                 sizes="(min-width: 1280px) 420px, (min-width: 1024px) 32vw, 70vw"
-                 width="800" height="500" fetchpriority="high" decoding="async"
-                 alt="mandari Work: Die Fraktion bereitet die Ratssitzung vor und legt zu jedem Tagesordnungspunkt ihre Position fest">
+            <source media="{{ work.mobil_bis }}" srcset="{{ work.srcset_mobil }}" sizes="{{ work.sizes.stapel_mobil }}" width="780" height="1266">
+            <img src="{{ work.url }}" srcset="{{ work.srcset }}" sizes="{{ work.sizes.stapel }}"
+                 width="800" height="500" fetchpriority="high" alt="{{ work.alt }}">
         </picture>
         <picture class="hero-karte hero-karte-insight">
-            <source media="(max-width: 639px)"
-                    srcset="{% static 'images/startseite/hero-insight-muenster-mobil-400.webp' %} 400w, {% static 'images/startseite/hero-insight-muenster-mobil-780.webp' %} 780w"
-                    sizes="58vw" width="780" height="1266">
-            <img src="{% static 'images/startseite/hero-insight-muenster-800.webp' %}"
-                 srcset="{% static 'images/startseite/hero-insight-muenster-800.webp' %} 800w, {% static 'images/startseite/hero-insight-muenster-1600.webp' %} 1600w"
-                 sizes="(min-width: 1280px) 420px, (min-width: 1024px) 32vw, 70vw"
-                 width="800" height="500" fetchpriority="high" decoding="async"
-                 alt="mandari Insight für Münster: Suche in den Ratsinformationen, kommende Sitzungen und neueste Vorgänge der Stadt">
+            <source media="{{ insight.mobil_bis }}" srcset="{{ insight.srcset_mobil }}" sizes="{{ insight.sizes.stapel_mobil }}" width="780" height="1266">
+            <img src="{{ insight.url }}" srcset="{{ insight.srcset }}" sizes="{{ insight.sizes.stapel }}"
+                 width="800" height="500" fetchpriority="high" alt="{{ insight.alt }}">
         </picture>
     </div>
 </figure>
