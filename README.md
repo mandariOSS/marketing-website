@@ -263,9 +263,10 @@ marketing-website/
 - **Content-Security-Policy.** Das Ladeskript (`LADER` in `stile.py`) ist ein fester Text ohne Inline-Handler.
   Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`):
   `python -c "import base64, hashlib; from marketing.templatetags.stile import LADER; print('sha256-' + base64.b64encode(hashlib.sha256(LADER.encode()).digest()).decode())"`
-- **Schrift.** Inter mit `font-display: optional`: Weil die Seite vor `styles.css` zeichnet, verschöbe ein
-  späterer Schriftwechsel den Text. Kommt die vorgeladene Schrift nicht rechtzeitig, bleibt für diesen Aufruf die
-  Ersatzschrift, danach liegt Inter im Cache.
+- **Schrift.** Inter mit `font-display: swap`, davor im Schriftstapel `Inter Ersatz`: Arial bzw. Roboto, per
+  `size-adjust` und `ascent-/descent-override` auf Inter angepasst (`base.html`, `tailwind.config.js`). Die Seite
+  zeichnet vor `styles.css`; so verschiebt der Wechsel zu Inter den Text nicht (CLS), und Inter erscheint auch beim
+  ersten Aufruf über das Mobilnetz. Wer die Schrift oder ihre Teilmenge ändert, rechnet die Werte neu.
 - **Brotli.** Mit dem Paket `brotli` legt `collectstatic` neben `.gz` auch `.br` an, WhiteNoise liefert CSS, JS
   und SVG damit aus (Caddy reicht die fertige Kodierung durch). Prüfen:
   `curl -sI -H 'Accept-Encoding: br' https://mandari.de/wstatic/css/styles.<hash>.css` zeigt `content-encoding: br`.
