@@ -1,9 +1,10 @@
 {% load baender %}
-{# Ein Bildschirm des Produkts, dem die Seite gehört – dieselbe Rahmung wie der Stapel der Startseite (Rand, Schatten, Markenfläche). Breiten und sizes in marketing/templatetags/baender.py, base.html lädt das Bild vor. #}
+{# Ein Bildschirm des Produkts, dem die Seite gehört – dieselbe Rahmung wie der Stapel der Startseite (Rand, Schatten, Markenfläche). AVIF, sonst WebP; Breiten und sizes in marketing/templatetags/baender.py, base.html lädt das Bild vor. #}
 {% produkt_bild produkt as b %}
 <figure class="lg:col-span-6">
     <div class="hero-einzel">
         <picture class="hero-karte">
+            <source type="image/avif" srcset="{{ b.srcset_avif }}" sizes="{{ b.sizes.einzel }}">
             <img src="{{ b.url }}" srcset="{{ b.srcset }}" sizes="{{ b.sizes.einzel }}"
                  width="800" height="500" fetchpriority="high" alt="{{ b.alt }}">
         </picture>

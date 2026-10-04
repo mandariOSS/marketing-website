@@ -3,7 +3,8 @@
   "version": "0.9.0",
   "private": true,
   "scripts": {
-    "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --minify",
+    "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --minify && npm run build:css:kritisch",
+    "build:css:kritisch": "npx tailwindcss -c tailwind.kritisch.config.js --postcss postcss.kritisch.config.js -i ./static/css/input.css -o ./static/css/kritisch.css --minify",
     "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --watch"
   },
   "devDependencies": {

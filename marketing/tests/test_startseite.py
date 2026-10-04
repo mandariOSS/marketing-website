@@ -61,7 +61,9 @@ class StartseitenHeroTests(TestCase):
     def test_bilddateien_vorhanden(self):
         # Alle Breiten aus srcset und Preload (marketing/templatetags/baender.py) liegen als Datei vor:
         # Session, Work und Insight je vier Querformate, Work und Insight je vier Hochformate.
-        dateien = set(re.findall(r"images/startseite/hero-[\w-]+\.webp", self.html))
-        self.assertGreaterEqual(len(dateien), 20)
-        for datei in dateien:
-            self.assertTrue(finders.find(datei), datei)
+        # Jede Breite als AVIF und als WebP (Rückfall für Browser ohne AVIF).
+        for endung in ("webp", "avif"):
+            dateien = set(re.findall(rf"images/startseite/hero-[\w-]+\.{endung}", self.html))
+            self.assertGreaterEqual(len(dateien), 20, endung)
+            for datei in dateien:
+                self.assertTrue(finders.find(datei), datei)

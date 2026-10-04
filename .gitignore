@@ -31,6 +31,7 @@ local_settings.py
 # Generated assets (built by Tailwind / Vite / etc.)
 # =============================================================================
 static/css/styles.css
+static/css/kritisch.css
 static/css/styles.css.map
 
 # =============================================================================

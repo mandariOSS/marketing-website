@@ -2,7 +2,7 @@
 {% load static company_tags %}
 
 {% block extra_head %}
-{% if contact_ready %}<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>
+{% if contact_ready %}<script defer src="{% static 'js/kontakt.js' %}" data-altcha="{% static 'vendor/altcha/altcha.min.js' %}"></script>
 <noscript><style>[data-ohne-js] { display: block !important; }</style></noscript>{% endif %}
 {% endblock %}
 
@@ -17,7 +17,7 @@
     <div class="wrap grid lg:grid-cols-12 gap-x-8 gap-y-14">
 
         <div class="lg:col-span-7"{% if contact_ready %} x-data="{ ansicht: '{% if contact_status.kind == 'nachricht' %}nachricht{% else %}termin{% endif %}' }"
-             x-init="const wahl = () => { if (location.hash === '#nachricht') { ansicht = 'nachricht' } else if (location.hash.startsWith('#termin')) { ansicht = 'termin' } }; wahl(); if (location.hash === '#nachricht' || location.hash.startsWith('#termin')) { $nextTick(() => $refs.umschalter.scrollIntoView()) }; window.addEventListener('hashchange', () => { wahl(); $nextTick(() => $refs.umschalter.scrollIntoView()) })"{% endif %}>
+             x-init="const wahl = () => { if (location.hash === '#nachricht') { ansicht = 'nachricht' } else if (location.hash.startsWith('#termin')) { ansicht = 'termin' } }; wahl(); if (location.hash === '#nachricht' || location.hash.startsWith('#termin')) { const zeigen = () => $refs.umschalter.scrollIntoView(); document.documentElement.classList.contains('vorab') ? document.addEventListener('stile:fertig', zeigen, { once: true }) : $nextTick(zeigen) }; window.addEventListener('hashchange', () => { wahl(); $nextTick(() => $refs.umschalter.scrollIntoView()) })"{% endif %}>
 
             {% if contact_ready %}
             <div role="tablist" aria-label="Art der Anfrage" x-ref="umschalter" x-cloak
