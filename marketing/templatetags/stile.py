@@ -4,10 +4,10 @@ Stylesheets im Kopf: ``{% load stile %}{% stile %}`` in base.html.
 Das vollständige ``styles.css`` hielt auf jeder Seite das erste Zeichnen auf (PageSpeed: render-blockierend). Jetzt
 steht ein kleines kritisches CSS inline im Kopf (``static/css/kritisch.css``, gebaut mit ``npm run build:css`` aus
 ``tailwind.kritisch.config.js``): Grundgerüst, Kopfzeile und Seitenkopf. ``styles.css`` lädt parallel mit
-``media="print"`` – das blockiert nicht und hat niedrige Priorität – und gilt, sobald es geladen ist. Bis dahin setzt
-das Ladeskript die Klasse ``vorab`` am ``<html>``; ``static/css/erste-ansicht.css`` hält damit alles unterhalb des
-Seitenkopfs unsichtbar, statt es kurz ohne Gestaltung zu zeigen. Ohne JavaScript lädt ``<noscript>`` das Stylesheet
-wie bisher blockierend, ``vorab`` gibt es dann nicht.
+``media="print"`` – das blockiert nicht und hat niedrige Priorität – und gilt, sobald es geladen ist. Bis dahin (und
+bis Alpine gestartet ist) setzt das Ladeskript die Klasse ``vorab`` am ``<html>``; ``static/css/erste-ansicht.css``
+blendet damit alles unterhalb des Seitenkopfs aus, statt es kurz ohne Gestaltung zu zeigen. Ohne JavaScript
+lädt ``<noscript>`` das Stylesheet wie bisher blockierend, ``vorab`` gibt es dann nicht.
 
 Bewusst kein ``<link rel="preload" as="style">``: Chrome lädt das mit höchster Priorität, Lighthouse rechnet es
 dann weiter als render-blockierend. Das Ladeskript kommt ohne Inline-Handler (``onload``) aus und ändert sich nicht
@@ -31,12 +31,20 @@ register = template.Library()
 KRITISCH = "css/kritisch.css"
 VOLL = "css/styles.css"
 
-# styles.css gilt, sobald es geladen ist (auch aus dem Cache, dann ist ``sheet`` schon gesetzt); bei einem Fehler
-# wird der Inhalt trotzdem sichtbar.
+# styles.css gilt, sobald es geladen ist (aus dem Cache ist ``sheet`` schon gesetzt; bei einem Fehler zählt es als
+# geladen). Sichtbar wird der Rest der Seite erst, wenn auch Alpine gestartet ist: Sonst erschienen Elemente mit
+# x-cloak (Umschalter auf /kontakt/) erst danach und verschöben, was unter ihnen steht. Spätestens mit ``load``
+# (auch ohne Alpine) ist alles sichtbar. Danach meldet ``stile:fertig``, dass die Seite vollständig steht (z. B. für
+# das Scrollen zum Umschalter auf /kontakt/#termin).
 LADER = (
-    '(function(){var h=document.documentElement,l=document.getElementById("stile");'
-    'function f(){l.media="all";h.classList.remove("vorab")}'
-    'if(l.sheet)f();else{h.classList.add("vorab");l.addEventListener("load",f);l.addEventListener("error",f)}})();'
+    '(function(){var h=document.documentElement,l=document.getElementById("stile"),c=0,a=0;'
+    'function z(){if(c&&a&&h.classList.contains("vorab")){h.classList.remove("vorab");'
+    'document.dispatchEvent(new Event("stile:fertig"))}}'
+    'function g(){l.media="all";c=1;z()}'
+    'h.classList.add("vorab");'
+    'document.addEventListener("alpine:initialized",function(){a=1;z()});'
+    'addEventListener("load",function(){a=1;g()});'
+    'if(l.sheet)g();else{l.addEventListener("load",g);l.addEventListener("error",g)}})();'
 )
 
 _gelesen = {}

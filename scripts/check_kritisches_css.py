@@ -7,7 +7,8 @@ Kritisches CSS prüfen (CI, nach ``npm run build:css`` und den Seeds): ``python 
   alles danach unsichtbar (static/css/erste-ansicht.css).
 * Abdeckung: Jede Klasse, die in Kopfzeile oder Seitenkopf einer Seite steht und die styles.css gestaltet, steht
   auch im kritischen CSS. Sonst sähe die erste Ansicht vor styles.css anders aus und verschöbe sich danach (CLS).
-  Ausgenommen sind das Innere der geschlossenen Menüs und der Fließtext (.prose) im Seitenkopf der Rechtstexte.
+  Ausgenommen ist, was vorab unsichtbar bleibt: das Innere der geschlossenen Menüs, Fließtext (.prose) und auf
+  Dokumentseiten alles nach dem <header> des Seitenkopfs.
 
 Fehlt eine Klasse: die Vorlage mit dem Seitenkopf in tailwind.kritisch.config.js eintragen oder, wenn Python oder
 JavaScript die Klasse setzt, in IMMER in scripts/kritisches_css.js.
@@ -27,7 +28,7 @@ GRENZE_GZIP = 6_000  # Bytes; die erste Antwort soll mit dem HTML in die ersten 
 KRITISCH = WURZEL / "static/css/kritisch.css"
 VOLL = WURZEL / "static/css/styles.css"
 OHNE_IDS = {"produkte-menue", "mobilmenue"}  # geschlossene Menüs der Kopfzeile
-OHNE_KLASSEN = {"prose"}  # Fließtext im Seitenkopf der Rechtstexte bleibt vorab unsichtbar
+OHNE_KLASSEN = {"prose"}  # Fließtext im Seitenkopf bleibt vorab unsichtbar
 LEER = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"}
 
 
@@ -48,7 +49,7 @@ class ErsteAnsicht(HTMLParser):
 
     def __init__(self):
         super().__init__()
-        self.stapel = []  # (tag, "kopf"/"hero" oder None) je offenem Element
+        self.stapel = []  # [tag, "kopf"/"hero" oder None, <header> als Kind geschlossen] je offenem Element
         self.klassen = set()
         self.in_main = False
         self.hero_gefunden = False
@@ -67,16 +68,20 @@ class ErsteAnsicht(HTMLParser):
             zaehlt = oben
         if zaehlt and (a.get("id") in OHNE_IDS or OHNE_KLASSEN & set(klassen)):
             zaehlt = None
+        if zaehlt == "hero" and self.stapel and self.stapel[-1][2]:
+            zaehlt = None  # Geschwister nach dem <header> einer Dokumentseite (.hero header ~ *)
         if zaehlt:
             self.klassen.update(klassen)
         if tag not in LEER:
-            self.stapel.append((tag, zaehlt))
+            self.stapel.append([tag, zaehlt, False])
 
     def handle_endtag(self, tag):
         if tag == "main":
             self.in_main = False
         for i in range(len(self.stapel) - 1, -1, -1):
             if self.stapel[i][0] == tag:
+                if tag == "header" and self.stapel[i][1] == "hero" and i:
+                    self.stapel[i - 1][2] = True
                 del self.stapel[i:]
                 break
 

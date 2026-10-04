@@ -251,7 +251,8 @@ marketing-website/
   Grundgerüst, Kopfzeile und Seitenkopf aller Seitentypen (Vorlagen in `tailwind.kritisch.config.js`, eigene
   Klassen aus `input.css` filtert `scripts/kritisches_css.js`). `{% stile %}` (`marketing/templatetags/stile.py`)
   schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
-  aufzuhalten. Bis es da ist, bleibt alles unterhalb des Seitenkopfs unsichtbar (`static/css/erste-ansicht.css`).
+  aufzuhalten. Bis es da und Alpine gestartet ist, bleibt alles unterhalb des Seitenkopfs ausgeblendet
+  (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.
   Mit `DEBUG` oder ohne gebautes `kritisch.css` bleibt es beim blockierenden Stylesheet. Wer einen Seitenkopf in
   einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
   (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip) und dass jede Klasse aus

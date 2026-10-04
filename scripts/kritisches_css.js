@@ -41,7 +41,9 @@ function vorlage(datei) {
     .replace(/{% comment %}[\s\S]*?{% endcomment %}|{#[\s\S]*?#}|{{[\s\S]*?}}/g, ' ');
 }
 
-/** Seitenkopf einer Vorlage: vom ersten Element mit der Klasse „hero“ bis zu seinem schließenden Tag. */
+/** Seitenkopf einer Vorlage: vom ersten Element mit der Klasse „hero“ bis zu seinem schließenden Tag. Enthält er
+ *  einen <header> (Dokumentseite: Titel, darunter Randspalte, Inhalt und Text), endet er mit diesem: Was danach
+ *  kommt, bleibt bis zum vollständigen Stylesheet unsichtbar (static/css/erste-ansicht.css). */
 function seitenkopf(datei) {
   const text = vorlage(datei);
   const start = text.search(/<[a-z]+\b[^>]*\bclass="[^"]*\bhero\b/);
@@ -49,7 +51,9 @@ function seitenkopf(datei) {
     console.warn(`kritisches CSS: kein Seitenkopf (class="… hero …") in ${datei}, die ganze Vorlage zählt`);
     return text;
   }
-  return text.slice(start, elementEnde(text, start));
+  const kopf = text.slice(start, elementEnde(text, start));
+  const header = kopf.search(/<header\b/);
+  return header < 0 ? kopf : kopf.slice(0, elementEnde(kopf, header));
 }
 
 /** Vorlage ohne die Elemente mit diesen ids (geschlossene Menüs: Sie öffnen sich erst auf Klick). */

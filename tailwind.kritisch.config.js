@@ -22,10 +22,11 @@ const ersteAnsicht = [
 ];
 
 // Vorlagen mit eigenem Seitenkopf im Template: Nur der Seitenkopf zählt (das erste Element mit der Klasse
-// „hero“ bis zu seinem schließenden Tag), sonst käme der ganze Seiteninhalt ins kritische CSS.
+// „hero“ bis zu seinem schließenden Tag, bei Dokumentseiten bis zum Ende ihres <header>), sonst käme der ganze
+// Seiteninhalt ins kritische CSS.
 const mitEigenemSeitenkopf = [
   './templates/marketing/landing.html',
-  './templates/marketing/legal_page.html',
+  './templates/marketing/dokument.html',
   './templates/marketing/crawler.html',
   './templates/marketing/sicherheit_disclosure.html',
   './templates/blog/release.html',
@@ -43,7 +44,7 @@ module.exports = {
     // (sonst bleiben sie unsichtbar, static/css/erste-ansicht.css).
     { raw: ohne('./templates/components/navbar.html', 'produkte-menue', 'mobilmenue'), extension: 'html' },
   ],
-  // Fließtext im Seitenkopf der Rechtstexte bleibt bis zum vollständigen Stylesheet unsichtbar
+  // Fließtext im Seitenkopf bleibt bis zum vollständigen Stylesheet unsichtbar
   blocklist: ['prose', 'prose-lg', 'dark:prose-invert'],
   safelist: [],
 };

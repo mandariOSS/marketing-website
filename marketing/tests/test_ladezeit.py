@@ -52,6 +52,9 @@ class StileTests(SimpleTestCase):
         self.assertNotIn("onload", html)
         self.assertIn('l.media="all"', stile.LADER)
         self.assertIn('classList.remove("vorab")', stile.LADER)
+        # Sichtbar erst mit Alpine (x-cloak), spätestens mit load
+        self.assertIn('"alpine:initialized"', stile.LADER)
+        self.assertIn('addEventListener("load"', stile.LADER)
 
     @override_settings(DEBUG=False)
     def test_ohne_kritisches_css_blockierend_wie_bisher(self):
