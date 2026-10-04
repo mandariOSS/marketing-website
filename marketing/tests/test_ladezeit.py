@@ -62,6 +62,16 @@ class StileTests(SimpleTestCase):
             html = self.render()
         self.assertRegex(html, r'^<link rel="stylesheet" href="[^"]*styles\.css">$')
 
+    @override_settings(DEBUG=False)
+    def test_im_betrieb_abschaltbar(self):
+        with (
+            mock.patch.dict("os.environ", {"KRITISCHES_CSS": "aus"}),
+            mock.patch.object(stile, "kritisches_css", return_value=".hero{}") as gelesen,
+        ):
+            html = self.render()
+        gelesen.assert_not_called()
+        self.assertRegex(html, r'^<link rel="stylesheet" href="[^"]*styles\.css">$')
+
     @override_settings(DEBUG=True)
     def test_entwicklung_ohne_kritisches_css(self):
         # Mit DEBUG passt das Ergebnis immer zum gerade gebauten styles.css (npm run watch:css baut nur dieses).

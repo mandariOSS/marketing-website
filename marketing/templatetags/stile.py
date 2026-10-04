@@ -14,7 +14,8 @@ dann weiter als render-blockierend. Das Ladeskript kommt ohne Inline-Handler (``
 mit dem Build; bei einer Content-Security-Policy genügt sein Hash (``LADER``, siehe README).
 
 Fehlt das kritische CSS (Entwicklung ohne ``npm run build:css``) oder läuft die Seite mit ``DEBUG``, bleibt es beim
-blockierenden ``<link rel="stylesheet">`` – dann passt das Ergebnis immer zum gerade gebauten ``styles.css``.
+blockierenden ``<link rel="stylesheet">`` – dann passt das Ergebnis immer zum gerade gebauten ``styles.css``. Im
+Betrieb schaltet ``KRITISCHES_CSS=aus`` (Umgebungsvariable, nach Neustart des Containers) ebenfalls dorthin zurück.
 """
 
 import os
@@ -66,7 +67,7 @@ def kritisches_css():
 @register.simple_tag
 def stile():
     url = static(VOLL)
-    css = "" if settings.DEBUG else kritisches_css()
+    css = "" if settings.DEBUG or os.environ.get("KRITISCHES_CSS", "an") == "aus" else kritisches_css()
     if not css:
         return format_html('<link rel="stylesheet" href="{}">', url)
     return format_html(

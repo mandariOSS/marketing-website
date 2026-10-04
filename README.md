@@ -253,7 +253,8 @@ marketing-website/
   schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
   aufzuhalten. Bis es da und Alpine gestartet ist, bleibt alles unterhalb des Seitenkopfs ausgeblendet
   (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.
-  Mit `DEBUG` oder ohne gebautes `kritisch.css` bleibt es beim blockierenden Stylesheet. Wer einen Seitenkopf in
+  Mit `DEBUG`, ohne gebautes `kritisch.css` oder mit der Umgebungsvariable `KRITISCHES_CSS=aus` bleibt es beim
+  blockierenden Stylesheet. Wer einen Seitenkopf in
   einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
   (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip), dass jede Klasse aus
   Kopfzeile und Seitenkopf aller Seiten im kritischen CSS steht und dass das HTML von Startseite und `/kontakt/`
