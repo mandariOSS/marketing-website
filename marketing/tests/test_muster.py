@@ -157,7 +157,8 @@ class SeitenTests(TestCase):
             html = self.seite(url)
             einladung = html[html.rfind("band-tinte"):]
             self.assertIn("<dl", einladung, url)
-            self.assertIn("lg:col-start-8", einladung, url)
+            # rechts: ab 1280 px die Spalten 8–12, darunter 7–12 (sonst läuft datenschutz@mandari.de aus der Spalte)
+            self.assertIn("lg:col-start-7 xl:col-span-5 xl:col-start-8", einladung, url)
 
     def test_dokumentseiten_mit_inhalt_und_randspalte(self):
         for url in ["/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigung/", "/quellen/", "/trust/"]:
