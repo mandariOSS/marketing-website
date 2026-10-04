@@ -257,13 +257,15 @@ def dokument_stand(html):
 
 @register.simple_tag
 def produkt_ausschnitt(key):
-    """Bildschirm eines Produkts für den angeschnittenen Ausschnitt (groß für Desktop, klein fürs Handy)."""
-    from .baender import PRODUKTE
+    """Bildschirm eines Produkts für den angeschnittenen Ausschnitt (M7): ``url``, ``srcset`` (Querformate wie im
+    Hero) und der Alternativtext. Angezeigt wird er 58 rem breit (Handy 34 rem)."""
+    from .baender import BILD_ORDNER, PRODUKTE, QUER_BREITEN, _srcset
 
     bild = (PRODUKTE.get(key) or {}).get("bild")
     if not bild:
         return None
-    return {"url": static(bild["src_gross"]), "url_klein": static(bild["src"]), "alt": bild["alt"]}
+    return {"url": static(f"{BILD_ORDNER}/{bild['datei']}-1200.webp"), "srcset": _srcset(bild["datei"], QUER_BREITEN),
+            "alt": bild["alt"]}
 
 
 # ── Kleinkram ────────────────────────────────────────────────────────────────

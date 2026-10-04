@@ -64,7 +64,9 @@ jobs:
           missing = [n for n in needles if n not in css]
           assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
           groesse = len(css.encode("utf-8"))
-          assert groesse < 72_000, f"styles.css hat {groesse} Bytes (Grenze 72.000) – ungenutzte Klassen in der Safelist?"
+          # Grenze: 65,6 KB vor dem Musterkatalog, die Abschnittsmuster (Zeitskala, Register, Dokumentseite …)
+          # bringen rund 15 KB (gzip 3 KB); darüber deutet ein Sprung auf ungenutzte Klassen in der Safelist.
+          assert groesse < 84_000, f"styles.css hat {groesse} Bytes (Grenze 84.000) – ungenutzte Klassen in der Safelist?"
           print(f"OK: {len(needles)} Klassen im CSS vorhanden, {groesse} Bytes")
           EOF
 
@@ -119,7 +121,7 @@ jobs:
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
               "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
               "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
-              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt: in Prüfung", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
+              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt", "In Prüfung, ohne Termin", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
               "/vergleich/mandari-vs-sternberg/": ["Stand Oktober 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium", "Noch nicht verfügbar", "[ST1]"],
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
               "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
@@ -424,3 +426,16 @@ jobs:
           assert not errors, "; ".join(errors)
           print(f"OK: {geprueft} Templates mit Abstaenden und Schriftgroessen aus der Skala")
           EOF
+
+      - name: Gestaltungssystem – keine leere rechte Hälfte (jeder Abschnitt füllt bei 1440 px mindestens 80 % der Rasterbreite)
+        # Musterkatalog, Regel 6 (Rückmeldung vom 04.10.2026): Text, der schmal bleiben muss, bekommt eine Randspalte
+        # oder ein Bild, sonst geht das Layout über die volle Breite. Gemessen im Browser an allen Seiten der Sitemap
+        # (scripts/check_fuellung.py); der Seitenkopf ist ausgenommen.
+        env:
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python manage.py runserver 127.0.0.1:8191 --noreload > runserver.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8191/ && break; sleep 1; done
+          python scripts/check_fuellung.py || (tail -20 runserver.log; exit 1)
