@@ -4,7 +4,7 @@
 <section class="{% abschnitt band band_anfang band_ende art='hero' %}">
     <div class="wrap{% if bild %} grid gap-y-14 lg:grid-cols-12 lg:gap-x-10 lg:items-center{% elif hero_rand %} grid gap-y-10 lg:grid-cols-12 lg:gap-x-10 lg:items-start{% else %} lg:min-h-[16rem]{% endif %}">
         <div{% if bild %} class="lg:col-span-6"{% elif hero_rand %} class="lg:col-span-7"{% endif %}>
-            <h1 class="t-h1 text-gray-900 dark:text-white {% if bild %}max-w-[15ch]{% else %}max-w-5xl{% endif %}">{% firstof heading self.title %}</h1>
+            <h1 class="t-h1 text-gray-900 dark:text-white {% if bild %}lg:max-w-[15ch]{% else %}max-w-5xl{% endif %}">{% firstof heading self.title %}</h1>
             {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">{{ self.subline }}</p>{% endif %}
             {% if self.subline_secondary %}<p class="text-base text-gray-600 dark:text-gray-400 mt-4 max-w-[45rem]">{{ self.subline_secondary }}</p>{% endif %}
             {% if self.ctas %}

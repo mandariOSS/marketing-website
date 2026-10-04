@@ -1,20 +1,20 @@
 {% load wagtailcore_tags baender muster %}
-{# M7 Produktbild angeschnitten: Text im Raster (4 von 12 Spalten), echter Bildschirm bis an den Fensterrand, Kennfläche des Produkts dahinter; im Wechsel rechts und links. #}
+{# M7 Produktbild angeschnitten: Text im Raster (4 von 12 Spalten), rechts die Kennfläche des Produkts bis an den Fensterrand mit dem echten Bildschirm, rechts und unten angeschnitten; alle Produkte gleich. #}
 <section class="{% abschnitt band band_anfang band_ende %}">
     {% if self.header.title %}<div class="wrap">{% include_block self.header %}</div>{% endif %}
-    <div class="space-y-14 lg:space-y-20">
+    <div class="space-y-16 lg:space-y-24">
         {% for e in self.eintraege %}
         {% produkt_ausschnitt e.produkt as bild %}
-        <article{% if e.anchor_id %} id="{{ e.anchor_id }}"{% endif %} class="wrap bleed produkt-{{ e.produkt }}{% cycle '' ' links' %} scroll-mt-24">
+        <article{% if e.anchor_id %} id="{{ e.anchor_id }}"{% endif %} class="wrap bleed produkt-{{ e.produkt }} scroll-mt-24">
             <div class="bleed-text">
-                <h3 class="t-h2 kenn">{{ e.titel }}</h3>
+                <h3 class="t-h2-dok kenn">{{ e.titel }}</h3>
                 <p class="mt-4 t-lead m-tinte">{{ e.text }}</p>
                 {% if e.fakten %}<dl class="faktenliste mt-6">{% for f in e.fakten %}<div><dt>{{ f.begriff }}</dt><dd>{{ f.wert }}</dd></div>{% endfor %}</dl>{% endif %}
                 {% if e.link_label and e.link_url %}<p class="mt-6"><a class="textlink" href="{{ e.link_url }}">{{ e.link_label }}</a></p>{% endif %}
             </div>
             {% if bild %}
             <div class="bildfeld">
-                <div class="ausschnitt"><img src="{{ bild.url }}" srcset="{{ bild.srcset }}" sizes="(min-width: 1024px) 58rem, 34rem" width="1600" height="1000" alt="{{ bild.alt }}" loading="lazy" decoding="async"></div>
+                <div class="ausschnitt"><img src="{{ bild.url }}" srcset="{{ bild.srcset }}" sizes="(min-width: 1024px) max(58rem, 60vw), (min-width: 640px) calc(100vw + 4rem), 34rem" width="1600" height="1000" alt="{{ bild.alt }}" loading="lazy" decoding="async"></div>
             </div>
             {% endif %}
         </article>

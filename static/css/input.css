@@ -5,6 +5,7 @@
 /* ══ Gestaltungssystem ═══════════════════════════════════════════════════════
    Eine Skala für alle Seiten (README, Abschnitt „Gestaltung“):
    Schrift  H1 56 · H2 40 (Dokumente 28) · H3 22 · Lead 20 · Text 18 · Sekundär 16 · Klein 14 px
+            am Handy H1 32 · H2 28 · Aussage 28 · Zahl im Satz 22 px; lange Wörter trennen unter 1280 px (lang="de")
    Abstand  Abschnitt 96 px (Handy 64) · kompakt 64 (48) · Unterabschnitt 48 · Kopf → Inhalt 48 · H2 → Lead 20
    Raster   Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen)
    Farbe    Tinte #111827, Text #4B5563, Weiß, Hellgrau #EEF0F4, Indigo #4F46E5 nur für Aufruf, Links und Wortmarke;
@@ -121,15 +122,16 @@
    Startseite und /produkte/: hinten Session, dann Work, vorne Insight – flach übereinander, ohne Neigung.
    /kommunen/ und /fraktionen/: ein Bildschirm des Produkts in derselben Rahmung. Ein feiner Rand und ein
    weicher Schatten trennen die Ebenen, eine ruhige Markenfläche löst die Figur vom weißen Grund. Die Fläche
-   bleibt innerhalb des Rasters. Am Handy zeigt der Stapel zwei Bildschirme im Hochformat (Work hinten,
-   Insight vorne), Session entfällt dort. */
+   bleibt innerhalb des Rasters. Am Handy stehen zwei Bildschirme im Hochformat nebeneinander (Work links,
+   Insight rechts etwas tiefer), ohne sich zu überdecken – kein Bildschirm schneidet den anderen an; Session
+   entfällt dort. */
 .hero-stapel,
 .hero-einzel {
   position: relative;
   isolation: isolate;
 }
 .hero-stapel {
-  aspect-ratio: 100 / 105;   /* zwei Hochformate, je 58 % breit, das vordere 10 % tiefer */
+  aspect-ratio: 100 / 86;    /* zwei Hochformate (780 × 1266), je 48 % breit, das rechte 8 % tiefer */
   max-width: 26rem;
 }
 .hero-einzel { max-width: 36rem; }
@@ -158,8 +160,8 @@
 }
 .hero-karte img { display: block; width: 100%; height: auto; }
 .hero-karte-session { display: none; }
-.hero-karte-work { left: 0; top: 0; width: 58%; }
-.hero-karte-insight { right: 0; top: 10%; width: 58%; }
+.hero-karte-work { left: 0; top: 0; width: 48%; }
+.hero-karte-insight { right: 0; top: 8%; width: 48%; }
 .dark .hero-karte {
   border-color: rgb(255 255 255 / 0.12);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 20px -8px rgb(0 0 0 / 0.5), 0 30px 60px -16px rgb(0 0 0 / 0.75);
@@ -181,6 +183,13 @@
   .hero-einzel { max-width: none; width: 95%; }
   .hero-stapel::before { inset: 6% -5.2% -7% 9%; }
   .hero-einzel::before { inset: 10% -5.2% -8% 8%; }
+}
+
+/* Lange Wörter (Ratsinformationssystem, Auftragsverarbeitungsvertrag): Unterhalb des vollen Rasters (1280 px) trennen
+   Überschriften, Begriffe und Tabellenköpfe nach Silben (lang="de", erst ab 12 Zeichen); kennt der Browser keine
+   Trennregeln, bricht das Wort am Rand, statt über die Spalte oder den Bildschirm hinauszulaufen. */
+@media (max-width: 1279px) {
+  :is(h1, h2, h3, h4, dt, th) { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 12 5 5; }
 }
 
 /* Kernsatz: der erste Satz einer längeren Beschreibung trägt, der Rest erklärt */
@@ -228,7 +237,7 @@
 
   /* Schriftstufen: eine Schrift (Inter), feste Größen, linksbündig */
   .t-h1 {
-    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.5rem);
+    font-size: clamp(2rem, 1.2rem + 2.9vw, 3.5rem);   /* Handy 32 px, ab 1280 px 56 px */
     line-height: 1.06;
     letter-spacing: -0.032em;
     font-weight: 650;
@@ -275,6 +284,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    text-align: center;
     background-color: #4f46e5;
     color: #fff;
     font-weight: 600;
@@ -391,11 +401,13 @@
 .zs-liste > li::after { content: ""; position: absolute; left: 1px; top: 0.55rem; width: 12px; height: 12px; border-radius: 50%; background: var(--m-akzent); }
 .zs-liste > li:last-child::before { display: none; }
 .zs-frist { font-size: 1.5rem; line-height: 1.9rem; font-weight: 640; letter-spacing: -0.015em; color: var(--m-tinte); font-variant-numeric: tabular-nums; }
-@media (max-width: 1023px) { .zk { display: none; } }
+@media (max-width: 1279px) { .zk { display: none; } .zs-liste { max-width: 45rem; } }
 .zs-titel { margin-top: 0.75rem; font-size: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem); line-height: 1.3; font-weight: 620; }
 .zs-text { margin-top: 0.5rem; font-size: 1.125rem; line-height: 1.65; }
-@media (min-width: 1024px) {
-  /* Desktop: die Achse trägt die Fristen, die Liste erläutert darunter die Schritte (Fristen nur für Screenreader) */
+@media (min-width: 1280px) {
+  /* Desktop: die Achse trägt die Fristen, die Liste erläutert darunter die Schritte (Fristen nur für Screenreader).
+     Erst ab 1280 px: Die Lage der Beschriftungen ist für das volle Raster gerechnet (RASTER_PX in muster.py),
+     darunter stießen sie aneinander. */
   .zs-liste { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: 2.5rem; margin-top: 3rem; padding-top: 1.75rem; border-top: 1px solid var(--m-linie); }
   .zs-liste > li { padding: 0; }
   .zs-liste > li::before, .zs-liste > li::after { display: none; }
@@ -425,6 +437,8 @@
 .skala span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
 .skala span:first-child { transform: none; }
 .skala span:last-child { transform: translateX(-100%); }
+/* Am Handy nur jede zweite Marke (vom Ende gezählt, die erste bleibt): sonst stößt „14 Wochen“ an die „12“ */
+@media (max-width: 639px) { .skala span:nth-last-child(2n):not(:first-child) { display: none; } }
 .legende-frueh, .legende-spiel { display: inline-block; width: 1.5rem; height: 0.625rem; border-radius: 2px; vertical-align: middle; margin-right: 0.5rem; }
 .legende-frueh { background: var(--m-akzent); }
 .legende-spiel { background: var(--m-akzent-hell); }
@@ -436,7 +450,9 @@
 .sf-pfeil { height: 2.25rem; display: flex; align-items: center; color: var(--m-akzent); }
 .sf-pfeil svg { width: 36px; height: 14px; transform: rotate(90deg); margin-left: -11px; }
 .sf-ergebnis { margin-top: 0.75rem; }
-@media (min-width: 1024px) {
+@media (max-width: 1279px) { .sf { max-width: 45rem; } }
+@media (min-width: 1280px) {
+  /* In einer Zeile erst ab dem vollen Raster: bei 1024 px wären die Spalten für lange Wörter zu schmal */
   .sf { grid-template-columns: repeat(var(--schritte), minmax(0, 1fr) 3.5rem) minmax(0, 1.1fr); align-items: start; }
   .sf-pfeil { height: auto; display: block; padding: 2.1rem 0.75rem 0 0.25rem; }
   .sf-pfeil svg { width: 100%; transform: none; margin: 0; }
@@ -476,6 +492,14 @@
   .reg td[data-spalte]::before { content: attr(data-spalte); display: block; margin-top: 0.4rem; font-size: 0.8125rem; color: var(--m-leise); }
   .reg .reg-zahl { text-align: left; }
 }
+/* Vier Spalten (Funktion, Erklärung, Anbieter, Stand) passen erst ab 1024 px nebeneinander */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .reg-vier thead { display: none; }
+  .reg-vier, .reg-vier tbody, .reg-vier tr, .reg-vier td, .reg-vier th { display: block; width: 100%; }
+  .reg-vier td { padding: 0.15rem 0; }
+  .reg-vier tbody tr { padding: 1rem 0; }
+  .reg-vier td[data-spalte]::before { content: attr(data-spalte); display: block; margin-top: 0.4rem; font-size: 0.8125rem; color: var(--m-leise); }
+}
 
 /* M4 Dokumentseite: Inhaltsleiste, Text in Lesebreite, Randspalte mit Stand, Verweisen und Kontakt */
 .dok-inhalt a { display: block; padding: 0.3rem 0 0.3rem 0.9rem; border-left: 2px solid var(--m-linie); color: var(--m-text); font-size: 0.9375rem; line-height: 1.4; }
@@ -501,35 +525,36 @@
 .begriffe > :is(div, li) { border-top: 1px solid var(--m-linie); }
 .begriffe > :is(div, li):last-child { border-bottom: 1px solid var(--m-linie); }
 
-/* M6 Große Aussage */
-.aussage { font-size: clamp(2.25rem, 1.2rem + 3.6vw, 4rem); line-height: 1.06; letter-spacing: -0.03em; font-weight: 650; color: var(--m-tinte); text-wrap: balance; }
-.leitsatz { font-size: clamp(2.75rem, 1rem + 6.6vw, 6.75rem); line-height: 1.02; letter-spacing: -0.038em; font-weight: 660; color: var(--m-tinte); }
+/* M6 Große Aussage (am Handy eine Stufe über dem Fließtext, nicht sechs Zeilen in Plakatgröße) */
+.aussage { font-size: clamp(1.75rem, 0.35rem + 4.4vw, 4rem); line-height: 1.06; letter-spacing: -0.03em; font-weight: 650; color: var(--m-tinte); text-wrap: balance; }
+.leitsatz { font-size: clamp(2.25rem, 0.25rem + 7.4vw, 6.75rem); line-height: 1.02; letter-spacing: -0.038em; font-weight: 660; color: var(--m-tinte); }
 .bedingungen li { padding: 0.8rem 0; border-top: 1px solid var(--m-akzent-hell); }
 .bedingungen li:last-child { border-bottom: 1px solid var(--m-akzent-hell); }
 
-/* M7 Produktbild angeschnitten: Text im Raster, Bildschirm bis an den Fensterrand (--rand = Abstand des Rasters
-   zum Fensterrand, je nach Breite der Innenabstand der .wrap oder der freie Rand neben 80 rem) */
-.bleed { --rand: 1rem; display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 2rem; align-items: center; }
+/* M7 Produktbild angeschnitten: Text im Raster, rechts die Kennfläche des Produkts bis an den Fensterrand. Der
+   Bildschirm sitzt oben links in der Fläche (Seitenleiste und Kopf bleiben sichtbar) und wird nur rechts und unten
+   an der Kante der Fläche angeschnitten – bei jeder Breite, auch wenn das Fenster breiter ist als das Bild.
+   Alle Produkte gleich: Text links, Bild rechts. (--rand = Abstand des Rasters zum Fensterrand, je nach Breite der
+   Innenabstand der .wrap oder der freie Rand neben 80 rem) */
+.bleed { --rand: 1rem; display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; align-items: center; }
 .bleed > .bildfeld { margin-right: calc(-1 * var(--rand)); }
 @media (min-width: 640px) { .bleed { --rand: 1.5rem; } }
 @media (min-width: 1024px) {
   .bleed { --rand: max(2rem, (100vw - 76rem) / 2); grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 2.5rem; }
   .bleed > .bleed-text { grid-column: 1 / span 4; grid-row: 1; }
   .bleed > .bildfeld { grid-column: 6 / -1; grid-row: 1; }
-  .bleed.links > .bleed-text { grid-column: 9 / span 4; }
-  .bleed.links > .bildfeld { grid-column: 1 / 8; margin-right: 0; margin-left: calc(-1 * var(--rand)); }
 }
-.bildfeld { position: relative; isolation: isolate; padding: 2rem 0; }
-.bildfeld::before { content: ""; position: absolute; z-index: -1; inset: 0 0 0 3rem; background: var(--flaeche); }
-.ausschnitt { height: 15rem; overflow: hidden; display: flex; border: 1px solid rgb(17 24 39 / 0.12); border-right: 0; border-radius: 0.5rem 0 0 0.5rem; background: #faf9f7;
-  box-shadow: 0 1px 2px rgb(17 24 39 / 0.06), 0 24px 48px -20px rgb(17 24 39 / 0.3); }
-.ausschnitt img { display: block; width: 34rem; max-width: none; height: auto; flex: none; align-self: flex-start; }
+.bildfeld { height: 16rem; padding: 1.5rem 0 0 1.5rem; overflow: hidden; border-radius: 0.75rem 0 0 0.75rem; background: var(--flaeche); }
+.ausschnitt { height: 100%; overflow: hidden; border: 1px solid rgb(17 24 39 / 0.12); border-width: 1px 0 0 1px; border-radius: 0.5rem 0 0 0; background: #faf9f7;
+  box-shadow: 0 1px 2px rgb(17 24 39 / 0.06), 0 16px 40px -16px rgb(17 24 39 / 0.3); }
+.ausschnitt img { display: block; width: 34rem; max-width: none; height: auto; }
+@media (min-width: 640px) {
+  .bildfeld { height: 22rem; padding: 2rem 0 0 2rem; }
+  .ausschnitt img { width: max(34rem, calc(100% + 8rem)); }
+}
 @media (min-width: 1024px) {
-  .bildfeld { padding: 2.5rem 0; }
-  .ausschnitt { height: 24rem; }
-  .ausschnitt img { width: 58rem; }
-  .bleed.links .bildfeld::before { inset: 0 3rem 0 0; }
-  .bleed.links .ausschnitt { justify-content: flex-end; border-right: 1px solid rgb(17 24 39 / 0.12); border-left: 0; border-radius: 0 0.5rem 0.5rem 0; }
+  .bildfeld { height: 24rem; padding: 2.5rem 0 0 2.5rem; }
+  .ausschnitt img { width: max(58rem, calc(100% + 8rem)); }
 }
 .dark .ausschnitt { border-color: rgb(255 255 255 / 0.12); }
 .dark .ausschnitt img { filter: brightness(0.92); }
@@ -545,6 +570,14 @@
 .vgl thead th { border-bottom: 2px solid var(--m-linie-stark); padding-bottom: 1.25rem; font-weight: 400; }
 .vgl tbody tr { border-bottom: 1px solid var(--m-linie); }
 .vgl tbody th { font-weight: 600; color: var(--m-tinte); }
+.vgl td { overflow-wrap: break-word; -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 12 5 5; }
+@media (min-width: 768px) and (max-width: 1023px) { .vgl thead th:first-child { width: 28%; } }
+/* Mehr als zwei Optionen: als Tabelle erst ab 1024 px, dort mit Text eine Stufe kleiner und engerem Spaltenabstand */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .vgl-viele thead th:first-child { width: 15%; }
+  .vgl-viele :is(th, td) { padding-right: 1.25rem; }
+  .vgl-viele td { font-size: 1rem; line-height: 1.6; }
+}
 @media (max-width: 767px) {
   .vgl thead { display: none; }
   .vgl, .vgl tbody, .vgl tr, .vgl td, .vgl th { display: block; width: 100% !important; }
@@ -552,9 +585,16 @@
   .vgl th, .vgl td { padding: 0.2rem 0; }
   .vgl td::before { content: attr(data-spalte); display: block; font-size: 0.8125rem; color: var(--m-leise); margin-top: 0.5rem; }
 }
+@media (min-width: 768px) and (max-width: 1023px) {
+  .vgl-viele thead { display: none; }
+  .vgl-viele, .vgl-viele tbody, .vgl-viele tr, .vgl-viele td, .vgl-viele th { display: block; width: 100% !important; }
+  .vgl-viele tbody tr { padding: 1rem 0; }
+  .vgl-viele th, .vgl-viele td { padding: 0.2rem 0; }
+  .vgl-viele td::before { content: attr(data-spalte); display: block; font-size: 0.8125rem; color: var(--m-leise); margin-top: 0.5rem; }
+}
 
 /* M9 Kennzahl im Kontext */
-.zahlensatz { font-size: clamp(1.625rem, 1.1rem + 1.9vw, 2.5rem); line-height: 1.3; letter-spacing: -0.015em; color: var(--m-leise); }
+.zahlensatz { font-size: clamp(1.375rem, 0.9rem + 1.9vw, 2.5rem); line-height: 1.3; letter-spacing: -0.015em; color: var(--m-leise); }
 .zahlensatz :is(b, strong) { color: var(--m-tinte); font-weight: 640; font-variant-numeric: tabular-nums; }
 .grosse-zahl { font-size: clamp(5.5rem, 3rem + 6vw, 8rem); line-height: 0.8; letter-spacing: -0.05em; font-weight: 640; color: var(--m-tinte); font-variant-numeric: tabular-nums; }
 
