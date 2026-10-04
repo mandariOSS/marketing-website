@@ -253,6 +253,9 @@ marketing-website/
   schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
   aufzuhalten. Bis es da und Alpine gestartet ist, bleibt alles unterhalb des Seitenkopfs ausgeblendet
   (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.
+  Seiten mit Produktbildern unter dem Seitenkopf (`BLOECKE_MIT_BILDERN` in `stile.py`, heute `/produkte/`) laden
+  `styles.css` mit `fetchpriority="high"`. Sonst reiht Lighthouse es hinter diese Bilder und errechnet ein späteres
+  LCP.
   Mit `DEBUG`, ohne gebautes `kritisch.css` oder mit der Umgebungsvariable `KRITISCHES_CSS=aus` bleibt es beim
   blockierenden Stylesheet. Wer einen Seitenkopf in
   einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
