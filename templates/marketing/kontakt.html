@@ -2,7 +2,7 @@
 {% load static company_tags %}
 
 {% block extra_head %}
-{% if contact_ready %}<script async defer src="{% static 'vendor/altcha/altcha.min.js' %}" type="module"></script>
+{% if contact_ready %}<script defer src="{% static 'js/kontakt.js' %}" data-altcha="{% static 'vendor/altcha/altcha.min.js' %}"></script>
 <noscript><style>[data-ohne-js] { display: block !important; }</style></noscript>{% endif %}
 {% endblock %}
 
