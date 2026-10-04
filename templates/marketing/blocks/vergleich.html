@@ -1,5 +1,5 @@
 {% load wagtailcore_tags baender %}
-{# M8 Vergleichstabelle: Zeilen sind Kriterien, Spalten die Optionen (Name und ein Satz im Kopf). Am Handy je Kriterium ein Block mit der Option als Beschriftung. #}
+{# M8 Vergleichstabelle: Zeilen sind Kriterien, Spalten die Optionen (Name und ein Satz im Kopf). Am Handy je Kriterium ein Block mit der Option als Beschriftung, bei mehr als zwei Optionen auch am Tablet. #}
 <section class="{% abschnitt band band_anfang band_ende %}">
     <div class="wrap"{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %}>
         {% if self.header.title %}
@@ -8,12 +8,12 @@
             {% if self.header.subline %}<p class="t-lead m-text">{{ self.header.subline }}</p>{% endif %}
         </div>
         {% endif %}
-        <table class="vgl">
+        <table class="vgl{% if self.optionen|length > 2 %} vgl-viele{% endif %}">
             {% if self.header.title %}<caption class="sr-only">{{ self.header.title }}</caption>{% endif %}
             <thead>
                 <tr>
                     <th scope="col"><span class="sr-only">Kriterium</span></th>
-                    {% for o in self.optionen %}<th scope="col"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">{{ o.name }}</span>{% if o.satz %}<span class="block mt-1 text-base m-text">{{ o.satz }}</span>{% endif %}</th>{% endfor %}
+                    {% for o in self.optionen %}<th scope="col"><span class="block text-xl {% if self.optionen|length > 2 %}xl:text-2xl{% else %}lg:text-2xl{% endif %} font-semibold tracking-tight m-tinte">{{ o.name }}</span>{% if o.satz %}<span class="block mt-1 text-base m-text">{{ o.satz }}</span>{% endif %}</th>{% endfor %}
                 </tr>
             </thead>
             <tbody>

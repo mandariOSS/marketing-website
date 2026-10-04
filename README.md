@@ -301,7 +301,7 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
 
 | | Stufen |
 |---|---|
-| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px |
+| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px. Am Handy `t-h1` 32 px, `t-h2` und große Aussage 28 px, Zahl im Satz 22 px. Unter 1280 px trennen Überschriften, Begriffe und Tabellenköpfe lange Wörter nach Silben (`hyphens: auto`, ab 12 Zeichen) und brechen sie notfalls am Rand, statt überzulaufen |
 | **Abstand** | Abschnitt 96 px (Handy 64) · kompakt 64 px (48) für Hinweise · Unterabschnitt 48 px · Abschnittskopf → Inhalt 48 px, vor Fließtext 24 px |
 | **Raster** | Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen); Einträge in zwei Spalten, bei genau drei Einträgen in drei |
 | **Farbe** | Tinte `#111827`, Text `#4B5563`, Weiß, Hellgrau `#EEF0F4`; Indigo `#4F46E5` nur für den gefüllten Button, Textlinks und den Punkt der Wortmarke |
@@ -330,18 +330,18 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
 
   | Inhalt | Muster | Baustein | Beispiel |
   |---|---|---|---|
-  | Ablauf mit Fristen | Zeitskala, maßstäblich in Tagen, Achsenbruch für offene Zeitpunkte | `zeitskala` | Disclosure, Abuse, Unternehmen |
+  | Ablauf mit Fristen | Zeitskala, maßstäblich in Tagen, Achsenbruch für offene Zeitpunkte (Achse ab 1280 px, darunter Liste) | `zeitskala` | Disclosure, Abuse, Unternehmen |
   | Schritte mit Dauern | Dauerbalken (frühestens, Spielraum, fester Tag) | `dauerbalken` | Migration |
   | Vorhaben mit Zeitpunkt | Quartalsachse, Modul in Kennfarbe, Stufe als Text | `quartalsachse` | Roadmap |
-  | Kurze Folge ohne Fristen | Schrittfolge in einer Zeile mit Ergebnis | `schrittfolge` | Mitmachen, Partner |
+  | Kurze Folge ohne Fristen | Schrittfolge in einer Zeile mit Ergebnis (ab 1280 px, darunter untereinander) | `schrittfolge` | Mitmachen, Partner |
   | Sammlung mit Stand | Register: eine Tabelle, Gruppen, Status als Punkt, Bestand im Randkopf | `register` | Vergabe, Lücken, Preisliste, Kontenblatt |
   | Lange Texte | Dokumentseite: Inhaltsleiste, Text, Randspalte (Stand, Verweise, Kontakt) | `marketing/dokument.html` | Rechtstexte, Quellen, Trust Center, Releases |
   | Text, der schmal bleibt | Text mit Randspalte (Ablauf, Dateien, Kontakt), Stichwort am Absatzanfang | `randspalte` | Vertragsgrundlagen, Kurzprofil |
   | Werte, Eigenschaften | Begriffe in der Marginalie | `begriffe` | Wertekompass, Fundament |
   | Einladung | Schlussband mit den direkten Wegen rechts | `gradient_cta` (Feld „Wege“) | jede Seite |
   | Zusage | große Aussage, rechts die Bedingungen (höchstens einmal je Seite) | `zusage`, `leitsatz` | Safe Harbor, Warrant Canary |
-  | Produkte | Bildschirm angeschnitten bis an den Fensterrand | `produktbilder` | /produkte/ |
-  | Optionen | Vergleichstabelle Kriterien × Optionen | `vergleich` | Selbst hosten, Anbindung |
+  | Produkte | Bildschirm in der Kennfläche des Produkts, rechts und unten angeschnitten bis an den Fensterrand; alle Produkte gleich (Text links, Bild rechts) | `produktbilder` | /produkte/ |
+  | Optionen | Vergleichstabelle Kriterien × Optionen (mehr als zwei Optionen: Tabelle erst ab 1024 px) | `vergleich` | Selbst hosten, Anbindung, Partner |
   | Zahlen | Zahl im Satz, Null mit Aufschlüsselung | `zahlensatz`, `nullen` | Transparenz, Presse |
   | Dateien | Download-Leiste: ein Button rechts, Vorschauen nach Rang | `downloads`, `company/_logopaket.html` | Presse, Preisliste |
 

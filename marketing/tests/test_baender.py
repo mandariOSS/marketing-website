@@ -133,13 +133,14 @@ class SeitenTests(TestCase):
         self.assertLess(html.find("produkt-work "), html.find("produkt-insight "))
 
     def test_produkte_zeigen_bildschirme_angeschnitten(self):
-        # Muster 7: je Produkt Text im Raster und ein echter Bildschirm bis an den Fensterrand, im Wechsel
+        # Muster 7: je Produkt Text im Raster und ein echter Bildschirm bis an den Fensterrand, alle gleich (Bild
+        # rechts): Ein Anschnitt links schnitte Seitenleiste und Wörter der Anwendung ab.
         html = self.seite("/produkte/")
         for produkt, bild in [("session", "hero-session-1600"), ("work", "hero-work-1600"),
                               ("insight", "hero-insight-muenster-1600")]:
-            self.assertRegex(html, rf'class="wrap bleed produkt-{produkt}( links)? scroll-mt-24"')
+            self.assertIn(f'class="wrap bleed produkt-{produkt} scroll-mt-24"', html)
             self.assertIn(bild, html, produkt)
-        self.assertIn("bleed produkt-work links", html)
+        self.assertNotIn(" links scroll-mt-24", html)
         self.assertLess(html.find("bleed produkt-session"), html.find("bleed produkt-work"))
         self.assertLess(html.find("bleed produkt-work"), html.find("bleed produkt-insight"))
 
@@ -230,7 +231,8 @@ class SeitenTests(TestCase):
         # § 312k BGB: der Knopf muss lesbar sein – die Linkgestalt des Fließtexts darf ihn nicht überschreiben
         html = self.seite("/kuendigung/")
         self.assertIn('class="btn-primary">Jetzt Vertrag kündigen</a>', html)
-        self.assertNotIn("text-align:center", html)
+        # keine Inline-Gestaltung im Inhalt (das kritische CSS im Kopf darf .btn-primary zentrieren)
+        self.assertNotIn("text-align:center", html[html.find('role="main"'):])
 
     def test_kontakt_ein_formularsystem(self):
         # Beide Formulare: gleiche Felder (Klasse feld, 48 px), gleicher Aufruf, Umschalter Termin | Nachricht

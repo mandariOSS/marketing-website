@@ -5,7 +5,9 @@ AVIF-Varianten der Hero-Bilder (static/images/startseite): je Bild und Breite ei
 
 Vorlage ist je Bild die verlustfreie Aufnahme (``--quelle``, Bildschirmfoto als PNG in der Größe der breitesten
 Variante oder größer), sonst die breiteste WebP-Variante. Die Dateien im Repository sind aus den PNG-Aufnahmen
-entstanden, nur ``hero-insight-muenster`` (Querformat) aus dem WebP mit 1600 px.
+entstanden. Aufnahme wie bei Session und Work: Querformat im Fenster 1280 × 800 mit Pixeldichte 1,25 (1600 × 1000),
+Hochformat 390 × 633 mit Pixeldichte 2 (780 × 1266), heller Modus. Insight zeigt seit Oktober 2026 die Übersicht
+für Münster im neuen Grün (mandari.de/insight/, Kommune Münster), ohne Personen in Nahaufnahme.
 
 Qualität 55 und volle Farbauflösung (4:4:4, damit Schrift in den Bildschirmen farbrein bleibt): Gegen die Vorlage
 gemessen (SSIM) liegt jede AVIF-Datei mindestens so nah wie das WebP derselben Breite und ist rund ein Drittel

@@ -90,8 +90,8 @@ GROESSEN = {
     # Stapel: je Karte 74 % der Figur; Figur höchstens 40rem, ab lg 95 % der halben Spalte
     "stapel": "(min-width: 1280px) 414px, (min-width: 1024px) calc(35vw - 36px), (min-width: 688px) 474px, "
               "calc(74vw - 36px)",
-    # Stapel am Handy: je Karte 58 % der Figur, Figur höchstens 26rem
-    "stapel_mobil": "(min-width: 448px) 242px, calc(58vw - 19px)",
+    # Stapel am Handy: je Karte 48 % der Figur, Figur höchstens 26rem
+    "stapel_mobil": "(min-width: 448px) 200px, calc(48vw - 16px)",
     # Ein Bildschirm: 92 % der Figur, Figur höchstens 36rem, ab lg 95 % der halben Spalte
     "einzel": "(min-width: 1280px) 514px, (min-width: 1024px) calc(44vw - 45px), (min-width: 608px) 530px, "
               "calc(92vw - 30px)",

@@ -21,16 +21,16 @@
 
             {% if contact_ready %}
             <div role="tablist" aria-label="Art der Anfrage" x-ref="umschalter" x-cloak
-                 class="flex gap-x-6 sm:gap-x-8 border-b border-gray-300 dark:border-gray-600 mb-8">
+                 class="flex gap-x-5 sm:gap-x-8 border-b border-gray-300 dark:border-gray-600 mb-8">
                 <button type="button" role="tab" id="tab-termin" aria-controls="termin" x-ref="tabTermin"
                         :aria-selected="(ansicht === 'termin').toString()" :tabindex="ansicht === 'termin' ? 0 : -1"
                         @click="ansicht = 'termin'" @keydown.arrow-right.prevent="ansicht = 'nachricht'; $refs.tabNachricht.focus()" @keydown.arrow-left.prevent="ansicht = 'nachricht'; $refs.tabNachricht.focus()"
-                        class="-mb-px border-b-2 pb-3 t-body font-semibold transition-colors"
+                        class="-mb-px border-b-2 pb-3 text-base sm:t-body font-semibold whitespace-nowrap transition-colors"
                         :class="ansicht === 'termin' ? 'border-primary-600 text-gray-900 dark:border-primary-400 dark:text-white' : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'"><span class="sm:hidden">Termin anfragen</span><span class="hidden sm:inline">Erstgespräch vereinbaren</span></button>
                 <button type="button" role="tab" id="tab-nachricht" aria-controls="nachricht" x-ref="tabNachricht"
                         :aria-selected="(ansicht === 'nachricht').toString()" :tabindex="ansicht === 'nachricht' ? 0 : -1"
                         @click="ansicht = 'nachricht'" @keydown.arrow-right.prevent="ansicht = 'termin'; $refs.tabTermin.focus()" @keydown.arrow-left.prevent="ansicht = 'termin'; $refs.tabTermin.focus()"
-                        class="-mb-px border-b-2 pb-3 t-body font-semibold transition-colors"
+                        class="-mb-px border-b-2 pb-3 text-base sm:t-body font-semibold whitespace-nowrap transition-colors"
                         :class="ansicht === 'nachricht' ? 'border-primary-600 text-gray-900 dark:border-primary-400 dark:text-white' : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'">Nachricht schreiben</button>
             </div>
             {% endif %}

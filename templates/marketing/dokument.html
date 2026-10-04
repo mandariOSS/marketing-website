@@ -6,13 +6,13 @@
 {% dokument_aufbau as dok %}
 <article class="band-hell hero">
     <div class="wrap grid gap-y-8 lg:grid-cols-12 lg:gap-x-10">
-        <header class="lg:col-span-9 lg:col-start-4">
+        <header class="min-w-0 lg:col-span-9 lg:col-start-4">
             <h1 class="t-h1 m-tinte">{{ dok.titel }}</h1>
             {% if dok.satz %}<p class="mt-6 t-lead m-text max-w-[45rem]">{{ dok.satz }}</p>{% endif %}
             {% if dok.ctas %}<div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">{% for cta in dok.ctas %}<a href="{{ cta.url }}" class="{% if forloop.first %}btn-primary{% else %}textlink{% endif %}">{{ cta.label }}</a>{% endfor %}</div>{% endif %}
         </header>
 
-        <aside class="lg:col-span-3 lg:col-start-10 lg:row-start-2 text-base" aria-label="Zum Dokument">
+        <aside class="min-w-0 lg:col-span-3 lg:col-start-10 lg:row-start-2 text-base" aria-label="Zum Dokument">
             <dl class="dok-rand dok-klebt">
                 {% if dok.stand %}<dt>Stand</dt><dd class="font-semibold">{{ dok.stand }}</dd>{% endif %}
                 {% for e in dok.eckdaten %}<dt>{{ e.begriff }}</dt><dd class="font-semibold">{{ e.wert }}</dd>{% endfor %}
@@ -24,7 +24,7 @@
         </aside>
 
         {% if dok.inhalt %}
-        <details class="lg:hidden flaeche rounded-lg px-5 py-4">
+        <details class="min-w-0 lg:hidden flaeche rounded-lg px-5 py-4">
             <summary class="font-semibold m-tinte cursor-pointer">Inhalt</summary>
             <nav class="dok-inhalt mt-3" aria-label="Inhalt">{% for e in dok.inhalt %}<a href="#{{ e.anker }}">{{ e.titel }}</a>{% endfor %}</nav>
         </details>

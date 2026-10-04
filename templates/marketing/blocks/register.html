@@ -16,7 +16,7 @@
         {% endif %}
         <div class="{% if self.kopf != 'ueber' and not eingebettet %}lg:col-span-9 {% endif %}min-w-0">
             {% if eingebettet and self.header.title %}<h3 class="t-h3 m-tinte mb-2">{{ self.header.title }}</h3>{% endif %}
-            <table class="reg">
+            <table class="reg{% if r.vierte %} reg-vier{% endif %}">
                 {% if self.header.title %}<caption class="sr-only">{{ self.header.title }}</caption>{% endif %}
                 <thead><tr>{% for s in r.spalten %}<th scope="col"{% if forloop.first %} style="width:{% if r.vierte %}26{% else %}36{% endif %}%"{% elif forloop.last and r.drei %} style="width:{% if r.vierte %}22{% else %}17{% endif %}%"{% endif %}>{{ s }}</th>{% endfor %}</tr></thead>
                 {% for g in self.gruppen %}
