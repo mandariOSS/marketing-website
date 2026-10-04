@@ -1,0 +1,18 @@
+/* Nur im kritischen CSS (static/css/kritisch.css, scripts/kritisches_css.js): Bis das vollständige styles.css
+   geladen ist, setzt {% stile %} die Klasse „vorab“ am <html>. So lange bleibt alles unterhalb des Seitenkopfs
+   unsichtbar (Platz nimmt es trotzdem ein), statt kurz ohne Gestaltung aufzublitzen. Ohne JavaScript gibt es
+   „vorab“ nicht, dann lädt styles.css wie bisher vor dem ersten Zeichnen. Die beiden Menüs der Kopfzeile sind
+   geschlossen; öffnet jemand eines, bevor styles.css da ist, erscheint es erst mit seiner Gestaltung. */
+.vorab .hero ~ *,
+.vorab .hero .prose,
+.vorab body > footer,
+.vorab #produkte-menue,
+.vorab #mobilmenue {
+  visibility: hidden;
+}
+/* Getrennt, weil ein Browser ohne :has() sonst die ganze Regel verwirft: Abschnitte nach einem Element, das den
+   Seitenkopf enthält, und Seiten ohne Seitenkopf */
+.vorab main :has(.hero) ~ *,
+.vorab main:not(:has(.hero)) {
+  visibility: hidden;
+}

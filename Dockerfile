@@ -24,10 +24,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package.json tailwind.config.js ./
+COPY package.json tailwind.config.js tailwind.kritisch.config.js postcss.kritisch.config.js ./
 RUN npm install
 
-COPY static/css/input.css ./static/css/input.css
+# styles.css und das kritische CSS für den Kopf jeder Seite (static/css/kritisch.css, scripts/kritisches_css.js)
+COPY static/css/input.css static/css/erste-ansicht.css ./static/css/
+COPY scripts/kritisches_css.js ./scripts/kritisches_css.js
 COPY templates/ ./templates/
 
 RUN npm run build:css
@@ -41,7 +43,7 @@ RUN pip install --no-cache-dir .
 
 # Copy application code
 COPY . .
-COPY --from=css-builder /app/static/css/styles.css ./static/css/styles.css
+COPY --from=css-builder /app/static/css/styles.css /app/static/css/kritisch.css ./static/css/
 
 # Create static directory
 RUN mkdir -p /app/staticfiles

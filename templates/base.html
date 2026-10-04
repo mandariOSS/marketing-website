@@ -39,13 +39,15 @@
     {% block bild_vorladen %}{% hero_vorladen %}{% endblock %}
 
     <!-- Inter lokal gehostet (Marken-Schrift der Wortmarke; DSGVO-konform). Variable Schrift, Achse wght auf 400–700
-         begrenzt (scripts/schrift_teilmenge.py) -->
+         begrenzt (scripts/schrift_teilmenge.py). font-display: optional statt swap: Die Seite zeichnet vor styles.css,
+         ein späterer Schriftwechsel verschöbe den Text (CLS). Kommt die vorgeladene Schrift nicht rechtzeitig, bleibt
+         die Ersatzschrift für diesen einen Aufruf; danach liegt Inter im Cache. -->
     <style>
       @font-face {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400 700;
-        font-display: swap;
+        font-display: optional;
         src: url("{% static 'fonts/inter-latin.woff2' %}") format('woff2');
         unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
       }
@@ -53,14 +55,15 @@
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400 700;
-        font-display: swap;
+        font-display: optional;
         src: url("{% static 'fonts/inter-latin-ext.woff2' %}") format('woff2');
         unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
       }
     </style>
 
-    <!-- TailwindCSS (lokal kompiliert, DSGVO-konform) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- TailwindCSS (lokal kompiliert, DSGVO-konform): kritisches CSS inline, styles.css lädt ohne Blockade
+         (marketing/templatetags/stile.py) -->
+    {% load stile %}{% stile %}
 
     <!-- Kopfzeile (Produkte-Menü, Slide-Menü) – registriert sich vor dem Start von Alpine -->
     <script defer src="{% static 'js/kopfzeile.js' %}"></script>

@@ -168,10 +168,10 @@ Anschließend:
 pip install -e .
 npm install
 
-# Tailwind im Watch-Mode
-npm run dev   # build → dist
-# oder direkt:
-npx tailwindcss -i static/css/input.css -o static/css/styles.css --watch
+# Tailwind im Watch-Mode (nur styles.css; mit DEBUG bindet base.html es wie gewohnt ein)
+npm run watch:css
+# styles.css und das kritische CSS (static/css/kritisch.css) bauen, wie im Docker-Build:
+npm run build:css
 
 # Postgres läuft separat — DATABASE_URL anpassen in .env
 python manage.py migrate
@@ -244,6 +244,30 @@ marketing-website/
   Wagtail-Website. Die Statuspage läuft unter <https://status.mandari.de>.
 - **Deploys gegen bestehende DB**: Migrationen + idempotente Seeds laufen beim
   Start; gezielte Inhalts-Updates per `refresh_seeded_page <slug> --force`.
+
+### Ladezeit
+
+- **Kritisches CSS.** `npm run build:css` baut neben `styles.css` das kleine `static/css/kritisch.css`:
+  Grundgerüst, Kopfzeile und Seitenkopf aller Seitentypen (Vorlagen in `tailwind.kritisch.config.js`, eigene
+  Klassen aus `input.css` filtert `scripts/kritisches_css.js`). `{% stile %}` (`marketing/templatetags/stile.py`)
+  schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
+  aufzuhalten. Bis es da ist, bleibt alles unterhalb des Seitenkopfs unsichtbar (`static/css/erste-ansicht.css`).
+  Mit `DEBUG` oder ohne gebautes `kritisch.css` bleibt es beim blockierenden Stylesheet. Wer einen Seitenkopf in
+  einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
+  (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip) und dass jede Klasse aus
+  Kopfzeile und Seitenkopf aller Seiten im kritischen CSS steht.
+- **Content-Security-Policy.** Das Ladeskript (`LADER` in `stile.py`) ist ein fester Text ohne Inline-Handler.
+  Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`):
+  `python -c "import base64, hashlib; from marketing.templatetags.stile import LADER; print('sha256-' + base64.b64encode(hashlib.sha256(LADER.encode()).digest()).decode())"`
+- **Schrift.** Inter mit `font-display: optional`: Weil die Seite vor `styles.css` zeichnet, verschöbe ein
+  späterer Schriftwechsel den Text. Kommt die vorgeladene Schrift nicht rechtzeitig, bleibt für diesen Aufruf die
+  Ersatzschrift, danach liegt Inter im Cache.
+- **Brotli.** Mit dem Paket `brotli` legt `collectstatic` neben `.gz` auch `.br` an, WhiteNoise liefert CSS, JS
+  und SVG damit aus (Caddy reicht die fertige Kodierung durch). Prüfen:
+  `curl -sI -H 'Accept-Encoding: br' https://mandari.de/wstatic/css/styles.<hash>.css` zeigt `content-encoding: br`.
+- **Hero-Bilder** liegen je Breite als AVIF und WebP vor; vorgeladen wird das AVIF. Neue oder geänderte Bilder:
+  WebP wie bisher ablegen, dann `python scripts/hero_avif.py` (Pillow mit AVIF, Vorlagen siehe Skript).
+- **Spamschutz.** Altcha lädt erst, wenn jemand ein Kontaktformular betritt (`static/js/kontakt.js`).
 
 ### Wichtige Umgebungsvariablen
 

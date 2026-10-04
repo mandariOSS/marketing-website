@@ -183,6 +183,12 @@ jobs:
           SITE_URL: "https://mandari.de"
         run: python scripts/check_site_structure.py
 
+      - name: Kritisches CSS (Größe, Seitenkopf auf jeder Seite, Abdeckung von Kopfzeile und Seitenkopf)
+        # Das kritische CSS steht inline im Kopf jeder Seite, styles.css lädt danach ohne Blockade
+        # (marketing/templatetags/stile.py). Fehlt dort eine Klasse aus Kopfzeile oder Seitenkopf, sähe die erste
+        # Ansicht vor styles.css anders aus und verschöbe sich danach (CLS).
+        run: python scripts/check_kritisches_css.py
+
       - name: Sicherheitsfristen (security.txt und Policy wie SECURITY.md im mandari-Repository)
         # Eingangsbestätigung, Korrekturfristen und Offenlegung müssen mit der SECURITY.md von
         # mandariOSS/mandari übereinstimmen; alte Angaben (5 Werktage, 14 Tage) dürfen nicht zurückkehren.

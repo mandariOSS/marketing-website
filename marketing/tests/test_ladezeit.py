@@ -1,12 +1,16 @@
-"""Ladezeit: Symbole ohne JavaScript, vorgeladenes Hero-Bild passend zur Bildquelle, Schrift früh geladen."""
+"""Ladezeit: Symbole ohne JavaScript, vorgeladenes Hero-Bild passend zur Bildquelle, Schrift früh geladen,
+kritisches CSS inline und styles.css ohne Blockade."""
 
 import re
 from html import unescape
 from io import StringIO
+from unittest import mock
 
 from django.core.management import call_command
 from django.template import Context, Template, TemplateSyntaxError
-from django.test import SimpleTestCase, TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
+
+from marketing.templatetags import stile
 
 PRELOAD_BILD = re.compile(r'<link rel="preload" as="image"[^>]*>')
 ATTR = re.compile(r'([\w-]+)="([^"]*)"')
@@ -27,6 +31,50 @@ class SymbolTests(SimpleTestCase):
     def test_unbekanntes_symbol_ist_ein_fehler(self):
         with self.assertRaises(TemplateSyntaxError):
             Template('{% load icons %}{% icon "gibt-es-nicht" %}').render(Context())
+
+
+class StileTests(SimpleTestCase):
+    def render(self):
+        return Template("{% load stile %}{% stile %}").render(Context())
+
+    @override_settings(DEBUG=False)
+    def test_kritisches_css_inline_und_styles_ohne_blockade(self):
+        with mock.patch.object(stile, "kritisches_css", return_value=".hero{padding-top:3.5rem}"):
+            html = self.render()
+        self.assertTrue(html.startswith("<style>.hero{padding-top:3.5rem}</style>"))
+        link = re.search(r'<link rel="stylesheet" href="([^"]+)" media="print" id="stile">', html)
+        self.assertIsNotNone(link, html)
+        self.assertIn(f"<script>{stile.LADER}</script>", html)
+        self.assertIn(f'<noscript><link rel="stylesheet" href="{link.group(1)}"></noscript>', html)
+        # Kein preload as=style (Chrome lädt das mit höchster Priorität, Lighthouse zählt es als blockierend)
+        # und kein Inline-Handler (Content-Security-Policy): Das Skript schaltet um und hebt „vorab“ auf.
+        self.assertNotIn('as="style"', html)
+        self.assertNotIn("onload", html)
+        self.assertIn('l.media="all"', stile.LADER)
+        self.assertIn('classList.remove("vorab")', stile.LADER)
+
+    @override_settings(DEBUG=False)
+    def test_ohne_kritisches_css_blockierend_wie_bisher(self):
+        with mock.patch.object(stile, "kritisches_css", return_value=""):
+            html = self.render()
+        self.assertRegex(html, r'^<link rel="stylesheet" href="[^"]*styles\.css">$')
+
+    @override_settings(DEBUG=True)
+    def test_entwicklung_ohne_kritisches_css(self):
+        # Mit DEBUG passt das Ergebnis immer zum gerade gebauten styles.css (npm run watch:css baut nur dieses).
+        with mock.patch.object(stile, "kritisches_css", return_value=".hero{}") as gelesen:
+            html = self.render()
+        gelesen.assert_not_called()
+        self.assertNotIn("<style>", html)
+
+    def test_kritisches_css_ohne_schliessendes_tag(self):
+        with (
+            mock.patch.object(stile.finders, "find", return_value=__file__),
+            mock.patch("builtins.open", mock.mock_open(read_data="a{}</style><script>")),
+        ):
+            stile._gelesen.clear()
+            self.assertEqual(stile.kritisches_css(), "")
+        stile._gelesen.clear()
 
 
 class SeitenTests(TestCase):
@@ -72,6 +120,9 @@ class SeitenTests(TestCase):
                            and q.get("sizes") == link["imagesizes"]]
                 self.assertEqual(len(treffer), 1, f"{url}: Preload ohne passende Bildquelle ({link})")
                 self.assertEqual(treffer[0].get("fetchpriority", "high"), "high", url)
+                # Vorgeladen wird das AVIF; Browser ohne AVIF überspringen den Preload wegen type.
+                self.assertEqual(link.get("type"), "image/avif", url)
+                self.assertEqual(treffer[0].get("type"), "image/avif", url)
                 if "media" in link:
                     self.assertEqual(treffer[0].get("media", "(min-width: 640px)"), link["media"], url)
 
