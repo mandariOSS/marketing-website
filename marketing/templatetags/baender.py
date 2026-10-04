@@ -78,6 +78,7 @@ PRODUKTE = {
 
 # Bildschirme im Hero (static/images/startseite): Querformat 16:10 in vier Breiten, Work und Insight zusätzlich
 # als Hochformat für den Stapel am Handy. Die Breiten passen zu den angezeigten Größen bei 1x bis 3x Pixeldichte.
+# Jede Breite liegt als AVIF (rund ein Drittel kleiner, scripts/hero_avif.py) und als WebP für ältere Browser vor.
 BILD_ORDNER = "images/startseite"
 QUER_BREITEN = (600, 800, 1200, 1600)
 MOBIL_BREITEN = (400, 480, 640, 780)
@@ -101,8 +102,8 @@ GROESSEN = {
 STAPEL_LCP = "work"
 
 
-def _srcset(datei, breiten, zusatz=""):
-    return ", ".join(f"{static(f'{BILD_ORDNER}/{datei}{zusatz}-{b}.webp')} {b}w" for b in breiten)
+def _srcset(datei, breiten, zusatz="", endung="webp"):
+    return ", ".join(f"{static(f'{BILD_ORDNER}/{datei}{zusatz}-{b}.{endung}')} {b}w" for b in breiten)
 
 _PRODUKT_MUSTER = {
     "session": re.compile(r"\bSession\b"),
@@ -246,7 +247,8 @@ def produkt_zeile(row):
 @register.simple_tag
 def produkt_bild(key):
     """Bildschirm eines Produkts für den Hero: ``url`` (800 px), ``srcset`` (Querformat), bei Work und Insight
-    ``srcset_mobil`` (Hochformat für den Stapel am Handy), ``sizes`` je Einsatz und der Alternativtext."""
+    ``srcset_mobil`` (Hochformat für den Stapel am Handy), je mit ``_avif`` als AVIF, ``sizes`` je Einsatz und der
+    Alternativtext."""
     bild = (PRODUKTE.get(key) or {}).get("bild")
     if not bild:
         return None
@@ -255,36 +257,39 @@ def produkt_bild(key):
         **bild,
         "url": static(f"{BILD_ORDNER}/{datei}-800.webp"),
         "srcset": _srcset(datei, QUER_BREITEN),
+        "srcset_avif": _srcset(datei, QUER_BREITEN, endung="avif"),
         "sizes": GROESSEN,
         "mobil_bis": MOBIL_BIS,
     }
     if key in ("work", "insight"):
         daten["srcset_mobil"] = _srcset(datei, MOBIL_BREITEN, "-mobil")
+        daten["srcset_mobil_avif"] = _srcset(datei, MOBIL_BREITEN, "-mobil", "avif")
     return daten
 
 
 @register.simple_tag(takes_context=True)
 def hero_vorladen(context, art=None):
     """``<link rel="preload">`` für das LCP-Bild im Hero, passend zu ``srcset``/``sizes`` des Bildes, damit der
-    Browser genau die Datei vorlädt, die er danach anzeigt (sonst lädt er doppelt). ``art`` wie ``hero_bild``;
-    ohne Angabe gilt das Bild der aktuellen Seite."""
+    Browser genau die Datei vorlädt, die er danach anzeigt (sonst lädt er doppelt). Vorgeladen wird das AVIF:
+    ``type`` lässt Browser ohne AVIF den Preload überspringen, sie laden das WebP aus ``<picture>``. ``art`` wie
+    ``hero_bild``; ohne Angabe gilt das Bild der aktuellen Seite."""
     art = art if art is not None else hero_bild(context)
     if not art:
         return ""
     if art == "stapel":
         b = produkt_bild(STAPEL_LCP)
         links = [
-            (b["srcset_mobil"], GROESSEN["stapel_mobil"], MOBIL_BIS),
-            (b["srcset"], GROESSEN["stapel"], "(min-width: 640px)"),
+            (b["srcset_mobil_avif"], GROESSEN["stapel_mobil"], MOBIL_BIS),
+            (b["srcset_avif"], GROESSEN["stapel"], "(min-width: 640px)"),
         ]
     else:
         b = produkt_bild(art)
         if not b:
             return ""
-        links = [(b["srcset"], GROESSEN["einzel"], "")]
+        links = [(b["srcset_avif"], GROESSEN["einzel"], "")]
     return format_html_join(
         "\n    ",
-        '<link rel="preload" as="image" type="image/webp" imagesrcset="{}" imagesizes="{}"{} fetchpriority="high">',
+        '<link rel="preload" as="image" type="image/avif" imagesrcset="{}" imagesizes="{}"{} fetchpriority="high">',
         ((srcset, sizes, format_html(' media="{}"', media) if media else "") for srcset, sizes, media in links),
     )
 
