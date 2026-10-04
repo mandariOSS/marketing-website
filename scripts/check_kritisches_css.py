@@ -40,7 +40,12 @@ LEER = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "met
 
 # Wie scripts/kritisches_css.js: Zustände durch Bedienen und reine Übergänge braucht das erste Zeichnen nicht.
 ZUSTAND = re.compile(r":hover|:focus|:active|::backdrop|\[aria-expanded=true\]")
-NUR_UEBERGANG = re.compile(r"^(?:\s*(?:transition|animation)[\w-]*\s*:[^;]*;?)*\s*$")
+
+
+def nur_uebergang(block):
+    """Besteht ein Regelblock nur aus Übergängen und Animationen (transition*, animation*)?"""
+    eigenschaften = [deklaration.split(":", 1)[0].strip() for deklaration in block.split(";") if deklaration.strip()]
+    return bool(eigenschaften) and all(e.startswith(("transition", "animation")) for e in eigenschaften)
 
 
 def _teile(selektor):
@@ -59,12 +64,12 @@ def klassen_im_css(css, erstes_bild=False):
     nur aus Regeln, die das erste Zeichnen betreffen."""
     klassen = set()
     for selektor, block in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
-        if selektor.lstrip().startswith("@") or (erstes_bild and NUR_UEBERGANG.match(block)):
+        if selektor.lstrip().startswith("@") or (erstes_bild and nur_uebergang(block)):
             continue
         for teil in _teile(selektor):
             if erstes_bild and ZUSTAND.search(teil):
                 continue
-            for roh in re.findall(r"\.((?:\\[0-9a-fA-F]{1,6} ?|\\.|[\w-])+)", teil):
+            for roh in re.findall(r"\.((?:\\[0-9a-fA-F]{1,6} ?|\\[^0-9a-fA-F]|[\w-])+)", teil):
                 name = re.sub(r"\\([0-9a-fA-F]{1,6}) ?", lambda m: chr(int(m.group(1), 16)), roh)
                 klassen.add(re.sub(r"\\(.)", r"\1", name))
     return klassen
