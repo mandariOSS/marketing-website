@@ -4,11 +4,13 @@ kritisches CSS inline und styles.css ohne Blockade."""
 import re
 from html import unescape
 from io import StringIO
+from types import SimpleNamespace
 from unittest import mock
 
 from django.core.management import call_command
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import SimpleTestCase, TestCase, override_settings
+from wagtail.blocks import CharBlock, StreamBlock, StreamValue
 
 from marketing.templatetags import stile
 
@@ -34,8 +36,8 @@ class SymbolTests(SimpleTestCase):
 
 
 class StileTests(SimpleTestCase):
-    def render(self):
-        return Template("{% load stile %}{% stile %}").render(Context())
+    def render(self, **kontext):
+        return Template("{% load stile %}{% stile %}").render(Context(kontext))
 
     @override_settings(DEBUG=False)
     def test_kritisches_css_inline_und_styles_ohne_blockade(self):
@@ -55,6 +57,19 @@ class StileTests(SimpleTestCase):
         # Sichtbar erst mit Alpine (x-cloak), spätestens mit load
         self.assertIn('"alpine:initialized"', stile.LADER)
         self.assertIn('addEventListener("load"', stile.LADER)
+
+    @override_settings(DEBUG=False)
+    def test_hohe_prioritaet_nur_mit_bildern_unter_dem_kopf(self):
+        # Sonst reiht Lighthouse styles.css (VeryLow) hinter die Bilder mit loading="lazy" (/produkte/, LCP)
+        bloecke = StreamBlock([("hero", CharBlock()), ("cta", CharBlock()), ("produktbilder", CharBlock())])
+        mit = SimpleNamespace(body=StreamValue(bloecke, [("hero", "a"), ("produktbilder", "b")]))
+        ohne = SimpleNamespace(body=StreamValue(bloecke, [("hero", "a"), ("cta", "b")]))
+        with mock.patch.object(stile, "kritisches_css", return_value=".hero{}"):
+            self.assertIn('media="print" fetchpriority="high" id="stile"', self.render(page=mit))
+            self.assertIn('media="print" id="stile"', self.render(page=ohne))
+            # Rechtstexte: body ist noch das alte Textfeld; ohne Seite (z. B. Fehlerseiten)
+            self.assertIn('media="print" id="stile"', self.render(page=SimpleNamespace(body="<p>produktbilder</p>")))
+            self.assertIn('media="print" id="stile"', self.render())
 
     @override_settings(DEBUG=False)
     def test_ohne_kritisches_css_blockierend_wie_bisher(self):
@@ -112,6 +127,13 @@ class SeitenTests(TestCase):
         html = self.html("/produkte/")
         self.assertNotIn("x-data", html[:html.find("<head")])
         self.assertIn('document.documentElement.classList.add("dark")', html)
+
+    @override_settings(DEBUG=False)
+    def test_styles_mit_hoher_prioritaet_nur_auf_seiten_mit_produktbildern(self):
+        with mock.patch.object(stile, "kritisches_css", return_value=".hero{}"):
+            self.assertIn('media="print" fetchpriority="high" id="stile"', self.html("/produkte/"))
+            for url in ("/", "/kontakt/", "/preise/", "/fraktionen/"):
+                self.assertIn('media="print" id="stile"', self.html(url), url)
 
     def test_schrift_wird_mit_crossorigin_vorgeladen(self):
         html = self.html("/preise/")

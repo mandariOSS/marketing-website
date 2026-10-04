@@ -26,11 +26,20 @@ from django.contrib.staticfiles import finders
 from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
+from wagtail.blocks import StreamValue
 
 register = template.Library()
 
 KRITISCH = "css/kritisch.css"
 VOLL = "css/styles.css"
+
+# Blöcke mit Bildern (loading="lazy"), die der Browser schon beim ersten Laden holt, weil sie am Handy kurz unter dem
+# Seitenkopf stehen. Auf Seiten mit einem solchen Block lädt styles.css mit fetchpriority="high" (Chrome: High statt
+# VeryLow). Lighthouse simuliert HTTP/2 als eine Verbindung und reiht Anfragen nach beobachtetem Start plus Aufschlag
+# je Priorität (Low 1 s, VeryLow 2 s). Ohne die Angabe kam styles.css auf /produkte/ hinter die drei Produktbilder
+# (150 KB) und schob das errechnete LCP am Handy von 1,7 auf 2,0 s. Im Browser laden diese Bilder ohnehin erst nach
+# styles.css (``vorab``). Auf Seiten ohne solche Bilder bleibt es bei VeryLow: Dort kostete High 20 bis 50 ms LCP.
+BLOECKE_MIT_BILDERN = {"produktbilder"}
 
 # styles.css gilt, sobald es geladen ist (aus dem Cache ist ``sheet`` schon gesetzt; bei einem Fehler zählt es als
 # geladen). Sichtbar wird der Rest der Seite erst, wenn auch Alpine gestartet ist: Sonst erschienen Elemente mit
@@ -64,19 +73,28 @@ def kritisches_css():
     return _gelesen[pfad][1]
 
 
-@register.simple_tag
-def stile():
+def bilder_unter_dem_kopf(page):
+    """Ob die Seite einen Block aus ``BLOECKE_MIT_BILDERN`` enthält (z. B. /produkte/; bei Rechtstexten ist ``body``
+    noch das alte Textfeld)."""
+    body = getattr(page, "body", None)
+    return isinstance(body, StreamValue) and any(block.block_type in BLOECKE_MIT_BILDERN for block in body)
+
+
+@register.simple_tag(takes_context=True)
+def stile(context):
     url = static(VOLL)
     css = "" if settings.DEBUG or os.environ.get("KRITISCHES_CSS", "an") == "aus" else kritisches_css()
     if not css:
         return format_html('<link rel="stylesheet" href="{}">', url)
+    prioritaet = mark_safe(' fetchpriority="high"' if bilder_unter_dem_kopf(context.get("page")) else "")
     return format_html(
         '<style>{}</style>\n'
-        '    <link rel="stylesheet" href="{}" media="print" id="stile">\n'
+        '    <link rel="stylesheet" href="{}" media="print"{} id="stile">\n'
         "    <script>{}</script>\n"
         '    <noscript><link rel="stylesheet" href="{}"></noscript>',
         mark_safe(css),  # eigene Build-Ausgabe, ohne "</" (sonst Rückfall auf das blockierende Stylesheet)
         url,
+        prioritaet,
         mark_safe(LADER),
         url,
     )
