@@ -67,6 +67,22 @@ function ohne(datei, ...ids) {
   return text;
 }
 
+// Zustände, die erst durch Bedienen eintreten (Zeiger, Fokus, geöffnetes Menü): Ihre Regeln braucht das erste
+// Zeichnen nicht, sie kommen mit styles.css. Zustände ändern nur Farbe oder Unterstreichung (Gestaltungsregeln),
+// nie die Position.
+const ZUSTAND = /:hover|:focus|:active|::backdrop|\[aria-expanded=true\]/;
+const INLINE = ['a', 'abbr', 'b', 'br', 'code', 'em', 'i', 'img', 'li', 'ol', 'p', 'small', 'span', 'strong', 'sub', 'sup', 'svg', 'ul'];
+
+/** Grundstile (Selektor ohne Klassen) nur für Elemente, die in der ersten Ansicht vorkommen. */
+function elementeVorhanden(selektor, elemente) {
+  if (selektor.includes('.')) return true;
+  const namen = selektor
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/::?[a-z-]+(\([^)]*\))?/g, '')
+    .match(/[a-z][a-z0-9]*/g);
+  return !namen || namen.some((name) => elemente.has(name));
+}
+
 const KLASSE = /\.((?:\\.|[A-Za-z0-9_-])+)/g;
 const klassenIn = (selektor) => [...selektor.matchAll(KLASSE)].map((m) => m[1].replace(/\\(.)/g, '$1'));
 
@@ -100,9 +116,21 @@ const plugin = () => ({
     const vorhanden = new Set([...(text.match(/[A-Za-z0-9_-]+/g) || []), ...IMMER]);
     (config.blocklist || []).forEach((klasse) => vorhanden.delete(klasse));
 
+    // Elemente der ersten Ansicht (für die Grundstile) und Inline-Elemente, die Rich Text im Seitenkopf mitbringt
+    const elemente = new Set([...text.matchAll(/<([a-z][a-z0-9]*)/g)].map((m) => m[1]).concat(INLINE));
+
+    root.walkComments((kommentar) => kommentar.remove()); // Lizenzhinweis steht in styles.css
     root.walkRules((rule) => {
       if (rule.parent.type === 'atrule' && /keyframes$/.test(rule.parent.name)) return;
-      const bleiben = rule.selectors.filter((sel) => erlaubt(sel, eigene, vorhanden));
+      // Übergänge und Animationen: Beim ersten Zeichnen ändert sich nichts, styles.css bringt sie mit
+      if (rule.nodes.every((d) => d.type !== 'decl' || /^(transition|animation)/.test(d.prop))) {
+        rule.remove();
+        return;
+      }
+      const bleiben = rule.selectors.filter(
+        (sel) =>
+          !ZUSTAND.test(sel) && erlaubt(sel, eigene, vorhanden) && elementeVorhanden(sel, elemente),
+      );
       if (!bleiben.length) rule.remove();
       else if (bleiben.length < rule.selectors.length) rule.selectors = bleiben;
     });
