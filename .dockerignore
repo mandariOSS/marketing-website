@@ -34,6 +34,7 @@ node_modules/
 # Generated assets — re-built inside the build via `npm run build:css`
 # and `collectstatic`
 static/css/styles.css
+static/css/kritisch.css
 staticfiles/
 
 # Runtime user data — persisted via volume, never baked into image
