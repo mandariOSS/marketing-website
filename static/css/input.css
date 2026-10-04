@@ -336,7 +336,7 @@
    Sammlung → Register, Zusage → große Aussage, Zahl → Zahl im Satz, Fließtext → Lesebreite mit Randspalte.
    Linien nur in Tabellen, Listen und Achsen; Zustände ändern Farbe oder Unterstreichung, nie die Position. */
 :root {
-  --m-tinte: #111827; --m-text: #374151; --m-leise: #6b7280;
+  --m-tinte: #111827; --m-text: #374151; --m-leise: #5f6673;  /* AA auch auf Hellgrau und Markenfläche (mindestens 4,8:1) */
   --m-linie: #d8dde6; --m-linie-stark: #111827;
   --m-akzent: #4f46e5; --m-akzent-hell: #c7d2fe; --m-akzent-flaeche: #eef2ff; --m-gruen: #17703f;
 }
