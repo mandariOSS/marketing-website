@@ -1,0 +1,20 @@
+{% load wagtailcore_tags %}
+{# Inhalt der Zusage (M6a); z: Block oder dict mit aussage, grundlage, bedingungen_titel, bedingungen, geltung, neben #}
+<div class="grid gap-y-10 lg:grid-cols-12 lg:gap-x-10">
+    <div class="{% if z.bedingungen %}lg:col-span-8{% else %}lg:col-span-10{% endif %}">
+        <h2 class="aussage">{{ z.aussage }}</h2>
+        {% if z.grundlage %}<div class="mt-6 t-lead m-text max-w-[46ch] richtext">{{ z.grundlage|richtext }}</div>{% endif %}
+    </div>
+    {% if z.bedingungen %}
+    <div class="lg:col-span-4 lg:pt-3">
+        {% if z.bedingungen_titel %}<h3 class="font-semibold m-tinte">{{ z.bedingungen_titel }}</h3>{% endif %}
+        <ol class="bedingungen mt-3 t-body m-text">{% for b in z.bedingungen %}<li>{{ b }}</li>{% endfor %}</ol>
+        {% if z.geltung %}<div class="mt-4 text-base m-text richtext">{{ z.geltung|richtext }}</div>{% endif %}
+    </div>
+    {% endif %}
+    {% if z.neben %}
+    <div class="lg:col-span-12 grid gap-x-10 gap-y-6 md:grid-cols-2 pt-8 border-t border-primary-200 dark:border-primary-900">
+        {% for n in z.neben %}<p class="t-body m-text"><span class="font-semibold m-tinte">{{ n.stichwort }}</span> {{ n.text }}</p>{% endfor %}
+    </div>
+    {% endif %}
+</div>

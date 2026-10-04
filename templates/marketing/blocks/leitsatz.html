@@ -1,0 +1,11 @@
+{% load wagtailcore_tags baender muster %}
+{# M6b Leitsatz: Satz über die ganze Breite, Begründung rechts versetzt darunter (die Diagonale füllt die Fläche). Höchstens einmal je Seite. #}
+<section class="{% abschnitt band band_anfang band_ende %}"{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %}>
+    <div class="wrap grid lg:grid-cols-12 lg:gap-x-10">
+        <h2 class="lg:col-span-11 {% if self.satz|length > 60 %}aussage{% else %}leitsatz{% endif %}">{{ self.satz|zeilen }}</h2>
+        <div class="lg:col-span-5 lg:col-start-7 mt-8 lg:mt-12">
+            <div class="t-body m-text richtext">{{ self.text|richtext }}</div>
+            {% if self.links %}<p class="mt-6 flex flex-wrap gap-x-8 gap-y-3">{% for l in self.links %}<a class="textlink" href="{{ l.url }}">{{ l.label }}</a>{% endfor %}</p>{% endif %}
+        </div>
+    </div>
+</section>

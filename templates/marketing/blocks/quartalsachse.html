@@ -1,0 +1,27 @@
+{% load wagtailcore_tags baender %}
+{# M1a als Quartalsachse (Roadmap): Spalten sind Zeitpunkte auf einer Achse, darunter die Vorhaben mit Modul in Kennfarbe und Stufe als Text. Am Handy untereinander mit Achse links. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap">
+        {% if self.header.title %}{% include_block self.header %}{% endif %}
+        <ol class="qa" style="--n:{{ self.punkte|length }}">
+            {% for punkt in self.punkte %}
+            <li class="qa-punkt">
+                <p class="qa-zeit">{{ punkt.zeitpunkt }}</p>
+                <span class="qa-achse" aria-hidden="true"></span>
+                {% if punkt.satz %}<p class="mt-1 mb-5 text-base m-leise">{{ punkt.satz }}</p>{% endif %}
+                <ul class="qa-eintraege">
+                    {% for e in punkt.eintraege %}
+                    <li{% if e.produkt %} class="produkt-{{ e.produkt }}"{% endif %}>
+                        <p class="text-sm"><span class="font-semibold {% if e.produkt %}kenn{% else %}m-tinte{% endif %}">{% if e.produkt == "session" %}Session{% elif e.produkt == "work" %}Work{% elif e.produkt == "insight" %}Insight{% else %}Plattform{% endif %}</span>{% if e.status %}<span class="m-leise ml-2">{{ e.status }}</span>{% endif %}</p>
+                        <h3 class="mt-1 text-lg leading-snug font-semibold m-tinte">{{ e.titel }}</h3>
+                        {% if e.text %}<p class="mt-1.5 text-base m-text">{{ e.text }}</p>{% endif %}
+                        {% if e.link_label and e.link_url %}<p class="mt-2 text-base"><a class="textlink" href="{{ e.link_url }}">{{ e.link_label }}</a></p>{% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ol>
+        {% if self.note %}<div class="mt-12 max-w-[45rem] t-body m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

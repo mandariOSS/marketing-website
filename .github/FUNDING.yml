@@ -10,7 +10,3 @@ github: [mandariOSS]
 # Drittanbieter-Plattformen (zusätzliche Buttons im Dropdown)
 ko_fi: mandari
 buy_me_a_coffee: mandari
-
-# Custom-Links (Reihenfolge bestimmt UI-Reihenfolge)
-custom:
-  - "https://mandari.de/transparenz/#unterstuetzen"

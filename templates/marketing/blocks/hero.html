@@ -1,9 +1,9 @@
-{% load baender %}
-{# Seitenkopf – ein Baustein für alle Seiten: weiß, Überschrift (heading aus HeroBlock.get_context), ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Produktseiten zeigen rechts ein echtes Bild (hero_bild in marketing/templatetags/baender.py; Knopf und Textlink dürfen dort in den Spaltenabstand laufen, damit sie in einer Zeile stehen), alle anderen bleiben einspaltig und kompakt mit einer Mindesthöhe, damit Seitenwechsel ruhig wirken. Keine Pille, kein Verlauf. #}
+{% load wagtailcore_tags baender %}
+{# Seitenkopf – ein Baustein für alle Seiten: weiß, Überschrift (heading aus HeroBlock.get_context), ein erklärender Satz, ein gefüllter Aufruf, höchstens ein Textlink. Produktseiten zeigen rechts ein echtes Bild (hero_bild in marketing/templatetags/baender.py; Knopf und Textlink dürfen dort in den Spaltenabstand laufen, damit sie in einer Zeile stehen), Folgen dem Kopf Hinweise (disclaimer_box), stehen sie in seiner Randspalte (hero_rand); alle anderen bleiben einspaltig und kompakt mit einer Mindesthöhe, damit Seitenwechsel ruhig wirken. Keine Pille, kein Verlauf. #}
 {% hero_bild as bild %}
 <section class="{% abschnitt band band_anfang band_ende art='hero' %}">
-    <div class="wrap{% if bild %} grid gap-y-14 lg:grid-cols-12 lg:gap-x-10 lg:items-center{% else %} lg:min-h-[16rem]{% endif %}">
-        <div{% if bild %} class="lg:col-span-6"{% endif %}>
+    <div class="wrap{% if bild %} grid gap-y-14 lg:grid-cols-12 lg:gap-x-10 lg:items-center{% elif hero_rand %} grid gap-y-10 lg:grid-cols-12 lg:gap-x-10 lg:items-start{% else %} lg:min-h-[16rem]{% endif %}">
+        <div{% if bild %} class="lg:col-span-6"{% elif hero_rand %} class="lg:col-span-7"{% endif %}>
             <h1 class="t-h1 text-gray-900 dark:text-white {% if bild %}max-w-[15ch]{% else %}max-w-5xl{% endif %}">{% firstof heading self.title %}</h1>
             {% if self.subline %}<p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">{{ self.subline }}</p>{% endif %}
             {% if self.subline_secondary %}<p class="text-base text-gray-600 dark:text-gray-400 mt-4 max-w-[45rem]">{{ self.subline_secondary }}</p>{% endif %}
@@ -19,6 +19,8 @@
             </div>
             {% endif %}
         </div>
-        {% if bild == "stapel" %}{% include "marketing/_hero_stapel.html" %}{% elif bild %}{% include "marketing/_hero_einzel.html" with produkt=bild %}{% endif %}
+        {% if bild == "stapel" %}{% include "marketing/_hero_stapel.html" %}{% elif bild %}{% include "marketing/_hero_einzel.html" with produkt=bild %}{% elif hero_rand %}
+        <aside class="lg:col-span-4 lg:col-start-9 lg:pt-3 space-y-5 text-base m-text richtext" aria-label="Hinweise zu dieser Seite">{% for hinweis in hero_rand %}<div>{{ hinweis|richtext }}</div>{% endfor %}</aside>
+        {% endif %}
     </div>
 </section>

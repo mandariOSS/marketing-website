@@ -1,10 +1,2 @@
-{% extends "base.html" %}
-{% load wagtailcore_tags baender %}
-
-{% block content %}
-{# Dokumente (Quellen, Rechtstexte aus Blöcken): Kopf und Text durchgehend auf Weiß, Abschnitte mit Unterabschnittsabstand und Überschriften in der Dokumentstufe #}
-{% baender page.body_stream ruhig=True as abschnitte %}
-{% for a in abschnitte %}
-    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter dokument=True %}
-{% endfor %}
-{% endblock %}
+{% extends "marketing/dokument.html" %}
+{# Dokument aus Blöcken (Quellen) als Dokumentseite, Muster 4 #}

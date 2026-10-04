@@ -1,4 +1,4 @@
 {% load wagtailcore_tags baender %}
 {# StreamField-Inhalt mit einem festen Abschnitt (abschnitt) nach dem Block mit dem Anker nach_anker; der Abschnitt zählt im Wechsel der Bänder mit #}
 {% baender page.body einschub_nach=nach_anker as abschnitte %}
-{% for a in abschnitte %}{% if a.einschub %}{% include abschnitt with band=a.band %}{% else %}{% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}{% endif %}{% endfor %}
+{% for a in abschnitte %}{% if a.einschub %}{% include abschnitt with band=a.band %}{% else %}{% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter hero_rand=a.rand %}{% endif %}{% endfor %}

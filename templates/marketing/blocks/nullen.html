@@ -1,0 +1,25 @@
+{% load wagtailcore_tags baender %}
+{# M9b Null mit Aufschlüsselung: links die Summen groß mit Titel und Stand, rechts eine Tabelle, die sie aufschlüsselt. Randkopf. #}
+<section class="{% abschnitt band band_anfang band_ende %}"{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %}>
+    <div class="wrap grid gap-y-12 lg:grid-cols-12 lg:gap-x-10 lg:items-start">
+        <div class="lg:col-span-4">
+            <div class="flex flex-wrap gap-x-10 gap-y-8">
+                {% for s in self.summen %}<p><span class="block grosse-zahl">{{ s.wert }}</span><span class="block mt-4 font-semibold m-tinte">{{ s.begriff }}</span></p>{% endfor %}
+            </div>
+            <h2 class="mt-10 t-h2-dok m-tinte">{{ self.titel }}</h2>
+            {% if self.text %}<div class="mt-3 text-base m-text richtext">{{ self.text|richtext }}</div>{% endif %}
+        </div>
+        <div class="lg:col-span-8 lg:col-start-5 min-w-0">
+            <table class="reg">
+                <caption class="sr-only">{{ self.titel }}</caption>
+                <thead><tr><th scope="col" style="width:28%">{{ self.spalten.0 }}</th><th scope="col">{{ self.spalten.1 }}</th><th scope="col" class="reg-zahl">{{ self.spalten.2 }}</th></tr></thead>
+                {% for g in self.gruppen %}
+                <tbody>
+                    <tr class="reg-gruppe"><th scope="colgroup" colspan="3">{{ g.titel }}</th></tr>
+                    {% for z in g.zeilen %}<tr><td class="reg-titel">{{ z.art }}</td><td>{{ z.was }}</td><td class="reg-zahl" data-spalte="{{ self.spalten.2 }}">{{ z.wert }}</td></tr>{% endfor %}
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</section>

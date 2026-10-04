@@ -1,5 +1,5 @@
 {% load wagtailcore_tags baender %}
-{# Fließtext mit Überschrift (24 px Abstand, Textspalte höchstens 45 rem). Mit Randspalte: rechts kurze Ergänzungen (Kernsätze, Stand, Kontakt), am Handy darunter. dokument: Überschriftstufe für Dokumente. #}
+{# Fließtext mit Überschrift (24 px Abstand, Textspalte höchstens 45 rem; zweispaltig: lange Listen wie Quellen über die volle Breite). Mit Randspalte: rechts kurze Ergänzungen (Kernsätze, Stand, Kontakt), am Handy darunter. dokument: Überschriftstufe für Dokumente. #}
 <section class="{% if self.background == 'gray' %}{% abschnitt band band_anfang band_ende standard='grau' %}{% else %}{% abschnitt band band_anfang band_ende %}{% endif %}">
     <div class="wrap">
         {% if self.header.title %}{% include_block self.header with dicht=True dok=dokument %}{% endif %}
@@ -8,6 +8,8 @@
             <div class="lg:col-span-7 prose prose-lg dark:prose-invert max-w-none">{{ self.body|safe }}</div>
             <aside class="lg:col-span-4 lg:col-start-9 randspalte prose prose-lg dark:prose-invert max-w-none">{{ self.aside|richtext }}</aside>
         </div>
+        {% elif self.zweispaltig %}
+        <div class="prose prose-lg dark:prose-invert max-w-none lg:columns-2 lg:gap-x-12 [&_li]:break-inside-avoid">{{ self.body|safe }}</div>
         {% else %}
         <div class="prose prose-lg dark:prose-invert max-w-[45rem]">{{ self.body|safe }}</div>
         {% endif %}

@@ -1,0 +1,10 @@
+{% load wagtailcore_tags baender muster %}
+{# M1a Zeitskala: Ablauf mit Fristen auf einer maßstäblichen Achse (templates/marketing/muster/_zeitskala.html) #}
+{% zeitskala_plan self as plan %}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap">
+        {% if self.header.title %}{% include_block self.header %}{% endif %}
+        {% include "marketing/muster/_zeitskala.html" with z=self plan=plan %}
+        {% if self.note %}<div class="mt-8 max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

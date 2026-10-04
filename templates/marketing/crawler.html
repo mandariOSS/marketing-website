@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load muster %}
 
 {% block title %}Über unseren Crawler{% endblock %}
 
@@ -18,9 +19,14 @@
     </div>
 </section>
 
+{# Muster 5a: Text in Lesebreite, rechts die Eckdaten des Crawlers (marketing/muster_daten.py) #}
+{% muster_daten "crawler_rand" as rand %}
 <section class="band-grau abschnitt">
-    <div class="wrap">
-        <div class="max-w-[45rem] space-y-12">
+    <div class="wrap grid gap-y-12 lg:grid-cols-12 lg:gap-x-10">
+        <aside class="lg:col-span-4 lg:col-start-9 lg:row-start-1" aria-label="Eckdaten des Crawlers">
+            <div class="dok-klebt flaeche rounded-lg p-6 lg:p-7 space-y-8">{% include "marketing/muster/_rand.html" with rand=rand %}</div>
+        </aside>
+        <div class="lg:col-span-7 lg:row-start-1 max-w-[45rem] space-y-12">
 
             <div>
                 <h2 class="t-h2-dok text-gray-900 dark:text-white">Woran Sie uns erkennen</h2>

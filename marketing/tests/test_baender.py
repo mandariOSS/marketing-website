@@ -121,24 +121,41 @@ class SeitenTests(TestCase):
             for links, rechts in zip(baender, baender[1:]):
                 self.assertNotEqual(links, rechts, f"{url}: zweimal {links} nebeneinander ({baender})")
 
-    def test_startseite_und_produkte_zeigen_drei_produktflaechen(self):
-        for url in ["/", "/produkte/"]:
-            html = self.seite(url)
-            for produkt in ["session", "work", "insight"]:
-                self.assertEqual(html.count(f'class="produkt produkt-{produkt} '), 1, f"{url}: {produkt}")
-            # Alle drei Flächen gleich gebaut: die Bildschirme stehen im Hero, keine Fläche trägt ein eigenes Bild
-            flaechen = html[html.find('class="produkt produkt-session'):]
-            flaechen = flaechen[:flaechen.find("</section>")]
-            self.assertNotIn("<img", flaechen, url)
-            self.assertLess(html.find("produkt-session "), html.find("produkt-work "), url)
-            self.assertLess(html.find("produkt-work "), html.find("produkt-insight "), url)
+    def test_startseite_zeigt_drei_produktflaechen(self):
+        html = self.seite("/")
+        for produkt in ["session", "work", "insight"]:
+            self.assertEqual(html.count(f'class="produkt produkt-{produkt} '), 1, produkt)
+        # Alle drei Flächen gleich gebaut: die Bildschirme stehen im Hero, keine Fläche trägt ein eigenes Bild
+        flaechen = html[html.find('class="produkt produkt-session'):]
+        flaechen = flaechen[:flaechen.find("</section>")]
+        self.assertNotIn("<img", flaechen)
+        self.assertLess(html.find("produkt-session "), html.find("produkt-work "))
+        self.assertLess(html.find("produkt-work "), html.find("produkt-insight "))
 
-    def test_trust_center_keine_textwand(self):
-        # Zusätze (Leiste unter dem Hero, Hinweis nach Artikel 1) setzen das Band davor fort; jeder
-        # nummerierte Artikel bekommt im Wechsel ein eigenes Band.
-        baender = baender_der_seite(self.seite("/trust/"))
-        zusammengefasst = [b for i, b in enumerate(baender) if i == 0 or baender[i - 1] != b]
-        self.assertEqual(zusammengefasst, ["hell", "grau", "hell", "grau", "hell", "grau", "hell", "grau", "tinte"])
+    def test_produkte_zeigen_bildschirme_angeschnitten(self):
+        # Muster 7: je Produkt Text im Raster und ein echter Bildschirm bis an den Fensterrand, im Wechsel
+        html = self.seite("/produkte/")
+        for produkt, bild in [("session", "hero-session-1600"), ("work", "hero-work-1600"),
+                              ("insight", "hero-insight-muenster-1600")]:
+            self.assertRegex(html, rf'class="wrap bleed produkt-{produkt}( links)? scroll-mt-24"')
+            self.assertIn(bild, html, produkt)
+        self.assertIn("bleed produkt-work links", html)
+        self.assertLess(html.find("bleed produkt-session"), html.find("bleed produkt-work"))
+        self.assertLess(html.find("bleed produkt-work"), html.find("bleed produkt-insight"))
+
+    def test_trust_center_als_dokumentseite(self):
+        # Muster 4: Inhaltsleiste links, Text in Lesebreite, Randspalte mit Eckdaten; danach die Einladung
+        html = self.seite("/trust/")
+        self.assertEqual(baender_der_seite(html), ["hell", "tinte"])
+        self.assertIn('aria-label="Inhalt"', html)
+        for anker in ["dpa", "subprocessors", "hosting", "backup", "availability", "audits"]:
+            self.assertIn(f'href="#{anker}"', html)
+            self.assertIn(f'id="{anker}"', html)
+        rand = html[html.find('aria-label="Zum Dokument"'):]
+        rand = rand[:rand.find("</aside>")]
+        self.assertIn("100 % in Deutschland", rand)
+        self.assertIn('class="reg"', html)
+        self.assertIn('class="mt-4 zahlensatz"', html)
 
     def test_ein_seitenkopf_fuer_alle_seiten(self):
         # Weiß, dieselbe Schriftstufe; Produktseiten zeigen rechts ein echtes Bild ihres Produkts
@@ -168,22 +185,23 @@ class SeitenTests(TestCase):
         self.assertIn('href="/roadmap/"', self.seite("/produkte/"))
         self.assertIn("mandari Data", self.seite("/roadmap/"))
 
-    def test_eintraege_titel_ueber_dem_text(self):
-        # Kein Muster „Überschrift links, Text rechts“ mehr: Wertekompass im Raster, Wegmarken als Zeitleiste,
-        # Mission und Vision in der Randspalte neben „Warum wir das tun“
+    def test_unternehmen_mit_wechselnden_mustern(self):
+        # Musterkatalog: Leitsatz (Mission), Begriffe (Werte), Vergleichstabelle (Geschäftsmodell),
+        # Zeitskala (Wegmarken) – keine zwei gleichen Muster hintereinander
         html = self.seite("/unternehmen/")
-        self.assertNotIn("lg:col-span-7 lg:col-start-6", html)
-        werte = html[html.find('id="werte"'):]
-        werte = werte[:werte.find("</section>")]
-        self.assertIn("md:grid-cols-2", werte)
-        self.assertNotIn("lg:col-span-4", werte)
-        wegmarken = html[html.find('id="wegmarken"'):]
-        self.assertIn("<ol", wegmarken[:wegmarken.find("</section>")])
         warum = html[html.find('id="warum"'):]
         warum = warum[:warum.find("</section>")]
-        self.assertIn("<aside", warum)
-        self.assertIn("Unsere Mission", warum)
+        self.assertIn("Wir machen Kommunalpolitik für alle zugänglich", warum)
         self.assertIn("Unsere Vision", warum)
+        werte = html[html.find('id="werte"'):]
+        werte = werte[:werte.find("</section>")]
+        self.assertIn('class="begriffe"', werte)
+        self.assertEqual(werte.count("<dt "), 6)
+        self.assertIn('class="vgl"', html[html.find('id="geschaeftsmodell"'):])
+        wegmarken = html[html.find('id="wegmarken"'):]
+        wegmarken = wegmarken[:wegmarken.find("</section>")]
+        self.assertIn('class="zk"', wegmarken)
+        self.assertIn('class="zs-liste"', wegmarken)
 
     def test_funktionsuebersicht_in_produktreihenfolge(self):
         html = self.seite("/produkte/")
@@ -225,4 +243,5 @@ class SeitenTests(TestCase):
 
     def test_eintrag_mit_produktbezug_traegt_die_kennfarbe(self):
         html = self.seite("/kommunen/")
-        self.assertRegex(html, r'class="flex flex-col produkt-insight"')
+        self.assertRegex(html, r'<dt class="lg:col-span-5 produkt-insight">')
+        self.assertRegex(html, r'<dt class="lg:col-span-5 produkt-session">')

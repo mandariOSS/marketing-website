@@ -1,0 +1,40 @@
+{% load wagtailcore_tags baender muster %}
+{# M3 Register: eine Tabelle mit Gruppen und Stand statt Kärtchen. Randkopf: Überschrift, Satz, Bestand (Satz und Segmentleiste) und Datum links neben der Tabelle; Überkopf: darüber. eingebettet: ohne eigenes Band (Dokumentseite). #}
+{% register_plan self as r %}
+{% if not eingebettet %}<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap{% if self.kopf != 'ueber' %} grid gap-y-10 lg:grid-cols-12 lg:gap-x-10{% endif %}">
+{% endif %}
+        {% if self.header.title and not eingebettet %}
+        <div{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %} class="{% if self.kopf == 'ueber' %}kopf{% else %}lg:col-span-3 scroll-mt-24{% endif %}">
+            <h2 class="{% if self.kopf == 'ueber' %}t-h2{% else %}t-h2-dok{% endif %} m-tinte">{{ self.header.title }}</h2>
+            {% if self.header.subline %}<p class="{% if self.kopf == 'ueber' %}t-lead mt-5{% else %}text-base mt-4{% endif %} m-text">{{ self.header.subline }}</p>{% endif %}
+            {% if r.satz %}<p class="mt-8 text-base m-tinte">{{ r.satz }}</p>
+            <p class="bestand mt-3" style="--anzahl:{{ r.gesamt }}" aria-hidden="true">{% for da in r.segmente %}<span{% if da %} class="da"{% endif %}></span>{% endfor %}</p>{% endif %}
+            {% if self.stand %}<p class="mt-2 text-sm m-leise">{{ self.stand }}</p>{% endif %}
+            {% if self.note and self.kopf != 'ueber' %}<div class="mt-8 text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+        </div>
+        {% endif %}
+        <div class="{% if self.kopf != 'ueber' and not eingebettet %}lg:col-span-9 {% endif %}min-w-0">
+            {% if eingebettet and self.header.title %}<h3 class="t-h3 m-tinte mb-2">{{ self.header.title }}</h3>{% endif %}
+            <table class="reg">
+                {% if self.header.title %}<caption class="sr-only">{{ self.header.title }}</caption>{% endif %}
+                <thead><tr>{% for s in r.spalten %}<th scope="col"{% if forloop.first %} style="width:{% if r.vierte %}26{% else %}36{% endif %}%"{% elif forloop.last and r.drei %} style="width:{% if r.vierte %}22{% else %}17{% endif %}%"{% endif %}>{{ s }}</th>{% endfor %}</tr></thead>
+                {% for g in self.gruppen %}
+                <tbody>
+                    {% if g.titel %}<tr class="reg-gruppe"><th scope="colgroup" colspan="{{ r.spalten|length }}">{{ g.titel }}</th></tr>{% endif %}
+                    {% for z in g.zeilen %}
+                    <tr>
+                        <td>{% if z.url %}<a class="reg-titel" href="{{ z.url }}">{{ z.titel }}</a>{% else %}<span class="reg-titel">{{ z.titel }}</span>{% endif %}{% if z.ort %}<span class="reg-ort">{{ z.ort }}</span>{% endif %}</td>
+                        <td class="richtext">{{ z.text|richtext }}</td>
+                        {% if r.vierte %}<td class="richtext" data-spalte="{{ r.spalten.2 }}">{{ z.zusatz|richtext }}</td>{% endif %}
+                        {% if r.drei %}{% if r.vierte or not z.zusatz %}<td data-spalte="{{ r.spalten|last }}"{% if z.status == "zahl" %} class="reg-zahl"{% endif %}>{% if z.status == "da" %}<span class="status status-da">{{ z.stand|default:"Verfügbar" }}</span>{% elif z.status == "offen" %}<span class="status status-offen">{{ z.stand|default:"In Arbeit" }}</span>{% else %}{{ z.stand }}{% endif %}</td>{% else %}<td class="richtext" data-spalte="{{ r.spalten|last }}">{{ z.zusatz|richtext }}</td>{% endif %}{% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% if g.summe %}<tr class="reg-summe"><td colspan="{{ r.spalten|length|add:'-1' }}">{{ g.summe_label|default:"Summe" }}</td><td class="reg-zahl">{{ g.summe }}</td></tr>{% endif %}
+                </tbody>
+                {% endfor %}
+            </table>
+            {% if self.note and self.kopf == 'ueber' or self.note and eingebettet %}<div class="mt-8 max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+        </div>
+{% if not eingebettet %}    </div>
+</section>{% endif %}

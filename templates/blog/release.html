@@ -1,69 +1,56 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags muster %}
 
 {% block content %}
-<article>
-{# Release-Notes als Dokument: derselbe Seitenkopf wie überall (weiß), der Text direkt darunter auf demselben Band #}
-<div class="band-hell hero fortgesetzt">
-    <div class="wrap">
-        <div class="max-w-[45rem]">
+{# Release-Notes als Dokumentseite (Musterkatalog M4): Inhaltsleiste links, Text in Lesebreite, Randspalte mit Version, Datum, Release auf GitHub und den Nachbarversionen #}
+<article class="band-hell hero">
+    <div class="wrap grid gap-y-8 lg:grid-cols-12 lg:gap-x-10">
+        <header class="lg:col-span-9 lg:col-start-4">
             <p class="text-base">
                 <a href="{{ page.get_parent.url }}" class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:underline underline-offset-4">Alle Releases</a>
             </p>
-            <h1 class="mt-4 t-h1 text-gray-900 dark:text-white">{{ page.title }}</h1>
-            <p class="mt-6 t-body text-gray-600 dark:text-gray-300">
-                Veröffentlicht am <time datetime="{{ page.release_date|date:'Y-m-d' }}">{{ page.release_date|date:"j. F Y" }}</time>, Version {{ page.version }}{% if page.github_url %}.
-                <a href="{{ page.github_url }}" class="textlink">Release v{{ page.version }} auf GitHub</a>{% endif %}
-            </p>
-
+            <h1 class="mt-4 t-h1 m-tinte">{{ page.title }}</h1>
             {% if page.breaking_changes %}
-            <p class="mt-8 text-gray-900 dark:text-white">
+            <p class="mt-6 max-w-[45rem] m-tinte">
                 <strong>Vor dem Update lesen:</strong> Diese Version verlangt beim Selbstbetrieb Anpassungen.
                 Bitte prüfen Sie die Hinweise in den Release-Notes auf GitHub, bevor Sie aktualisieren.
             </p>
             {% endif %}
-        </div>
-    </div>
-</div>
-{# Release-Notes, darunter die Wege zu den Nachbarversionen #}
-<div class="band-hell abschnitt fortsetzung">
-    <div class="wrap">
-        <div class="max-w-[45rem]">
-            <div class="space-y-12">
-                {% for block in page.body %}
-                {% if block.block_type == "richtext_section" %}
-                <section>
-                    {% if block.value.header and block.value.header.title %}
-                    <h2 class="t-h2-dok text-gray-900 dark:text-white">{{ block.value.header.title }}</h2>
-                    {% endif %}
-                    <div class="mt-5 prose prose-lg dark:prose-invert max-w-none prose-li:my-1">
-                        {{ block.value.body }}
-                    </div>
-                </section>
-                {% else %}
-                {% include_block block %}
-                {% endif %}
-                {% endfor %}
-            </div>
+        </header>
 
-            {% if newer_release or older_release %}
-            <nav class="mt-20 grid gap-8 sm:grid-cols-2" aria-label="Weitere Releases">
-                {% if older_release %}
-                <a href="{% pageurl older_release %}" class="group">
-                    <span class="block text-sm text-gray-600 dark:text-gray-400">Vorherige Version</span>
-                    <span class="mt-1 block font-medium text-gray-900 dark:text-white group-hover:underline underline-offset-4">{{ older_release.title }}</span>
-                </a>
+        <aside class="lg:col-span-3 lg:col-start-10 lg:row-start-2 text-base" aria-label="Zur Version">
+            <dl class="dok-rand dok-klebt">
+                <dt>Version</dt><dd class="font-semibold tabular-nums">{{ page.version }}</dd>
+                <dt>Veröffentlicht</dt><dd class="font-semibold"><time datetime="{{ page.release_date|date:'Y-m-d' }}">{{ page.release_date|date:"j. F Y" }}</time></dd>
+                {% if page.github_url %}<dt>Alle Änderungen</dt><dd><a href="{{ page.github_url }}" class="textlink">Release v{{ page.version }} auf GitHub</a></dd>{% endif %}
+                {% if older_release %}<dt>Vorherige Version</dt><dd><a href="{% pageurl older_release %}" class="textlink">{{ older_release.title }}</a></dd>{% endif %}
+                {% if newer_release %}<dt>Neuere Version</dt><dd><a href="{% pageurl newer_release %}" class="textlink">{{ newer_release.title }}</a></dd>{% endif %}
+            </dl>
+        </aside>
+
+        <nav class="hidden lg:block lg:col-span-3 lg:col-start-1 lg:row-start-2" aria-label="Inhalt">
+            <div class="dok-klebt dok-inhalt">
+                <p class="text-sm font-semibold m-tinte mb-3">Inhalt</p>
+                {% for block in page.body %}{% if block.block_type == "richtext_section" and block.value.header.title %}<a href="#abschnitt-{{ forloop.counter }}">{{ block.value.header.title }}</a>{% endif %}{% endfor %}
+            </div>
+        </nav>
+
+        <div class="lg:col-span-6 lg:col-start-4 lg:row-start-2 min-w-0 dok-text space-y-12">
+            {% for block in page.body %}
+            {% if block.block_type == "richtext_section" %}
+            <section id="abschnitt-{{ forloop.counter }}" class="scroll-mt-24">
+                {% if block.value.header and block.value.header.title %}
+                <h2 class="t-h2-dok m-tinte">{{ block.value.header.title }}</h2>
                 {% endif %}
-                {% if newer_release %}
-                <a href="{% pageurl newer_release %}" class="group sm:col-start-2 sm:text-right">
-                    <span class="block text-sm text-gray-600 dark:text-gray-400">Neuere Version</span>
-                    <span class="mt-1 block font-medium text-gray-900 dark:text-white group-hover:underline underline-offset-4">{{ newer_release.title }}</span>
-                </a>
-                {% endif %}
-            </nav>
+                <div class="mt-5 prose prose-lg dark:prose-invert max-w-none prose-li:my-1">
+                    {{ block.value.body }}
+                </div>
+            </section>
+            {% else %}
+            {% include_block block %}
             {% endif %}
+            {% endfor %}
         </div>
     </div>
-</div>
 </article>
 {% endblock %}

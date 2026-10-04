@@ -179,6 +179,8 @@ MARKETING_PAGE_META = [
         "slug": "trust",
         "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",
         "search_description": "Komplette Sicherheits- & Vertrauensübersicht: AVV nach Art. 28 DSGVO, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
+        # Dokumentseite (Musterkatalog M4): Inhaltsleiste, Text, Randspalte mit Eckdaten
+        "custom_template": "marketing/dokument.html",
     },
     {
         "title": "Transparenzbericht",

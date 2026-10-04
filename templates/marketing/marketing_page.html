@@ -5,6 +5,6 @@
 {# Jeder Block auf einem eigenen Band; Reihenfolge der Hintergründe aus marketing/templatetags/baender.py #}
 {% baender page.body as abschnitte %}
 {% for a in abschnitte %}
-    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter %}
+    {% include_block a.block with band=a.band band_anfang=a.anfang band_ende=a.ende last_block=a.letzter hero_rand=a.rand %}
 {% endfor %}
 {% endblock %}
