@@ -1,0 +1,11 @@
+{% load wagtailcore_tags baender %}
+{# M9a Zahl im Satz: die Zahlen stehen fett in einem Satz statt in Kacheln; rechts klein, wie gezählt wird. Kein eigener Kopf, der Titel ist eine kleine Zeile. eingebettet: ohne Band (Dokumentseite). #}
+{% if not eingebettet %}<section class="{% abschnitt band band_anfang band_ende %}"{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %}>
+    <div class="wrap grid gap-y-8 lg:grid-cols-12 lg:gap-x-10 lg:items-end">{% endif %}
+        <div class="{% if not eingebettet %}lg:col-span-8{% endif %}">
+            <h{% if eingebettet %}3{% else %}2{% endif %} class="text-lg font-semibold m-tinte">{{ self.titel }}</h{% if eingebettet %}3{% else %}2{% endif %}>
+            <div class="mt-4 zahlensatz">{{ self.satz|richtext }}</div>
+        </div>
+        {% if self.rand %}<div class="{% if not eingebettet %}lg:col-span-3 lg:col-start-10 {% else %}mt-6 {% endif %}text-base m-text richtext">{{ self.rand|richtext }}</div>{% endif %}
+{% if not eingebettet %}    </div>
+</section>{% endif %}

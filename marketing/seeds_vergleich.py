@@ -655,6 +655,7 @@ def quellen_block(prefixe, *, anchor="quellen"):
         "header": _hdr("Quellen", f"Abgerufen am {ABRUF}. Kundenzahlen und Leistungsmerkmale sind "
                                   "Eigenangaben der Anbieter.", anchor),
         "background": "white",
+        "zweispaltig": True,
         "body": _quellen_html(prefixe) + (
             "<p>Die Angaben in der Spalte mandari beruhen auf dem Stand der Software vom "
             f"{ABRUF}. mandari ist in der Beta-Phase; was neu ist, zeigen die "
@@ -721,7 +722,9 @@ def marktuebersicht():
 
 
 def _luecken_zeilen(art, slug=None):
-    """split_rows-Zeilen der Lücken: alle (Übersicht, Roadmap) oder die eines Anbieters."""
+    """Register-Zeilen der Lücken: alle (Übersicht, Roadmap) oder die eines Anbieters."""
+    from marketing import seeds_muster as m
+
     zeilen = []
     for luecke in LUECKEN:
         if luecke["art"] != art:
@@ -732,49 +735,68 @@ def _luecken_zeilen(art, slug=None):
                 continue
             belege = [_ohne_kuerzel(zelle(slug, key)[1]) for key in luecke["zeilen"]
                       if zelle(slug, key)[0] in ("yes", "partial")]
-            label = f"Bei {ANBIETER[slug]['spalte']}: " + "; ".join(b for b in belege if b)
+            beleg = "; ".join(b for b in belege if b)
         else:
-            label = _beleg_label(luecke)
-            if not label:
+            beleg = _beleg_label(luecke)
+            if not beleg:
                 continue
         link_label, link_url = luecke["link"] or ("", "")
-        zeilen.append({
-            "title": luecke["titel"], "label": label, "status": luecke["stufe"],
-            "text": f"<p>{luecke['text']}</p>", "link_label": link_label, "link_url": link_url,
-            "anchor_id": "",
-        })
+        zeilen.append(m.zeile(luecke["titel"], luecke["text"], url=link_url,
+                              ort=link_label if link_url else "", zusatz=beleg,
+                              stand=luecke["stufe"], status="offen"))
     return zeilen
 
 
 def luecken_bloecke(slug=None, *, anchor="fehlt"):
-    """Zwei split_rows-Blöcke: zugesagt/geplant und in Prüfung (je höchstens acht Zeilen)."""
+    """Ein Register mit zwei Gruppen: zugesagt/geplant und in Prüfung (je höchstens acht Zeilen)."""
+    from marketing import seeds_muster as m
+
     name = ANBIETER[slug]["kurzname"] if slug else ""
-    bloecke = []
-    geplant = _luecken_zeilen("geplant", slug)
-    pruefung = _luecken_zeilen("pruefung", slug)
+    geplant = _luecken_zeilen("geplant", slug)[:8]
+    pruefung = _luecken_zeilen("pruefung", slug)[:8]
+    gruppen = []
     if geplant:
-        sub = (f"Was {name} laut öffentlicher Angabe bietet und mandari noch nicht – mit Zeitraum aus der Roadmap."
-               if slug else
-               "Funktionen, die etablierte Systeme bieten und mandari noch nicht. Für diese steht ein Zeitraum in der Roadmap.")
-        bloecke.append(("split_rows", {
-            "header": _hdr("Was mandari noch fehlt: zugesagt und geplant", sub, anchor),
-            "rows": geplant[:8], "note": "", "background": "white",
-        }))
+        gruppen.append(m.gruppe("Zugesagt und geplant, mit Zeitraum in der Roadmap", *geplant))
     if pruefung:
-        sub = ("Auch das bietet " + name + " laut öffentlicher Angabe. Wir prüfen es, einen Termin nennen wir erst, "
-               "wenn er belastbar ist." if slug else
-               "Ebenfalls Lücken aus dem Vergleich. Wir prüfen sie, einen Termin nennen wir erst, wenn er belastbar ist.")
-        bloecke.append(("split_rows", {
-            "header": _hdr("Was mandari noch fehlt: in Prüfung", sub, "" if geplant else anchor),
-            "rows": pruefung[:8],
-            "note": "<p>Fehlt Ihnen etwas, das hier nicht steht? <a href=\"/kontakt/?subject=Roadmap-Idee\">Schreiben Sie uns.</a></p>",
-            "background": "gray",
-        }))
-    return bloecke
+        gruppen.append(m.gruppe("In Prüfung, ohne Termin", *pruefung))
+    if not gruppen:
+        return []
+    if slug:
+        sub = (f"Was {name} laut öffentlicher Angabe bietet und mandari noch nicht. Einen Termin nennen wir erst, "
+               "wenn er belastbar ist.")
+        spalte = f"Bei {ANBIETER[slug]['spalte']}"
+    else:
+        sub = ("Funktionen, die etablierte Systeme bieten und mandari noch nicht – mit der Stufe aus der Roadmap. "
+               "Einen Termin nennen wir erst, wenn er belastbar ist.")
+        spalte = "Wo es das gibt"
+    return [m.register(
+        "Was mandari noch fehlt", gruppen,
+        spalten=["Funktion", "Worum es geht", spalte, "Stand"], kopfart="ueber", subline=sub, anchor=anchor,
+        note="<p>Fehlt Ihnen etwas, das hier nicht steht? <a href=\"/kontakt/?subject=Roadmap-Idee\">Schreiben Sie uns.</a></p>",
+    )]
+
+
+def fairerweise(slug):
+    v = ANBIETER[slug]
+    return ("disclaimer_box", {
+        "icon": "flask-conical", "color": "amber",
+        "body": (
+            f"<p><strong>Fairerweise:</strong> {v['kurzname']} ist ein etabliertes Produkt mit langjähriger Praxis im "
+            "Verwaltungsalltag und bietet heute Funktionen, die mandari erst entwickelt – die Liste unten "
+            "nennt sie. mandari ist jung und in der Beta-Phase. Dafür ist mandari offen: Quellcode, Preise "
+            "und Roadmap sind öffentlich, das Bürgerportal ist kostenlos."
+            + v.get("fairness_extra", "") + "</p>"
+        ),
+    })
 
 
 def anbieterseite(slug):
-    """Blockliste einer mandari-vs-X-Seite."""
+    """Blockliste einer mandari-vs-X-Seite.
+
+    Hinweis und „Fairerweise“ folgen direkt dem Kopf und stehen dort in der Randspalte (baender.py).
+    """
+    from marketing import seeds_muster as m
+
     v = ANBIETER[slug]
     name = v["kurzname"]
     return [
@@ -790,62 +812,40 @@ def anbieterseite(slug):
             "background_color": "primary",
         }),
         hinweis(name),
-        ("two_column_use_case", {
-            "header": _hdr(f"mandari und {name} im Überblick",
-                           "Zwei unterschiedliche Ansätze – hier die Eckdaten beider Anbieter."),
-            "left_card": {
-                "color": "primary", "icon": "sparkles", "badge": "", "status_badges": [],
-                "title": "mandari", "subtitle": "Open-Source-Plattform in der Beta-Phase",
-                "description": "Drei Produkte auf einer offenen Plattform: Session für die Verwaltung, Work für "
-                               "Fraktionen, Insight als Bürgerportal.",
-                "bullets": [{"icon": "check", "text": "Quellcode öffentlich (AGPL-3.0)"},
-                            {"icon": "check", "text": "Bürgerportal immer inklusive"},
-                            {"icon": "check", "text": "Jung und aktiv entwickelt, Roadmap öffentlich"}],
-                "cta_label": "Produkte ansehen", "cta_url": "/produkte/", "cta_icon": "arrow-right",
-            },
-            "right_card": {
-                "color": "gray", "icon": "building-2", "badge": "", "status_badges": [],
-                "title": v["kartenname"], "subtitle": v["anbieter"],
-                "description": v["produkt"] + ".",
-                "bullets": [{"icon": "users", "text": v["kunden"]},
-                            {"icon": "history", "text": "Etabliertes Produkt mit langjähriger Praxis in Verwaltungen"}],
-                "cta_label": "Website des Anbieters", "cta_url": v["website"], "cta_icon": "external-link",
-            },
-        }),
+        fairerweise(slug),
+        m.vergleich(
+            f"mandari und {name} im Überblick",
+            [("mandari", "Open-Source-Plattform (AGPL-3.0) in der Beta-Phase"), (v["kartenname"], v["anbieter"])],
+            [
+                ("Produkt", ["Drei Produkte auf einer offenen Plattform: Session für die Verwaltung, Work für "
+                             "Fraktionen, Insight als Bürgerportal, immer inklusive.", v["produkt"] + "."]),
+                ("Praxis", ["Jung und aktiv entwickelt, Quellcode und Roadmap öffentlich",
+                            "Etabliertes Produkt mit langjähriger Praxis in Verwaltungen; " + v["kunden"]]),
+                ("Mehr erfahren", ['<a href="/produkte/">Produkte ansehen</a>',
+                                   f'<a href="{v["website"]}">Website des Anbieters</a>']),
+            ],
+            subline="Zwei unterschiedliche Ansätze – hier die Eckdaten beider Anbieter.",
+            anchor="ueberblick",
+        ),
         vergleichstabelle(slug),
         *luecken_bloecke(slug),
-        ("disclaimer_box", {
-            "icon": "flask-conical", "color": "amber",
-            "body": (
-                f"<p><strong>Fairerweise:</strong> {name} ist ein etabliertes Produkt mit langjähriger Praxis im "
-                "Verwaltungsalltag und bietet heute Funktionen, die mandari erst entwickelt – die Liste oben "
-                "nennt sie. mandari ist jung und in der Beta-Phase. Dafür ist mandari offen: Quellcode, Preise "
-                "und Roadmap sind öffentlich, das Bürgerportal ist kostenlos."
-                + v.get("fairness_extra", "") + "</p>"
-            ),
-        }),
         quellen_block([QUELLEN_JE_ANBIETER[slug]]),
-        ("gradient_cta", {
-            "title": "Selbst vergleichen ist besser.",
-            "subline": "Sehen Sie sich mandari im Bürgerportal an oder vereinbaren Sie eine Vorführung – "
-                       "unverbindlich und ohne Vertriebsdruck.",
-            "ctas": [_cta("Vorführung anfragen", "/kontakt/?subject=Demo-RIS-Vergleich"),
-                     _cta("Bürgerportal ansehen", "/insight/", "outline")],
-            "gradient_from": "primary",
-        }),
+        m.einladung(
+            "Selbst vergleichen ist besser.",
+            "Sehen Sie sich mandari im Bürgerportal an oder vereinbaren Sie eine Vorführung – "
+            "unverbindlich und ohne Vertriebsdruck.",
+            "Vorführung anfragen", "/kontakt/?subject=Demo-RIS-Vergleich",
+            link_label="Bürgerportal ansehen", link_url="/insight/",
+            wege=[("E-Mail", "hello@mandari.de", ""), ("Korrekturen", "umgehend, per E-Mail", ""),
+                  ("Alle Vergleiche", "Übersicht", "/vergleich/"), ("Was kommt", "Roadmap", "/roadmap/")],
+        ),
     ]
 
 
 def uebersichtsseite():
     """Blockliste von /vergleich/."""
-    karten = []
-    for slug, v in ANBIETER.items():
-        karten.append({
-            "color": "gray", "icon": "scale", "badge": "", "status_badges": [],
-            "title": f"mandari vs. {v['kartenname']}", "subtitle": v["anbieter"],
-            "description": v["produkt"] + ".", "bullets": [],
-            "cta_label": "Zum Einzelvergleich", "cta_url": f"/vergleich/{slug}/", "cta_icon": "arrow-right",
-        })
+    from marketing import seeds_muster as m
+
     return [
         ("hero", {
             "badge_text": "", "badge_icon": "", "badge_color": "primary",
@@ -861,17 +861,17 @@ def uebersichtsseite():
         hinweis("die verglichenen Anbieter"),
         marktuebersicht(),
         *luecken_bloecke(),
-        ("mandari_cards", {
-            "header": _hdr("Die Einzelvergleiche",
-                           "Jede Funktion mit Erläuterung und Quelle, dazu die Lücken gegenüber dem jeweiligen Anbieter.",
-                           "anbieter"),
-            "columns": "4", "background": "white",
-            "cards": karten,
-        }),
-        ("richtext_section", {
-            "header": _hdr("Wie wir vergleichen", "", "methodik"),
-            "background": "gray",
-            "body": (
+        m.begriffe(
+            "Die Einzelvergleiche",
+            [m.begriff(f"mandari vs. {v['kartenname']}", v["produkt"] + ".", marke=v["anbieter"],
+                       link_label="Zum Einzelvergleich", link_url=f"/vergleich/{slug}/")
+             for slug, v in ANBIETER.items()],
+            subline="Jede Funktion mit Erläuterung und Quelle, dazu die Lücken gegenüber dem jeweiligen Anbieter.",
+            anchor="anbieter",
+        ),
+        m.randspalte(
+            "Wie wir vergleichen",
+            (
                 f"<p>Wir vergleichen {ANZAHL_FUNKTIONEN} Funktionen in {len(GRUPPEN)} Bereichen: Offenheit und "
                 "Betrieb, Sitzungsdienst, Vorlagen und Abläufe, Ratsmitglieder und Fraktionen, Sitzung live, "
                 "Öffentlichkeit, Schnittstellen, Barrierefreiheit und Sicherheit sowie künstliche Intelligenz. "
@@ -888,38 +888,48 @@ def uebersichtsseite():
                 "kommen auf Anfrage. mandari nennt die Preise für Work und das kostenlose Bürgerportal öffentlich, "
                 "die Preisliste für Session ist in Vorbereitung.</p>"
             ),
-        }),
+            [
+                m.rand_fakten("", ("Stand", STAND), ("Abgerufen", ABRUF),
+                              ("Funktionen", f"{ANZAHL_FUNKTIONEN} in {len(GRUPPEN)} Bereichen"),
+                              ("Quellen", f"{len(QUELLEN)} öffentliche Belege")),
+                m.rand_text("<p>Fehler oder neuere Angaben? Schreiben Sie an "
+                            "<a href=\"mailto:hello@mandari.de\">hello@mandari.de</a> – wir korrigieren umgehend.</p>"),
+            ],
+            anchor="methodik",
+        ),
         quellen_block(PRAEFIXE_VERGLEICH + PRAEFIXE_WEITERE),
-        ("gradient_cta", {
-            "title": "Die beste Entscheidung ist eine informierte.",
-            "subline": "Sprechen Sie mit uns über Ihre Anforderungen – wir sagen Ihnen auch offen, wenn mandari "
-                       "(noch) nicht passt.",
-            "ctas": [_cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich"),
-                     _cta("Bürgerportal ansehen", "/insight/", "outline")],
-            "gradient_from": "primary",
-        }),
+        m.einladung(
+            "Die beste Entscheidung ist eine informierte.",
+            "Sprechen Sie mit uns über Ihre Anforderungen – wir sagen Ihnen auch offen, wenn mandari "
+            "(noch) nicht passt.",
+            "Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich",
+            link_label="Bürgerportal ansehen", link_url="/insight/",
+            wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
+                  ("Für Vergabestellen", "Unterlagen", "/vergabe/"), ("Was kommt", "Roadmap", "/roadmap/")],
+        ),
     ]
 
 
 def roadmap_luecken():
-    """Abschnitt für /roadmap/: die Lücken aus dem Vergleich, die noch in Prüfung sind.
+    """Abschnitt für /roadmap/: die Lücken aus dem Vergleich, die noch in Prüfung sind (Register).
 
-    Die zugesagten und geplanten Lücken stehen auf der Roadmap bereits als Karten (BITV, Single Sign-on,
-    KI-Entwurf, hybride Sitzungen, Vollständige Ratsarbeit, App, Livestream, Penetrationstest); hier nur der
-    Verweis auf die Übersicht im Vergleich, damit nichts doppelt steht.
+    Die zugesagten und geplanten Lücken stehen auf der Roadmap bereits in der Quartalsachse (BITV, Single
+    Sign-on, KI-Entwurf, hybride Sitzungen, Vollständige Ratsarbeit, App, Livestream, Penetrationstest); hier
+    nur der Verweis auf die Übersicht im Vergleich, damit nichts doppelt steht.
     """
-    return [("split_rows", {
-        "header": _hdr(
-            "Aus dem Marktvergleich: in Prüfung",
-            f"Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht (Stand {STAND}), "
-            "ohne Termin. Wir nennen einen Zeitraum, sobald er belastbar ist.",
-            "marktvergleich",
-        ),
-        "rows": _luecken_zeilen("pruefung")[:8],
-        "note": (
-            "<p>Die zugesagten und geplanten Lücken aus dem Vergleich stehen oben in den Karten, gesammelt unter "
+    from marketing import seeds_muster as m
+
+    return [m.register(
+        "Aus dem Marktvergleich: in Prüfung",
+        [m.gruppe("", *_luecken_zeilen("pruefung")[:8])],
+        spalten=["Vorhaben", "Worum es geht", "Wo es das gibt", "Stand"],
+        kopfart="ueber",
+        subline=f"Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht (Stand {STAND}), "
+                "ohne Termin. Wir nennen einen Zeitraum, sobald er belastbar ist.",
+        anchor="marktvergleich",
+        note=(
+            "<p>Die zugesagten und geplanten Lücken aus dem Vergleich stehen oben in der Zeitachse, gesammelt unter "
             "<a href=\"/vergleich/#fehlt\">Was mandari noch fehlt</a>. Die Kürzel in eckigen Klammern verweisen auf "
             "die <a href=\"/vergleich/#quellen\">Quellen im RIS-Vergleich</a>.</p>"
         ),
-        "background": "gray",
-    })]
+    )]

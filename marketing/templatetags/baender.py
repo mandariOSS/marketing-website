@@ -11,6 +11,7 @@ Reihenfolge der Blöcke fest – ohne dass Redaktion oder Seeds etwas einstellen
   Artikel im Trust Center, damit lange Seiten am Handy nicht zu einer Textwand werden,
 * eine Einladung mitten auf der Seite auf der Markenfläche (nach Weiß) oder auf Weiß (nach Hellgrau),
   die abschließende Einladung dunkel,
+* eine Zusage (Muster 6a) auf der Markenfläche,
 * kleine Zusätze (Eckdaten, Hinweis, Warrant Canary) bleiben auf dem Band davor,
 * Dokumente (Rechtstexte, Quellen) ruhig: Kopf und Text durchgehend auf Weiß, wie ein gedrucktes Dokument.
 
@@ -37,6 +38,9 @@ HELL, GRAU, MARKE, TINTE = "hell", "grau", "marke", "tinte"
 
 # Gehören zum Abschnitt davor und bekommen kein eigenes Band.
 ANGEHAENGT = {"trust_banner", "disclaimer_box", "warrant_canary"}
+
+# Stehen auf der Markenfläche (Musterkatalog: die Zusage einer Seite)
+MARKE_TYPEN = {"zusage"}
 
 # Seiten mit einem echten Produktbild im Hero: der Stapel aus drei Bildschirmen wie auf der Startseite
 # oder ein Bildschirm des Produkts, dem die Seite gehört.
@@ -128,6 +132,9 @@ def band_folge(typen, ruhig=False):
         elif typ == "gradient_cta":
             # Mitten auf der Seite: Markenfläche nach Weiß, sonst Weiß – nie neben Hellgrau
             band = MARKE if vorher in (None, HELL) else HELL
+        elif typ in MARKE_TYPEN:
+            # Zusage (Muster 6a): die eine Aussage der Seite auf der Markenfläche
+            band = MARKE if vorher != MARKE else HELL
         else:
             band = GRAU if vorher in (None, HELL) else HELL
         baender.append(band)
@@ -155,17 +162,26 @@ def baender(context, body, einschub_nach=None, ruhig=False):
     """Blöcke mit ihrem Band: ``{% baender page.body as abschnitte %}``.
 
     Jeder Eintrag hat ``block``, ``band``, ``anfang``/``ende`` (beginnt oder endet hier ein Band)
-    und ``letzter``. Mit ``einschub_nach`` kommt an der Stelle von ``insert_position`` ein Eintrag mit
+    und ``letzter``; der erste zusätzlich ``rand`` (Hinweise direkt nach dem Seitenkopf, die in dessen
+    Randspalte stehen). Mit ``einschub_nach`` kommt an der Stelle von ``insert_position`` ein Eintrag mit
     ``einschub`` (fester Abschnitt wie die Angaben zum Unternehmen), der im Wechsel mitzählt.
     """
     bloecke = list(body or [])
+    # Hinweise direkt nach dem Seitenkopf (Vorbehalte der Vergleiche) stehen in seiner Randspalte (Muster 5a)
+    kopf_rand = []
+    if bloecke and bloecke[0].block_type == "hero":
+        while len(bloecke) > 1 and bloecke[1].block_type == "disclaimer_box":
+            kopf_rand.append(bloecke.pop(1).value.get("body"))
     eintraege = list(bloecke)
     if einschub_nach is not None:
         from company.templatetags.company_tags import insert_position
 
         eintraege.insert(insert_position(body, einschub_nach), None)
     typen = ["einschub" if e is None else e.block_type for e in eintraege]
-    return _abschnitte(eintraege, band_folge(typen, ruhig=ruhig))
+    abschnitte = _abschnitte(eintraege, band_folge(typen, ruhig=ruhig))
+    if abschnitte:
+        abschnitte[0]["rand"] = kopf_rand
+    return abschnitte
 
 
 @register.simple_tag

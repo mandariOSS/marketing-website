@@ -1,0 +1,31 @@
+{% load muster %}
+{# M1a Zeitskala: maßstäbliche Achse (Desktop, für Screenreader ausgeblendet), darunter dieselben Schritte als Liste. Am Handy trägt die Liste die Fristen selbst. z: Daten (Block oder dict), plan: zeitskala_plan. #}
+<div class="zk" aria-hidden="true">
+    <div class="zk-marken" style="height:{{ plan.hoehe }}">
+        {% for m in plan.marken %}<div class="zk-marke{% if m.rechts %} zk-rechts{% endif %}" style="left:{{ m.links }};height:{{ m.hoehe }}"><p class="zk-frist">{{ m.frist }}</p>{% if m.notiz %}<p class="zk-notiz">{{ m.notiz }}</p>{% endif %}</div>{% endfor %}
+    </div>
+    <div class="zk-achse">
+        <span class="zk-seg" style="left:0;width:{{ plan.seg1 }}"></span>
+        {% if plan.zweite %}<span class="zk-bruch" style="left:{{ plan.bruch }}"></span><span class="zk-seg" style="left:{{ plan.seg2_links }};width:{{ plan.seg2_breite }}"></span>{% endif %}
+        {% for m in plan.marken %}<span class="zk-pkt{% if m.offen %} zk-offen{% endif %}" style="left:{{ m.links }}"></span>{% endfor %}
+    </div>
+    {% if plan.balken or z.fenster %}
+    <div class="zk-spuren" style="height:{{ plan.spuren_hoehe }}">
+        {% if z.balken_titel %}<p class="zk-spuren-titel">{{ z.balken_titel }}</p>{% endif %}
+        {% for b in plan.balken %}<div class="zk-spur" style="top:{{ b.oben }};width:{{ b.breite }}"><span class="zk-spur-text"><b>{{ b.label }}</b> {{ b.wert }}</span><span class="zk-balken"></span></div>{% endfor %}
+        {% if z.fenster %}<p class="zk-fenster" style="left:{{ plan.fenster_links }}">{{ z.fenster }}</p>{% endif %}
+    </div>
+    {% endif %}
+    {% if plan.skala %}<div class="zk-skala">{% for s in plan.skala %}<span class="{{ s.klasse }}" style="left:{{ s.links }}">{{ s.label }}</span>{% endfor %}</div>{% endif %}
+</div>
+<ol class="zs-liste" style="--n:{{ z.schritte|length }}">
+    {% for s in z.schritte %}
+    <li>
+        <p class="zs-frist">{{ s.frist }}</p>
+        {% if s.frist_zusatz %}<p class="zs-zusatz text-base m-leise">{{ s.frist_zusatz }}</p>{% endif %}
+        <h3 class="zs-titel m-tinte">{{ s.titel }}</h3>
+        <p class="zs-text m-text">{{ s.text }}</p>
+        {% if s.details %}<dl class="zs-details mt-3 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-base tabular-nums">{% for d in s.details %}<dt class="m-leise">{{ d.begriff }}</dt><dd class="font-semibold m-tinte">{{ d.wert }}</dd>{% endfor %}</dl>{% endif %}
+    </li>
+    {% endfor %}
+</ol>

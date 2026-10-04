@@ -1,0 +1,7 @@
+{% load baender %}
+{# M6a Zusage: der eine Satz, den man von der Seite behalten soll, groß; rechts die Bedingungen, darunter Nebenzusagen. Höchstens einmal je Seite, Band Marke. #}
+<section class="{% abschnitt band band_anfang band_ende standard='marke' %}"{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %}>
+    <div class="wrap">
+        {% include "marketing/muster/_zusage.html" with z=self %}
+    </div>
+</section>

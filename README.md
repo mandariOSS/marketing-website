@@ -291,11 +291,34 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   Hinweise setzen das Band davor fort, ohne doppelten Abstand). Das Feld „Hintergrund“
   einzelner Blöcke wirkt nur noch ohne diese Automatik. Farben hell und dunkel als
   Variablen in `static/css/input.css`. Keine Verläufe.
-- **Einträge:** Titel über dem Text, offen auf der Fläche (`split_rows`, `mandari_cards`,
-  Schritte). Kein Muster „Überschrift links, Text rechts“ mehr; Daten in zeitlicher Folge
-  als Zeitleiste (`split_rows` mit Darstellung „Zeitleiste“). Fließtext kann eine
-  **Randspalte** tragen (`richtext_section`, Feld „Randspalte“) für Kernsätze, Kennzahlen
-  mit Stand oder Kontakt – statt einer leeren rechten Hälfte.
+- **Form folgt Inhalt (Musterkatalog):** Jeder Abschnitt bekommt die Form seiner Daten, nicht das
+  eine Raster „fette Zeile + Absatz“. Die Muster sind StreamField-Bausteine (`marketing/blocks.py`,
+  Templates `templates/marketing/blocks/<muster>.html`, Teile in `templates/marketing/muster/`,
+  Geometrie in `marketing/templatetags/muster.py`, Seed-Helfer `marketing/seeds_muster.py`):
+
+  | Inhalt | Muster | Baustein | Beispiel |
+  |---|---|---|---|
+  | Ablauf mit Fristen | Zeitskala, maßstäblich in Tagen, Achsenbruch für offene Zeitpunkte | `zeitskala` | Disclosure, Abuse, Unternehmen |
+  | Schritte mit Dauern | Dauerbalken (frühestens, Spielraum, fester Tag) | `dauerbalken` | Migration |
+  | Vorhaben mit Zeitpunkt | Quartalsachse, Modul in Kennfarbe, Stufe als Text | `quartalsachse` | Roadmap |
+  | Kurze Folge ohne Fristen | Schrittfolge in einer Zeile mit Ergebnis | `schrittfolge` | Mitmachen, Partner |
+  | Sammlung mit Stand | Register: eine Tabelle, Gruppen, Status als Punkt, Bestand im Randkopf | `register` | Vergabe, Lücken, Preisliste, Kontenblatt |
+  | Lange Texte | Dokumentseite: Inhaltsleiste, Text, Randspalte (Stand, Verweise, Kontakt) | `marketing/dokument.html` | Rechtstexte, Quellen, Trust Center, Releases |
+  | Text, der schmal bleibt | Text mit Randspalte (Ablauf, Dateien, Kontakt), Stichwort am Absatzanfang | `randspalte` | Vertragsgrundlagen, Kurzprofil |
+  | Werte, Eigenschaften | Begriffe in der Marginalie | `begriffe` | Wertekompass, Fundament |
+  | Einladung | Schlussband mit den direkten Wegen rechts | `gradient_cta` (Feld „Wege“) | jede Seite |
+  | Zusage | große Aussage, rechts die Bedingungen (höchstens einmal je Seite) | `zusage`, `leitsatz` | Safe Harbor, Warrant Canary |
+  | Produkte | Bildschirm angeschnitten bis an den Fensterrand | `produktbilder` | /produkte/ |
+  | Optionen | Vergleichstabelle Kriterien × Optionen | `vergleich` | Selbst hosten, Anbindung |
+  | Zahlen | Zahl im Satz, Null mit Aufschlüsselung | `zahlensatz`, `nullen` | Transparenz, Presse |
+  | Dateien | Download-Leiste: ein Button rechts, Vorschauen nach Rang | `downloads`, `company/_logopaket.html` | Presse, Preisliste |
+
+  Regeln: nie zweimal dasselbe Muster hintereinander, höchstens eine große Aussage je Seite, jede
+  Seite mit mindestens einem Element, das kein Fließtext ist (`marketing/tests/test_muster.py`).
+  **Keine leere rechte Hälfte:** Kein Abschnitt endet bei 1440 px vor 80 % der Rasterbreite;
+  `scripts/check_fuellung.py` misst das im Browser (CI). Hinweise direkt nach dem Seitenkopf
+  stehen in dessen Randspalte. Feste Seiten (Startseite, Disclosure, Crawler) holen ihre Daten
+  aus `marketing/muster_daten.py`.
 - **Produktfarben:** Session Petrol `#0F5E8C` (vom Blau in Session abgeleitet,
   bewusst vom Indigo abgesetzt), Work Indigo `#4F46E5` (Standardfarbe in Work),
   Insight Grün `#17703F`. Startseite und `/produkte/` zeigen jedes Produkt als eigene Fläche
@@ -330,7 +353,6 @@ Du kannst Mandari auch finanziell unterstützen:
 - [GitHub Sponsors](https://github.com/sponsors/mandariOSS)
 - [Ko-fi](https://ko-fi.com/mandari)
 - [Buy Me a Coffee](https://buymeacoffee.com/mandari)
-- Oder über die [Transparenz-Seite](https://mandari.de/transparenz/#unterstuetzen)
 
 ## 📜 Lizenz
 

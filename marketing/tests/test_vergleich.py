@@ -72,11 +72,14 @@ class DatenTests(SimpleTestCase):
                 name = sv.ANBIETER[slug]["spalte"]
                 self.assertEqual(name in vorhanden, sv.anbieter_voll(luecke, slug), f"{luecke['key']}/{name}: {label}")
 
-    def test_hoechstens_acht_zeilen_je_abschnitt(self):
+    def test_hoechstens_acht_zeilen_je_gruppe(self):
+        # Ein Register mit zwei Gruppen (zugesagt und geplant, in Prüfung), je höchstens acht Zeilen
         for slug in [None, *sv.ANBIETER]:
-            for _, block in sv.luecken_bloecke(slug):
-                self.assertLessEqual(len(block["rows"]), 8, slug)
-                self.assertGreater(len(block["rows"]), 0, slug)
+            bloecke = sv.luecken_bloecke(slug)
+            self.assertEqual([typ for typ, _ in bloecke], ["register"], slug)
+            for gruppe in bloecke[0][1]["gruppen"]:
+                self.assertLessEqual(len(gruppe["zeilen"]), 8, slug)
+                self.assertGreater(len(gruppe["zeilen"]), 0, slug)
 
 
 class SeitenTests(TestCase):
@@ -91,7 +94,8 @@ class SeitenTests(TestCase):
             self.assertIn(f'href="/vergleich/{slug}/"', html)
         self.assertIn("Alle Funktionen auf einen Blick", html)
         self.assertIn('id="fehlt"', html)
-        self.assertIn("Was mandari noch fehlt: in Prüfung", html)
+        self.assertIn("Was mandari noch fehlt", html)
+        self.assertIn("In Prüfung, ohne Termin", html)
         for kuerzel in sv.QUELLEN:
             self.assertIn(f"[{kuerzel}]", html)
         # Kürzel in den Lücken (auch die weiteren Anbieter) stehen im Quellenverzeichnis der Seite.

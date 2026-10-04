@@ -1,0 +1,30 @@
+{% load wagtailcore_tags baender %}
+{# M8 Vergleichstabelle: Zeilen sind Kriterien, Spalten die Optionen (Name und ein Satz im Kopf). Am Handy je Kriterium ein Block mit der Option als Beschriftung. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap"{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %}>
+        {% if self.header.title %}
+        <div class="m-kopf-zeile">
+            <h2 class="t-h2 m-tinte">{{ self.header.title }}</h2>
+            {% if self.header.subline %}<p class="t-lead m-text">{{ self.header.subline }}</p>{% endif %}
+        </div>
+        {% endif %}
+        <table class="vgl">
+            {% if self.header.title %}<caption class="sr-only">{{ self.header.title }}</caption>{% endif %}
+            <thead>
+                <tr>
+                    <th scope="col"><span class="sr-only">Kriterium</span></th>
+                    {% for o in self.optionen %}<th scope="col"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">{{ o.name }}</span>{% if o.satz %}<span class="block mt-1 text-base m-text">{{ o.satz }}</span>{% endif %}</th>{% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for k in self.kriterien %}
+                <tr>
+                    <th scope="row" class="text-base">{{ k.kriterium }}</th>
+                    {% for w in k.werte %}<td class="t-body richtext" data-spalte="{% for o in self.optionen %}{% if forloop.counter == forloop.parentloop.counter %}{{ o.name }}{% endif %}{% endfor %}">{{ w|richtext }}</td>{% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if self.note %}<div class="mt-8 max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

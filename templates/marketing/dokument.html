@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags muster %}
+
+{% block content %}
+{# M4 Dokumentseite (Rechtstexte, Quellen, Trust Center): Inhaltsleiste links, Text in Lesebreite, Randspalte rechts mit Stand, Verweisen und Ansprechpartner. Am Handy: Titel, Randspalte, einklappbares Inhaltsverzeichnis, Text. Aufbau aus marketing/templatetags/muster.py (dokument_aufbau). #}
+{% dokument_aufbau as dok %}
+<article class="band-hell hero">
+    <div class="wrap grid gap-y-8 lg:grid-cols-12 lg:gap-x-10">
+        <header class="lg:col-span-9 lg:col-start-4">
+            <h1 class="t-h1 m-tinte">{{ dok.titel }}</h1>
+            {% if dok.satz %}<p class="mt-6 t-lead m-text max-w-[45rem]">{{ dok.satz }}</p>{% endif %}
+            {% if dok.ctas %}<div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">{% for cta in dok.ctas %}<a href="{{ cta.url }}" class="{% if forloop.first %}btn-primary{% else %}textlink{% endif %}">{{ cta.label }}</a>{% endfor %}</div>{% endif %}
+        </header>
+
+        <aside class="lg:col-span-3 lg:col-start-10 lg:row-start-2 text-base" aria-label="Zum Dokument">
+            <dl class="dok-rand dok-klebt">
+                {% if dok.stand %}<dt>Stand</dt><dd class="font-semibold">{{ dok.stand }}</dd>{% endif %}
+                {% for e in dok.eckdaten %}<dt>{{ e.begriff }}</dt><dd class="font-semibold">{{ e.wert }}</dd>{% endfor %}
+                {% if dok.rand.verweise %}<dt>{{ dok.rand.verweise_titel|default:"Dazu gehört" }}</dt>
+                <dd><ul class="space-y-1.5">{% for label, url in dok.rand.verweise %}<li><a class="textlink" href="{{ url }}">{{ label }}</a></li>{% endfor %}</ul></dd>{% endif %}
+                {% if dok.rand.abschliessen %}<dt>Abschließen</dt><dd>{{ dok.rand.abschliessen }}</dd>{% endif %}
+                {% if dok.rand.kontakt %}<dt>Fragen dazu</dt><dd>{{ dok.rand.kontakt|kontaktwert }}</dd>{% endif %}
+            </dl>
+        </aside>
+
+        {% if dok.inhalt %}
+        <details class="lg:hidden flaeche rounded-lg px-5 py-4">
+            <summary class="font-semibold m-tinte cursor-pointer">Inhalt</summary>
+            <nav class="dok-inhalt mt-3" aria-label="Inhalt">{% for e in dok.inhalt %}<a href="#{{ e.anker }}">{{ e.titel }}</a>{% endfor %}</nav>
+        </details>
+        <nav class="hidden lg:block lg:col-span-3 lg:col-start-1 lg:row-start-2" aria-label="Inhalt">
+            <div class="dok-klebt dok-inhalt">
+                <p class="text-sm font-semibold m-tinte mb-3">Inhalt</p>
+                {% for e in dok.inhalt %}<a href="#{{ e.anker }}">{{ e.titel }}</a>{% endfor %}
+            </div>
+        </nav>
+        {% endif %}
+
+        <div class="lg:col-span-6 lg:col-start-4 lg:row-start-2 min-w-0 dok-text">
+            {% if dok.html %}
+            <div class="prose prose-lg dark:prose-invert max-w-none">{{ dok.html }}</div>
+            {% endif %}
+            {% for a in dok.abschnitte %}
+            <section{% if a.anker %} id="{{ a.anker }}"{% endif %} class="scroll-mt-24{% if not forloop.first %} mt-14 lg:mt-16{% endif %}">
+                {% if a.titel %}<h2 class="t-h2-dok m-tinte">{{ a.titel }}</h2>{% endif %}
+                {% for b in a.vorne %}<div class="mt-6 mb-8">{% include_block b with eingebettet=True %}</div>{% endfor %}
+                <div class="{% if a.titel %}mt-5 {% endif %}prose prose-lg dark:prose-invert max-w-none">{{ a.body|richtext }}</div>
+                {% for b in a.bloecke %}<div class="mt-8">{% include_block b with eingebettet=True %}</div>{% endfor %}
+                {% for h in a.hinweise %}<div class="mt-6 text-base m-text richtext">{{ h|richtext }}</div>{% endfor %}
+            </section>
+            {% endfor %}
+        </div>
+    </div>
+</article>
+{% for b in dok.danach %}{% include_block b with band="tinte" last_block=True %}{% endfor %}
+{% endblock %}

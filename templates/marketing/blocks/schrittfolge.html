@@ -1,0 +1,26 @@
+{% load wagtailcore_tags baender %}
+{# M2 Schrittfolge kompakt: kurze Folge ohne Fristen in einer Zeile, Pfeile als Linie, die letzte Zelle zeigt das Ergebnis (eine Fläche, ein Textlink). Am Handy untereinander. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap">
+        {% if self.header.title %}{% include_block self.header %}{% endif %}
+        <ol class="sf" style="--schritte:{{ self.schritte|length }}">
+            {% for s in self.schritte %}
+            <li>
+                <span class="text-sm font-semibold text-primary-700 dark:text-primary-300 tabular-nums">{{ forloop.counter }}</span>
+                <h3 class="mt-1 text-2xl font-semibold tracking-tight m-tinte">{{ s.titel }}</h3>
+                <p class="mt-2 t-body m-text">{{ s.text }}</p>
+                {% if s.notiz %}<p class="mt-3 text-base m-leise">{{ s.notiz }}</p>{% endif %}
+            </li>
+            {% if not forloop.last or self.ergebnis_titel %}<li class="sf-pfeil" aria-hidden="true"><svg viewBox="0 0 56 14" preserveAspectRatio="none"><path d="M0 7h52M46 1l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></li>{% endif %}
+            {% endfor %}
+            {% if self.ergebnis_titel %}
+            <li class="sf-ergebnis flaeche rounded-lg p-6 lg:p-7">
+                <h3 class="text-2xl font-semibold tracking-tight m-tinte">{{ self.ergebnis_titel }}</h3>
+                {% if self.ergebnis_text %}<p class="mt-2 t-body m-text">{{ self.ergebnis_text }}</p>{% endif %}
+                {% if self.ergebnis_link_label and self.ergebnis_link_url %}<p class="mt-4"><a class="textlink" href="{{ self.ergebnis_link_url }}">{{ self.ergebnis_link_label }}</a></p>{% endif %}
+            </li>
+            {% endif %}
+        </ol>
+        {% if self.note %}<div class="mt-12 max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

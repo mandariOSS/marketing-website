@@ -18,6 +18,7 @@ from wagtail.blocks import (
     BooleanBlock,
     CharBlock,
     ChoiceBlock,
+    FloatBlock,
     IntegerBlock,
     ListBlock,
     PageChooserBlock,
@@ -387,6 +388,16 @@ class GradientCTABlock(StructBlock):
         help_text="Erster Eintrag = gefüllter Button, zweiter = Textlink; weitere werden nicht angezeigt",
     )
     gradient_from = ChoiceBlock(choices=COLOR_CHOICES, default="primary", help_text="Ohne Wirkung (flache Fläche)")
+    wege = ListBlock(
+        StructBlock([
+            ("label", CharBlock(help_text="Kleine Zeile, z. B. 'E-Mail' oder 'Für Vergabestellen'")),
+            ("wert", CharBlock(help_text="Adresse, Angabe oder Linktext")),
+            ("url", CharBlock(required=False, help_text="Optionaler Link; E-Mail-Adressen werden automatisch verlinkt")),
+        ]),
+        required=False,
+        default=[],
+        help_text="Direkte Wege rechts neben der Einladung (Muster 5c). Leer: E-Mail und Gesprächsform als Standard.",
+    )
 
     class Meta:
         template = "marketing/blocks/gradient_cta.html"
@@ -447,6 +458,64 @@ class SplitRowsBlock(StructBlock):
         label = "Einträge (Raster oder Zeitleiste)"
 
 
+# ── Randspalte (Muster 5a), auch in Häufigen Fragen und Dokumentseiten ──
+
+LINK_FEATURES = ["bold", "italic", "link"]
+PRODUKT_CHOICES = [("session", "mandari Session"), ("work", "mandari Work"), ("insight", "mandari Insight")]
+
+
+class LinkBlock(StructBlock):
+    label = CharBlock()
+    url = CharBlock()
+
+    class Meta:
+        icon = "link"
+        label = "Link"
+
+
+class BegriffWertBlock(StructBlock):
+    begriff = CharBlock()
+    wert = CharBlock()
+
+    class Meta:
+        icon = "list-ul"
+        label = "Angabe"
+
+
+class RandAblaufBlock(StructBlock):
+    titel = CharBlock()
+    schritte = ListBlock(StructBlock([("marke", CharBlock()), ("text", CharBlock())]))
+
+    class Meta:
+        icon = "time"
+        label = "Kleiner Ablauf"
+
+
+class RandLinksBlock(StructBlock):
+    titel = CharBlock()
+    links = ListBlock(LinkBlock())
+
+    class Meta:
+        icon = "link"
+        label = "Links"
+
+
+class RandFaktenBlock(StructBlock):
+    titel = CharBlock(required=False)
+    fakten = ListBlock(BegriffWertBlock())
+
+    class Meta:
+        icon = "list-ul"
+        label = "Fakten"
+
+
+class RandStreamBlock(StreamBlock):
+    ablauf = RandAblaufBlock()
+    links = RandLinksBlock()
+    fakten = RandFaktenBlock()
+    text = RichTextBlock(features=LINK_FEATURES + ["ul"])
+
+
 class AccordionFAQBlock(StructBlock):
     """Akkordeon-FAQ mit Alpine.js."""
 
@@ -461,6 +530,7 @@ class AccordionFAQBlock(StructBlock):
         choices=[("white", "Weiß"), ("gray", "Hellgrau (gray-50)")],
         default="gray",
     )
+    rand = RandStreamBlock(required=False, help_text="Optionale Randspalte rechts (Kontakt, Links zum Nachlesen)")
 
     class Meta:
         template = "marketing/blocks/accordion_faq.html"
@@ -564,6 +634,9 @@ class RichTextSectionBlock(StructBlock):
     background = ChoiceBlock(
         choices=[("white", "Weiß"), ("gray", "Hellgrau (gray-50)")],
         default="white",
+    )
+    zweispaltig = BooleanBlock(
+        required=False, help_text="Lange Listen (Quellen) über die volle Breite in zwei Spalten"
     )
 
     class Meta:
@@ -781,6 +854,468 @@ class MarketMatrixBlock(StructBlock):
         label = "Marktübersicht (mandari und Anbieter)"
 
 
+# ═════════════════════ Musterkatalog: Abschnitte nach Inhaltsart ═════════════════════
+# Jedes Muster hat seine Form aus dem Inhalt (Ablauf mit Fristen → Zeitskala, Sammlung → Register,
+# Zusage → große Aussage …). Templates: templates/marketing/blocks/<muster>.html, Geometrie:
+# marketing/templatetags/muster.py. Die älteren Bausteine oben bleiben definiert, damit bestehende
+# Inhalte weiter laden.
+
+STRECKE_CHOICES = [("1", "erste Strecke (maßstäblich)"), ("2", "nach dem Achsenbruch")]
+
+
+# ── M1a Zeitskala ─────────────────────────────────────────────────────────
+
+
+class ZeitMarkeBlock(StructBlock):
+    tag = FloatBlock(help_text="Zeitpunkt in Tagen ab Beginn der Strecke (5 Werktage ≈ 7)")
+    strecke = ChoiceBlock(choices=STRECKE_CHOICES, default="1")
+    frist = CharBlock(help_text="Groß über der Achse, z. B. '3 Werktage'")
+    notiz = CharBlock(required=False, help_text="Halbsatz darunter, z. B. 'Eingangsbestätigung'")
+    offen = BooleanBlock(required=False, help_text="Zeitpunkt offen (hohle Raute)")
+
+    class Meta:
+        icon = "time"
+        label = "Marke"
+
+
+class ZeitBalkenBlock(StructBlock):
+    label = CharBlock(help_text="z. B. 'kritisch'")
+    wert = CharBlock(help_text="z. B. '72 Stunden'")
+    tage = FloatBlock(help_text="Länge in Tagen, im Maßstab der ersten Strecke")
+
+    class Meta:
+        icon = "minus"
+        label = "Balken"
+
+
+class ZeitSkalaPunktBlock(StructBlock):
+    tag = FloatBlock()
+    strecke = ChoiceBlock(choices=STRECKE_CHOICES, default="1")
+    label = CharBlock()
+
+    class Meta:
+        icon = "minus"
+        label = "Skalenpunkt"
+
+
+class ZeitSchrittBlock(StructBlock):
+    frist = CharBlock()
+    frist_zusatz = CharBlock(required=False)
+    titel = CharBlock()
+    text = TextBlock()
+    details = ListBlock(BegriffWertBlock(), required=False, default=[])
+
+    class Meta:
+        icon = "ordered-list"
+        label = "Schritt"
+
+
+class ZeitskalaBlock(StructBlock):
+    """M1a: Ablauf mit Fristen als maßstäbliche Zeitachse; am Handy und für Screenreader als Liste."""
+
+    header = SectionHeaderBlock(required=False)
+    strecke1_tage = FloatBlock(default=30, help_text="Länge der ersten Strecke in Tagen")
+    strecke2_label = CharBlock(
+        required=False, help_text="Gibt es eine zweite Strecke nach einem offenen Zeitpunkt (z. B. 'Fix')?"
+    )
+    strecke2_tage = FloatBlock(required=False, help_text="Länge der zweiten Strecke in Tagen (leer: nach Marken)")
+    marken = ListBlock(ZeitMarkeBlock(), min_num=2, max_num=8)
+    balken_titel = CharBlock(required=False)
+    balken = ListBlock(ZeitBalkenBlock(), required=False, default=[])
+    fenster = TextBlock(required=False, help_text="Ein Satz als helle Fläche über der zweiten Strecke")
+    skala = ListBlock(ZeitSkalaPunktBlock(), required=False, default=[])
+    schritte = ListBlock(ZeitSchrittBlock(), min_num=2, max_num=6, help_text="Dieselben Daten als Liste")
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/zeitskala.html"
+        icon = "time"
+        label = "Zeitskala mit Fristen (M1a)"
+
+
+# ── M1b Dauerbalken ───────────────────────────────────────────────────────
+
+
+class DauerZeileBlock(StructBlock):
+    titel = CharBlock()
+    dauer = CharBlock(help_text="z. B. '2–4 Wochen'")
+    text = CharBlock(required=False)
+    art = ChoiceBlock(
+        choices=[("balken", "Schritt mit Dauer"), ("meilenstein", "fester Tag (Raute)")], default="balken"
+    )
+    dauer_min = FloatBlock(required=False, default=0)
+    dauer_max = FloatBlock(required=False, default=0)
+
+    class Meta:
+        icon = "minus"
+        label = "Schritt"
+
+
+class DauerbalkenBlock(StructBlock):
+    """M1b: aufeinanderfolgende Schritte mit Mindest- und Höchstdauer auf einer Wochenachse."""
+
+    header = SectionHeaderBlock(required=False)
+    einheit = CharBlock(default="Wochen")
+    gesamt = FloatBlock(default=14)
+    teilung = FloatBlock(default=2)
+    zeilen = ListBlock(DauerZeileBlock(), min_num=2, max_num=6)
+    legende_meilenstein = CharBlock(required=False, default="Umstellung")
+
+    class Meta:
+        template = "marketing/blocks/dauerbalken.html"
+        icon = "time"
+        label = "Dauerbalken (M1b)"
+
+
+# ── M1a Variante Quartalsachse ────────────────────────────────────────────
+
+
+class AchsenEintragBlock(StructBlock):
+    titel = CharBlock()
+    produkt = ChoiceBlock(choices=[("", "Plattform")] + PRODUKT_CHOICES, required=False, default="")
+    status = CharBlock(required=False, help_text="'Zugesagt', 'Geplant' oder 'In Prüfung'")
+    text = TextBlock(required=False)
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(required=False)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Vorhaben"
+
+
+class AchsenPunktBlock(StructBlock):
+    zeitpunkt = CharBlock(help_text="z. B. 'Q4/2026' oder 'Version 1.0'")
+    satz = CharBlock(required=False)
+    eintraege = ListBlock(AchsenEintragBlock())
+
+    class Meta:
+        icon = "date"
+        label = "Zeitpunkt"
+
+
+class QuartalsachseBlock(StructBlock):
+    """M1a als Quartalsachse: Spalten sind Zeitpunkte, darunter die Vorhaben mit Kennfarbe und Stufe."""
+
+    header = SectionHeaderBlock(required=False)
+    punkte = ListBlock(AchsenPunktBlock(), min_num=2, max_num=5)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/quartalsachse.html"
+        icon = "date"
+        label = "Quartalsachse (Roadmap)"
+
+
+# ── M2 Schrittfolge ───────────────────────────────────────────────────────
+
+
+class FolgeSchrittBlock(StructBlock):
+    titel = CharBlock()
+    text = TextBlock()
+    notiz = CharBlock(required=False)
+
+    class Meta:
+        icon = "ordered-list"
+        label = "Schritt"
+
+
+class SchrittfolgeBlock(StructBlock):
+    """M2: kurze Folge ohne Fristen in einer Zeile; die letzte Zelle zeigt das Ergebnis."""
+
+    header = SectionHeaderBlock(required=False)
+    schritte = ListBlock(FolgeSchrittBlock(), min_num=2, max_num=4)
+    ergebnis_titel = CharBlock(required=False)
+    ergebnis_text = TextBlock(required=False)
+    ergebnis_link_label = CharBlock(required=False)
+    ergebnis_link_url = CharBlock(required=False)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/schrittfolge.html"
+        icon = "ordered-list"
+        label = "Schrittfolge kompakt (M2)"
+
+
+# ── M3 Register ───────────────────────────────────────────────────────────
+
+
+class RegisterZeileBlock(StructBlock):
+    titel = CharBlock()
+    url = CharBlock(required=False)
+    ort = CharBlock(required=False, help_text="Klein unter dem Titel, z. B. 'im Trust Center'")
+    text = RichTextBlock(required=False, features=LINK_FEATURES)
+    zusatz = RichTextBlock(required=False, features=LINK_FEATURES, help_text="Dritte Spalte bei vier Spalten")
+    stand = CharBlock(required=False)
+    status = ChoiceBlock(
+        choices=[
+            ("da", "verfügbar (gefüllter Punkt)"),
+            ("offen", "in Arbeit oder geplant (leerer Kreis)"),
+            ("text", "nur Text"),
+            ("zahl", "Zahl oder Betrag (rechtsbündig)"),
+        ],
+        default="text",
+    )
+
+    class Meta:
+        icon = "list-ul"
+        label = "Zeile"
+
+
+class RegisterGruppeBlock(StructBlock):
+    titel = CharBlock(required=False)
+    zeilen = ListBlock(RegisterZeileBlock())
+    summe_label = CharBlock(required=False)
+    summe = CharBlock(required=False)
+
+    class Meta:
+        icon = "folder-open-1"
+        label = "Gruppe"
+
+
+class RegisterBlock(StructBlock):
+    """M3: Sammlung gleichartiger Einträge als eine Tabelle mit Gruppen und Stand (auch Wegweiser, Kontenblatt)."""
+
+    header = SectionHeaderBlock(required=False)
+    kopf = ChoiceBlock(
+        choices=[("rand", "Randkopf (links neben der Tabelle)"), ("ueber", "Überkopf")], default="rand"
+    )
+    spalten = ListBlock(CharBlock(), min_num=2, max_num=4, help_text="Titel, Text, [Zusatz], Stand")
+    gruppen = ListBlock(RegisterGruppeBlock(), min_num=1)
+    bestand_satz = CharBlock(
+        required=False, help_text="z. B. '{da} von {gesamt} liegen vor, {offen} sind in Arbeit.'"
+    )
+    stand = CharBlock(required=False, help_text="z. B. 'Stand 4. Oktober 2026'")
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/register.html"
+        icon = "table"
+        label = "Register (M3)"
+
+
+# ── M5a Randspalte ────────────────────────────────────────────────────────
+
+
+class RandspalteBlock(StructBlock):
+    """M5a: Text in Lesebreite (Stichwort am Absatzanfang) und eine Randspalte mit eigener Aufgabe."""
+
+    header = SectionHeaderBlock(required=False)
+    body = RichTextBlock(features=LINK_FEATURES + ["ul", "ol", "h3"])
+    rand = RandStreamBlock(help_text="Was der Text nicht hat: Ablauf, Dateien, Ansprechpartner")
+
+    class Meta:
+        template = "marketing/blocks/randspalte.html"
+        icon = "doc-full"
+        label = "Text mit Randspalte (M5a)"
+
+
+# ── M5b Begriffe in der Marginalie ────────────────────────────────────────
+
+
+class BegriffBlock(StructBlock):
+    begriff = CharBlock()
+    marke = CharBlock(required=False, help_text="Kleine Zeile unter dem Begriff, z. B. Datum oder Status")
+    text = RichTextBlock(features=LINK_FEATURES + ["ul"])
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(required=False)
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Begriff"
+
+
+class BegriffeBlock(StructBlock):
+    """M5b: Begriff links groß, Erklärung rechts, Linie zwischen den Zeilen."""
+
+    header = SectionHeaderBlock(required=False)
+    eintraege = ListBlock(BegriffBlock(), min_num=2)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/begriffe.html"
+        icon = "list-ul"
+        label = "Begriffe in der Marginalie (M5b)"
+
+
+# ── M6 Große Aussage ──────────────────────────────────────────────────────
+
+
+class NebenzusageBlock(StructBlock):
+    stichwort = CharBlock()
+    text = CharBlock()
+
+    class Meta:
+        icon = "tick"
+        label = "Nebenzusage"
+
+
+class ZusageBlock(StructBlock):
+    """M6a: eine Zusage als großer Satz, rechts die Bedingungen, darunter Nebenzusagen."""
+
+    aussage = TextBlock()
+    grundlage = RichTextBlock(required=False, features=LINK_FEATURES)
+    bedingungen_titel = CharBlock(required=False)
+    bedingungen = ListBlock(CharBlock(), required=False, default=[])
+    geltung = RichTextBlock(required=False, features=LINK_FEATURES)
+    neben = ListBlock(NebenzusageBlock(), required=False, default=[])
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        template = "marketing/blocks/zusage.html"
+        icon = "pick"
+        label = "Zusage (M6a)"
+
+
+class LeitsatzBlock(StructBlock):
+    """M6b: Leitsatz über die ganze Breite, Begründung rechts versetzt darunter."""
+
+    satz = TextBlock(help_text="Zeilenumbrüche bleiben erhalten")
+    text = RichTextBlock(features=LINK_FEATURES)
+    links = ListBlock(LinkBlock(), required=False, default=[])
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        template = "marketing/blocks/leitsatz.html"
+        icon = "openquote"
+        label = "Leitsatz (M6b)"
+
+
+# ── M7 Produktbild angeschnitten ──────────────────────────────────────────
+
+
+class ProduktbildBlock(StructBlock):
+    produkt = ChoiceBlock(choices=PRODUKT_CHOICES)
+    titel = CharBlock()
+    text = TextBlock()
+    fakten = ListBlock(BegriffWertBlock(), required=False, default=[])
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(required=False)
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        icon = "image"
+        label = "Produkt"
+
+
+class ProduktbilderBlock(StructBlock):
+    """M7: Text im Raster, echter Bildschirm bis an den Fensterrand, im Wechsel rechts und links."""
+
+    header = SectionHeaderBlock(required=False)
+    eintraege = ListBlock(ProduktbildBlock(), min_num=1, max_num=3)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/produktbilder.html"
+        icon = "image"
+        label = "Produktbilder angeschnitten (M7)"
+
+
+# ── M8 Vergleichstabelle ──────────────────────────────────────────────────
+
+
+class VergleichOptionBlock(StructBlock):
+    name = CharBlock()
+    satz = CharBlock(required=False)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Option"
+
+
+class VergleichKriteriumBlock(StructBlock):
+    kriterium = CharBlock()
+    werte = ListBlock(RichTextBlock(features=LINK_FEATURES), min_num=2, max_num=4)
+
+    class Meta:
+        icon = "list-ul"
+        label = "Kriterium"
+
+
+class VergleichBlock(StructBlock):
+    """M8: zwei bis vier Optionen nach denselben Kriterien."""
+
+    header = SectionHeaderBlock(required=False)
+    optionen = ListBlock(VergleichOptionBlock(), min_num=2, max_num=4)
+    kriterien = ListBlock(VergleichKriteriumBlock(), min_num=1)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/vergleich.html"
+        icon = "table"
+        label = "Vergleichstabelle (M8)"
+
+
+# ── M9 Kennzahl im Kontext ────────────────────────────────────────────────
+
+
+class ZahlensatzBlock(StructBlock):
+    """M9a: Zahlen in einem Satz (fett), rechts klein, wie gezählt wird."""
+
+    titel = CharBlock()
+    satz = RichTextBlock(features=["bold"])
+    rand = RichTextBlock(required=False, features=LINK_FEATURES)
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        template = "marketing/blocks/zahlensatz.html"
+        icon = "snippet"
+        label = "Zahl im Satz (M9a)"
+
+
+class NullenZeileBlock(StructBlock):
+    art = CharBlock()
+    was = CharBlock()
+    wert = CharBlock()
+
+    class Meta:
+        icon = "list-ul"
+        label = "Zeile"
+
+
+class NullenGruppeBlock(StructBlock):
+    titel = CharBlock()
+    zeilen = ListBlock(NullenZeileBlock())
+
+    class Meta:
+        icon = "folder-open-1"
+        label = "Gruppe"
+
+
+class NullenBlock(StructBlock):
+    """M9b: Summen groß, daneben eine Tabelle, die sie aufschlüsselt."""
+
+    summen = ListBlock(BegriffWertBlock(), min_num=1, max_num=3, help_text="begriff = Bezeichnung, wert = Zahl")
+    titel = CharBlock()
+    text = RichTextBlock(required=False, features=LINK_FEATURES)
+    spalten = ListBlock(CharBlock(), min_num=3, max_num=3)
+    gruppen = ListBlock(NullenGruppeBlock())
+    anchor_id = CharBlock(required=False)
+
+    class Meta:
+        template = "marketing/blocks/nullen.html"
+        icon = "snippet"
+        label = "Kennzahl mit Aufschlüsselung (M9b)"
+
+
+# ── M10 Download-Leiste ───────────────────────────────────────────────────
+
+
+class DownloadsBlock(StructBlock):
+    """M10: Titel links, ein Paket oder eine Datei als Button rechts (mit Format), optional Dateizeilen."""
+
+    header = SectionHeaderBlock(required=False)
+    label = CharBlock()
+    url = CharBlock()
+    hinweis = CharBlock(required=False, help_text="Format und Inhalt, z. B. 'Webseite im Kundenportal, tagesaktuell'")
+    dateien = ListBlock(LinkBlock(), required=False, default=[])
+
+    class Meta:
+        template = "marketing/blocks/downloads.html"
+        icon = "download"
+        label = "Download-Leiste (M10)"
+
+
 # ─────────────────────── Composite block container ──────────────────────
 
 
@@ -812,6 +1347,22 @@ class MarketingStreamBlock(StreamBlock):
     numbered_article = NumberedArticleBlock()
     richtext_section = RichTextSectionBlock()
     disclaimer_box = DisclaimerBoxBlock()
+
+    # Musterkatalog (Form folgt Inhalt)
+    zeitskala = ZeitskalaBlock()
+    dauerbalken = DauerbalkenBlock()
+    quartalsachse = QuartalsachseBlock()
+    schrittfolge = SchrittfolgeBlock()
+    register = RegisterBlock()
+    randspalte = RandspalteBlock()
+    begriffe = BegriffeBlock()
+    zusage = ZusageBlock()
+    leitsatz = LeitsatzBlock()
+    produktbilder = ProduktbilderBlock()
+    vergleich = VergleichBlock()
+    zahlensatz = ZahlensatzBlock()
+    nullen = NullenBlock()
+    downloads = DownloadsBlock()
 
     class Meta:
         block_counts = {}  # No max-restrictions
