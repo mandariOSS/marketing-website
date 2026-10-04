@@ -255,8 +255,10 @@ marketing-website/
   (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.
   Mit `DEBUG` oder ohne gebautes `kritisch.css` bleibt es beim blockierenden Stylesheet. Wer einen Seitenkopf in
   einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
-  (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip) und dass jede Klasse aus
-  Kopfzeile und Seitenkopf aller Seiten im kritischen CSS steht.
+  (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip), dass jede Klasse aus
+  Kopfzeile und Seitenkopf aller Seiten im kritischen CSS steht und dass das HTML von Startseite und `/kontakt/`
+  mit dem kritischen CSS in die ersten TCP-Pakete passt (höchstens 13.800 Bytes gzip; darüber kommt das erste
+  Bild am Handy rund 150 ms später). Kommentare im Kopf von `base.html` deshalb als Template-Kommentar.
 - **Content-Security-Policy.** Das Ladeskript (`LADER` in `stile.py`) ist ein fester Text ohne Inline-Handler.
   Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`):
   `python -c "import base64, hashlib; from marketing.templatetags.stile import LADER; print('sha256-' + base64.b64encode(hashlib.sha256(LADER.encode()).digest()).decode())"`
