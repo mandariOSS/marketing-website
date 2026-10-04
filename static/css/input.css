@@ -380,6 +380,7 @@
 .zk-balken { display: block; height: 10px; margin-top: 0.3rem; background: var(--m-akzent); border-radius: 0 2px 2px 0; }
 .zk-fenster { position: absolute; top: 1.6rem; bottom: 0; right: 0; background: var(--m-akzent-flaeche); padding: 0.9rem 1.1rem; font-size: 0.9375rem; line-height: 1.45; color: var(--m-tinte); }
 .band-marke .zk-fenster { background: var(--band-hell); }
+.zk-fenster.zk-fenster-frei { position: static; margin-top: 1.25rem; }
 .zk-skala { position: relative; height: 1.5rem; margin-top: 0.75rem; border-top: 1px solid var(--m-linie); font-size: 0.8125rem; color: var(--m-leise); font-variant-numeric: tabular-nums; }
 .zk-skala span { position: absolute; top: 0.4rem; transform: translateX(-50%); white-space: nowrap; }
 .zk-skala span.zk-l { transform: none; }

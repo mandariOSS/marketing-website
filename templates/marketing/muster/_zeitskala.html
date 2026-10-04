@@ -9,7 +9,8 @@
         {% if plan.zweite %}<span class="zk-bruch" style="left:{{ plan.bruch }}"></span><span class="zk-seg" style="left:{{ plan.seg2_links }};width:{{ plan.seg2_breite }}"></span>{% endif %}
         {% for m in plan.marken %}<span class="zk-pkt{% if m.offen %} zk-offen{% endif %}" style="left:{{ m.links }}"></span>{% endfor %}
     </div>
-    {% if plan.balken or z.fenster %}
+    {% if not plan.balken and z.fenster %}<p class="zk-fenster zk-fenster-frei" style="margin-left:{{ plan.fenster_links }}">{{ z.fenster }}</p>{% endif %}
+    {% if plan.balken %}
     <div class="zk-spuren" style="height:{{ plan.spuren_hoehe }}">
         {% if z.balken_titel %}<p class="zk-spuren-titel">{{ z.balken_titel }}</p>{% endif %}
         {% for b in plan.balken %}<div class="zk-spur" style="top:{{ b.oben }};width:{{ b.breite }}"><span class="zk-spur-text"><b>{{ b.label }}</b> {{ b.wert }}</span><span class="zk-balken"></span></div>{% endfor %}
