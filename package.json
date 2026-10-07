@@ -10,5 +10,9 @@
   "devDependencies": {
     "tailwindcss": "^3.4",
     "@tailwindcss/typography": "^0.5"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^7.1.6",
+    "source-map-js": "^1.2.2"
   }
 }
