@@ -28,7 +28,7 @@ build/
 venv/
 .venv/
 
-# Node — re-installed inside the build via `npm install`
+# Node — re-installed inside the build via `npm ci` (package-lock.json)
 node_modules/
 
 # Generated assets — re-built inside the build via `npm run build:css`

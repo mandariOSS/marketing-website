@@ -34,6 +34,15 @@
 @custom-variant dark (&:is(.dark *));
 @custom-variant hover (&:hover);
 
+/* transition-colors wie in Tailwind 3: Tailwind 4 nimmt outline-color dazu, dann blendete der Fokusrahmen (base.html)
+   bei Tastaturfokus 150 ms lang von der Textfarbe in Indigo über. Steht hinter den erzeugten Utilities (gleiche
+   Ebene, gleiche Spezifität); kein Element kombiniert transition-colors mit einer anderen transition-Utility. */
+@layer utilities {
+  .transition-colors {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  }
+}
+
 /* Grundstile wie in Tailwind 3; das Preflight von Tailwind 4 setzt Rahmen in der Textfarbe, Platzhalter in halber
    Textfarbe und Knöpfe mit dem Standardzeiger. */
 @layer base {
@@ -51,6 +60,13 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+  /* Innenabstand des Browsers für Einträge von Auswahllisten und Tabellenzellen wie in Tailwind 3 (das Preflight von
+     Tailwind 4 setzt padding: 0 auf jedes Element); Utilities und Prosa gehen weiter vor */
+  option,
+  td,
+  th {
+    padding: revert;
   }
   /* Datumsfelder (/kontakt/) wie in Tailwind 3, ohne die Angleichung der Segmente aus dem Preflight von Tailwind 4 */
   ::-webkit-date-and-time-value {

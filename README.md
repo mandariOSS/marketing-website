@@ -190,9 +190,9 @@ python manage.py runserver 8001
 **Tailwind CSS 4.** `static/css/input.css` bindet Tailwind ein (`@import "tailwindcss"`) und nennt die Quellen
 (`@source`, auch die Safelist für zur Laufzeit zusammengesetzte Klassen); das Theme steht in `tailwind.config.js`
 (`@config`). Die Website sieht aus wie mit Tailwind 3: Farben, Schriftgrößen und Haltepunkte haben dort die Werte von
-Tailwind 3, `dark:` und `hover:` verhalten sich wie bisher (Kopf von `input.css`), und die Grundstile in `base.html`
-stehen in der Ebene `base`, damit Utilities ihnen vorgehen. `collectstatic` übergeht `input.css`
-(`website/apps.py`), ausgeliefert werden nur `styles.css` und `kritisch.css`.
+Tailwind 3, `dark:`, `hover:` und `transition-colors` verhalten sich wie bisher (Kopf von `input.css`), und die
+Grundstile in `base.html` stehen in der Ebene `base`, damit Utilities ihnen vorgehen. `collectstatic` übergeht
+`input.css` (`website/apps.py`), ausgeliefert werden nur `styles.css` und `kritisch.css`.
 
 ## 🏗 Tech-Stack
 
