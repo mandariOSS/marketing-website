@@ -72,7 +72,8 @@ def seite():
                     "",
                     m.zeile("Ratsinformationssystem (RIS)",
                             "Oberbegriff für die Software der Gremienarbeit: von der Vorlage über Sitzung und "
-                            "Beschluss bis zur Veröffentlichung.",
+                            "Beschluss bis zur Veröffentlichung. Im engeren Sinn auch nur der Zugang für "
+                            "Ratsmitglieder.",
                             stand="Session, Work und Insight"),
                     m.zeile("Sitzungsdienst, Sitzungsmanagement",
                             "Die Arbeit der Verwaltung rund um die Sitzung, vom Sitzungskalender bis zum Sitzungsgeld, "
@@ -130,8 +131,8 @@ def seite():
             "<p><strong>Ohne Mehraufwand.</strong> mandari veröffentlicht Beschlüsse und Sitzungsunterlagen "
             "automatisch über OParl. Ihr Sitzungsdienst pflegt nichts doppelt.</p>"
             "<p><strong>Wechsel.</strong> Spricht Ihr bisheriges System OParl, etwa ALLRIS, regisafe, Somacos oder "
-            "SD.NET RIM, übernimmt mandari den Bestand strukturiert. Ihre Daten bekommen Sie jederzeit vollständig "
-            "heraus.</p>",
+            "SD.NET RIM, übernimmt mandari Sitzungen, Vorlagen und Dokumente strukturiert. Ihre Daten bekommen Sie "
+            "jederzeit vollständig heraus.</p>",
             [
                 m.rand_fakten("Schnittstelle", ("Standard", "OParl 1.1"),
                               ("Je Kommune", "in mandari Session"),
@@ -188,11 +189,14 @@ def seite():
                 {"question": "Was unterscheidet Sitzungsdienst und Ratsinformationssystem?",
                  "answer": "<p>Der Sitzungsdienst ist die Arbeit der Verwaltung rund um die Sitzung, oft auch die "
                            "Software dafür. Das Ratsinformationssystem ist der Oberbegriff: Es umfasst den "
-                           "Sitzungsdienst, den Zugang der Ratsmitglieder und das Bürgerinformationssystem.</p>"},
+                           "Sitzungsdienst, den Zugang der Ratsmitglieder und das Bürgerinformationssystem.</p>"
+                           "<p>Im engeren Sinn steht RIS auch nur für den Zugang der Ratsmitglieder, getrennt vom "
+                           "Sitzungsdienst der Verwaltung und vom Bürgerinformationssystem.</p>"},
                 {"question": "Was ist OParl?",
                  "answer": "<p>OParl ist der offene Standard für die Schnittstelle von Ratsinformationssystemen. "
-                           "mandari stellt alle Ratsdaten über OParl 1.1 bereit und übernimmt Daten aus jedem "
-                           "System, das OParl spricht.</p>"},
+                           "mandari stellt alle Ratsdaten über OParl 1.1 bereit und übernimmt Daten aus Systemen, die "
+                           "OParl sprechen; was darüber hinaus mitkommen soll, klären wir in der "
+                           "Bestandsaufnahme.</p>"},
                 {"question": "Können wir unser bisheriges RIS ablösen?",
                  "answer": "<p>Ja. Spricht Ihr System OParl, übernehmen wir Sitzungen, Vorlagen, Gremien, Personen "
                            "und Dokumente strukturiert; Sonderfelder und Bestände ohne OParl-Export klären wir in der "

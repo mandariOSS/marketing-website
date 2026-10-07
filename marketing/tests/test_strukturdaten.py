@@ -3,6 +3,7 @@
 import json
 import re
 from io import StringIO
+from types import SimpleNamespace
 
 from django.core.management import call_command
 from django.test import SimpleTestCase, TestCase, override_settings
@@ -13,6 +14,12 @@ from marketing.management.commands.migrate_pages_to_streamfield import get_marke
 
 LD = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
 PREIS_SCHLUESSEL = {"offers", "price", "priceCurrency", "priceSpecification", "lowPrice", "highPrice"}
+
+
+class Bloecke(list):
+    """Blockliste mit ``raw_data`` wie Wagtails StreamValue (so erkennt ``strukturdaten`` ein StreamField)."""
+
+    raw_data = ()
 
 
 def schluessel(wert):
@@ -32,16 +39,24 @@ class MaskierungTests(SimpleTestCase):
                          "Erster Satz. Zweiter & dritter.")
 
     def test_kein_text_kann_das_skript_beenden(self):
-        class Seite:
-            slug = "x"
-            depth = 3
-            body = None
+        # Eine FAQ-Antwort aus dem CMS, deren Entitäten im Klartext zu Markup werden. Ohne Maskierung stünde
+        # „</script><script>alert(1)</script>“ wörtlich im JSON-LD und beendete das Element.
+        antwort = "<p>Nein: &lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt; &lt;!-- &amp; bleibt Text.</p>"
+        seite = SimpleNamespace(slug="x", depth=3, body=Bloecke([
+            SimpleNamespace(block_type="accordion_faq",
+                            value={"items": [{"question": "Ende & Anfang?", "answer": antwort}]}),
+        ]))
 
-        roh = strukturdaten.json_ld(Seite())
-        self.assertNotIn("<", roh)
-        self.assertNotIn(">", roh)
+        roh = strukturdaten.json_ld(seite)
+        for zeichen in ("<", ">", "&"):
+            self.assertNotIn(zeichen, roh)
         daten = json.loads(roh)
         self.assertEqual(daten["@context"], "https://schema.org")
+        frage = [k for k in daten["@graph"] if k["@type"] == "FAQPage"][0]["mainEntity"][0]
+        # Die Maskierung ändert nur die Schreibweise im HTML, nicht den Inhalt
+        self.assertEqual(frage["name"], "Ende & Anfang?")
+        self.assertEqual(frage["acceptedAnswer"]["text"],
+                         "Nein: </script><script>alert(1)</script> <!-- & bleibt Text.")
 
 
 @override_settings(SITE_URL="https://mandari.de", ALLOWED_HOSTS=["testserver"])
@@ -134,3 +149,13 @@ class SeitenTests(TestCase):
             self.assertEqual(eintraege[1]["name"], "RIS-Vergleich")
         for url in ["/", "/vergleich/", "/ratsinformationssystem/"]:
             self.assertEqual(self.knoten(url, "BreadcrumbList"), [], url)
+
+    def test_seitentitel_kann_das_skript_nicht_beenden(self):
+        # Der Titel des Elternteils steht als Klartext in den Brotkrumen der Unterseiten
+        titel = "RIS-Vergleich </script><script>alert(1)</script><!--"
+        Page.objects.filter(slug="vergleich", depth=3).update(title=titel)
+
+        html = self.client.get("/vergleich/mandari-vs-allris/").content.decode("utf-8")
+        self.assertNotIn("<script>alert(1)", html)
+        pfad = self.knoten("/vergleich/mandari-vs-allris/", "BreadcrumbList")[0]["itemListElement"]
+        self.assertEqual(pfad[1]["name"], titel)

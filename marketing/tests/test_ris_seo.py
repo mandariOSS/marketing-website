@@ -60,6 +60,13 @@ class SeedTests(SimpleTestCase):
             if re.search(r"seo_title|search_description|site_name", zeile):
                 self.assertNotIn("Mandari", zeile)
 
+    def test_marke_im_ruhenden_blog_feed_klein(self):
+        # /blog/feed/ leitet heute auf /releases/ weiter; reaktiviert soll der Feed die Marke klein schreiben
+        from blog.feeds import BlogFeed
+
+        for wert in (BlogFeed.title, BlogFeed.description):
+            self.assertNotIn("Mandari", wert)
+
     def test_titel_und_beschreibungen_der_kernseiten(self):
         meta = {m["slug"]: m for m in seeds.MARKETING_PAGE_META}
         kommunen = meta["kommunen"]["search_description"]

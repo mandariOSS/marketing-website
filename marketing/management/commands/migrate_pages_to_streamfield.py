@@ -1092,8 +1092,8 @@ def get_marketing_definitions() -> dict:
         "kommunen": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
-                # Suchbegriffe zuerst (SEO, #914); neben dem Bild von mandari Session trennt der Seitenkopf
-                # lange Wörter nach Silben (hero.html)
+                # Suchbegriffe zuerst (SEO, #914); neben dem Bild von mandari Session bekommen lange Wörter
+                # sieben Spalten (blocks.langes_wort, hero.html)
                 "title": "Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
                 "subline": "mandari Session ist das Ratsinformationssystem für Ihre Verwaltung: von der Tagesordnung bis zur freigegebenen Niederschrift, mit kostenlosem Bürgerportal – auf deutschen Servern und vollständig Open Source.",
                 "subline_secondary": "",
