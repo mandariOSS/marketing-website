@@ -111,6 +111,7 @@ def get_marketing_definitions() -> dict:
     """Marketing-Pages (MarketingPage Model) → body StreamField."""
     from marketing import seeds_vergleich  # Vergleichsseiten und Lücken auf /roadmap/
     from marketing import seeds_muster as m  # Abschnittsmuster (Musterkatalog)
+    from marketing import seeds_ris  # Sachseite /ratsinformationssystem/
     from marketing.seeds_unternehmen import get_company_page_definitions
 
     return {
@@ -1080,13 +1081,20 @@ def get_marketing_definitions() -> dict:
         ],
 
         # ════════════════════════════════════════════════════════════
+        # /ratsinformationssystem/ — Sachseite zum Begriff (SEO, #914);
+        # Inhalt in marketing/seeds_ris.py, ohne Preise
+        # ════════════════════════════════════════════════════════════
+        "ratsinformationssystem": seeds_ris.seite(),
+
+        # ════════════════════════════════════════════════════════════
         # /kommunen/ — Für Kommunen & Verwaltungen (Zielgruppen-Seite)
         # ════════════════════════════════════════════════════════════
         "kommunen": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
-                # Kurz genug für zwei Zeilen neben dem Bild von mandari Session (Hero mit Produktbild)
-                "title": "Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
+                # Suchbegriffe zuerst (SEO, #914); neben dem Bild von mandari Session trennt der Seitenkopf
+                # lange Wörter nach Silben (hero.html)
+                "title": "Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
                 "subline": "mandari Session ist das Ratsinformationssystem für Ihre Verwaltung: von der Tagesordnung bis zur freigegebenen Niederschrift, mit kostenlosem Bürgerportal – auf deutschen Servern und vollständig Open Source.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
@@ -1116,6 +1124,10 @@ def get_marketing_definitions() -> dict:
                 ],
                 subline="Was im Verwaltungsalltag zählt – vom Ratsbüro bis zur Frage aus der Bürgerschaft.",
                 anchor="bausteine",
+                note="<p>Ein <a href=\"/ratsinformationssystem/\">Ratsinformationssystem</a> deckt die ganze digitale "
+                     "Gremienarbeit ab: das Sitzungsmanagement der Verwaltung, das Gremieninformationssystem für "
+                     "Ratsmitglieder und das Bürgerinformationssystem für die Öffentlichkeit. mandari bringt diese "
+                     "Seiten auf einer Plattform zusammen.</p>",
             ),
             # Muster 5a: zwei Grundsatzentscheidungen, rechts die Eckdaten für die Prüfung
             m.randspalte(

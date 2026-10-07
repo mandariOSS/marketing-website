@@ -2,7 +2,8 @@
 Fußzeile nach der Zielstruktur der Website: Produkte · Vertrauen · Unternehmen · Hilfe · Rechtliches, darunter die
 Urheber- und Lizenzzeile (die CI prüft sie wörtlich). Eigenes dunkles Band, eine Stufe dunkler als die Einladung davor;
 Gliederung über Abstand und klare Gruppenüberschriften. Mobil zweispaltig: Produkte und Vertrauen, Unternehmen und
-Rechtliches, darunter Hilfe.
+Rechtliches, darunter Hilfe. Lange Wörter tragen weiche Trennstellen (&shy;) an den Wortfugen, etwa Ratsinformationssystem,
+damit sie in schmalen Spalten dort trennen und nicht mitten in einer Silbe.
 scripts/check_site_structure.py prüft die Einträge.
 {% endcomment %}
 <div class="band-fuss text-gray-400">
@@ -17,6 +18,7 @@ scripts/check_site_structure.py prüft die Einträge.
                 <h2 id="fuss-produkte" class="text-base font-semibold text-white">Produkte</h2>
                 <ul class="mt-3 space-y-2.5">
                     <li><a href="/produkte/" class="hover:text-white transition-colors">Übersicht</a></li>
+                    <li><a href="/ratsinformationssystem/" class="break-words hover:text-white transition-colors">Rats&shy;informations&shy;system</a></li>
                     <li><a href="/kommunen/" class="hover:text-white transition-colors">Für Verwaltungen</a></li>
                     <li><a href="/fraktionen/" class="hover:text-white transition-colors">Für Fraktionen</a></li>
                     <li><a href="/produkte/#insight" class="hover:text-white transition-colors">Für Bürger:innen</a></li>
