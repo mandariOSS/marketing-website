@@ -868,6 +868,8 @@ def uebersichtsseite():
              for slug, v in ANBIETER.items()],
             subline="Jede Funktion mit Erläuterung und Quelle, dazu die Lücken gegenüber dem jeweiligen Anbieter.",
             anchor="anbieter",
+            note="<p>Was ein <a href=\"/ratsinformationssystem/\">Ratsinformationssystem</a> ausmacht und wie es sich "
+                 "von Sitzungsdienst und Bürgerinformationssystem abgrenzt, erklären wir auf einer eigenen Seite.</p>",
         ),
         m.randspalte(
             "Wie wir vergleichen",

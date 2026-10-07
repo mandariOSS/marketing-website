@@ -14,6 +14,8 @@ Color palette (used by ChoiceBlock fields throughout):
     gray     = Neutral / default
 """
 
+import re
+
 from wagtail.blocks import (
     BooleanBlock,
     CharBlock,
@@ -219,6 +221,17 @@ def hero_title(title, highlight=""):
     return f"{title} {highlight}" if title else highlight
 
 
+# Neben einem Produktbild ist die Überschrift höchstens 15 Zeichen breit. Längere Wörter
+# (Ratsinformationssystem) passen bei 56 px nicht einmal in die halbe Rasterbreite: Dann bekommt der Text
+# sieben, das Bild fünf Spalten (hero.html).
+LANGES_WORT = 16
+
+
+def langes_wort(text):
+    """Enthält die Überschrift ein Wort, das neben einem Produktbild nicht in eine Zeile passt?"""
+    return any(len(wort) >= LANGES_WORT for wort in re.findall(r"\w+", str(text or "")))
+
+
 class HeroBlock(StructBlock):
     """Linksbündiger Hero: H1, ein erklärender Satz, ein gefüllter Aufruf und höchstens ein Textlink.
 
@@ -251,6 +264,7 @@ class HeroBlock(StructBlock):
     def get_context(self, value, parent_context=None):
         context = super().get_context(value, parent_context=parent_context)
         context["heading"] = hero_title(value.get("title"), value.get("title_highlight"))
+        context["langes_wort"] = langes_wort(context["heading"])
         return context
 
     class Meta:

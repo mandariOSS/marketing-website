@@ -35,7 +35,7 @@ jobs:
         # meldet makemigrations offene Änderungen und der Schritt schlägt fehl.
         run: python manage.py makemigrations --check --dry-run
 
-      - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
+      - name: Unit-Tests (retire_page, SEO, Strukturdaten, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
         run: python manage.py test --buffer
 
       - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
@@ -113,7 +113,8 @@ jobs:
               "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt", "in Prüfung (ohne Termin)", "Mitteilung an das Finanzamt"],
               "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
-              "/kommunen/": ["Ratsinformations", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit."],
+              "/kommunen/": ["Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit.", 'href="/ratsinformationssystem/"'],
+              "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Was ist OParl?", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"'],
               "/migration/": ["Bestandsaufnahme"],
               "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
@@ -240,7 +241,7 @@ jobs:
                       self.parts.append(data)
 
           du = re.compile(r"\b(du|dich|dir|dein\w*|euch|euer|eure\w*)\b", re.IGNORECASE)
-          pages = ["/preise/", "/kommunen/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
+          pages = ["/preise/", "/kommunen/", "/ratsinformationssystem/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
                    "/barrierefreiheit/", "/abuse/", "/vergleich/", "/quellen/", "/agb/", "/avv/", "/kuendigung/",
                    "/sicherheit/disclosure/", "/crawler/"]
           c, errors = Client(), []

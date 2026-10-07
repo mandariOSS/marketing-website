@@ -14,7 +14,8 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **Marketing-Pages** — Startseite, Produkte, Für Fraktionen, Preise, Kommunen, Migration,
+- **Marketing-Pages** — Startseite, Produkte, Ratsinformationssystem (Sachseite zum Begriff, ohne Preise;
+  Inhalt in `marketing/seeds_ris.py`), Für Fraktionen, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
@@ -32,7 +33,10 @@ separat gehostet und entwickelt werden.
   Textlinks als Komponenten, Inhalte offen auf der Fläche (siehe [Gestaltung](#-gestaltung))
 - **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
   `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
-  `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
+  `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`, strukturierte Daten nach
+  schema.org als JSON-LD (`marketing/strukturdaten.py`: Organization und WebSite auf jeder Seite,
+  SoftwareApplication ohne Preise auf Produktseiten, FAQPage aus dem FAQ-Akkordeon, BreadcrumbList auf
+  Unterseiten)
 - **Compliance** — DSGVO, BFSG, DSA, NetzDG, RFC 9116 (Responsible Disclosure)
 - **DSGVO-konformer Spam-Schutz** via [Altcha](https://altcha.org)
   (selbst-gehostet, kein Captcha, kein Tracking)
@@ -264,7 +268,9 @@ marketing-website/
   mit dem kritischen CSS in die ersten TCP-Pakete passt (höchstens 13.800 Bytes gzip; darüber kommt das erste
   Bild am Handy rund 150 ms später). Kommentare im Kopf von `base.html` deshalb als Template-Kommentar.
 - **Content-Security-Policy.** Das Ladeskript (`LADER` in `stile.py`) ist ein fester Text ohne Inline-Handler.
-  Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`):
+  Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`;
+  die strukturierten Daten im Kopf sind ein Datenblock vom Typ `application/ld+json`, den der Browser
+  nicht ausführt, sie brauchen keinen Hash):
   `python -c "import base64, hashlib; from marketing.templatetags.stile import LADER; print('sha256-' + base64.b64encode(hashlib.sha256(LADER.encode()).digest()).decode())"`
 - **Schrift.** Inter mit `font-display: swap`, davor im Schriftstapel `Inter Ersatz`: Arial bzw. Roboto, per
   `size-adjust` und `ascent-/descent-override` auf Inter angepasst (`base.html`, `tailwind.config.js`). Die Seite
@@ -311,7 +317,9 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   Produktseiten zeigen rechts ein echtes Bild in derselben Rahmung wie die Startseite:
   `/produkte/` den Stapel aus Session, Work und Insight (`_hero_stapel.html`), `/kommunen/`
   Session und `/fraktionen/` Work (`_hero_einzel.html`, Zuordnung `HERO_BILD` in
-  `marketing/templatetags/baender.py`). Alle anderen Seiten haben einen kompakten Kopf
+  `marketing/templatetags/baender.py`). Steht in der Überschrift ein Wort ab 16 Zeichen
+  („Ratsinformationssystem“), hat der Text neben einem einzelnen Bildschirm sieben statt sechs Spalten, sonst
+  liefe das Wort ab 1280 px (dort ohne Silbentrennung) ins Bild. Alle anderen Seiten haben einen kompakten Kopf
   ohne Bild mit Mindesthöhe; Rechtstexte, Quellen und Releases sind Dokumente: Kopf und Text
   durchgehend auf Weiß.
 - **Bänder:** Jeder Abschnitt liegt auf einem vollbreiten Band, benachbarte

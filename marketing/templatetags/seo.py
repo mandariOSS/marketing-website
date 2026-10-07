@@ -18,7 +18,7 @@ from html import unescape
 
 from django import template
 from django.templatetags.static import static
-from django.utils.html import escape, strip_tags
+from django.utils.html import escape, format_html, strip_tags
 from django.utils.safestring import mark_safe
 
 from marketing import seo
@@ -40,6 +40,17 @@ def seo_meta(context):
         "og_image": seo.absolute_url(static("images/og-default.png")),
         "site_name": seo.BRAND,
     }
+
+
+@register.simple_tag(takes_context=True)
+def strukturdaten(context):
+    """Strukturierte Daten der Seite (schema.org, JSON-LD) als ``<script type="application/ld+json">``.
+
+    Inhalt und Begründung (CSP, Maskierung) in ``marketing/strukturdaten.py``.
+    """
+    from marketing.strukturdaten import json_ld
+
+    return format_html('<script type="application/ld+json">{}</script>', mark_safe(json_ld(context.get("page"))))
 
 
 @register.filter(is_safe=True)

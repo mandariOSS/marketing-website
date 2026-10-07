@@ -69,6 +69,17 @@ MARKETING_PAGE_META = [
             "mandari Session, Work und Insight mit allen Funktionen im Überblick."
         ),
     },
+    # Sachseite zum Begriff (SEO, Issue mandariOSS/mandari#914): Was ein Ratsinformationssystem ist und was
+    # mandari davon abdeckt. Ohne Preise; im Produkte-Menü und in der Fußzeile verlinkt.
+    {
+        "title": "Ratsinformationssystem",
+        "slug": "ratsinformationssystem",
+        "seo_title": "Ratsinformationssystem für Kommunen",
+        "search_description": (
+            "Was ein Ratsinformationssystem leistet und wie mandari es umsetzt: Sitzungsdienst, Fraktionsarbeit "
+            "und Bürgerportal mit offener OParl-Schnittstelle."
+        ),
+    },
     {
         "title": "Für Fraktionen",
         "slug": "fraktionen",
@@ -81,7 +92,7 @@ MARKETING_PAGE_META = [
     {
         "title": "Preise",
         "slug": "preise",
-        "seo_title": "Preise – Mandari",
+        "seo_title": "Preise",
         "search_description": (
             "Was mandari kostet: Das Bürgerportal ist kostenlos, mandari Work gibt es ab 39,90 € im Monat, "
             "mandari Session kalkulieren wir je Kommune."
@@ -90,22 +101,22 @@ MARKETING_PAGE_META = [
     {
         "title": "Für Kommunen & Verwaltungen",
         "slug": "kommunen",
-        "seo_title": "Für Kommunen & Verwaltungen – Mandari",
+        "seo_title": "Sitzungsdienst & Ratsinformationssystem für Kommunen",
         "search_description": (
-            "Verwaltungs-RIS mandari Session, OParl-konforme Veröffentlichung, Bürgerportal "
-            "Insight — deutsches Hosting, DSGVO-konform, Open Source ohne Vendor-Lock-in."
+            "Ratsinformationssystem und Sitzungsdienst für Kommunen: mandari Session mit OParl, kostenlosem "
+            "Bürgerportal und Betrieb in Deutschland. Open Source."
         ),
     },
     {
         "title": "Migration",
         "slug": "migration",
-        "seo_title": "Migration vom Alt-RIS – Mandari",
-        "search_description": "Wechsel von ALLRIS, regisafe oder Somacos zu Mandari Session. Vier-Schritte-Plan, was mitkommt, Pilot-Konditionen.",
+        "seo_title": "Migration vom Alt-RIS",
+        "search_description": "Wechsel von ALLRIS, regisafe oder Somacos zu mandari Session. Vier-Schritte-Plan, was mitkommt, Pilot-Konditionen.",
     },
     {
         "title": "Roadmap",
         "slug": "roadmap",
-        "seo_title": "Roadmap – Mandari",
+        "seo_title": "Roadmap",
         "search_description": "Öffentliche Roadmap und geplante Features.",
     },
 
@@ -115,7 +126,7 @@ MARKETING_PAGE_META = [
         "title": "RIS-Vergleich",
         "slug": "vergleich",
         "show_in_menus": False,
-        "seo_title": "Ratsinformationssysteme im Vergleich – mandari vs. etablierte Anbieter",
+        "seo_title": "Ratsinformationssysteme im Vergleich",
         "search_description": (
             "mandari im sachlichen Vergleich mit Somacos, Sternberg, ALLRIS und regisafe: "
             "48 Funktionen mit Quellen, dazu offen, was mandari noch fehlt. Stand Oktober 2026."
@@ -126,7 +137,7 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-sternberg",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. Sternberg SD.NET – RIS-Vergleich",
+        "seo_title": "SD.NET-Alternative? mandari vs. Sternberg im Vergleich",
         "search_description": (
             "mandari und Sternberg SD.NET im sachlichen Vergleich: 48 Funktionen mit Quellen, "
             "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
@@ -137,7 +148,7 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-allris",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. ALLRIS (CC e-gov) – RIS-Vergleich",
+        "seo_title": "ALLRIS-Alternative? mandari vs. ALLRIS im Vergleich",
         "search_description": (
             "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: 48 Funktionen mit Quellen, "
             "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
@@ -148,7 +159,7 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-somacos",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. Somacos Session – RIS-Vergleich",
+        "seo_title": "SessionNet-Alternative? mandari vs. Somacos Session",
         "search_description": (
             "mandari und Somacos Session im sachlichen Vergleich: 48 Funktionen mit Quellen, "
             "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
@@ -159,7 +170,7 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-regisafe",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. regisafe – RIS-Vergleich",
+        "seo_title": "regisafe-Alternative? mandari vs. regisafe im Vergleich",
         "search_description": (
             "mandari und regisafe im sachlichen Vergleich: 48 Funktionen mit Quellen, "
             "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
@@ -185,13 +196,13 @@ MARKETING_PAGE_META = [
     {
         "title": "Transparenzbericht",
         "slug": "transparenz",
-        "seo_title": "Transparenzbericht 2026 – Mandari",
+        "seo_title": "Transparenzbericht 2026",
         "search_description": "Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Finanztransparenz, Open-Source-Beiträge.",
     },
     {
         "title": "Barrierefreiheit",
         "slug": "barrierefreiheit",
-        "seo_title": "Erklärung zur Barrierefreiheit – Mandari",
+        "seo_title": "Erklärung zur Barrierefreiheit",
         "search_description": "Pflichterklärung nach BFSG, BITV 2.0, EN 301 549. Konformitätsstand, Feedback, Schlichtungsstelle.",
     },
     {
@@ -214,8 +225,8 @@ MARKETING_PAGE_META = [
     {
         "title": "Mitmachen",
         "slug": "mitmachen",
-        "seo_title": "Mitmachen – Mandari",
-        "search_description": "Werde Teil der Mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
+        "seo_title": "Mitmachen",
+        "search_description": "Werde Teil der mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
     },
 
     # ── Unternehmen ───────────────────────────────────────────────────
@@ -367,7 +378,7 @@ class Command(BaseCommand):
                 hostname="localhost",
                 root_page=home,
                 is_default_site=True,
-                site_name="Mandari",
+                site_name="mandari",
             )
             self.stdout.write(self.style.SUCCESS("  Site erstellt"))
 
@@ -466,7 +477,7 @@ class Command(BaseCommand):
             {
                 "title": "Auftragsverarbeitungsvertrag (AVV)",
                 "slug": "avv",
-                "seo_title": "Auftragsverarbeitungsvertrag (AVV) – Mandari",
+                "seo_title": "Auftragsverarbeitungsvertrag (AVV)",
                 "search_description": (
                     "Muster-Auftragsverarbeitungsvertrag nach Art. 28 DSGVO für mandari work — "
                     "TOMs, Subunternehmer, Löschung, Kontrollrechte."
@@ -476,7 +487,7 @@ class Command(BaseCommand):
             {
                 "title": "Kündigung & Widerruf",
                 "slug": "kuendigung",
-                "seo_title": "Vertrag kündigen – Mandari",
+                "seo_title": "Vertrag kündigen",
                 "search_description": (
                     "Kündigungsbutton nach § 312k BGB: ordentliche und außerordentliche "
                     "Kündigung sowie Widerruf für mandari work — direkt online kündigen."
@@ -537,9 +548,9 @@ class Command(BaseCommand):
             blog = BlogIndexPage(
                 title="Blog",
                 slug="blog",
-                seo_title="Blog – Mandari",
-                search_description="Neuigkeiten, Tutorials und Community-Beiträge rund um Mandari.",
-                intro="<p>Neuigkeiten und Einblicke aus der Entwicklung von Mandari.</p>",
+                seo_title="Blog",
+                search_description="Neuigkeiten, Tutorials und Community-Beiträge rund um mandari.",
+                intro="<p>Neuigkeiten und Einblicke aus der Entwicklung von mandari.</p>",
                 show_in_menus=True,
             )
             home.add_child(instance=blog)

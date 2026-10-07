@@ -146,10 +146,10 @@ def robots_txt(request):
     """
     site_url = (getattr(settings, "SITE_URL", "") or "https://mandari.de").rstrip("/")
 
-    body = f"""# Mandari robots.txt
+    body = f"""# mandari robots.txt
 # RFC 9309 — https://www.rfc-editor.org/rfc/rfc9309
 #
-# Welcome, crawler. Mandari is an open-source Ratsinformationssystem.
+# Welcome, crawler. mandari is an open-source Ratsinformationssystem.
 # Public source: https://github.com/mandariOSS/mandari
 
 # Default rule: crawl everything except admin & system endpoints
@@ -160,7 +160,6 @@ Disallow: /django-admin/
 Disallow: /documents/
 Disallow: /altcha/
 Disallow: /work/
-Crawl-delay: 1
 
 # Sitemaps (sitemaps.org)
 Sitemap: {site_url}/sitemap.xml
@@ -206,7 +205,7 @@ def security_txt(request):
     # published PGP key (valid until 07/2028); regenerate before expiry.
     expires = "2027-07-31T00:00:00.000Z"
 
-    body = f"""# Mandari Security Disclosure
+    body = f"""# mandari Security Disclosure
 # RFC 9116 — https://www.rfc-editor.org/rfc/rfc9116
 
 Contact: mailto:security@mandari.de

@@ -43,6 +43,7 @@ os.environ.setdefault("ALLOWED_HOSTS", "testserver")
 
 PRODUKTE_MENUE = [
     ("Übersicht", "/produkte/"),
+    ("Ratsinformationssystem", "/ratsinformationssystem/"),
     ("Für Verwaltungen", "/kommunen/"),
     ("Für Fraktionen", "/fraktionen/"),
     ("Für Bürger:innen", "/produkte/#insight"),
@@ -60,6 +61,7 @@ KOPFZEILE = [WORTMARKE] + HAUPTMENUE + PORTALE + HAUPTMENUE + [ANMELDEN]
 FUSSZEILE = {
     "Produkte": [
         ("Übersicht", "/produkte/"),
+        ("Ratsinformationssystem", "/ratsinformationssystem/"),
         ("Für Verwaltungen", "/kommunen/"),
         ("Für Fraktionen", "/fraktionen/"),
         ("Für Bürger:innen", "/produkte/#insight"),
@@ -179,7 +181,8 @@ class SeitenParser(HTMLParser):
         elif tag in ("header", "footer") and self._region_stack:
             self._region_stack.pop()
         elif tag == "a" and self._anchor is not None:
-            entry = (" ".join("".join(self._anchor["text"]).split()), self._anchor["href"])
+            # Weiche Trennstellen (&shy;) gehören nicht zum Linktext
+            entry = (" ".join("".join(self._anchor["text"]).replace("\u00ad", "").split()), self._anchor["href"])
             self.links.append(entry)
             if self._region == "kopf":
                 self.header_links.append(entry)
