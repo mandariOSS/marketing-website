@@ -3,15 +3,19 @@
   "version": "0.9.0",
   "private": true,
   "scripts": {
-    "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --minify && npm run build:css:kritisch",
-    "build:css:kritisch": "npx tailwindcss -c tailwind.kritisch.config.js --postcss postcss.kritisch.config.js -i ./static/css/input.css -o ./static/css/kritisch.css --minify",
-    "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --watch"
+    "build:css": "npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/styles.css --minify && npm run build:css:kritisch",
+    "build:css:kritisch": "node scripts/kritisches_css.js",
+    "watch:css": "npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/styles.css --watch"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4",
-    "@tailwindcss/typography": "^0.5"
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.20",
+    "postcss": "^8.5.29",
+    "tailwindcss": "^4.3.3"
   },
   "overrides": {
+    "@parcel/watcher": "^2.5.6",
     "postcss-selector-parser": "^7.1.6",
     "source-map-js": "^1.2.2"
   }

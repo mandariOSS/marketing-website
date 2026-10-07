@@ -93,7 +93,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    "website.apps.StatischeDateienConfig",  # django.contrib.staticfiles ohne static/css/input.css
     "django.contrib.sitemaps",
     "django.contrib.postgres",
     # Project apps
