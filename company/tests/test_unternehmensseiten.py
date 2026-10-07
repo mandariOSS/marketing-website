@@ -60,7 +60,8 @@ class UnternehmensseitenTests(TestCase):
     def test_seiten_liefern_inhalt(self):
         checks = {
             "/unternehmen/": ["Wir bauen die digitale Infrastruktur", "Unser Wertekompass", 'id="werte"',
-                              'id="wegmarken"', 'id="angaben"', "Angaben zum Unternehmen", "DE353231778"],
+                              'id="wegmarken"', 'id="angaben"', "Angaben zum Unternehmen", "DE353231778",
+                              "Robert-Koch-Straße 44, 48149 Münster"],
             "/karriere/": ["Bau mit an der Software", "Initiativ bewerben", 'id="stellen"', 'id="ablauf"',
                            "bewerbung@mandari.de"],
             "/presse/": ["Kurzprofil", "Stand 2. Oktober 2026", "204.819", 'id="material"',
@@ -68,7 +69,7 @@ class UnternehmensseitenTests(TestCase):
             "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft", "/unternehmen/#werte"],
             "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", 'id="danke"', "AGPL-3.0"],
             "/kontakt/": ['id="termin"', 'id="nachricht"', 'id="termin-buchen"', "Erstgespräch vereinbaren",
-                          "Nachricht schreiben", "bewerbung@mandari.de", "Aegidiistraße 61/62"],
+                          "Nachricht schreiben", "bewerbung@mandari.de", "Robert-Koch-Straße 44"],
         }
         for url, needles in checks.items():
             with self.subTest(url=url):
@@ -144,7 +145,7 @@ class StufenschalterTests(TestCase):
         settings.stage = STAGE_COMPANY
         settings.managing_directors = "Erika Beispiel"
         settings.street = "Beispielweg 1"
-        settings.postal_city = "48143 Münster"
+        settings.postal_city = "48149 Münster"
         settings.register_court = "Amtsgericht Münster"
         settings.register_number = "HRB 00000"
         settings.full_clean()

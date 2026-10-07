@@ -71,8 +71,8 @@ PRE_FOUNDING = LegalEntity(
     legal_form="Einzelunternehmen",
     representation_label="Vertreten durch",
     representation="Sven Konopka",
-    street="Aegidiistraße 61/62",
-    postal_city="48143 Münster",
+    street="Robert-Koch-Straße 44",
+    postal_city="48149 Münster",
     phone="0251 37989915",
     vat_id="DE353231778",
 )
