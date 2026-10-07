@@ -15,6 +15,16 @@ Quellen (in dieser Reihenfolge geprüft):
 Usage:
     python manage.py refresh_seeded_page <slug>            # nur wenn leer
     python manage.py refresh_seeded_page <slug> --force    # überschreibt Live-Inhalt
+    python manage.py refresh_seeded_page <slug> --nur-meta # nur Titel und SEO-Felder, Inhalt bleibt
+
+`--force` ersetzt den ganzen Inhalt der Seite durch die Seed-Definition (im CMS
+geänderte Blöcke gehen dabei verloren). Sollen nur Titel, SEO-Titel und
+Meta-Description nachgezogen werden (z. B. nach Änderungen in
+`marketing/seo_texte.py`), genügt `--nur-meta`: Der Befehl setzt `title`,
+`seo_title` und `search_description` aus dem Seed, lässt Inhalt und Vorlage
+unangetastet und veröffentlicht das als neue Revision. Seiten mit einem
+unveröffentlichten Entwurf im CMS überspringt er mit einer Warnung, damit der
+Entwurf nicht verdeckt wird.
 
 Beispiele:
     python manage.py refresh_seeded_page trust --force       # Trust Center neu seeden
@@ -42,6 +52,12 @@ class Command(BaseCommand):
             action="store_true",
             help="Überschreibt vorhandenen Inhalt (ohne --force werden nur leere Seiten befüllt)",
         )
+        parser.add_argument(
+            "--nur-meta",
+            action="store_true",
+            dest="nur_meta",
+            help="Nur Titel, SEO-Titel und Meta-Description aus dem Seed übernehmen; der Inhalt bleibt unverändert",
+        )
 
     def handle(self, *args, **options):
         from marketing.blocks import MarketingStreamBlock
@@ -55,6 +71,12 @@ class Command(BaseCommand):
 
         slug = options["slug"].strip().strip("/")
         force = options["force"]
+
+        if options["nur_meta"]:
+            if force:
+                raise CommandError("--nur-meta und --force schließen sich aus.")
+            self._refresh_meta_only(slug)
+            return
 
         # Kontaktseite (eigener Seitentyp ohne StreamField): nur Titel und SEO-Felder
         if slug == "kontakt":
@@ -89,6 +111,60 @@ class Command(BaseCommand):
                 f"Keine Seed-Definition für Slug '{slug}' gefunden.\n"
                 f"Verfügbare Slugs: {', '.join(known)}"
             )
+
+    # ── Nur Titel und SEO-Felder (--nur-meta) ───────────────────────────
+
+    META_FELDER = ("title", "seo_title", "search_description")
+
+    def _refresh_meta_only(self, slug):
+        """Titel und SEO-Felder aus dem Seed übernehmen, ohne Inhalt, Vorlage oder Entwürfe anzurühren."""
+        from marketing.management.commands.setup_initial_pages import (
+            CONTACT_PAGE_META,
+            HOME_PAGE_META,
+            MARKETING_PAGE_META,
+        )
+        from marketing.models import ContactPage, HomePage, MarketingPage
+
+        if slug == "startseite":
+            page, meta = HomePage.objects.first(), HOME_PAGE_META
+        elif slug == "kontakt":
+            page, meta = ContactPage.objects.first(), CONTACT_PAGE_META
+        else:
+            meta = next((m for m in MARKETING_PAGE_META if m["slug"] == slug), None)
+            if meta is None:
+                known = sorted({m["slug"] for m in MARKETING_PAGE_META} | {"startseite", "kontakt"})
+                raise CommandError(
+                    f"Keine Metadaten für Slug '{slug}' im Seed (--nur-meta).\n"
+                    f"Verfügbare Slugs: {', '.join(known)}"
+                )
+            page = MarketingPage.objects.filter(slug=slug).first()
+        if page is None:
+            raise CommandError(
+                f"Seite '{slug}' existiert nicht in der DB — zuerst `python manage.py setup_initial_pages` ausführen."
+            )
+
+        changed = {
+            field: meta[field]
+            for field in self.META_FELDER
+            if field in meta and getattr(page, field) != meta[field]
+        }
+        if not changed:
+            self.stdout.write(f"  ◯ {slug}/: Titel und SEO-Felder sind bereits auf dem Stand des Seeds.")
+            return
+        if page.has_unpublished_changes:
+            self.stdout.write(self.style.WARNING(
+                f"  ◯ {slug}/ hat einen unveröffentlichten Entwurf — übersprungen, damit er erhalten bleibt. "
+                f"Felder im CMS anpassen: {', '.join(sorted(changed))}"
+            ))
+            return
+
+        for field, value in changed.items():
+            setattr(page, field, value)
+        page.save()
+        page.save_revision().publish()
+        self.stdout.write(self.style.SUCCESS(
+            f"  ✓ {slug}/: {', '.join(sorted(changed))} aktualisiert, Inhalt unverändert (veröffentlicht)"
+        ))
 
     # ── Startseite (HomePage — nur Titel und SEO-Felder) ────────────────
 

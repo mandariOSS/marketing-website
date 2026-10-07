@@ -34,6 +34,7 @@ import logging
 import os
 import re
 import time
+from urllib.parse import parse_qs, urlsplit
 
 from django import forms
 from django.conf import settings
@@ -100,6 +101,22 @@ PER_ADDRESS_PER_HOUR = 5
 TOTAL_PER_HOUR = 60
 RATE_WINDOW_SECONDS = 3600
 CACHE_ALIAS = "formulare"
+
+
+# Anlass zu einem ?subject=-Wert für den zugänglichen Namen eines Aufrufs (Linkzweck, WCAG 2.4.4): Führt derselbe
+# Aufruftext auf einer Seite zu verschiedenen Anlässen, nennen vorlesende Programme den Anlass mit. Auf /kommunen/
+# heißt der Aufruf im Seitenkopf und im Schlussband „Erstgespräch vereinbaren“ – einmal zur Anbindung, einmal für
+# Pilotkommunen. Ausgabe: {% aufruf_name label url %} (marketing/templatetags/zugang.py).
+ANLASS_NAMEN = {
+    "Kommune-anbinden": "Kommune anbinden",
+    "Pilot-Kommune": "Pilotkommune werden",
+}
+
+
+def anlass_for_url(url: str) -> str:
+    """Anlass aus ``ANLASS_NAMEN`` für den ``subject``-Parameter einer Adresse (leer, wenn keiner eingetragen ist)."""
+    werte = parse_qs(urlsplit(str(url or "")).query).get("subject") or [""]
+    return ANLASS_NAMEN.get(werte[0], "")
 
 
 def topic_for_subject(subject: str) -> str:

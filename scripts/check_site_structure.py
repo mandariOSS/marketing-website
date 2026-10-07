@@ -51,7 +51,8 @@ PRODUKTE_MENUE = [
 ]
 HAUPTMENUE = PRODUKTE_MENUE + [("Preise", "/preise/"), ("Unternehmen", "/unternehmen/"), ("Kontakt", "/kontakt/")]
 BUERGERPORTAL = ("Bürgerportal", "/insight/")
-ANMELDEN = ("Anmelden", "/work/")
+# Direkt zur Anmeldeseite der Anwendung (/work/ leitet sonst mit 302 dorthin), rel="nofollow"
+ANMELDEN = ("Anmelden", "/accounts/login/?next=/work/")
 PORTALE = [BUERGERPORTAL, ANMELDEN]
 WORTMARKE = ("mandari.", "/")
 # Reihenfolge im Quelltext: Wortmarke, Hauptmenü (Desktop), Portale, dann das Slide-Menü (mobil). Das
@@ -109,6 +110,12 @@ AUSSTEHENDE_PFADE = {"/produkte/", "/fraktionen/", "/unternehmen/"}
 # Seiten, die die Relaunch-PRs mit `retire_page` zurückziehen; bis dahin dürfen sie unverlinkt sein.
 AUSSTEHENDE_RUECKZUEGE = {"/ueber-uns/", "/produkt/"}
 AUSSTEHEND_STARTSEITENTITEL = True
+
+# Zielbereiche für Suchtreffer (Warnung, kein Fehler): Titel samt „ | mandari“ und Meta-Description. Rechtstexte und
+# Kontakt sind ausgenommen; die Texte stehen in marketing/seo_texte.py bzw. MARKETING_PAGE_META.
+TITEL_LAENGE = (30, 60)
+DESCRIPTION_LAENGE = (120, 155)
+OHNE_LAENGENZIEL = {"/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigung/", "/quellen/", "/kontakt/"}
 
 # Pfade, die in Produktion die mandari-Anwendung bedient (nicht diese Website).
 ANWENDUNGS_PFADE = ("/insight/", "/work/", "/session/", "/api/", "/accounts/")
@@ -397,6 +404,12 @@ def main() -> int:
             bericht.fehler_(f"{pfad}: Titel '{t}' schreibt die Marke groß")
 
         d = " ".join((html.description or "").split())
+        if pfad not in OHNE_LAENGENZIEL and pfad != "/":
+            if not TITEL_LAENGE[0] <= len(t) <= TITEL_LAENGE[1]:
+                bericht.warnung(f"{pfad}: Titel hat {len(t)} Zeichen (Ziel {TITEL_LAENGE[0]}–{TITEL_LAENGE[1]}): '{t}'")
+            if d and not DESCRIPTION_LAENGE[0] <= len(d) <= DESCRIPTION_LAENGE[1]:
+                von, bis = DESCRIPTION_LAENGE
+                bericht.warnung(f"{pfad}: Meta-Description hat {len(d)} Zeichen (Ziel {von}–{bis})")
         if not d:
             bericht.fehler_(f"{pfad}: Meta-Description fehlt")
         elif d == ALTER_PLATZHALTER or d.startswith("Mandari - "):

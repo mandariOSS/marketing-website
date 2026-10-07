@@ -47,6 +47,13 @@ ALTCHA_HMAC_KEY = os.environ.get(
 ALTCHA_CHALLENGE_URL = os.environ.get("ALTCHA_CHALLENGE_URL", "/altcha/challenge/")
 ALTCHA_MAX_NUMBER = int(os.environ.get("ALTCHA_MAX_NUMBER", "100000"))
 
+# Sicherheits-Header (marketing/sicherheit.py): Permissions-Policy immer, Content-Security-Policy je nach Modus.
+# CSP_MODUS: "report" (Standard, Content-Security-Policy-Report-Only: der Browser meldet Verstöße, blockiert nichts),
+# "scharf" (Content-Security-Policy: der Browser blockiert) oder "aus". Verstöße gehen an CSP_REPORT_URI, in
+# Produktion den Endpunkt der mandari-Anwendung auf derselben Domain (Reverse Proxy: /csp-report/ → mandari).
+CSP_MODUS = os.environ.get("CSP_MODUS", "report").strip().lower()
+CSP_REPORT_URI = os.environ.get("CSP_REPORT_URI", "/csp-report/").strip()
+
 from urllib.parse import urlparse
 
 _site_domain = urlparse(SITE_URL).netloc
@@ -98,6 +105,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ETag für HTML: Seiten ohne Formular sind bytegleich (CSP über Hashes, ohne Nonce); bei unveränderter Seite
+    # antwortet die Website auf If-None-Match mit 304. Vor allen Middlewares, die den Inhalt ändern könnten.
+    "django.middleware.http.ConditionalGetMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -108,6 +118,8 @@ MIDDLEWARE = [
     # RFC 8288 Link headers for agent / crawler discovery
     # (sitemap, license, privacy-policy, security.txt, vcs-git)
     "marketing.middleware.LinkHeaderMiddleware",
+    # Permissions-Policy und Content-Security-Policy (CSP_MODUS, siehe oben)
+    "marketing.sicherheit.SicherheitsHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "website.urls"

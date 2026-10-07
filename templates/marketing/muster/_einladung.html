@@ -1,12 +1,12 @@
-{% load muster %}
+{% load muster zugang %}
 {# M5c Einladungsband: links Überschrift, ein Satz, genau ein Aufruf (höchstens ein Textlink); rechts die direkten Wege (E-Mail, Gesprächsform, ein Fachlink je Seite), unter 1280 px eine Spalte breiter, damit lange Adressen wie datenschutz@mandari.de in ihre Spalte passen. dunkel: Schlussband in Tinte, sonst kompakt auf dem Band des Blocks. #}
 <div class="wrap grid gap-y-10 lg:grid-cols-12 lg:gap-x-10 lg:items-end">
     <div class="lg:col-span-6">
         <h2 class="{% if dunkel %}t-h2 text-white{% else %}t-h3 m-tinte{% endif %}">{{ titel }}</h2>
         {% if satz %}<p class="{% if dunkel %}t-lead text-gray-300 mt-5{% else %}t-body m-text mt-3{% endif %}">{{ satz }}</p>{% endif %}
         <div class="{% if dunkel %}mt-9{% else %}mt-6{% endif %} flex flex-wrap items-center gap-x-6 gap-y-4">
-            {% if aufruf_url %}<a href="{{ aufruf_url }}" class="btn-primary">{{ aufruf }}</a>{% endif %}
-            {% if link_url %}<a href="{{ link_url }}" class="textlink">{{ link }}</a>{% endif %}
+            {% if aufruf_url %}<a href="{{ aufruf_url }}"{% aufruf_name aufruf aufruf_url %} class="btn-primary">{{ aufruf }}</a>{% endif %}
+            {% if link_url %}<a href="{{ link_url }}"{% aufruf_name link link_url %} class="textlink">{{ link }}</a>{% endif %}
         </div>
     </div>
     <dl class="lg:col-span-6 lg:col-start-7 xl:col-span-5 xl:col-start-8 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:pb-1">

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% comment %}
+Fehlerseite 404: Django rendert sie für jede Adresse ohne Seite (django.views.defaults.page_not_found, Status 404,
+nur ohne DEBUG). Kopf- und Fußzeile wie überall, ein Satz zur Lage, ein Aufruf zur Startseite und darunter Wegweiser
+zu den häufigsten Zielen. Nicht für Suchmaschinen (noindex), nicht in der Sitemap.
+{% endcomment %}
+
+{% block title %}Seite nicht gefunden{% endblock %}
+
+{% block meta_description %}Diese Adresse führt auf mandari.de zu keiner Seite. Von hier geht es weiter zu den Produkten, den Preisen, dem Bürgerportal und zum Kontakt.{% endblock %}
+
+{% block bild_vorladen %}{% endblock %}
+
+{% block extra_head %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="band-hell hero">
+    <div class="wrap">
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Diese Seite gibt es nicht.</h1>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">Vielleicht ist sie umgezogen, oder in der Adresse steckt ein Tippfehler.</p>
+        <div class="mt-9"><a href="/" class="btn-primary">Zur Startseite</a></div>
+    </div>
+</section>
+
+<nav class="band-grau abschnitt" aria-labelledby="wegweiser">
+    <div class="wrap">
+        <h2 id="wegweiser" class="t-h3 m-tinte">Wohin möchten Sie?</h2>
+        <ul class="mt-8 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+            <li>
+                <a href="/produkte/" class="textlink font-semibold">Produkte</a>
+                <p class="mt-2 text-base m-text">Sitzungsdienst, Fraktionsarbeit und Bürgerportal auf einer Plattform.</p>
+            </li>
+            <li>
+                <a href="/preise/" class="textlink font-semibold">Preise</a>
+                <p class="mt-2 text-base m-text">Was mandari für Verwaltungen und Fraktionen kostet.</p>
+            </li>
+            <li>
+                <a href="/insight/" class="textlink font-semibold">Bürgerportal</a>
+                <p class="mt-2 text-base m-text">Ratsinformationen Ihrer Kommune finden und verstehen.</p>
+            </li>
+            <li>
+                <a href="/kontakt/" class="textlink font-semibold">Kontakt</a>
+                <p class="mt-2 text-base m-text">Erstgespräch vereinbaren oder eine Nachricht schreiben.</p>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endblock %}

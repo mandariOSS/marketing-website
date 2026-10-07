@@ -80,3 +80,7 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Fehlerseiten: 404 rendert Django aus templates/404.html (Kopf- und Fußzeile, Wegweiser), 500 kommt ohne Datenbank
+# und ohne Kontextprozessoren aus (marketing/fehlerseiten.py).
+handler500 = "marketing.fehlerseiten.server_error"
