@@ -1,5 +1,3 @@
-/** @type {import('tailwindcss').Config} */
-
 // ── Kritisches CSS: nur die erste Ansicht ────────────────────────────────
 // Eine zweite, kleine Tailwind-Ausgabe (static/css/kritisch.css), die base.html inline in den Kopf schreibt
 // ({% stile %} in marketing/templatetags/stile.py). Sie gestaltet, was beim ersten Aufruf sichtbar ist:
@@ -7,11 +5,11 @@
 // Seitentypen. Das vollständige styles.css lädt danach, ohne das erste Zeichnen aufzuhalten; bis dahin
 // bleibt alles unterhalb des Seitenkopfs unsichtbar (static/css/erste-ansicht.css).
 //
-// Gleiche Konfiguration wie tailwind.config.js, nur andere Vorlagen. Eigene Klassen aus static/css/input.css
-// (Bänder, Hero-Bilder, Schriftstufen …) übernimmt scripts/kritisches_css.js nur, wenn eine dieser Vorlagen
-// sie verwendet. Wer einen Seitenkopf in einer weiteren Vorlage baut, trägt sie hier ein;
-// scripts/check_kritisches_css.py meldet in der CI jede Klasse aus Kopfzeile und Seitenkopf, die fehlt.
-const basis = require('./tailwind.config.js');
+// Keine Tailwind-Konfiguration mehr (Tailwind 4 liest Vorlagen nur über @source): scripts/kritisches_css.js baut aus
+// static/css/input.css mit diesen Vorlagen statt der Quellen von styles.css. Eigene Klassen aus input.css (Bänder,
+// Hero-Bilder …) übernimmt das Skript nur, wenn eine dieser Vorlagen sie verwendet. Wer einen Seitenkopf in einer
+// weiteren Vorlage baut, trägt sie hier ein; scripts/check_kritisches_css.py meldet in der CI jede Klasse aus
+// Kopfzeile und Seitenkopf, die fehlt.
 
 const ersteAnsicht = [
   './templates/base.html',
@@ -37,7 +35,6 @@ const mitEigenemSeitenkopf = [
 const { ohne, seitenkopf } = require('./scripts/kritisches_css.js');
 
 module.exports = {
-  ...basis,
   content: [
     ...ersteAnsicht,
     ...mitEigenemSeitenkopf.map((datei) => ({ raw: seitenkopf(datei), extension: 'html' })),
@@ -47,5 +44,4 @@ module.exports = {
   ],
   // Fließtext im Seitenkopf bleibt bis zum vollständigen Stylesheet unsichtbar
   blocklist: ['prose', 'prose-lg', 'dark:prose-invert'],
-  safelist: [],
 };

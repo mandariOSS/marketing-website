@@ -187,13 +187,20 @@ python manage.py migrate_pages_to_streamfield
 python manage.py runserver 8001
 ```
 
+**Tailwind CSS 4.** `static/css/input.css` bindet Tailwind ein (`@import "tailwindcss"`) und nennt die Quellen
+(`@source`, auch die Safelist für zur Laufzeit zusammengesetzte Klassen); das Theme steht in `tailwind.config.js`
+(`@config`). Die Website sieht aus wie mit Tailwind 3: Farben, Schriftgrößen und Haltepunkte haben dort die Werte von
+Tailwind 3, `dark:`, `hover:` und `transition-colors` verhalten sich wie bisher (Kopf von `input.css`), und die
+Grundstile in `base.html` stehen in der Ebene `base`, damit Utilities ihnen vorgehen. `collectstatic` übergeht
+`input.css` (`website/apps.py`), ausgeliefert werden nur `styles.css` und `kritisch.css`.
+
 ## 🏗 Tech-Stack
 
 | Bereich | Technologie | Lizenz |
 |---|---|---|
 | Backend | Django 6, Wagtail 7 | BSD-3 |
 | Datenbank | PostgreSQL 16 | PostgreSQL |
-| Frontend | HTMX + Alpine.js + Tailwind CSS 3 | MIT / BSD |
+| Frontend | HTMX + Alpine.js + Tailwind CSS 4 | MIT / BSD |
 | Icons | [Lucide](https://lucide.dev) als Inline-SVG (`marketing/templatetags/icons.py`), ohne JavaScript | ISC |
 | Suche | Wagtail-Builtin | BSD-3 |
 | Spam-Schutz | [Altcha](https://altcha.org) v2 | MIT |
@@ -255,8 +262,9 @@ marketing-website/
 ### Ladezeit
 
 - **Kritisches CSS.** `npm run build:css` baut neben `styles.css` das kleine `static/css/kritisch.css`:
-  Grundgerüst, Kopfzeile und Seitenkopf aller Seitentypen (Vorlagen in `tailwind.kritisch.config.js`, eigene
-  Klassen aus `input.css` filtert `scripts/kritisches_css.js`). `{% stile %}` (`marketing/templatetags/stile.py`)
+  Grundgerüst, Kopfzeile und Seitenkopf aller Seitentypen. `scripts/kritisches_css.js` baut es aus `input.css`, mit
+  den Vorlagen in `tailwind.kritisch.config.js` statt der Quellen von `styles.css`, und filtert eigene Klassen, die
+  dort nicht vorkommen. `{% stile %}` (`marketing/templatetags/stile.py`)
   schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
   aufzuhalten. Bis es da und Alpine gestartet ist, bleibt alles unterhalb des Seitenkopfs ausgeblendet
   (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.

@@ -49,7 +49,7 @@ jobs:
       - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS, Größe)
         # Zwei Block-Templates setzen Farbklassen dynamisch zusammen (bg-{{ self.color }}-50 in
         # disclaimer_box.html, text-{{ e.color }}-600 in email_directory.html) — dieser Check stellt
-        # sicher, dass der Tailwind-Build sie enthält (Safelist in tailwind.config.js). Die Obergrenze
+        # sicher, dass der Tailwind-Build sie enthält (Safelist: @source inline in static/css/input.css). Die Obergrenze
         # hält ungenutztes CSS klein: Das Stylesheet blockiert auf jeder Seite das erste Rendern.
         run: |
           python - <<'EOF'

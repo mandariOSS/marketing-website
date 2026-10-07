@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* ══ Gestaltungssystem ═══════════════════════════════════════════════════════
    Eine Skala für alle Seiten (README, Abschnitt „Gestaltung“):
    Schrift  H1 56 · H2 40 (Dokumente 28) · H3 22 · Lead 20 · Text 18 · Sekundär 16 · Klein 14 px
@@ -10,6 +6,90 @@
    Raster   Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen)
    Farbe    Tinte #111827, Text #4B5563, Weiß, Hellgrau #EEF0F4, Indigo #4F46E5 nur für Aufruf, Links und Wortmarke;
             Kennfarben Session/Work/Insight nur für Produktnamen und Produktflächen. */
+
+/* ── Tailwind CSS 4 ──────────────────────────────────────────────────────
+   Theme in tailwind.config.js (Farben, Schriftgrößen und Haltepunkte wie in Tailwind 3, Prosa). theme(inline):
+   Utilities tragen die Werte selbst statt var(--color-…); das hält styles.css klein, eigene Regeln unten haben ihre
+   eigenen Variablen. */
+@import "tailwindcss" source(none) theme(inline);
+@config "../../tailwind.config.js";
+
+/* Quellen von styles.css, je Zeile eine Anweisung: Das kritische CSS ersetzt alle diese Zeilen durch die Vorlagen der
+   ersten Ansicht (scripts/kritisches_css.js).
+   Safelist (inline): Einige Block-Templates setzen Klassen zur Laufzeit zusammen (disclaimer_box.html:
+   bg-{{ self.color }}-50, email_directory.html: text-{{ e.color }}-600, pricing_table: lg:grid-cols-{{ tiers|length }},
+   stats_grid: md:grid-cols-{{ columns }}). Der Scanner sieht nur den Template-Quelltext; hier stehen genau diese
+   Kombinationen aus Palette (COLOR_CHOICES in marketing/blocks.py) und Abstufung, nicht mehr: Jede weitere Klasse
+   landet ungenutzt im CSS jeder Seite. Wer in einem Template eine neue Klasse zusammensetzt, ergänzt sie hier und im
+   CSS-Build-Check der CI (.github/workflows/ci.yml). */
+@source "../../templates";
+@source "../../.legal-content";
+@source inline("bg-{primary,green,blue,amber,rose,teal,gray}-50 dark:bg-{primary,green,blue,amber,rose,teal,gray}-900/20");
+@source inline("text-{primary,green,blue,amber,rose,teal,gray}-600 dark:text-{primary,green,blue,amber,rose,teal,gray}-400");
+@source inline("{md,lg}:grid-cols-{2,3,4}");
+
+/* Varianten wie in Tailwind 3: dark: hängt an der Klasse .dark am <html> (base.html, static/js/kopfzeile.js) und
+   zählt wie bisher eine Klasse mehr; hover: gilt auch auf Touch-Geräten wie die eigenen :hover-Regeln unten
+   (Tailwind 4 setzt es sonst nur bei @media (hover: hover)). */
+@custom-variant dark (&:is(.dark *));
+@custom-variant hover (&:hover);
+
+/* transition-colors wie in Tailwind 3: Tailwind 4 nimmt outline-color dazu, dann blendete der Fokusrahmen (base.html)
+   bei Tastaturfokus 150 ms lang von der Textfarbe in Indigo über. Steht hinter den erzeugten Utilities (gleiche
+   Ebene, gleiche Spezifität); kein Element kombiniert transition-colors mit einer anderen transition-Utility. */
+@layer utilities {
+  .transition-colors {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  }
+}
+
+/* Grundstile wie in Tailwind 3; das Preflight von Tailwind 4 setzt Rahmen in der Textfarbe, Platzhalter in halber
+   Textfarbe und Knöpfe mit dem Standardzeiger. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  /* Innenabstand des Browsers für Einträge von Auswahllisten und Tabellenzellen wie in Tailwind 3 (das Preflight von
+     Tailwind 4 setzt padding: 0 auf jedes Element); Utilities und Prosa gehen weiter vor */
+  option,
+  td,
+  th {
+    padding: revert;
+  }
+  /* Datumsfelder (/kontakt/) wie in Tailwind 3, ohne die Angleichung der Segmente aus dem Preflight von Tailwind 4 */
+  ::-webkit-date-and-time-value {
+    min-height: revert;
+    text-align: revert;
+  }
+  ::-webkit-datetime-edit,
+  ::-webkit-datetime-edit-fields-wrapper,
+  ::-webkit-datetime-edit-year-field,
+  ::-webkit-datetime-edit-month-field,
+  ::-webkit-datetime-edit-day-field,
+  ::-webkit-datetime-edit-hour-field,
+  ::-webkit-datetime-edit-minute-field,
+  ::-webkit-datetime-edit-second-field,
+  ::-webkit-datetime-edit-millisecond-field,
+  ::-webkit-datetime-edit-meridiem-field {
+    display: revert;
+    padding: revert;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: revert;
+  }
+}
 
 /* ── Bänder und Produktfarben ────────────────────────────────────────────
    Jeder Abschnitt liegt auf einem vollbreiten Band; benachbarte Bänder haben nie
@@ -232,44 +312,46 @@
 /* ── Gestaltung ohne Effekte: Schriftstufen, ein Button, Textlinks ──────────
    Grundlage: Startseiten-Prototyp (Weiß, Tinte #111827, helle Fläche, Indigo nur für Button,
    Textlinks und den Punkt der Wortmarke). Zustände ändern Farbe oder Unterstreichung, nie die Position. */
+
+/* Schriftstufen: eine Schrift (Inter), feste Größen, linksbündig. Als Utilities, damit sie Varianten annehmen
+   (/kontakt/: text-base sm:t-body); Klassen aus @layer components kennt Tailwind 4 nicht als Utilities. */
+@utility t-h1 {
+  font-size: clamp(2rem, 1.2rem + 2.9vw, 3.5rem);   /* Handy 32 px, ab 1280 px 56 px */
+  line-height: 1.06;
+  letter-spacing: -0.032em;
+  font-weight: 650;
+}
+@utility t-h2 {
+  font-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.026em;
+  font-weight: 650;
+}
+/* Überschrift in Dokumenten (Rechtstexte, Trust Center, Releases, Quellen) */
+@utility t-h2-dok {
+  font-size: clamp(1.5rem, 1.4rem + 0.4vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-weight: 630;
+}
+@utility t-h3 {
+  font-size: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem);
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+  font-weight: 620;
+}
+@utility t-lead {
+  font-size: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
+  line-height: 1.6;
+}
+@utility t-body {
+  font-size: 1.125rem;
+  line-height: 1.65;
+}
+
 @layer components {
   .wrap {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Schriftstufen: eine Schrift (Inter), feste Größen, linksbündig */
-  .t-h1 {
-    font-size: clamp(2rem, 1.2rem + 2.9vw, 3.5rem);   /* Handy 32 px, ab 1280 px 56 px */
-    line-height: 1.06;
-    letter-spacing: -0.032em;
-    font-weight: 650;
-  }
-  .t-h2 {
-    font-size: clamp(1.75rem, 1.4rem + 1.3vw, 2.5rem);
-    line-height: 1.12;
-    letter-spacing: -0.026em;
-    font-weight: 650;
-  }
-  /* Überschrift in Dokumenten (Rechtstexte, Trust Center, Releases, Quellen) */
-  .t-h2-dok {
-    font-size: clamp(1.5rem, 1.4rem + 0.4vw, 1.75rem);
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    font-weight: 630;
-  }
-  .t-h3 {
-    font-size: clamp(1.25rem, 1.2rem + 0.2vw, 1.375rem);
-    line-height: 1.3;
-    letter-spacing: -0.014em;
-    font-weight: 620;
-  }
-  .t-lead {
-    font-size: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
-    line-height: 1.6;
-  }
-  .t-body {
-    font-size: 1.125rem;
-    line-height: 1.65;
   }
 
   /* Der Punkt der Wortmarke – einziges Akzent-Detail einer Überschrift */
@@ -326,7 +408,13 @@
 
   /* Formularfelder: eine Höhe (48 px), ein Rahmen, ein Fokus */
   .feld {
-    @apply mt-2 block w-full h-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3.5 text-base text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20 focus:outline-none;
+    @apply mt-2 block w-full h-12 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-3.5 text-base text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-primary-600 focus:ring-2 focus:ring-primary-600/20;
+  }
+  /* Fokusrahmen wie outline-none aus Tailwind 3: vorhanden, aber durchsichtig (base.html färbt ihn im Dunkeln ein);
+     outline-hidden aus Tailwind 4 schaltet ihn ganz ab */
+  .feld:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
   }
   textarea.feld {
     @apply h-auto py-3 leading-relaxed;

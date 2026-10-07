@@ -39,13 +39,17 @@ LEER = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "met
 
 
 # Wie scripts/kritisches_css.js: Zustände durch Bedienen und reine Übergänge braucht das erste Zeichnen nicht.
-ZUSTAND = re.compile(r":hover|:focus|:active|::backdrop|\[aria-expanded=true\]")
+ZUSTAND = re.compile(r":hover|:focus|:-moz-focusring|:active|::backdrop|\[aria-expanded=true\]")
+# Tailwind 4 merkt sich Dauer und Verlauf eines Übergangs zusätzlich in --tw-duration und --tw-ease
+UEBERGANG = ("--tw-duration", "--tw-ease")
 
 
 def nur_uebergang(block):
-    """Besteht ein Regelblock nur aus Übergängen und Animationen (transition*, animation*)?"""
+    """Besteht ein Regelblock nur aus Übergängen und Animationen (transition*, animation*, UEBERGANG)?"""
     eigenschaften = [deklaration.split(":", 1)[0].strip() for deklaration in block.split(";") if deklaration.strip()]
-    return bool(eigenschaften) and all(e.startswith(("transition", "animation")) for e in eigenschaften)
+    return bool(eigenschaften) and all(
+        e.startswith(("transition", "animation")) or e in UEBERGANG for e in eigenschaften
+    )
 
 
 def _teile(selektor):
@@ -166,7 +170,8 @@ def main():
         for url in SEITEN_HTML:
             html = client.get(url).content
             groessen[url] = len(gzip.compress(html, 6))
-            if b"<style>*" not in html[: html.find(b"</head>")] or b"<form" not in html and url == "/kontakt/":
+            inline = f"<style>{kritisch.strip()}</style>".encode()
+            if inline not in html[: html.find(b"</head>")] or b"<form" not in html and url == "/kontakt/":
                 fehler.append(f"{url}: nicht wie in Produktion gerendert (kritisches CSS, Formulare)")
             if groessen[url] > GRENZE_HTML:
                 fehler.append(
