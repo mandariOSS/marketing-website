@@ -41,6 +41,17 @@ class NichtGefundenTests(TestCase):
         # Kein Hero-Bild einer anderen Seite vorladen
         self.assertNotIn('rel="preload" as="image"', kopf)
 
+    def test_ohne_canonical_und_og_url(self):
+        # Die aufgerufene Adresse gibt es nicht: keine kanonische Adresse und kein og:url mit ihr
+        kopf = self.client.get("/gibt-es-nicht/").content.decode("utf-8").split("</head>")[0]
+        self.assertNotIn('rel="canonical"', kopf)
+        self.assertNotIn('property="og:url"', kopf)
+        self.assertNotIn("gibt-es-nicht", kopf)
+        # Andere Seiten behalten beide
+        kopf = self.client.get("/preise/").content.decode("utf-8").split("</head>")[0]
+        self.assertIn('<link rel="canonical" href="https://mandari.de/preise/">', kopf)
+        self.assertIn('<meta property="og:url" content="https://mandari.de/preise/">', kopf)
+
     def test_auch_unter_tieferen_pfaden(self):
         antwort = self.client.get("/vergleich/gibt-es-nicht/")
         self.assertEqual(antwort.status_code, 404)

@@ -11,6 +11,9 @@ zu den häufigsten Zielen. Nicht für Suchmaschinen (noindex), nicht in der Site
 
 {% block bild_vorladen %}{% endblock %}
 
+{# Keine kanonische Adresse: Die aufgerufene Adresse gibt es nicht (ohne Canonical auch kein og:url) #}
+{% block canonical %}{% endblock %}
+
 {% block extra_head %}<meta name="robots" content="noindex">{% endblock %}
 
 {% block content %}

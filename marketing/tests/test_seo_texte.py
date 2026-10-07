@@ -2,6 +2,7 @@
 --nur-meta``, das nur Titel und SEO-Felder setzt und den Inhalt einer Seite stehen lässt."""
 
 import re
+from html import unescape
 from io import StringIO
 
 from django.core.management import CommandError, call_command
@@ -17,6 +18,8 @@ from marketing.models import MarketingPage
 
 TITEL = (30, 60)
 DESCRIPTION = (120, 155)
+# Rechtsgrundlagen und Normen: Eine Description nennt sie nur, wenn die Seite sie selbst nennt.
+NORMEN = r"\b(?:DSA|NetzDG|DDG|BFSG|BITV 2\.0|EN 301 549|WCAG|BGG|DSGVO|AGPL-3\.0|OZG)\b"
 
 
 class LaengenTests(SimpleTestCase):
@@ -114,6 +117,31 @@ class NurMetaTests(TestCase):
         self.assertIn(f"<title>{seo_texte.SEO_TEXTE['preise']['seo_title']} | mandari</title>", html)
         self.assertIn("Im CMS geänderte Überschrift", html)
 
+    def test_probelauf_zeigt_alt_und_neu_und_speichert_nichts(self):
+        # Befund aus der Prüfung: --nur-meta setzt auch einen im CMS umbenannten Seitentitel auf den Seed zurück. Der
+        # Probelauf zeigt das vorher; jeder Lauf nennt je Feld den alten und den neuen Wert.
+        page = self.im_cms_bearbeitet("preise")
+        page.title = "Preise und Pakete"
+        page.save()
+        page.save_revision().publish()
+        revisionen = page.revisions.count()
+        neuer_titel = seo_texte.SEO_TEXTE["preise"]["seo_title"]
+        for schalter in ("--probelauf", "--dry-run"):
+            ausgabe = StringIO()
+            call_command("refresh_seeded_page", "preise", "--nur-meta", schalter, stdout=ausgabe)
+            text = ausgabe.getvalue()
+            self.assertIn("Probelauf, nichts gespeichert", text)
+            self.assertIn("title: „Preise und Pakete“ → „Preise“", text)
+            self.assertIn(f"seo_title: „Preise – Mandari“ → „{neuer_titel}“", text)
+        page = self.seite("preise")
+        self.assertEqual((page.title, page.seo_title), ("Preise und Pakete", "Preise – Mandari"))
+        self.assertEqual(page.revisions.count(), revisionen)
+        # Der echte Lauf nennt dieselben Werte und setzt sie
+        ausgabe = StringIO()
+        call_command("refresh_seeded_page", "preise", "--nur-meta", stdout=ausgabe)
+        self.assertIn("title: „Preise und Pakete“ → „Preise“", ausgabe.getvalue())
+        self.assertEqual((self.seite("preise").title, self.seite("preise").seo_title), ("Preise", neuer_titel))
+
     def test_force_ueberschreibt_den_inhalt_deshalb_nur_meta(self):
         # Befund aus der Prüfung: --force setzt die ganze Seite auf den Seed zurück
         self.im_cms_bearbeitet("preise")
@@ -160,6 +188,8 @@ class NurMetaTests(TestCase):
             call_command("refresh_seeded_page", "preise", "--nur-meta", "--force", stdout=StringIO())
         with self.assertRaisesMessage(CommandError, "Keine Metadaten"):
             call_command("refresh_seeded_page", "gibt-es-nicht", "--nur-meta", stdout=StringIO())
+        with self.assertRaisesMessage(CommandError, "nur zusammen mit --nur-meta"):
+            call_command("refresh_seeded_page", "preise", "--probelauf", stdout=StringIO())
 
 
 class ReleaseUebersichtTests(TestCase):
@@ -203,3 +233,19 @@ class SeitenTitelTests(TestCase):
                 self.assertEqual(titel.replace("&amp;", "&"), f"{texte['seo_title']} | mandari", slug)
             if "search_description" in texte:
                 self.assertIn(f'<meta name="description" content="{texte["search_description"]}">', html, slug)
+
+    def test_rechtsgrundlagen_der_description_stehen_auf_der_seite(self):
+        # Befund aus der Prüfung: „Meldestelle nach DSA und NetzDG“ und „nach BFSG“, die Seiten nennen aber nur den DSA
+        # bzw. BITV 2.0 und EN 301 549. Rechtliche Angaben im Suchtreffer müssen zur Seite passen.
+        geprueft = 0
+        for slug, texte in seo_texte.SEO_TEXTE.items():
+            normen = set(re.findall(NORMEN, texte.get("search_description", "")))
+            if not normen:
+                continue
+            html = self.client.get(f"/{slug}/").content.decode("utf-8")
+            main = re.search(r"<main.*?</main>", html, re.S).group(0)
+            text = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", main)))
+            for norm in sorted(normen):
+                self.assertRegex(text, rf"\b{re.escape(norm)}\b", f"/{slug}/ nennt {norm} nicht")
+                geprueft += 1
+        self.assertGreaterEqual(geprueft, 3)

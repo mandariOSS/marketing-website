@@ -20,13 +20,14 @@
     <meta name="description" content="{{ head_description|meta_text }}">
     <meta name="theme-color" content="#4f46e5">
 
-    <link rel="canonical" href="{{ canonical_url }}">
+    {# Ohne Canonical (leerer Block, z. B. 404): auch kein og:url #}
+    {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
 
     {# Open Graph und Twitter-Card: gleiche Angaben wie Titel, Beschreibung und Canonical #}
     <meta property="og:title" content="{{ head_title|full_title:seo.is_home }}">
     <meta property="og:description" content="{{ head_description|meta_text }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ canonical_url }}">
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
     <meta property="og:image" content="{% block og_image %}{{ seo.og_image }}{% endblock %}">
     <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="{{ seo.site_name }}">

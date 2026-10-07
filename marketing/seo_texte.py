@@ -3,7 +3,8 @@ Suchmaschinen-Titel und Meta-Descriptions einzelner Seiten (SEO-Nachtrag, Issue 
 
 Ziel nach zwei externen SEO-Prüfungen: Titel mit 30–60 Zeichen einschließlich „ | mandari“, Descriptions mit
 120–155 Zeichen. Kurze Titel wie „Preise | mandari“ sagen in der Trefferliste nichts; Descriptions unter 120 Zeichen
-ersetzt Google oft durch einen beliebigen Textausschnitt. Keine Preisangaben im Titel.
+ersetzt Google oft durch einen beliebigen Textausschnitt. Keine Preisangaben im Titel. Descriptions versprechen nur,
+was auf der Seite steht; Rechtsgrundlagen (DSA, BITV 2.0 …) nur, wenn die Seite sie nennt.
 
 Die Einträge überschreiben ``seo_title`` und ``search_description`` aus ``MARKETING_PAGE_META``
 (``setup_initial_pages``), sie gelten damit für neue Datenbanken, ``migrate_pages_to_streamfield`` und
@@ -34,20 +35,20 @@ SEO_TEXTE = {
     },
     "transparenz": {
         "search_description": (
-            "Transparenzbericht von mandari: Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Reichweite des "
-            "Bürgerportals, Finanzen und Open-Source-Beiträge."
+            "Transparenzbericht von mandari: Behördenanfragen, Sicherheitsvorfälle, Einnahmen und Ausgaben, Reichweite "
+            "des Bürgerportals, vierteljährlich aktualisiert."
         ),
     },
     "barrierefreiheit": {
         "search_description": (
-            "Erklärung zur Barrierefreiheit von mandari nach BFSG, BITV 2.0 und EN 301 549: was schon funktioniert, "
-            "wo wir noch arbeiten, Feedback und Schlichtung."
+            "Erklärung zur Barrierefreiheit von mandari nach BITV 2.0 und EN 301 549: was schon funktioniert, wo wir "
+            "noch arbeiten, Feedback und Schlichtung."
         ),
     },
     "abuse": {
         "search_description": (
             "Missbrauch melden bei mandari: Spam, rechtswidrige Inhalte, Verstöße gegen Datenschutz oder Urheberrecht "
-            "und Belästigung. Meldestelle nach DSA und NetzDG."
+            "und Belästigung. Meldestelle nach dem DSA."
         ),
     },
     "open-source": {
@@ -68,8 +69,8 @@ SEO_TEXTE = {
     "unternehmen": {
         "seo_title": "Unternehmen: GovTech-Startup aus Münster",
         "search_description": (
-            "mandari ist ein GovTech-Startup aus Münster: Mission, Wertekompass, Geschäftsmodell, Wegmarken und "
-            "Angaben zum Unternehmen für Eignungsprüfung und Vergabe."
+            "mandari ist ein GovTech-Startup aus Münster: wofür wir stehen, Wertekompass, Geschäftsmodell, der Weg zu "
+            "Version 1.0 und Angaben für Vergabeverfahren."
         ),
     },
     "partner": {

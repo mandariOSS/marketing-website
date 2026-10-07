@@ -16,6 +16,7 @@ Usage:
     python manage.py refresh_seeded_page <slug>            # nur wenn leer
     python manage.py refresh_seeded_page <slug> --force    # überschreibt Live-Inhalt
     python manage.py refresh_seeded_page <slug> --nur-meta # nur Titel und SEO-Felder, Inhalt bleibt
+    python manage.py refresh_seeded_page <slug> --nur-meta --probelauf  # zeigt alt → neu, speichert nichts
 
 `--force` ersetzt den ganzen Inhalt der Seite durch die Seed-Definition (im CMS
 geänderte Blöcke gehen dabei verloren). Sollen nur Titel, SEO-Titel und
@@ -24,7 +25,10 @@ Meta-Description nachgezogen werden (z. B. nach Änderungen in
 `seo_title` und `search_description` aus dem Seed, lässt Inhalt und Vorlage
 unangetastet und veröffentlicht das als neue Revision. Seiten mit einem
 unveröffentlichten Entwurf im CMS überspringt er mit einer Warnung, damit der
-Entwurf nicht verdeckt wird.
+Entwurf nicht verdeckt wird. Die Ausgabe nennt je geändertem Feld den alten und
+den neuen Wert; `--probelauf` (auch `--dry-run`) zeigt das vorab, ohne zu
+speichern. So fällt auf, wenn etwa ein im CMS umbenannter Seitentitel auf den
+Seed-Stand zurückginge.
 
 Beispiele:
     python manage.py refresh_seeded_page trust --force       # Trust Center neu seeden
@@ -58,6 +62,13 @@ class Command(BaseCommand):
             dest="nur_meta",
             help="Nur Titel, SEO-Titel und Meta-Description aus dem Seed übernehmen; der Inhalt bleibt unverändert",
         )
+        parser.add_argument(
+            "--probelauf",
+            "--dry-run",
+            action="store_true",
+            dest="probelauf",
+            help="Nur mit --nur-meta: zeigt je Feld den alten und den neuen Wert, speichert nichts",
+        )
 
     def handle(self, *args, **options):
         from marketing.blocks import MarketingStreamBlock
@@ -72,10 +83,12 @@ class Command(BaseCommand):
         slug = options["slug"].strip().strip("/")
         force = options["force"]
 
+        if options["probelauf"] and not options["nur_meta"]:
+            raise CommandError("--probelauf gibt es nur zusammen mit --nur-meta.")
         if options["nur_meta"]:
             if force:
                 raise CommandError("--nur-meta und --force schließen sich aus.")
-            self._refresh_meta_only(slug)
+            self._refresh_meta_only(slug, probelauf=options["probelauf"])
             return
 
         # Kontaktseite (eigener Seitentyp ohne StreamField): nur Titel und SEO-Felder
@@ -116,8 +129,11 @@ class Command(BaseCommand):
 
     META_FELDER = ("title", "seo_title", "search_description")
 
-    def _refresh_meta_only(self, slug):
-        """Titel und SEO-Felder aus dem Seed übernehmen, ohne Inhalt, Vorlage oder Entwürfe anzurühren."""
+    def _refresh_meta_only(self, slug, probelauf=False):
+        """Titel und SEO-Felder aus dem Seed übernehmen, ohne Inhalt, Vorlage oder Entwürfe anzurühren.
+
+        Mit ``probelauf`` nur anzeigen, was sich ändern würde (alter und neuer Wert je Feld).
+        """
         from marketing.management.commands.setup_initial_pages import (
             CONTACT_PAGE_META,
             HOME_PAGE_META,
@@ -151,11 +167,22 @@ class Command(BaseCommand):
         if not changed:
             self.stdout.write(f"  ◯ {slug}/: Titel und SEO-Felder sind bereits auf dem Stand des Seeds.")
             return
+        # Je Feld „alt → neu“: Ein im CMS umbenannter Seitentitel fällt so vor bzw. nach dem Lauf auf.
+        aenderungen = "\n".join(
+            f"      {field}: „{getattr(page, field)}“ → „{changed[field]}“" for field in sorted(changed)
+        )
         if page.has_unpublished_changes:
             self.stdout.write(self.style.WARNING(
                 f"  ◯ {slug}/ hat einen unveröffentlichten Entwurf — übersprungen, damit er erhalten bleibt. "
                 f"Felder im CMS anpassen: {', '.join(sorted(changed))}"
             ))
+            self.stdout.write(aenderungen)
+            return
+        if probelauf:
+            self.stdout.write(self.style.WARNING(
+                f"  ◯ {slug}/ (Probelauf, nichts gespeichert): würde {', '.join(sorted(changed))} setzen"
+            ))
+            self.stdout.write(aenderungen)
             return
 
         for field, value in changed.items():
@@ -165,6 +192,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"  ✓ {slug}/: {', '.join(sorted(changed))} aktualisiert, Inhalt unverändert (veröffentlicht)"
         ))
+        self.stdout.write(aenderungen)
 
     # ── Startseite (HomePage — nur Titel und SEO-Felder) ────────────────
 
