@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags muster %}
+{% load wagtailcore_tags muster zugang %}
 
 {% block content %}
 {# M4 Dokumentseite (Rechtstexte, Quellen, Trust Center): Inhaltsleiste links, Text in Lesebreite, Randspalte rechts mit Stand, Verweisen und Ansprechpartner. Am Handy: Titel, Randspalte, einklappbares Inhaltsverzeichnis, Text. Aufbau aus marketing/templatetags/muster.py (dokument_aufbau). #}
@@ -38,15 +38,15 @@
 
         <div class="lg:col-span-6 lg:col-start-4 lg:row-start-2 min-w-0 dok-text">
             {% if dok.html %}
-            <div class="prose prose-lg dark:prose-invert max-w-none">{{ dok.html }}</div>
+            <div class="prose prose-lg dark:prose-invert max-w-none">{{ dok.html|neuer_tab }}</div>
             {% endif %}
             {% for a in dok.abschnitte %}
             <section{% if a.anker %} id="{{ a.anker }}"{% endif %} class="scroll-mt-24{% if not forloop.first %} mt-14 lg:mt-16{% endif %}">
                 {% if a.titel %}<h2 class="t-h2-dok m-tinte">{{ a.titel }}</h2>{% endif %}
                 {% for b in a.vorne %}<div class="mt-6 mb-8">{% include_block b with eingebettet=True %}</div>{% endfor %}
-                <div class="{% if a.titel %}mt-5 {% endif %}prose prose-lg dark:prose-invert max-w-none">{{ a.body|richtext }}</div>
+                <div class="{% if a.titel %}mt-5 {% endif %}prose prose-lg dark:prose-invert max-w-none">{{ a.body|richtext|neuer_tab }}</div>
                 {% for b in a.bloecke %}<div class="mt-8">{% include_block b with eingebettet=True %}</div>{% endfor %}
-                {% for h in a.hinweise %}<div class="mt-6 text-base m-text richtext">{{ h|richtext }}</div>{% endfor %}
+                {% for h in a.hinweise %}<div class="mt-6 text-base m-text richtext">{{ h|richtext|neuer_tab }}</div>{% endfor %}
             </section>
             {% endfor %}
         </div>

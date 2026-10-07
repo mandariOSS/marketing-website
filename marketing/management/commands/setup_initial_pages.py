@@ -13,6 +13,8 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import get_template as load_template
 from wagtail.models import Page, Site
 
+from marketing import seo_texte
+
 # Kontaktseite (ContactPage, eigener Seitentyp) – `refresh_seeded_page kontakt --force`
 # bringt Titel und SEO-Felder einer bestehenden Seite auf diesen Stand.
 CONTACT_PAGE_META = {
@@ -55,6 +57,7 @@ HOME_PAGE_META = {
 # ── Marketing-Seiten: Metadaten (Titel, SEO) ──────────────────────────────
 # Modul-Level, damit `refresh_seeded_page` bei Live-Updates auch Titel und
 # SEO-Felder auf den aktuellen Seed-Stand bringen kann.
+# SEO-Titel und Descriptions einzelner Seiten überschreibt marketing/seo_texte.py (unter der Liste).
 MARKETING_PAGE_META = [
     # ── Produkt / Lösungen ────────────────────────────────────────────
     # /produkte/ (Plattform-Übersicht) und /fraktionen/ (mandari Work) ersetzen
@@ -284,6 +287,9 @@ MARKETING_PAGE_META = [
     # in website/urls.py auf die neuen URLs umgeleitet.
 ]
 
+# SEO-Titel und Descriptions mit geprüften Längen (Issue mandariOSS/mandari#914) gehen den Einträgen oben vor.
+seo_texte.anwenden(MARKETING_PAGE_META)
+
 
 # ── Blog ──────────────────────────────────────────────────────────────────
 # Der Blog ruht (keine Beiträge): /blog/ und /blog/feed/ leiten auf /releases/
@@ -317,10 +323,10 @@ SEO_DESCRIPTION_DEFAULTS = {
 # ── Release-Übersicht ─────────────────────────────────────────────────────
 # Frühere Seed-Fassungen werden ersetzt, im CMS geänderte Texte bleiben.
 RELEASE_INDEX_META = {
-    "seo_title": "Releases",
+    "seo_title": "Releases: alle Versionen mit Release-Notes",
     "search_description": (
         "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
-        "Fraktionen und Bürgerportal."
+        "Fraktionen und Bürgerportal, die neueste Version zuerst."
     ),
     "intro": (
         "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
@@ -329,8 +335,12 @@ RELEASE_INDEX_META = {
     ),
 }
 RELEASE_INDEX_LEGACY = {
-    "seo_title": {"Releases – Mandari"},
-    "search_description": {"Versionshistorie und Changelogs."},
+    "seo_title": {"Releases – Mandari", "Releases"},
+    "search_description": {
+        "Versionshistorie und Changelogs.",
+        "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
+        "Fraktionen und Bürgerportal.",
+    },
     "intro": {"<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>"},
 }
 

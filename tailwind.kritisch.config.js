@@ -31,6 +31,7 @@ const mitEigenemSeitenkopf = [
   './templates/marketing/sicherheit_disclosure.html',
   './templates/blog/release.html',
   './templates/blog/release_index.html',
+  './templates/404.html',
 ];
 
 const { ohne, seitenkopf } = require('./scripts/kritisches_css.js');

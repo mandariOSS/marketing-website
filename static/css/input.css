@@ -52,6 +52,8 @@
 .band-marke { background-color: var(--band-marke); }
 .band-tinte { background-color: var(--band-tinte); color: #fff; }
 .band-fuss { background-color: var(--band-fuss); }
+/* Fußzeile: Link auf die aktuelle Seite (aria-current, {% aktuelle_seite %} in templates/components/footer.html) */
+.band-fuss a[aria-current="page"] { color: #fff; }
 
 /* Neutrale Fläche, die sich vom Band abhebt (eine Ebene, kein Rahmen) */
 .band-grau .flaeche { background-color: var(--band-hell); }

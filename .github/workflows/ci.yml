@@ -446,3 +446,19 @@ jobs:
           python manage.py runserver 127.0.0.1:8191 --noreload > runserver.log 2>&1 &
           for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8191/ && break; sleep 1; done
           python scripts/check_fuellung.py || (tail -20 runserver.log; exit 1)
+
+      - name: Content-Security-Policy im Browser (keine Verstöße auf allen Seiten, wie im Betrieb ohne DEBUG)
+        # Jeder Verstoß ginge im Betrieb mit jedem Seitenaufruf als Meldung an /csp-report/ und bräche die Seite, sobald
+        # CSP_MODUS=scharf gilt. Ohne DEBUG steht das kritische CSS inline wie in Produktion (Hash in der Policy); auf
+        # /kontakt/ lädt und rechnet der Spamschutz (Altcha: Stil, Worker, Abruf der Aufgabe). Neuer Inline-Code gehört
+        # in csp_inline (marketing/sicherheit.py). Prüft außerdem Permissions-Policy und eine 404-Seite.
+        env:
+          DEBUG: "false"
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+          SITE_URL: "http://127.0.0.1:8192"
+          CONTACT_SMTP_HOST: "127.0.0.1"
+        run: |
+          python manage.py collectstatic --noinput > /dev/null
+          python manage.py runserver 127.0.0.1:8192 --noreload > csp-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8192/ && break; sleep 1; done
+          BASE_URL=http://127.0.0.1:8192 python scripts/check_csp.py || (tail -20 csp-server.log; exit 1)

@@ -9,11 +9,12 @@
             {% if self.subline_secondary %}<p class="text-base text-gray-600 dark:text-gray-400 mt-4 max-w-[45rem]">{{ self.subline_secondary }}</p>{% endif %}
             {% if self.ctas %}
             <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4{% if bild %} lg:-mr-10{% endif %}">
+                {% load zugang %}
                 {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
                 {% if forloop.first %}
-                <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
+                <a href="{{ cta.url }}"{% aufruf_name cta.label cta.url %} class="btn-primary">{{ cta.label }}</a>
                 {% else %}
-                <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
+                <a href="{{ cta.url }}"{% aufruf_name cta.label cta.url %} class="textlink">{{ cta.label }}</a>
                 {% endif %}
                 {% endif %}{% endfor %}
             </div>

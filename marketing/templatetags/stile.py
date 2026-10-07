@@ -11,7 +11,8 @@ lädt ``<noscript>`` das Stylesheet wie bisher blockierend, ``vorab`` gibt es da
 
 Bewusst kein ``<link rel="preload" as="style">``: Chrome lädt das mit höchster Priorität, Lighthouse rechnet es
 dann weiter als render-blockierend. Das Ladeskript kommt ohne Inline-Handler (``onload``) aus und ändert sich nicht
-mit dem Build; bei einer Content-Security-Policy genügt sein Hash (``LADER``, siehe README).
+mit dem Build; bei einer Content-Security-Policy genügt sein Hash (``LADER``, siehe README). Den Hash des Skripts
+und des kritischen CSS meldet der Tag für die Policy der Antwort an (``marketing/sicherheit.py``).
 
 Fehlt das kritische CSS (Entwicklung ohne ``npm run build:css``) oder läuft die Seite mit ``DEBUG``, bleibt es beim
 blockierenden ``<link rel="stylesheet">`` – dann passt das Ergebnis immer zum gerade gebauten ``styles.css``. Im
@@ -27,6 +28,8 @@ from django.templatetags.static import static
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from wagtail.blocks import StreamValue
+
+from marketing.sicherheit import inline_erlauben
 
 register = template.Library()
 
@@ -87,6 +90,8 @@ def stile(context):
     if not css:
         return format_html('<link rel="stylesheet" href="{}">', url)
     prioritaet = mark_safe(' fetchpriority="high"' if bilder_unter_dem_kopf(context.get("page")) else "")
+    inline_erlauben(context.get("request"), "style", css)
+    inline_erlauben(context.get("request"), "script", LADER)
     return format_html(
         '<style>{}</style>\n'
         '    <link rel="stylesheet" href="{}" media="print"{} id="stile">\n'

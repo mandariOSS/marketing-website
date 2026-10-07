@@ -50,7 +50,8 @@ alle Seeds sind deshalb **idempotent**:
 |---|---|
 | `setup_initial_pages` | Erstellt den Wagtail-Page-Tree (überspringt vorhandene Seiten), seedet Rechtstexte aus `.legal-content/` |
 | `migrate_pages_to_streamfield` | Seedet die StreamField-Inhalte aller Marketing-/Legal-Pages (überspringt Seiten, die bereits Blöcke haben; `--force` überschreibt) |
-| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force` |
+| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force`. Achtung: `--force` ersetzt den ganzen Inhalt, im CMS geänderte Blöcke gehen verloren |
+| `refresh_seeded_page <slug> --nur-meta` | Übernimmt nur Titel, SEO-Titel und Meta-Description aus dem Seed (`MARKETING_PAGE_META`, `marketing/seo_texte.py`), Inhalt und Vorlage bleiben; Seiten mit unveröffentlichtem Entwurf überspringt der Befehl. Auch für `startseite` und `kontakt` |
 | `retire_page <pfad\|slug> --redirect <ziel> [--dry-run]` | Zieht eine Seite samt Unterseiten zurück (unpublish, bleibt im CMS) und legt eine dauerhafte Weiterleitung an bzw. korrigiert sie; prüft danach per Anfrage, dass der alte Pfad mit 301 auf das Ziel zeigt. Idempotent, z. B. `retire_page /blog/ --redirect /releases/` |
 
 **Seiten zurückziehen:** Fällt eine Seite bei einem Umbau weg, zuerst die
@@ -85,8 +86,10 @@ Zum Reaktivieren:
 mit dem Django-Test-Client und prüft: keine internen Links auf 404, jede
 veröffentlichte Seite verlinkt (Unterseiten von ihrer Elternseite), eindeutige
 Titel der Form „<Titel> | mandari“, eindeutige Meta-Descriptions, Canonical aus
-`SITE_URL`, Kopf- und Fußzeile genau nach Zielstruktur. Die CI führt ihn nach den
-Seeds aus; lokal:
+`SITE_URL`, Kopf- und Fußzeile genau nach Zielstruktur. Titel außerhalb von 30–60 Zeichen
+(samt „ | mandari“) und Descriptions außerhalb von 120–155 Zeichen meldet er als Warnung
+(Rechtstexte und Kontakt ausgenommen); die Texte stehen in `marketing/seo_texte.py`, dort
+prüft `marketing/tests/test_seo_texte.py` die Längen. Die CI führt ihn nach den Seeds aus; lokal:
 
 ```bash
 SITE_URL=https://mandari.de python scripts/check_site_structure.py   # --strict: ausstehende Ziele als Fehler
@@ -283,6 +286,27 @@ marketing-website/
   WebP wie bisher ablegen, dann `python scripts/hero_avif.py` (Pillow mit AVIF, Vorlagen siehe Skript).
 - **Spamschutz.** Altcha lädt erst, wenn jemand ein Kontaktformular betritt (`static/js/kontakt.js`).
 
+### Sicherheits-Header und Fehlerseiten
+
+- **Permissions-Policy** auf jeder Antwort: Kamera, Mikrofon, Standort, Zahlungen, USB und weitere
+  Gerätefunktionen sind gesperrt (`marketing/sicherheit.py`, nur Namen, die Chrome kennt).
+- **Content-Security-Policy** mit dem Schalter `CSP_MODUS`: `report` (Standard,
+  `Content-Security-Policy-Report-Only`), `scharf` (`Content-Security-Policy`) oder `aus`. Verstöße meldet der
+  Browser an `CSP_REPORT_URI` (`/csp-report/`, in Produktion der Endpunkt der mandari-Anwendung auf derselben
+  Domain). Inline-Skripte und `<style>`-Elemente erlaubt die Policy nur mit ihrem SHA-256-Hash: Vorlagen
+  schreiben sie in `{% csp_inline %}…{% endcsp_inline %}`, `{% stile %}` meldet kritisches CSS und Ladeskript
+  selbst an, den Stil von Altcha liest `sicherheit.py` aus der Bibliothek (`{% csp_altcha %}` auf `/kontakt/`).
+  Hashes statt Nonce: Seiten ohne Formular bleiben bytegleich, `ConditionalGetMiddleware` setzt ein ETag und
+  antwortet bei unveränderter Seite mit 304. Noch erlaubt sind `'unsafe-eval'` (Alpine) und `style`-Attribute;
+  ausgenommen sind `/cms-admin/` und `/django-admin/`. `scripts/check_csp.py` öffnet in der CI jede Seite im
+  Browser (ohne `DEBUG`, wie im Betrieb) und schlägt bei jedem Verstoß fehl. Policy und Permissions-Policy
+  bleiben kurz, weil sie mit jeder Seite in den ersten TCP-Paketen mitgehen. Plan: nach ein bis zwei Wochen
+  ohne Meldungen auf `CSP_MODUS=scharf` umstellen.
+- **404** (`templates/404.html`): Kopf- und Fußzeile, ein Satz, ein Aufruf zur Startseite und Wegweiser zu
+  Produkten, Preisen, Bürgerportal und Kontakt; Status 404, `noindex`. **500** (`templates/500.html`,
+  `marketing/fehlerseiten.py`): statisch, ohne Datenbank und ohne Kontextprozessoren, mit Notfalltext, falls
+  selbst das Rendern scheitert.
+
 ### Wichtige Umgebungsvariablen
 
 | Variable | Default | Zweck |
@@ -299,6 +323,8 @@ marketing-website/
 | `CONTACT_FROM` / `CONTACT_TO` | `hello@mandari.de` | Absender und Empfänger der Formular-Mails |
 | `CONTACT_TRUSTED_PROXIES` | `1` | Eigene Reverse Proxys vor der Website; bestimmt, welcher `X-Forwarded-For`-Eintrag als Anschluss zählt |
 | `TZ` | `Europe/Berlin` | Zeitzone |
+| `CSP_MODUS` | `report` | Content-Security-Policy: `report` (nur melden), `scharf` (blockieren) oder `aus` |
+| `CSP_REPORT_URI` | `/csp-report/` | Ziel der CSP-Meldungen (in Produktion die mandari-Anwendung auf derselben Domain) |
 
 ## 🎨 Gestaltung
 

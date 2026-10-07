@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags seo baender %}<!DOCTYPE html>
+{% load static wagtailcore_tags seo baender sicherheit %}<!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 <head>
     {% seo_meta as seo %}
@@ -12,19 +12,22 @@
     dem kritischen CSS in den ersten TCP-Paketen (rund 14 KB gzip, marketing/templatetags/stile.py).
     Dunkler Modus vor dem ersten Zeichnen (kein heller Blitz); den Schalter verwaltet static/js/kopfzeile.js.
     Bewusst kein x-data am <html>: Alpine durchliefe sonst beim Start jede Zeile jeder Tabelle.
+    Inline-Skripte und -Stile stehen in csp_inline: Die Content-Security-Policy erlaubt genau ihre Hashes
+    (marketing/sicherheit.py).
     {% endcomment %}
-    <script>try { if (localStorage.getItem("darkMode") === "true") document.documentElement.classList.add("dark"); } catch (e) {}</script>
+    {% csp_inline %}<script>try { if (localStorage.getItem("darkMode") === "true") document.documentElement.classList.add("dark"); } catch (e) {}</script>{% endcsp_inline %}
     <title>{{ head_title|full_title:seo.is_home }}</title>
     <meta name="description" content="{{ head_description|meta_text }}">
     <meta name="theme-color" content="#4f46e5">
 
-    <link rel="canonical" href="{{ canonical_url }}">
+    {# Ohne Canonical (leerer Block, z. B. 404): auch kein og:url #}
+    {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
 
     {# Open Graph und Twitter-Card: gleiche Angaben wie Titel, Beschreibung und Canonical #}
     <meta property="og:title" content="{{ head_title|full_title:seo.is_home }}">
     <meta property="og:description" content="{{ head_description|meta_text }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ canonical_url }}">
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
     <meta property="og:image" content="{% block og_image %}{{ seo.og_image }}{% endblock %}">
     <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="{{ seo.site_name }}">
@@ -51,7 +54,7 @@
     Roboto aus den Laufweiten von Inter-Regular und Roboto-Regular am Text der Seiten; beide gegen alle Seiten der
     Sitemap bei 360–1440 px geprüft. Den Schriftstapel setzt tailwind.config.js.
     {% endcomment %}
-    <style>
+    {% csp_inline %}<style>
       @font-face { font-family: 'Inter Ersatz'; src: local('Arial'), local('Liberation Sans'); size-adjust: 107.12%; ascent-override: 90.44%; descent-override: 22.52%; }
       @font-face { font-family: 'Inter Ersatz Roboto'; src: local('Roboto'); size-adjust: 107.3%; ascent-override: 90.3%; descent-override: 22.5%; }
       @font-face {
@@ -70,7 +73,7 @@
         src: url("{% static 'fonts/inter-latin-ext.woff2' %}") format('woff2');
         unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
       }
-    </style>
+    </style>{% endcsp_inline %}
 
     {# TailwindCSS (lokal kompiliert, DSGVO-konform): kritisches CSS inline, styles.css ohne Blockade (stile.py) #}
     {% load stile %}{% stile %}
@@ -81,7 +84,7 @@
     {# Alpine.js (lokal) #}
     <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
 
-    <style>
+    {% csp_inline %}<style>
         [x-cloak] { display: none !important; }
 
         {# Sprunglink – WCAG 2.4.1 #}
@@ -120,7 +123,7 @@
             html { scroll-behavior: auto; }
             *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
         }
-    </style>
+    </style>{% endcsp_inline %}
 
     {# Strukturierte Daten (schema.org, marketing/strukturdaten.py): unsichtbarer Datenblock, nach Schrift, CSS und Skripten #}
     {% strukturdaten %}
