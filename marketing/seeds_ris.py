@@ -130,8 +130,8 @@ def seite():
             "Ratsdaten direkt weiter: maschinenlesbar statt als PDF-Stapel.</p>"
             "<p><strong>Ohne Mehraufwand.</strong> mandari veröffentlicht Beschlüsse und Sitzungsunterlagen "
             "automatisch über OParl. Ihr Sitzungsdienst pflegt nichts doppelt.</p>"
-            "<p><strong>Wechsel.</strong> Spricht Ihr bisheriges System OParl, etwa ALLRIS, regisafe, Somacos oder "
-            "SD.NET RIM, übernimmt mandari Sitzungen, Vorlagen und Dokumente strukturiert. Ihre Daten bekommen Sie "
+            "<p><strong>Wechsel.</strong> Spricht Ihr bisheriges System OParl, etwa ALLRIS, SessionNet von Somacos "
+            "oder SD.NET RIM, übernimmt mandari Sitzungen, Vorlagen und Dokumente strukturiert. Ihre Daten bekommen Sie "
             "jederzeit vollständig heraus.</p>",
             [
                 m.rand_fakten("Schnittstelle", ("Standard", "OParl 1.1"),

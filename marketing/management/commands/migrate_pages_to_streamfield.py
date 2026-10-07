@@ -1155,7 +1155,7 @@ def get_marketing_definitions() -> dict:
                 "Zwei Wege zur Anbindung",
                 [("Mit OParl-Schnittstelle", "Der schnelle Weg"), ("Ohne OParl-Schnittstelle", "Der begleitete Weg")],
                 [
-                    ("Ihr RIS", ["spricht bereits OParl, etwa ALLRIS, regisafe, Somacos oder SD.NET RIM",
+                    ("Ihr RIS", ["spricht bereits OParl, etwa ALLRIS, SessionNet von Somacos oder SD.NET RIM",
                                  "spricht noch kein OParl"]),
                     ("Ablauf", ["OParl-Endpunkt übermitteln, Test-Synchronisation, dann Produktivbetrieb",
                                 "Vorbedingungen gemeinsam klären, Gespräche mit dem Anbieter koordinieren, Adapter "
