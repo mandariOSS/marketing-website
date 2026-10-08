@@ -116,7 +116,7 @@ jobs:
               "/kommunen/": ["Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit.", 'href="/ratsinformationssystem/"'],
               "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Was ist OParl?", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"'],
               "/migration/": ["Bestandsaufnahme"],
-              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
+              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 8. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
               "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],

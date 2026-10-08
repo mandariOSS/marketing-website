@@ -161,7 +161,7 @@ def get_marketing_definitions() -> dict:
                 "Finanztransparenz",
                 [
                     m.gruppe("Einnahmen 2026",
-                             m.zeile("Work-Lizenzen", "Beta-Phase, noch keine Lizenzeinnahmen", stand="0 €", status="zahl"),
+                             m.zeile("Work-Tarife", "Beta-Phase, noch keine Einnahmen aus Tarifen", stand="0 €", status="zahl"),
                              m.zeile("Fördermittel", "in Beantragung", stand="–", status="zahl"),
                              summe_label="Einnahmen 2026", summe="~ 0 €"),
                     m.gruppe("Ausgaben 2026, laufende Kosten",
@@ -234,7 +234,7 @@ def get_marketing_definitions() -> dict:
                                   bullet("Prioritäts-Support per E-Mail")],
                      "is_highlighted": True, "cta_label": "Jetzt buchen", "cta_url": "https://portal.mandari.de/buchen/"},
                     {"color": "blue", "name": "mandari Session", "subtitle": "Verwaltungs-RIS",
-                     "badge": "Pilotphase 2026", "price_main": "Individuell",
+                     "badge": "Pilotphase 2027", "price_main": "Individuell",
                      "price_note": "Staffel nach Einwohnerzahl, Einrichtung einmalig, alle Module und das Bürgerportal inklusive. Öffentliche Preisliste in Vorbereitung.",
                      "description": "Vollständiges Sitzungsmanagement für Verwaltungen — die moderne Alternative zu proprietären RIS.",
                      "features": [bullet("Sitzungsplanung & Tagesordnung", "calendar-clock"),
@@ -309,7 +309,7 @@ def get_marketing_definitions() -> dict:
                     ("Updates und Sicherheitspatches", ["spielen Sie ein, sobald wir sie veröffentlichen",
                                                         "automatisch"]),
                     ("Daten", ["volle Kontrolle über Daten und Infrastruktur",
-                               "Rechenzentren in Deutschland, Datenexport jederzeit, kein Lock-in"]),
+                               "Betrieb in Deutschland, Sicherungen auch in Finnland (EU), Datenexport jederzeit, kein Lock-in"]),
                     ("Hilfe", ["Community-Support über GitHub, Support-Vertrag optional, Dokumentation auf docs.mandari.de",
                                "Support inklusive, Premium-SLA optional"]),
                     ("Erster Schritt", ["<a href=\"https://docs.mandari.de/betrieb/\">Self-Hosting-Anleitung</a>",
@@ -324,11 +324,11 @@ def get_marketing_definitions() -> dict:
                 [
                     m.begriff("Unabhängig finanziert",
                               "mandari wird ohne Investoren und ohne große Vertriebsorganisation entwickelt — kein "
-                              "VC-Geld, keine Sales-Abteilung. Damit das nachhaltig bleibt, müssen die Lizenzen die "
+                              "VC-Geld, keine Sales-Abteilung. Damit das nachhaltig bleibt, müssen die Tarife die "
                               "Entwicklungszeit decken."),
                     m.begriff("Infrastruktur kostet",
                               "Server, Backups, Monitoring, TLS, Datenbank-Cluster, KI-Inferenz: ein paar 100 €/Monat "
-                              "allein für die Infrastruktur. Davon fließt jeder Cent an deutsche Hosting-Partner."),
+                              "allein für die Infrastruktur. Davon fließt jeder Cent an Anbieter in Deutschland und der EU."),
                     m.begriff("Demokratie-Bonus",
                               "Schulen, Universitäten, NGOs, Studierende — wer Demokratie stärkt, soll keine "
                               "kommerziellen Preise zahlen. Vergünstigungen auf Anfrage."),
@@ -349,20 +349,20 @@ def get_marketing_definitions() -> dict:
                 "items": [
                     {"question": "Warum ist Insight kostenlos?",
                      "answer": "<p>Zugang zu kommunalpolitischen Informationen ist ein Grundrecht — nicht ein Premium-Feature. Insight finanziert sich quer über Work und Session. So bleibt der Bürger:innen-Zugang dauerhaft frei.</p>"},
-                    {"question": "Wie viele Nutzer:innen sind in einer Lizenz enthalten?",
-                     "answer": "<p><strong>Unbegrenzt viele.</strong> Eine mandari-Work-Lizenz gilt pauschal pro Organisation und hat kein Nutzer-Limit.</p><p>Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Büromitarbeitende und sachkundige Bürger:innen: Der Pauschalpreis bleibt gleich.</p>"},
+                    {"question": "Wie viele Nutzer:innen sind in einem Tarif enthalten?",
+                     "answer": "<p><strong>Unbegrenzt viele.</strong> Ein mandari-Work-Tarif gilt pauschal pro Organisation und hat kein Nutzer-Limit.</p><p>Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Büromitarbeitende und sachkundige Bürger:innen: Der Pauschalpreis bleibt gleich.</p>"},
                     {"question": "Sind die Preise inkl. MwSt.?",
                      "answer": "<p>Ja, alle hier genannten Preise verstehen sich inkl. 19 % deutscher Mehrwertsteuer. Für Angebotsvergleiche in Vergabeverfahren weisen wir den Nettopreis zusätzlich aus, zum Beispiel 39,90 € brutto entsprechen 33,53 € netto.</p>"},
                     {"question": "Was kostet mandari, wenn wir selbst hosten?",
                      "answer": "<p>Die Software kostet nichts, sie steht unter AGPL-3.0. Community-Support gibt es über GitHub. Für Verwaltungen, die verbindliche Reaktionszeiten, begleitete Updates und Sicherheitshinweise brauchen, bieten wir Support- und Wartungsverträge mit jährlicher Laufzeit an; die Konditionen richten sich nach der Einwohnerzahl. Sprechen Sie uns an.</p>"},
                     {"question": "Gibt es Rabatte für Studierende, Schulen oder NGOs?",
-                     "answer": "<p>Ja. Studierende, Schulen, Universitäten, gemeinnützige Vereine und NGOs bekommen vergünstigte Konditionen, bis hin zu kostenfreien Lizenzen für die Lehre. Schicken Sie uns kurz Ihr Anliegen mit Nachweis.</p>"},
+                     "answer": "<p>Ja. Studierende, Schulen, Universitäten, gemeinnützige Vereine und NGOs bekommen vergünstigte Konditionen, bis hin zur kostenfreien Nutzung für die Lehre. Schicken Sie uns kurz Ihr Anliegen mit Nachweis.</p>"},
                     {"question": "Was passiert mit meinen Daten bei Kündigung?",
                      "answer": "<p>Sie bekommen vor der Kündigung einen vollständigen Export Ihrer Daten — JSON oder CSV, wahlweise auch im OParl-Format.</p><p>Nach Vertragsende behalten wir die Daten 30 Tage als Backup, danach werden sie unwiderruflich gelöscht. Auf Wunsch sofort.</p>"},
                     {"question": "Kann ich mandari komplett selbst hosten?",
                      "answer": "<p>Ja. mandari ist AGPL-3.0 lizenziert. Laden Sie den Code von GitHub und starten Sie den Docker-Compose-Stack auf Ihrem Server.</p>"},
                     {"question": "Was kostet mandari Session und wann ist es verfügbar?",
-                     "answer": "<p>Session richtet sich an Verwaltungen und wird pro Kommune individuell kalkuliert. Pilotkommunen starten jetzt und erhalten Sonderkonditionen. Sprechen Sie uns früh an.</p>"},
+                     "answer": "<p>Session richtet sich an Verwaltungen und wird pro Kommune individuell kalkuliert. Die Piloten mit ersten Kommunen beginnen 2027; Pilotkommunen erhalten Sonderkonditionen. Sprechen Sie uns früh an.</p>"},
                 ],
             }),
             m.einladung(
@@ -723,9 +723,9 @@ def get_marketing_definitions() -> dict:
             }),
             # Eckdaten: stehen auf der Dokumentseite (marketing/dokument.html) in der Randspalte
             ("trust_banner", {"color": "primary", "items": [
-                trust_item("map-pin", "Hosting", "100 % in Deutschland"),
+                trust_item("map-pin", "Hosting", "Betrieb in Deutschland"),
                 trust_item("lock", "TLS 1.3", "AES-256 at rest"),
-                trust_item("database-backup", "Backup", "täglich, Aufbewahrung 30 Tage"),
+                trust_item("database-backup", "Backup", "täglich, 30 Tage, in Deutschland und Finnland (EU)"),
                 trust_item("file-signature", "AVV", "nach Art. 28 DSGVO"),
             ]}),
             # ── 01 · AVV ─────────────────────────────────────────────
@@ -748,7 +748,7 @@ def get_marketing_definitions() -> dict:
                     "<li>Transportverschlüsselung (TLS) für alle Verbindungen</li>"
                     "<li>Tägliche Backups mit definierter Aufbewahrung</li>"
                     "<li>Zugriffskontrolle über rollenbasiertes Berechtigungssystem (RBAC)</li>"
-                    "<li>Betrieb ausschließlich in deutschen Rechenzentren</li>"
+                    "<li>Betrieb in Rechenzentren in Deutschland, Sicherungen in Deutschland und Finnland (EU)</li>"
                     "</ul>"
                 ),
             }),
@@ -766,22 +766,34 @@ def get_marketing_definitions() -> dict:
                 "number": "2", "anchor": "subprocessors",
                 "title": "Subprocessoren — wer sonst noch Daten sieht",
                 "body": (
-                    "<p>Vollständige Liste aller Unterauftragsverarbeiter. Es gibt keine weiteren — "
-                    "insbesondere keine Tracker, keine Analytics-Dienste und keine Anbieter außerhalb der EU.</p>"
+                    "<p>Vollständige Liste der Unterauftragsverarbeiter, die wir heute einsetzen. Es gibt keine "
+                    "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU.</p>"
                 ),
             }),
             m.register(
                 "",
                 [m.gruppe("",
-                    m.zeile("Hetzner Online GmbH", "Hosting aller Systeme in deutschen Rechenzentren. AVV nach Art. 28 "
-                            "DSGVO besteht.", ort="Industriestr. 25, 91710 Gunzenhausen (DE)"),
+                    m.zeile("Hetzner Online GmbH", "Betrieb aller Systeme in Rechenzentren in Deutschland, die "
+                            "Dokumentablage zusätzlich im Hetzner-Objektspeicher in Falkenstein. Verschlüsselte "
+                            "Sicherungen auf Hetzner Storage Boxen in Falkenstein (Deutschland) und Helsinki "
+                            "(Finnland, EU). AVV nach Art. 28 DSGVO besteht.",
+                            ort="Industriestr. 25, 91710 Gunzenhausen (DE)"),
+                    m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Zusammenfassungen öffentlicher "
+                            "Ratsdokumente und KI-Recherche im Bürgerportal, KI-Assistent in mandari Work (nur auf "
+                            "Aufruf der Nutzer:innen, auf Wunsch je Organisation abschaltbar).",
+                            ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
                     m.zeile("Mollie B.V.", "Zahlungsabwicklung für mandari Work (Name, E-Mail, Zahlungs- und "
                             "Mandatsdaten).", ort="Keizersgracht 126, 1015 CW Amsterdam (NL/EU)"),
                     m.zeile("Haufe-Lexware GmbH & Co. KG", "Rechnungsstellung und Buchhaltung (lexware office).",
                             ort="Munzinger Str. 9, 79111 Freiburg (DE)"),
                 )],
                 spalten=["Unternehmen und Sitz", "Wofür"],
-                note="<p>Über geplante Änderungen an dieser Liste informieren wir vorab; Sie haben ein "
+                note="<p><strong>Nur auf Wunsch einer Organisation:</strong> Der KI-Assistent in mandari Work kann "
+                     "statt über Nebius über IONOS AI Model Hub (IONOS SE, Montabaur, Deutschland) oder OVHcloud AI "
+                     "Endpoints (OVH SAS, Roubaix, Frankreich) laufen. Heute nutzt keine Organisation diese "
+                     "Möglichkeit. Die Texterkennung (OCR) läuft auf unseren eigenen Systemen, ohne externen "
+                     "Anbieter.</p>"
+                     "<p>Über geplante Änderungen an dieser Liste informieren wir vorab; Sie haben ein "
                      "Widerspruchsrecht gegen neue Subunternehmer (Details im <a href=\"/avv/\">AVV, Ziff. 7</a>).</p>",
             ),
             # ── 03 · Hosting ─────────────────────────────────────────
@@ -790,7 +802,10 @@ def get_marketing_definitions() -> dict:
                 "title": "Hosting-Stack",
                 "body": (
                     "<p>Alle Systeme laufen bei der Hetzner Online GmbH in deutschen Rechenzentren "
-                    "(kein US-Cloud-Anbieter, kein CDN mit Drittland-Transfer).</p>"
+                    "(kein US-Cloud-Anbieter, kein CDN mit Drittland-Transfer). Hetzner ist nach ISO/IEC 27001:2022 "
+                    "zertifiziert; Dedicated Server, Storage Box und Object Storage von Hetzner sind nach BSI "
+                    "C5:2020 (Typ 2) testiert. Das sind Eigenschaften der Dienste von Hetzner, keine Prüfung "
+                    "unseres eigenen Betriebs.</p>"
                     "<ul>"
                     "<li>TLS-Verschlüsselung für alle Verbindungen (Caddy, automatische Zertifikate)</li>"
                     "<li>Verschlüsselung sensibler Arbeitsinhalte at rest: AES-256-GCM mit organisationsspezifischen Schlüsseln</li>"
@@ -806,8 +821,10 @@ def get_marketing_definitions() -> dict:
                 "number": "4", "anchor": "backup",
                 "title": "Backup & Recovery",
                 "body": (
-                    "<p>Backups liegen getrennt vom Produktivsystem, ebenfalls in Deutschland. Wiederherstellungen "
-                    "werden regelmäßig getestet.</p>"
+                    "<p>Backups liegen verschlüsselt und getrennt vom Produktivsystem auf Hetzner Storage Boxen an "
+                    "zwei Standorten: Falkenstein (Deutschland) und Helsinki (Finnland, EU). Auf Wunsch sichern wir "
+                    "die Daten Ihrer Organisation oder Verwaltung ausschließlich in Deutschland. "
+                    "Wiederherstellungen werden regelmäßig getestet.</p>"
                     "<p>Nach Vertragsende: Datenexport auf Anfrage innerhalb von 30 Tagen, danach unwiderrufliche "
                     "Löschung inklusive Vernichtung des mandantenspezifischen Schlüssels. Aufbewahrungsfristen und "
                     "Löschläufe je Mandant stehen im <a href=\"https://docs.mandari.de/datenschutz/loeschkonzept/\">Löschkonzept</a>.</p>"
@@ -863,7 +880,7 @@ def get_marketing_definitions() -> dict:
                     m.zeile("Externer Penetrationstest", "mit veröffentlichter Zusammenfassung",
                             stand="2027", status="offen"),
                     m.zeile("Selbstbewertung nach BSI IT-Grundschutz", "Basis-Absicherung; ISO 27001 abhängig vom "
-                            "Auftragsvolumen", stand="2027", status="offen"),
+                            "Auftragsvolumen", stand="in Prüfung", status="offen"),
                 )],
                 spalten=["Nachweis", "Umfang", "Geplant"],
                 note="<p>Fortschritt öffentlich: <a href=\"https://github.com/mandariOSS/mandari/issues/97\">Fahrplan "
@@ -977,20 +994,22 @@ def get_marketing_definitions() -> dict:
                              m.zeile("Kontrast", "mindestens 4,5:1", stand="konform", status="da"),
                              m.zeile("Dunkelmodus", stand="konform", status="da"),
                              m.zeile("Touch-Ziele", "mindestens 44 × 44 px", stand="konform", status="da"),
-                             m.zeile("Responsive Darstellung", "bis 320 px Breite", stand="konform", status="da")),
+                             m.zeile("Responsive Darstellung", "Bürgerportal und Work, bis 320 px Breite", stand="konform", status="da")),
                     m.gruppe("Teilweise konform",
+                             m.zeile("Responsive Darstellung im Sitzungsdienst", "noch nicht alle Ansichten für das Smartphone "
+                                     "angepasst; vollständig im Zuge des neuen Designs bis Version 1.0 (2027)", stand="teilweise", status="offen"),
                              m.zeile("Karten-Layer", "Screenreader-Unterstützung im Aufbau", stand="teilweise", status="offen"),
                              m.zeile("Komplexe Filter", "Tastatur-Verbesserungen", stand="teilweise", status="offen"),
                              m.zeile("Symbole", "bessere ARIA-Beschriftungen nötig", stand="teilweise", status="offen"),
                              m.zeile("PDF-Dokumente", "teilweise nicht maschinenlesbar", stand="teilweise", status="offen"),
-                             m.zeile("Leichte Sprache und Gebärdensprache", "in Planung", stand="teilweise", status="offen")),
+                             m.zeile("Leichte Sprache und Gebärdensprache", "in Prüfung", stand="teilweise", status="offen")),
                     m.gruppe("Ausnahmen, die wir nicht beeinflussen können",
                              m.zeile("OParl-Quelldokumente der Kommunen", stand="Ausnahme"),
                              m.zeile("Eingebettete Inhalte Dritter", "Kartenkacheln von OpenStreetMap", stand="Ausnahme"),
                              m.zeile("Archiv-Sitzungsprotokolle vor 2020", "gescannte PDFs", stand="Ausnahme")),
                 ],
                 spalten=["Bereich", "Anmerkung", "Stand"],
-                subline="Diese Erklärung gilt für mandari.de und alle Subdomains, Stand 20. Juli 2026. Bei der letzten "
+                subline="Diese Erklärung gilt für mandari.de und alle Subdomains, Stand 8. Oktober 2026. Bei der letzten "
                         "Prüfung im April 2026 nach WCAG 2.1 AA und EN 301 549 war mandari teilweise konform mit der BITV 2.0.",
                 anchor="stand",
             ),
@@ -1135,7 +1154,8 @@ def get_marketing_definitions() -> dict:
                 "<p><strong>Deutsches Hosting, DSGVO-konform.</strong> Alle Systeme laufen in deutschen Rechenzentren — "
                 "ohne US-Cloud-Anbieter und ohne Übermittlung in Drittländer. Für Ihre Prüfung liegen der Mustervertrag "
                 "zur Auftragsverarbeitung und die vollständige Liste der Unterauftragnehmer offen; gesichert wird "
-                "täglich, gespeichert verschlüsselt.</p>"
+                "täglich und verschlüsselt in Falkenstein (Deutschland) und Helsinki (Finnland, EU), auf Wunsch "
+                "ausschließlich in Deutschland.</p>"
                 "<p><strong>Open Source heißt: kein Vendor-Lock-in.</strong> Der gesamte Quellcode steht unter "
                 "AGPL-3.0, Ihre IT kann ihn jederzeit prüfen. Sie exportieren Ihre Daten in offenen Formaten und "
                 "entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen — unabhängig vom Anbieter und "
@@ -1300,7 +1320,7 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
-                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 2. Oktober 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
+                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 8. Oktober 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
                          cta("Releases", "/releases/", "tag", "secondary")],
@@ -1344,9 +1364,8 @@ def get_marketing_definitions() -> dict:
                 [
                     m.zeitpunkt(
                         "Q4/2026",
-                        m.vorhaben("Pilotbetrieb mit ersten Kommunen", produkt="session", status="Zugesagt, Q3–Q4/2026",
-                                   text="Sitzungsmanagement, Vorlagen, Protokolle und Beschlusskontrolle im "
-                                        "Verwaltungsalltag. Pilotkonditionen auf der Preisseite.",
+                        m.vorhaben("Pilotbetrieb Work und Bürgerportal", status="Zugesagt, 2026",
+                                   text="mandari Work und das Bürgerportal im Alltag erster Kommunen und Fraktionen.",
                                    link_label="Pilot-Kommune werden", link_url="/kontakt/?subject=Pilot-Kommune"),
                         m.vorhaben("Barrierefreiheit nach BITV 2.0", produkt="session", status="Zugesagt",
                                    text="Screenreader, Tastatur, Kontraste, Formulare; Selbstbewertung nach BITV 2.0 mit "
@@ -1392,6 +1411,10 @@ def get_marketing_definitions() -> dict:
                     ),
                     m.zeitpunkt(
                         "2027",
+                        m.vorhaben("Pilotbetrieb Sitzungsdienst", produkt="session", status="Zugesagt, 2027",
+                                   text="Sitzungsmanagement, Vorlagen, Protokolle und Beschlusskontrolle im "
+                                        "Verwaltungsalltag erster Kommunen. Pilotkonditionen auf der Preisseite.",
+                                   link_label="Pilot-Kommune werden", link_url="/kontakt/?subject=Pilot-Kommune"),
                         m.vorhaben("Version 1.0", status="Geplant",
                                    text="Externes Sicherheitsaudit, stabile Schnittstellen, SLA, Ende der Beta. Der "
                                         "Meilenstein bündelt die offenen Punkte.",
@@ -1453,6 +1476,7 @@ def get_marketing_definitions() -> dict:
                 (
                     "<h3>Oktober 2026</h3>"
                     "<ul>"
+                    "<li><strong>Pilotbetrieb:</strong> präzisiert. mandari Work und das Bürgerportal laufen 2026 mit ersten Kommunen und Fraktionen; die Piloten des Sitzungsdienstes beginnen 2027 statt Q3–Q4/2026.</li>"
                     "<li><strong>Marktvergleich:</strong> Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht, sind jetzt der Roadmap zugeordnet: die zugesagten und geplanten in den Karten oben, acht neue in Prüfung im Abschnitt „Aus dem Marktvergleich“: eigener Bereich für Ratsmitglieder, Freigabe unterwegs, Umlaufverfahren mit Stimmabgabe online, Mitteilungen an das Finanzamt, Bekanntmachung und Amtsblatt, Einbindung in die Website der Kommune, Saaltechnik und KI-Schreibhilfe im Sitzungsdienst.</li>"
                     "<li><strong>Barrierefreiheit Session:</strong> präzisiert. Zugesagt für Q4/2026 ist die Selbstbewertung nach BITV 2.0 mit veröffentlichtem Prüfbericht; eine Prüfung durch eine unabhängige Stelle ist in Prüfung.</li>"
                     "<li><strong>KI-Entwurf der Niederschrift:</strong> von „In Prüfung, nach 1.0“ auf „Geplant 2027“, weil der Protokollentwurf (#180) zum Vorhaben „Vollständige Ratsarbeit“ (#496) gehört.</li>"
@@ -1541,7 +1565,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="KI-Komponenten"),
                 "background": "gray",
-                "body": "<p>KI-Inferenz primär self-hosted auf eigenen Hetzner-GPUs. Modelle:</p><ul><li><strong>Open-Weight LLMs</strong> für Zusammenfassungen (z.&nbsp;B. Mistral, Llama)</li><li><strong>BAAI/bge-m3</strong> für semantische Suche (Vektor-Embeddings)</li><li>Optional: EU-basierte Anbieter (z.&nbsp;B. <strong>Mistral La Plateforme</strong>) für komplexere Anfragen, nur nach Opt-in pro Kommune</li></ul>",
+                "body": "<p>Die KI-Funktionen nutzen Sprachmodelle mit offenen Gewichten (Open-Weight-LLMs) über <strong>Nebius Token Factory</strong> (Nebius B.V., Niederlande):</p><ul><li>Zusammenfassungen öffentlicher Ratsdokumente und KI-Recherche im Bürgerportal, als KI-erstellt gekennzeichnet</li><li>KI-Assistent in mandari Work, nur auf Aufruf der Nutzer:innen</li></ul><p>Die Texterkennung (OCR) läuft auf unseren eigenen Systemen. Ein selbst betriebenes Sprachmodell ist für die geplanten KI-Funktionen im Sitzungsdienst vorgesehen (2027). Alle Unterauftragsverarbeiter mit Zweck und Sitz stehen im <a href=\"/trust/#subprocessors\">Trust Center</a>.</p>",
             }),
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
@@ -1550,7 +1574,7 @@ def get_legal_definitions() -> dict:
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
-                "body": "<p>Stand: <strong>20. Juli 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hello@mandari.de\">hello@mandari.de</a>.</p>",
+                "body": "<p>Stand: <strong>8. Oktober 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hello@mandari.de\">hello@mandari.de</a>.</p>",
             }),
         ],
     }

@@ -154,7 +154,8 @@ class SeitenTests(TestCase):
             self.assertIn(f'id="{anker}"', html)
         rand = html[html.find('aria-label="Zum Dokument"'):]
         rand = rand[:rand.find("</aside>")]
-        self.assertIn("100 % in Deutschland", rand)
+        self.assertIn("Betrieb in Deutschland", rand)
+        self.assertIn("in Deutschland und Finnland (EU)", rand)
         self.assertIn('class="reg"', html)
         self.assertIn('class="mt-4 zahlensatz"', html)
 
