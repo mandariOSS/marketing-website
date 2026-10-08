@@ -274,7 +274,7 @@ jobs:
                               ["Migrations-Gespräch", "Pilot-Kommunen bekommen Sonderkonditionen", "ersten 5", "Rollback"]),
               "/barrierefreiheit/": (["teilweise konform mit der BITV 2.0"], ["Letzte Prüfung:", "Wir sind ehrlich"]),
               "/mitmachen/": (["Such dir aus, was zu dir passt"], ["100 % Open Source", "IONOS"]),
-              "/preise/": (["Pilotkommunen starten jetzt", "Rechenzentren in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
+              "/preise/": (["Pilotkommunen erhalten Sonderkonditionen", "Betrieb in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
               "/kommunen/": (["Drei Bausteine", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
               "/quellen/": (["mandari aggregiert", "mandari nutzt", "mandari nimmt"], ["Mandari "]),
           }
