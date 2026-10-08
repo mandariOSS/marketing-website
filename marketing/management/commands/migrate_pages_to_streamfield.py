@@ -309,7 +309,7 @@ def get_marketing_definitions() -> dict:
                     ("Updates und Sicherheitspatches", ["spielen Sie ein, sobald wir sie veröffentlichen",
                                                         "automatisch"]),
                     ("Daten", ["volle Kontrolle über Daten und Infrastruktur",
-                               "Betrieb in Deutschland, Sicherungen auch in Finnland (EU), Datenexport jederzeit, kein Lock-in"]),
+                               "Betrieb in Deutschland, Sicherungen in der EU, Datenexport jederzeit, kein Lock-in"]),
                     ("Hilfe", ["Community-Support über GitHub, Support-Vertrag optional, Dokumentation auf docs.mandari.de",
                                "Support inklusive, Premium-SLA optional"]),
                     ("Erster Schritt", ["<a href=\"https://docs.mandari.de/betrieb/\">Self-Hosting-Anleitung</a>",
@@ -767,7 +767,9 @@ def get_marketing_definitions() -> dict:
                 "title": "Subprocessoren — wer sonst noch Daten sieht",
                 "body": (
                     "<p>Vollständige Liste der Unterauftragsverarbeiter, die wir heute einsetzen. Es gibt keine "
-                    "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU.</p>"
+                    "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU. "
+                    "Betrieb und Sicherungen bleiben in der EU; den Verarbeitungsort der KI-Funktionen nennen wir in "
+                    "der Zeile zu Nebius.</p>"
                 ),
             }),
             m.register(
@@ -779,8 +781,10 @@ def get_marketing_definitions() -> dict:
                             "(Finnland, EU). AVV nach Art. 28 DSGVO besteht.",
                             ort="Industriestr. 25, 91710 Gunzenhausen (DE)"),
                     m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Zusammenfassungen öffentlicher "
-                            "Ratsdokumente und KI-Recherche im Bürgerportal, KI-Assistent in mandari Work (nur auf "
-                            "Aufruf der Nutzer:innen, auf Wunsch je Organisation abschaltbar).",
+                            "Ratsdokumente, Ortsangaben aus öffentlichen Vorlagen für die Karte und KI-Recherche im "
+                            "Bürgerportal, KI-Assistent in mandari Work (nur auf Aufruf der Nutzer:innen, auf Wunsch "
+                            "je Organisation abschaltbar). Einen Verarbeitungsort in der EU sagt Nebius für die heute "
+                            "genutzten Endpunkte nicht zu.",
                             ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
                     m.zeile("Mollie B.V.", "Zahlungsabwicklung für mandari Work (Name, E-Mail, Zahlungs- und "
                             "Mandatsdaten).", ort="Keizersgracht 126, 1015 CW Amsterdam (NL/EU)"),
@@ -822,8 +826,8 @@ def get_marketing_definitions() -> dict:
                 "title": "Backup & Recovery",
                 "body": (
                     "<p>Backups liegen verschlüsselt und getrennt vom Produktivsystem auf Hetzner Storage Boxen an "
-                    "zwei Standorten: Falkenstein (Deutschland) und Helsinki (Finnland, EU). Auf Wunsch sichern wir "
-                    "die Daten Ihrer Organisation oder Verwaltung ausschließlich in Deutschland. "
+                    "zwei Standorten: Falkenstein (Deutschland) und Helsinki (Finnland, EU). Betreiben wir für Ihre "
+                    "Verwaltung eine eigene Instanz, sichern wir auf Wunsch ausschließlich in Deutschland. "
                     "Wiederherstellungen werden regelmäßig getestet.</p>"
                     "<p>Nach Vertragsende: Datenexport auf Anfrage innerhalb von 30 Tagen, danach unwiderrufliche "
                     "Löschung inklusive Vernichtung des mandantenspezifischen Schlüssels. Aufbewahrungsfristen und "
@@ -1151,11 +1155,12 @@ def get_marketing_definitions() -> dict:
             # Muster 5a: zwei Grundsatzentscheidungen, rechts die Eckdaten für die Prüfung
             m.randspalte(
                 "Betrieb, den Ihre IT und Ihr Datenschutz mittragen",
-                "<p><strong>Deutsches Hosting, DSGVO-konform.</strong> Alle Systeme laufen in deutschen Rechenzentren — "
-                "ohne US-Cloud-Anbieter und ohne Übermittlung in Drittländer. Für Ihre Prüfung liegen der Mustervertrag "
-                "zur Auftragsverarbeitung und die vollständige Liste der Unterauftragnehmer offen; gesichert wird "
-                "täglich und verschlüsselt in Falkenstein (Deutschland) und Helsinki (Finnland, EU), auf Wunsch "
-                "ausschließlich in Deutschland.</p>"
+                "<p><strong>Deutsches Hosting, DSGVO-konform.</strong> Alle Systeme laufen in deutschen Rechenzentren, "
+                "ohne US-Cloud-Anbieter; Hosting und Sicherungen kommen ohne Übermittlung in Drittländer aus. Für Ihre "
+                "Prüfung liegen der Mustervertrag zur Auftragsverarbeitung und die vollständige Liste der "
+                "Unterauftragnehmer mit ihren Verarbeitungsorten offen; gesichert wird täglich und verschlüsselt in "
+                "Falkenstein (Deutschland) und Helsinki (Finnland, EU), mit eigener Instanz auf Wunsch ausschließlich "
+                "in Deutschland.</p>"
                 "<p><strong>Open Source heißt: kein Vendor-Lock-in.</strong> Der gesamte Quellcode steht unter "
                 "AGPL-3.0, Ihre IT kann ihn jederzeit prüfen. Sie exportieren Ihre Daten in offenen Formaten und "
                 "entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen — unabhängig vom Anbieter und "
