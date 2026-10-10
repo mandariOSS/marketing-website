@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import JsonResponse
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
 
 from wagtail import urls as wagtail_urls
@@ -14,6 +14,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
+from marketing import indexnow
 from marketing.docs_redirects import docs_redirect
 from marketing.sitemaps import MandariSitemap
 from marketing.views import (
@@ -39,6 +40,8 @@ urlpatterns = [
     # RFC 9309 robots.txt — Crawl-Direktiven für Suchmaschinen und Bots.
     # Plain text, MUSS unter /robots.txt erreichbar sein, referenziert sitemap.xml.
     path("robots.txt", robots_txt, name="robots_txt"),
+    # IndexNow (marketing/indexnow.py): Schlüsseldatei /<schlüssel>.txt, nur mit INDEXNOW_KEY, sonst 404
+    re_path(r"^(?P<name>[A-Za-z0-9-]{8,128})\.txt$", indexnow.schluesseldatei, name="indexnow_schluessel"),
     # Statusseite: eigene Instanz unter status.mandari.de, /status/ leitet dauerhaft dorthin.
     path("status/", RedirectView.as_view(url=settings.STATUS_PAGE_URL, permanent=True), name="status"),
     # Blog ruht (keine Beiträge): Index und Feed leiten auf die Releases. Reaktivieren: siehe README.

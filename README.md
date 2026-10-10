@@ -315,6 +315,19 @@ marketing-website/
   `marketing/fehlerseiten.py`): statisch, ohne Datenbank und ohne Kontextprozessoren, mit Notfalltext, falls
   selbst das Rendern scheitert.
 
+### IndexNow
+
+Veröffentlichte und zurückgezogene Seiten meldet die Website sofort an Bing, Yandex, Seznam, Naver und Yep
+([IndexNow](https://www.indexnow.org/), `marketing/indexnow.py`; Google nimmt nicht teil, dort bleibt die Sitemap).
+Gemeldet werden nur Adressen, keine Inhalte und keine Daten von Besucherinnen und Besuchern. Der Schlüssel
+`INDEXNOW_KEY` liegt als `/<schlüssel>.txt` aus; ohne Schlüssel ist alles aus. Die mandari-Anwendung meldet die Seiten
+des Bürgerportals selbst (gleicher Schlüssel, Datei unter `/insight/<schlüssel>.txt`). Zum Start einmal alle Seiten:
+
+```bash
+python manage.py indexnow_melden --alle --probelauf   # zeigt die Adressen
+python manage.py indexnow_melden --alle
+```
+
 ### Wichtige Umgebungsvariablen
 
 | Variable | Default | Zweck |
@@ -333,6 +346,7 @@ marketing-website/
 | `TZ` | `Europe/Berlin` | Zeitzone |
 | `CSP_MODUS` | `report` | Content-Security-Policy: `report` (nur melden), `scharf` (blockieren) oder `aus` |
 | `CSP_REPORT_URI` | `/csp-report/` | Ziel der CSP-Meldungen (in Produktion die mandari-Anwendung auf derselben Domain) |
+| `INDEXNOW_KEY` | leer (aus) | IndexNow-Schlüssel (8–128 Zeichen A–Z, a–z, 0–9, -), gleicher Wert wie in der mandari-Anwendung |
 
 ## 🎨 Gestaltung
 
