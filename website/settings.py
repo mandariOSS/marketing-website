@@ -57,7 +57,7 @@ CSP_REPORT_URI = os.environ.get("CSP_REPORT_URI", "/csp-report/").strip()
 # IndexNow (marketing/indexnow.py): meldet veröffentlichte und zurückgezogene Seiten an Bing, Yandex & Co.
 # Ohne Schlüssel aus. Derselbe Wert gilt für die mandari-Anwendung unter derselben Domain.
 INDEXNOW_KEY = os.environ.get("INDEXNOW_KEY", "").strip()
-INDEXNOW_ENDPOINT = os.environ.get("INDEXNOW_ENDPOINT", "https://api.indexnow.org/indexnow").strip()
+INDEXNOW_ENDPOINT = os.environ.get("INDEXNOW_ENDPOINT", "").strip() or "https://api.indexnow.org/indexnow"
 
 from urllib.parse import urlparse
 

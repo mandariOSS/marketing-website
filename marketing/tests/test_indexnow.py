@@ -1,5 +1,6 @@
 """IndexNow: Schlüsseldatei, Meldungen an die Suchmaschine, Meldung beim Veröffentlichen und der Befehl."""
 
+import http.client
 import json
 import urllib.error
 from io import StringIO
@@ -8,7 +9,7 @@ from unittest import mock
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import SimpleTestCase, TestCase, override_settings
-from wagtail.models import Page
+from wagtail.models import Page, PageViewRestriction
 
 from marketing import indexnow
 from marketing.models import MarketingPage
@@ -122,6 +123,11 @@ class MeldenTests(SimpleTestCase):
         with self.assertLogs("marketing.indexnow", "WARNING"):
             self.assertEqual(indexnow.melden(["https://mandari.de/kommunen/"]), 0)
 
+    @mock.patch("marketing.indexnow.urllib.request.urlopen", side_effect=http.client.BadStatusLine("kaputt"))
+    def test_kaputte_antwort_wirft_nicht(self, urlopen):
+        with self.assertLogs("marketing.indexnow", "WARNING"):
+            self.assertEqual(indexnow.melden(["https://mandari.de/kommunen/"]), 0)
+
     @override_settings(INDEXNOW_KEY="")
     @mock.patch("marketing.indexnow.urllib.request.urlopen")
     def test_ohne_schluessel_keine_meldung(self, urlopen):
@@ -162,6 +168,15 @@ class VeroeffentlichenTests(TestCase):
             seite.unpublish()
 
         melden.assert_called_once_with(["https://mandari.de/uebersicht/neu/", "https://mandari.de/uebersicht/"])
+
+    @mock.patch("marketing.indexnow.melden")
+    def test_geschuetzte_seite_wird_nicht_gemeldet(self, melden):
+        seite = self._neue_seite()
+        PageViewRestriction.objects.create(page=seite, restriction_type=PageViewRestriction.PASSWORD, password="x" * 32)
+        with self.captureOnCommitCallbacks(execute=True):
+            seite.save_revision().publish()
+
+        melden.assert_called_once_with(["https://mandari.de/uebersicht/"])
 
     @override_settings(INDEXNOW_KEY="")
     @mock.patch("marketing.indexnow.melden")

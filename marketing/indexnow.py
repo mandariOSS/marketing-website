@@ -12,6 +12,7 @@ Ohne Schlüssel ist alles aus: keine Datei, keine Meldung (Entwicklung, Tests, V
 
 from __future__ import annotations
 
+import http.client
 import json
 import logging
 import re
@@ -96,7 +97,8 @@ def melden(adressen: Iterable[str]) -> int:
                 status = antwort.status
         except urllib.error.HTTPError as fehler:
             status = fehler.code
-        except (OSError, ValueError) as fehler:
+        # OSError: Netz, Zeitgrenze; HTTPException: kaputte Antwort; ValueError: ungültige Adresse
+        except (OSError, http.client.HTTPException, ValueError) as fehler:
             logger.warning("IndexNow: %d Adressen nicht gemeldet (%s)", len(teil), fehler)
             continue
         if status in (200, 202):
@@ -114,6 +116,9 @@ def seitenadressen(page) -> list[str]:
     for seite in (page, page.get_parent()):
         # Wurzel des Seitenbaums hat keine Adresse; die Elternseite nur, solange sie veröffentlicht ist
         if seite is None or seite.depth < 2 or (seite is not page and not seite.live):
+            continue
+        # Geschützte Seiten (Passwort, Anmeldung) fehlen auch in der Sitemap
+        if seite.get_view_restrictions().exists():
             continue
         pfad = seite.specific.get_url()
         if pfad:
