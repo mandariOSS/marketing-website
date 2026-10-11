@@ -181,7 +181,8 @@ class NurMetaTests(TestCase):
         ausgabe = StringIO()
         call_command("refresh_seeded_page", "startseite", "--nur-meta", stdout=ausgabe)
         self.assertIn("bereits auf dem Stand", ausgabe.getvalue())
-        self.assertEqual(HomePage.objects.get().seo_title, "mandari – Software für die offene Verwaltung")
+        self.assertEqual(HomePage.objects.get().seo_title,
+                         "mandari – Ratsinformationssystem und Software für die offene Verwaltung")
 
     def test_fehler(self):
         with self.assertRaisesMessage(CommandError, "schließen sich aus"):

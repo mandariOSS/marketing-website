@@ -16,7 +16,7 @@ from marketing.management.commands.migrate_pages_to_streamfield import get_marke
 
 TITEL = {
     "/ratsinformationssystem/": "Ratsinformationssystem für Kommunen | mandari",
-    "/kommunen/": "Sitzungsdienst & Ratsinformationssystem für Kommunen | mandari",
+    "/kommunen/": "Sitzungsdienst-Software für Kommunen | mandari",
     "/vergleich/": "Ratsinformationssysteme im Vergleich | mandari",
     "/vergleich/mandari-vs-allris/": "ALLRIS-Alternative? mandari vs. ALLRIS im Vergleich | mandari",
     "/vergleich/mandari-vs-somacos/": "SessionNet-Alternative? mandari vs. Somacos Session | mandari",
@@ -71,8 +71,10 @@ class SeedTests(SimpleTestCase):
         meta = {m["slug"]: m for m in seeds.MARKETING_PAGE_META}
         kommunen = meta["kommunen"]["search_description"]
         self.assertNotIn("Verwaltungs-RIS", kommunen)
-        for wort in ("Ratsinformationssystem", "Sitzungsdienst"):
-            self.assertIn(wort, kommunen)
+        # Seit #939 trägt /kommunen/ den Sitzungsdienst, den Begriff Ratsinformationssystem /ratsinformationssystem/
+        self.assertIn("Sitzungsdienst", kommunen)
+        self.assertIn("Sitzungsdienst", meta["kommunen"]["seo_title"])
+        self.assertNotIn("Ratsinformationssystem", meta["kommunen"]["seo_title"])
         ris = meta["ratsinformationssystem"]["search_description"]
         for wort in ("Ratsinformationssystem", "Sitzungsdienst", "OParl"):
             self.assertIn(wort, ris)
@@ -157,8 +159,7 @@ class SeitenTests(TestCase):
 
     def test_kommunen_ueberschrift_und_textlink(self):
         html = self.seite("/kommunen/")
-        self.assertEqual(head(html, r"<h1[^>]*>([^<]+)</h1>"),
-                         "Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.")
+        self.assertEqual(head(html, r"<h1[^>]*>([^<]+)</h1>"), "Sitzungsdienst ohne Medienbrüche.")
         self.assertIn("Ratsinformationssystem", links(hauptteil(html), "/ratsinformationssystem/"))
         text = sichtbarer_text(hauptteil(html))
         for begriff in ("Sitzungsmanagement", "Gremieninformationssystem", "digitale Gremienarbeit"):
@@ -168,16 +169,14 @@ class SeitenTests(TestCase):
                           "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit."):
             self.assertIn(abschnitt, text)
 
-    def test_kommunen_hero_gibt_dem_langen_wort_platz(self):
-        kopf = hauptteil(self.seite("/kommunen/"))
-        kopf = kopf[:kopf.find("</section>")]
-        self.assertIn('class="lg:col-span-7"', kopf)
-        self.assertIn('<figure class="lg:col-span-5">', kopf)
-        self.assertNotIn("max-w-[15ch]", kopf)
-        fraktionen = hauptteil(self.seite("/fraktionen/"))
-        fraktionen = fraktionen[:fraktionen.find("</section>")]
-        self.assertIn("lg:max-w-[15ch]", fraktionen)
-        self.assertIn('<figure class="lg:col-span-6">', fraktionen)
+    def test_hero_mit_bild_ohne_langes_wort(self):
+        # Seit #939 steht auf /kommunen/ kein Wort ab 16 Zeichen mehr in der Überschrift: Text und Bild teilen sich
+        # die Spalten wie auf /fraktionen/ (die Regel für lange Wörter prüft HeroTests)
+        for url in ("/kommunen/", "/fraktionen/"):
+            kopf = hauptteil(self.seite(url))
+            kopf = kopf[:kopf.find("</section>")]
+            self.assertIn("lg:max-w-[15ch]", kopf, url)
+            self.assertIn('<figure class="lg:col-span-6">', kopf, url)
 
     def test_vergleich_verlinkt_die_neue_seite(self):
         self.assertIn("Ratsinformationssystem", links(hauptteil(self.seite("/vergleich/")), "/ratsinformationssystem/"))
@@ -185,7 +184,8 @@ class SeitenTests(TestCase):
     def test_startseite_verlinkt_die_neue_seite_nicht_im_text(self):
         html = self.seite("/")
         self.assertEqual(links(hauptteil(html), "/ratsinformationssystem/"), [])
-        self.assertEqual(head(html, r"<title>([^<]+)</title>"), "mandari – Software für die offene Verwaltung")
+        self.assertEqual(head(html, r"<title>([^<]+)</title>"),
+                         "mandari – Ratsinformationssystem und Software für die offene Verwaltung")
 
     def test_neue_seite(self):
         html = self.seite("/ratsinformationssystem/")
@@ -202,7 +202,9 @@ class SeitenTests(TestCase):
         text = sichtbarer_text(haupt)
         self.assertNotIn("€", text)
         self.assertFalse(DU.search(text), DU.search(text))
-        for frage in ("Was ist ein Ratsinformationssystem?", "Was ist OParl?"):
+        # „Was ist OParl?“ beantwortet seit #939 /oparl-schnittstelle/; hier heißt der Abschnitt „Offen über OParl“
+        for frage in ("Was ist ein Ratsinformationssystem?", "Offen über OParl",
+                      "Wie hängen Ratsinformationssystem und OParl zusammen?"):
             self.assertIn(frage, text)
 
     def test_robots_und_security_txt(self):
