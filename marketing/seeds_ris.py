@@ -11,6 +11,9 @@ Die Seite erklärt den Begriff und zeigt, was mandari davon abdeckt. Vorgaben (S
   mit Quelle belegt,
 * Abschnitte nach dem Musterkatalog, nie zweimal dasselbe Muster hintereinander.
 
+Die Teilbegriffe haben eigene Sachseiten (Issue mandariOSS/mandari#939): /sitzungsmanagement/,
+/buergerinformationssystem/ und /oparl-schnittstelle/; diese Seite verlinkt sie im Text.
+
 Nach Änderungen: ``refresh_seeded_page ratsinformationssystem --force``.
 """
 
@@ -78,7 +81,7 @@ def seite():
                     m.zeile("Sitzungsdienst, Sitzungsmanagement",
                             "Die Arbeit der Verwaltung rund um die Sitzung, vom Sitzungskalender bis zum Sitzungsgeld, "
                             "und die Software dafür.",
-                            stand="mandari Session"),
+                            url="/sitzungsmanagement/", stand="mandari Session"),
                     m.zeile("Gremieninformationssystem",
                             "Geschützter Zugang für Ratsmitglieder zu allen Unterlagen ihrer Gremien, auch den "
                             "nichtöffentlichen. Bei mandari kommen die Unterlagen heute mit der Ladung, Fraktionen "
@@ -87,7 +90,7 @@ def seite():
                     m.zeile("Bürgerinformationssystem",
                             "Der öffentliche Teil: Sitzungstermine, Tagesordnungen, Vorlagen und Beschlüsse für alle, "
                             "ohne Anmeldung.",
-                            stand="mandari Insight"),
+                            url="/buergerinformationssystem/", stand="mandari Insight"),
                 ),
             ],
             spalten=["Begriff", "Was gemeint ist", "Bei mandari"],
@@ -129,7 +132,8 @@ def seite():
             "<p><strong>Offen für alle.</strong> Presse, Zivilgesellschaft und andere Anwendungen verwenden Ihre "
             "Ratsdaten direkt weiter: maschinenlesbar statt als PDF-Stapel.</p>"
             "<p><strong>Ohne Mehraufwand.</strong> mandari veröffentlicht Beschlüsse und Sitzungsunterlagen "
-            "automatisch über OParl. Ihr Sitzungsdienst pflegt nichts doppelt.</p>"
+            "automatisch über die <a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>. Ihr Sitzungsdienst "
+            "pflegt nichts doppelt.</p>"
             "<p><strong>Wechsel.</strong> Spricht Ihr bisheriges System OParl, etwa ALLRIS, SessionNet von Somacos "
             "oder SD.NET RIM, übernimmt mandari Sitzungen, Vorlagen und Dokumente strukturiert. Ihre Daten bekommen Sie "
             "jederzeit vollständig heraus.</p>",

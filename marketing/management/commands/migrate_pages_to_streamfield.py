@@ -112,6 +112,7 @@ def get_marketing_definitions() -> dict:
     from marketing import seeds_vergleich  # Vergleichsseiten und Lücken auf /roadmap/
     from marketing import seeds_muster as m  # Abschnittsmuster (Musterkatalog)
     from marketing import seeds_ris  # Sachseite /ratsinformationssystem/
+    from marketing import seeds_buergerinformationssystem, seeds_oparl, seeds_sitzungsmanagement  # Sachseiten (#939)
     from marketing.seeds_unternehmen import get_company_page_definitions
 
     return {
@@ -413,7 +414,11 @@ def get_marketing_definitions() -> dict:
                 subline="Drei Produkte für die drei Seiten der Ratsarbeit. Einzeln stark, zusammen ein System.",
                 anchor="heute",
                 # Weitere Werkzeuge kündigen wir nicht auf den Produktseiten an; was geplant ist, steht in der Roadmap.
-                note="<p>Was wir als Nächstes bauen, steht mit Zeitraum und Verbindlichkeit in der <a href=\"/roadmap/\">Roadmap</a>.</p>",
+                # Textlinks zu den Sachseiten (#939)
+                note="<p>Mehr zum <a href=\"/sitzungsmanagement/\">Sitzungsmanagement mit mandari Session</a> "
+                     "und zum <a href=\"/buergerinformationssystem/\">Bürgerinformationssystem mandari Insight</a>. "
+                     "Was wir als Nächstes bauen, steht mit Zeitraum und Verbindlichkeit in der "
+                     "<a href=\"/roadmap/\">Roadmap</a>.</p>",
             ),
             # Muster 5b: Plattform-Eigenschaften als Begriffe
             m.begriffe(
@@ -552,6 +557,8 @@ def get_marketing_definitions() -> dict:
                 subline="Die ersten Fragen jeder IT-Leitung: was heute läuft, was geplant ist und was wir als Projekt umsetzen.",
                 anchor="integrationen",
                 bestand="{da} von {gesamt} sind heute verfügbar, {offen} sind für 2027 geplant.",
+                note="<p>Was OParl ist und was die Schnittstelle liefert, erklärt die Seite "
+                     "<a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>.</p>",
             ),
             m.einladung(
                 "Sehen Sie mandari in Aktion.",
@@ -570,7 +577,8 @@ def get_marketing_definitions() -> dict:
         "fraktionen": [
             ("hero", {
                 "title": "Politik machen statt PDFs sortieren.",
-                "subline": "mandari Work ist der gemeinsame Arbeitsplatz Ihrer Fraktion: Sitzungen vorbereiten, Anträge schreiben, Positionen abstimmen – in einem Werkzeug, das die Ratsdaten Ihrer Kommune schon kennt.",
+                # Suchbegriff „Fraktionssoftware“ im Lead (#939); die Überschrift bleibt
+                "subline": "mandari Work ist die Fraktionssoftware für Ihre Ratsarbeit: Sitzungen vorbereiten, Anträge schreiben, Positionen abstimmen – in einem Werkzeug, das die Ratsdaten Ihrer Kommune schon kennt.",
                 "ctas": [cta("mandari Work buchen", "https://portal.mandari.de/buchen/"),
                          cta("Alle Funktionen im Überblick", "/produkte/#funktionen", style="outline")],
             }),
@@ -1087,15 +1095,24 @@ def get_marketing_definitions() -> dict:
         "ratsinformationssystem": seeds_ris.seite(),
 
         # ════════════════════════════════════════════════════════════
+        # Sachseiten zu weiteren Suchbegriffen (SEO-Kaufbegriffe, #939);
+        # Inhalte in eigenen Modulen, ohne Preise
+        # ════════════════════════════════════════════════════════════
+        "sitzungsmanagement": seeds_sitzungsmanagement.seite(),
+        "buergerinformationssystem": seeds_buergerinformationssystem.seite(),
+        "oparl-schnittstelle": seeds_oparl.seite(),
+
+        # ════════════════════════════════════════════════════════════
         # /kommunen/ — Für Kommunen & Verwaltungen (Zielgruppen-Seite)
         # ════════════════════════════════════════════════════════════
         "kommunen": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
-                # Suchbegriffe zuerst (SEO, #914); neben dem Bild von mandari Session bekommen lange Wörter
-                # sieben Spalten (blocks.langes_wort, hero.html)
-                "title": "Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
-                "subline": "mandari Session ist das Ratsinformationssystem für Ihre Verwaltung: von der Tagesordnung bis zur freigegebenen Niederschrift, mit kostenlosem Bürgerportal – auf deutschen Servern und vollständig Open Source.",
+                # Suchbegriff Sitzungsdienst zuerst (#939); den Begriff Ratsinformationssystem trägt
+                # /ratsinformationssystem/. Lange Wörter (ab 16 Zeichen) bekämen neben dem Bild von mandari Session
+                # sieben Spalten (blocks.langes_wort, hero.html).
+                "title": "Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
+                "subline": "mandari Session führt Ihren Sitzungsdienst von der Tagesordnung bis zur freigegebenen Niederschrift und veröffentlicht auf Knopfdruck im Bürgerportal – auf deutschen Servern und vollständig Open Source.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
                          cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary")],
@@ -1115,7 +1132,8 @@ def get_marketing_definitions() -> dict:
                               "Beschlüsse und Sitzungsunterlagen erscheinen automatisch nach dem offenen OParl-Standard, "
                               "maschinenlesbar statt in einer Insellösung. Transparenzpflichten erfüllen Sie im laufenden "
                               "Betrieb, und Presse wie Zivilgesellschaft können die Daten direkt weiterverwenden.",
-                              marke="OParl 1.1"),
+                              marke="OParl 1.1", link_label="Zur OParl-Schnittstelle",
+                              link_url="/oparl-schnittstelle/"),
                     m.begriff("Bürgernähe, die keine Arbeit macht",
                               "Bürgerinnen und Bürger finden Beschlüsse, Vorlagen und Abstimmungen selbst — mit "
                               "Volltextsuche über alle Dokumente, ohne Anmeldung und ohne Tracking. Das entlastet "
@@ -1125,9 +1143,10 @@ def get_marketing_definitions() -> dict:
                 subline="Was im Verwaltungsalltag zählt – vom Ratsbüro bis zur Frage aus der Bürgerschaft.",
                 anchor="bausteine",
                 note="<p>Ein <a href=\"/ratsinformationssystem/\">Ratsinformationssystem</a> deckt die ganze digitale "
-                     "Gremienarbeit ab: das Sitzungsmanagement der Verwaltung, das Gremieninformationssystem für "
-                     "Ratsmitglieder und das Bürgerinformationssystem für die Öffentlichkeit. mandari bringt diese "
-                     "Seiten auf einer Plattform zusammen.</p>",
+                     "Gremienarbeit ab: das <a href=\"/sitzungsmanagement/\">Sitzungsmanagement</a> der Verwaltung, "
+                     "das Gremieninformationssystem für Ratsmitglieder und das "
+                     "<a href=\"/buergerinformationssystem/\">Bürgerinformationssystem</a> für die Öffentlichkeit. "
+                     "mandari bringt diese Seiten auf einer Plattform zusammen.</p>",
             ),
             # Muster 5a: zwei Grundsatzentscheidungen, rechts die Eckdaten für die Prüfung
             m.randspalte(
