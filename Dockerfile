@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install system dependencies (Pillow + curl for healthcheck)
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies (Pillow + curl for healthcheck); vorher die Sicherheitsupdates von Debian
+RUN apt-get update && apt-get upgrade -y --no-install-recommends && apt-get install -y --no-install-recommends \
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
