@@ -428,7 +428,8 @@ def get_marketing_definitions() -> dict:
                               "Sitzungen, Vorlagen, Beschlüsse und Dokumente liegen einmal vor. Jedes Produkt arbeitet auf "
                               "demselben Stand – ohne Export, ohne Abgleich."),
                     m.begriff("Offene Standards",
-                              "Alle Ratsdaten stehen über OParl 1.1 bereit. Ihre Daten bekommen Sie jederzeit vollständig heraus.",
+                              "Öffentliche Ratsdaten stehen über OParl 1.1 bereit; Beschlüsse, Berichte und Sitzungsgeld "
+                              "exportieren Sie als CSV und JSON.",
                               link_label="Zur Schnittstelle", link_url="https://docs.mandari.de/insight/oparl-api/"),
                     m.begriff("Sicherheit, die man prüfen kann",
                               "Betrieb in ISO-27001-zertifizierten Rechenzentren in Deutschland, offener Code, Stückliste "
@@ -436,7 +437,7 @@ def get_marketing_definitions() -> dict:
                               link_label="Trust Center", link_url="/trust/"),
                     m.begriff("Ihr Betrieb, Ihre Wahl",
                               "Als Dienst von uns betrieben – oder per Docker Compose im eigenen Rechenzentrum, mit "
-                              "Betreuungsvertrag. Der Funktionsumfang ist derselbe.",
+                              "Betreuungsvertrag.",
                               link_label="Betriebsmodelle vergleichen", link_url="/preise/#betriebsmodelle"),
                 ],
                 subline="Was heute für die Ratsarbeit gilt, gilt für jedes künftige Produkt.",
@@ -496,10 +497,10 @@ def get_marketing_definitions() -> dict:
                         frow("Volltextsuche inklusive Texterkennung", cell("yes"), cell("yes"), cell("yes")),
                         frow("Schwärzung für die Veröffentlichung", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
                         frow("Einbindung in die Website der Kommune", cell("partial", "Kalender-Feed, OParl; Bausteine in Prüfung"), cell("no"), cell("info", "über das Bürgerportal")),
-                        frow("OParl-1.1-Schnittstelle", cell("yes", "Aggregations-API mit Änderungsfeed"), cell("no"), cell("yes", "je Kommune")),
+                        frow("OParl-1.1-Schnittstelle", cell("yes", "Aggregations-API; Änderungsfeed in der Installation einschaltbar"), cell("no"), cell("yes", "je Kommune")),
                         frow("Datenkatalog nach DCAT-AP.de", cell("partial", "Katalog vorhanden, in der Installation einschaltbar; Anbindung an Datenportale folgt"), cell("no"), cell("partial", "je Kommune, in der Installation einschaltbar; Anbindung an Datenportale folgt")),
                         frow("Öffentliche Fraktions-API für die eigene Webseite", cell("no"), cell("yes"), cell("no")),
-                        frow("Ratsfragen an Mandatsträger:innen", cell("yes"), cell("no"), cell("no")),
+                        frow("Ratsfragen an Mandatsträger:innen", cell("info", "pausiert bis zum Neuaufbau"), cell("no"), cell("no")),
                         frow("Einwohnerfragestunde und Eingaben", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
                         frow("KI-Zusammenfassungen", cell("partial", "für ausgewählte Quellen"), cell("yes", "Recherche"), cell("planned", "Sitzungsassistent")),
                         frow("Vorlagen in einfacher Sprache", cell("review"), cell("no"), cell("no")),
@@ -526,7 +527,8 @@ def get_marketing_definitions() -> dict:
                 [
                     m.gruppe("Heute verfügbar",
                              m.zeile("OParl 1.1", "Lesend und offen: Aggregations-API über alle Kommunen in Insight, eigene "
-                                     "Schnittstelle je Kommune in Session. Import aus jedem OParl-fähigen RIS.",
+                                     "Schnittstelle je Kommune in Session. Das Bürgerportal liest OParl-fähige "
+                                     "Ratsinformationssysteme ein.",
                                      url="https://docs.mandari.de/insight/oparl-api/", ort="API-Dokumentation",
                                      stand="Verfügbar", status="da"),
                              m.zeile("Fraktions-API und Kalender", "Öffentliche Sitzungstermine der Fraktion per JSON auf "
@@ -1112,7 +1114,7 @@ def get_marketing_definitions() -> dict:
                 # /ratsinformationssystem/. Lange Wörter (ab 16 Zeichen) bekämen neben dem Bild von mandari Session
                 # sieben Spalten (blocks.langes_wort, hero.html).
                 "title": "Sitzungsdienst ohne Medienbrüche.", "title_highlight": "",
-                "subline": "mandari Session führt Ihren Sitzungsdienst von der Tagesordnung bis zur freigegebenen Niederschrift und veröffentlicht auf Knopfdruck im Bürgerportal – auf deutschen Servern und vollständig Open Source.",
+                "subline": "mandari Session führt Ihren Sitzungsdienst von der Tagesordnung bis zur freigegebenen Niederschrift und veröffentlicht im Bürgerportal, sobald Sie es in den Einstellungen freigeben – auf deutschen Servern und als Open Source.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
                          cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary")],
@@ -1126,17 +1128,17 @@ def get_marketing_definitions() -> dict:
                               "Von der Sitzungsplanung bis zum Protokoll in einem System: Tagesordnungen, Einladungen "
                               "digital und auf Papier, Vorlagen und die Abrechnung des Sitzungsgelds. Was einmal erfasst "
                               "ist, wird nicht noch einmal abgetippt — das spart Zeit im Ratsbüro und vermeidet Fehler.",
-                              marke="mandari Session", link_label="Angebot anfragen",
+                              marke="mandari Session (Pilotphase)", link_label="Angebot anfragen",
                               link_url="/kontakt/?subject=Session-Angebot"),
                     m.begriff("Veröffentlichung ohne Zusatzaufwand",
-                              "Beschlüsse und Sitzungsunterlagen erscheinen automatisch nach dem offenen OParl-Standard, "
-                              "maschinenlesbar statt in einer Insellösung. Transparenzpflichten erfüllen Sie im laufenden "
+                              "Nach Ihrer Freigabe erscheinen Beschlüsse und Sitzungsunterlagen automatisch nach dem "
+                              "offenen OParl-Standard, maschinenlesbar statt in einer Insellösung. Transparenzpflichten erfüllen Sie im laufenden "
                               "Betrieb, und Presse wie Zivilgesellschaft können die Daten direkt weiterverwenden.",
                               marke="OParl 1.1", link_label="Zur OParl-Schnittstelle",
                               link_url="/oparl-schnittstelle/"),
                     m.begriff("Bürgernähe, die keine Arbeit macht",
                               "Bürgerinnen und Bürger finden Beschlüsse, Vorlagen und Abstimmungen selbst — mit "
-                              "Volltextsuche über alle Dokumente, ohne Anmeldung und ohne Tracking. Das entlastet "
+                              "Volltextsuche über die Dokumente, ohne Anmeldung und ohne Tracking. Das entlastet "
                               "Verwaltung und Rat von Einzelanfragen, und für Ihre Kommune ist das Portal inklusive.",
                               marke="Bürgerportal mandari Insight", link_label="Insight ansehen", link_url="/insight/"),
                 ],
@@ -1155,12 +1157,14 @@ def get_marketing_definitions() -> dict:
                 "ohne US-Cloud-Anbieter und ohne Übermittlung in Drittländer. Für Ihre Prüfung liegen der Mustervertrag "
                 "zur Auftragsverarbeitung und die vollständige Liste der Unterauftragnehmer offen; gesichert wird "
                 "täglich, gespeichert verschlüsselt.</p>"
-                "<p><strong>Open Source heißt: kein Vendor-Lock-in.</strong> Der gesamte Quellcode steht unter "
-                "AGPL-3.0, Ihre IT kann ihn jederzeit prüfen. Sie exportieren Ihre Daten in offenen Formaten und "
-                "entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen — unabhängig vom Anbieter und "
-                "seinen Preisen.</p>",
+                "<p><strong>Open Source heißt: kein Vendor-Lock-in.</strong> Der Quellcode steht unter AGPL-3.0, Ihre "
+                "IT kann ihn prüfen. Öffentliches geben Sie über OParl heraus, Beschlüsse, Berichte und Sitzungsgeld "
+                "als CSV und JSON, und Sie entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen — "
+                "unabhängig vom Anbieter und seinen Preisen.</p>",
                 [
-                    m.rand_fakten("Für Ihre Prüfung", ("Verschlüsselung", "AES-256-GCM je Mandant"),
+                    m.rand_fakten("Für Ihre Prüfung",
+                                  ("Verschlüsselung", "Nichtöffentliches und sensible Personendaten, je Kommune "
+                                                      "(AES-256-GCM)"),
                                   ("Sicherung", "täglich, 30 Tage aufbewahrt"),
                                   ("Datenexport", "OParl, CSV, JSON"), ("Lizenz", "AGPL-3.0")),
                     m.rand_links("Unterlagen", ("Trust Center", "/trust/"), ("Muster-AVV", "/avv/"),
@@ -1188,7 +1192,7 @@ def get_marketing_definitions() -> dict:
             ),
             m.einladung(
                 "Pilotkommunen gestalten mit.",
-                "Sonderkonditionen, kurze Wege in die Entwicklung und die Übernahme Ihrer bestehenden Daten. Im "
+                "Sonderkonditionen, kurze Wege in die Entwicklung und die Übernahme Ihrer Gremien und Personen. Im "
                 "Erstgespräch klären wir Anbindbarkeit, Zeitplan und Konditionen.",
                 "Erstgespräch vereinbaren", "/kontakt/?subject=Pilot-Kommune#termin",
                 link_label="Migration ansehen", link_url="/migration/",

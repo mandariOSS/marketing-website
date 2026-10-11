@@ -35,9 +35,18 @@ ANWENDUNG = ("/insight/", "/work/", "/session/", "/accounts/", "/admin/", "/api/
              "/nachweis/", "/kalender/", "/feedback/", "/csp-report/", "/data/", "/static/", "/media/", "/offline/")
 
 # Keine Preise, keine Kostenaussagen, keine KI (mandari#950), keine Ratsfragen (pausiert), regisafe nie als
-# OParl-Beispiel, Marke klein
+# OParl-Beispiel, Marke klein; nach der Prüfstufe außerdem keine Absolutaussagen und kein „Knopfdruck“
 VERBOTEN = ["€", "Euro", "kostenlos", "kostenfrei", "Lizenzkosten", "lizenzkostenfrei", "Finanzier", "querfinanziert",
-            "39,90", "Preisliste", "Mandari", "künstliche Intelligenz", "Zusammenfassung", "Ratsfrage", "regisafe"]
+            "39,90", "Preisliste", "Mandari", "künstliche Intelligenz", "Zusammenfassung", "Ratsfrage", "regisafe",
+            "Knopfdruck", "bis zur letzten Zeile", "gesamte Quellcode", "vollständig Open Source", "Funktionsumfang",
+            "Fahrradweg", "über hundert", "Änderungsfeed"]
+# Übernahme in mandari Session gibt es erst mit 1.0 (Roadmap); heute liest mandari den Altbestand ins Bürgerportal ein
+UEBERNAHME = r"übernimmt mandari|übernehmen wir (?:Sitzungen|Ihren Bestand)|Import aus (?:jedem|dem bisherigen)"
+
+
+def definitions_text(bloecke):
+    """Alle Texte einer Blockliste als ein String (für Suchen über die ganze Seite)."""
+    return " ".join(str(wert) for _, wert in bloecke)
 
 
 def json_ld(html):
@@ -98,10 +107,35 @@ class SeedTests(SimpleTestCase):
         for slug in SEITEN:
             self.assertFalse(f"/{slug}/".startswith(ANWENDUNG), slug)
 
-    def test_zahlen_mit_stand(self):
+    def test_zahlen_mit_stand_und_ohne_bild(self):
+        # Das Bild des Bürgerportals zeigt den KI-Assistenten im Menü; die Seite kommt ohne Bild aus (Prüfstufe)
         bloecke = dict(get_marketing_definitions()["buergerinformationssystem"])
-        fakten = bloecke["produktbilder"]["eintraege"][0]["fakten"]
-        self.assertIn({"begriff": "Stand", "wert": KENNZAHLEN_STAND}, fakten)
+        self.assertNotIn("produktbilder", bloecke)
+        self.assertIn(KENNZAHLEN_STAND, bloecke["zahlensatz"]["satz"])
+
+    def test_session_mit_etikett_pilotphase(self):
+        bloecke = dict(get_marketing_definitions()["sitzungsmanagement"])
+        zeilen = [z for g in bloecke["register"]["gruppen"] for z in g["zeilen"]]
+        self.assertTrue(zeilen)
+        for zeile in zeilen:
+            erwartet = "Pilotphase" if zeile["status"] == "da" else "Geplant"
+            self.assertIn(erwartet, zeile["stand"], zeile["titel"])
+        rand = [t["value"] for t in bloecke["randspalte"]["rand"] if t["type"] == "fakten"]
+        self.assertIn({"begriff": "Stand", "wert": "Pilotphase"}, rand[0]["fakten"])
+        bis = dict(get_marketing_definitions()["buergerinformationssystem"])
+        beschluesse = [e for e in bis["begriffe"]["eintraege"] if e["begriff"] == "Was aus Beschlüssen wird"]
+        self.assertEqual(beschluesse[0]["marke"], "mit mandari Session (Pilotphase)")
+
+    def test_keine_uebernahme_in_session_versprochen(self):
+        definitionen = get_marketing_definitions()
+        for slug in [*SEITEN, "ratsinformationssystem", "kommunen", "produkte"]:
+            self.assertNotRegex(repr(definitions_text(definitionen[slug])), UEBERNAHME, slug)
+
+    def test_suchbeispiel_aus_den_synonymen(self):
+        # insight_search/synonyms.py im Repository mandariOSS/mandari: „B-Plan“ ↔ „Bebauungsplan“
+        text = repr(get_marketing_definitions()["buergerinformationssystem"])
+        self.assertIn("„B-Plan“ sucht, findet auch den Bebauungsplan", text)
+        self.assertIn("unscharf", text)
 
     def test_fusszeile_nennt_die_sachseiten_unter_dem_ratsinformationssystem(self):
         html = render_to_string("components/footer.html", {})
@@ -191,6 +225,21 @@ class SeitenTests(TestCase):
             self.assertEqual(typen.count("SoftwareApplication"), 1, slug)
             self.assertEqual(typen.count("FAQPage"), 1, slug)
             self.assertNotIn("BreadcrumbList", typen, slug)
+
+    def test_ris_seite_ueberlaesst_was_ist_oparl_der_sachseite(self):
+        ris = sichtbarer_text(hauptteil(self.seite("/ratsinformationssystem/")))
+        self.assertNotIn("Was ist OParl?", ris)
+        self.assertIn("Offen über OParl", ris)
+        self.assertNotIn("Änderungsfeed", ris)
+        self.assertIn("Was ist OParl?", sichtbarer_text(hauptteil(self.seite("/oparl-schnittstelle/"))))
+
+    def test_produkte_wie_in_produktion(self):
+        produkte = sichtbarer_text(hauptteil(self.seite("/produkte/")))
+        self.assertNotIn("Aggregations-API mit Änderungsfeed", produkte)
+        self.assertIn("Änderungsfeed in der Installation einschaltbar", produkte)
+        self.assertIn("pausiert bis zum Neuaufbau", produkte)
+        self.assertNotIn("Der Funktionsumfang ist derselbe", produkte)
+        self.assertNotIn("hero-insight-muenster", self.seite("/buergerinformationssystem/"))
 
     def test_startseite_mit_nur_meta(self):
         from marketing.models import HomePage

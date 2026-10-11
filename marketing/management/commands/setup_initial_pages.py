@@ -94,8 +94,8 @@ MARKETING_PAGE_META = [
         "slug": "sitzungsmanagement",
         "seo_title": "Sitzungsmanagement-Software für Verwaltungen",
         "search_description": (
-            "Sitzungsmanagement mit mandari Session: Gremien, Sitzungen, Ladung, Vorlagen, Niederschrift und "
-            "Beschlusskontrolle in einem System für den Sitzungsdienst."
+            "Sitzungs- und Gremienmanagement mit mandari Session (Pilotphase): Sitzungen, Ladung, Vorlagen, "
+            "Niederschrift und Beschlusskontrolle in einem System."
         ),
     },
     {
@@ -114,7 +114,7 @@ MARKETING_PAGE_META = [
         "seo_title": "OParl-Schnittstelle für offene Ratsdaten",
         "search_description": (
             "Die OParl-Schnittstelle von mandari: Ratsdaten nach OParl 1.1 maschinenlesbar abrufen, als offene "
-            "Daten nachnutzen und aus dem bisherigen RIS übernehmen."
+            "Daten nachnutzen und aus dem bisherigen RIS einlesen."
         ),
     },
     # Suchbegriff „Fraktionssoftware“ (#939); keine Preise in Titel und Description

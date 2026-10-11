@@ -7,11 +7,13 @@ Die Seite erklärt den Begriff Bürgerinformationssystem (BIS) und zeigt das Bü
 * keine Preise und keine Kostenaussagen (auch nicht „kostenlos“); der einzige Verweis auf Kosten ist der Weg „Preise“
   im Schlussband,
 * keine Aussagen zu KI (Anbieter noch nicht freigegeben, mandariOSS/mandari#950), deshalb ohne die
-  Zusammenfassungen im Bürgerportal,
+  Zusammenfassungen im Bürgerportal und ohne das Bild des Bürgerportals (sein Menü zeigt den KI-Assistenten),
 * keine Kommunen als Kunden; Zahlen nur mit Stand (``KENNZAHLEN`` in ``marketing/seeds_unternehmen.py``, dieselben
   wie auf /presse/ und /transparenz/),
-* nur Funktionen, die das Bürgerportal heute hat (Dokumentation docs.mandari.de/insight/); die Ratsfragen sind
-  pausiert und fehlen deshalb,
+* Faktentreue vor Glanz: nur Funktionen, die das Bürgerportal in Produktion heute hat (Dokumentation
+  docs.mandari.de/insight/). Die Ratsfragen sind pausiert, Abos zu Suchbegriffen und Nachbarschaft ausgeschaltet;
+  beides fehlt. Synonyme nur mit Beispielen aus ``insight_search/synonyms.py`` (Repository mandariOSS/mandari),
+  die unscharfe Suche ist ein Rückfall. Was mandari Session voraussetzt, trägt das Etikett der Pilotphase,
 * Abschnitte nach dem Musterkatalog, nie zweimal dasselbe Muster hintereinander.
 
 Nach Änderungen: ``refresh_seeded_page buergerinformationssystem --force``.
@@ -29,7 +31,7 @@ def seite():
     from marketing.management.commands.migrate_pages_to_streamfield import cta
     from marketing.seeds_unternehmen import KENNZAHLEN, KENNZAHLEN_STAND
 
-    dokumente, _, sitzungen, kommunen = (wert for wert, _ in KENNZAHLEN)
+    dokumente, vorgaenge, sitzungen, kommunen = (wert for wert, _ in KENNZAHLEN)
 
     return [
         ("hero", {
@@ -51,8 +53,8 @@ def seite():
             "von PDF-Dateien im Netz. Wer wissen will, was der Rat zur eigenen Straße beschlossen hat, muss Sitzung "
             "und Vorlagennummer schon kennen.</p>"
             "<p><strong>Für alle, die mitreden wollen.</strong> Bürger:innen, Presse und Zivilgesellschaft fragen, "
-            "was ansteht, was beschlossen wurde und was daraus geworden ist. Ein gutes Bürgerinformationssystem "
-            "antwortet ohne Amtsdeutsch.</p>"
+            "was ansteht, was beschlossen wurde und was daraus geworden ist. In einem guten "
+            "Bürgerinformationssystem finden sie Antworten, ohne Sitzung und Vorlagennummer zu kennen.</p>"
             "<p><strong>Weniger Einzelanfragen.</strong> Wer selbst findet, muss nicht nachfragen. Das entlastet "
             "Verwaltung und Rat.</p>",
             [
@@ -71,9 +73,10 @@ def seite():
             "Finden, verstehen, dranbleiben",
             [
                 m.begriff("Volltextsuche",
-                          "Die Suche reicht über Vorlagen, Sitzungen, Beschlüsse und den Text jedes Dokuments, auch "
-                          "eingescannter. Sie verzeiht Tippfehler und kennt über hundert kommunalpolitische Synonyme: "
-                          "Wer „Fahrradweg“ sucht, findet auch den Radweg."),
+                          "Die Suche reicht über Vorlagen, Sitzungen, Beschlüsse und den Text der Dokumente, auch "
+                          "eingescannter. Sie kennt kommunalpolitische Synonyme: Wer „B-Plan“ sucht, findet auch den "
+                          "Bebauungsplan. Findet die genaue Suche kaum etwas, sucht sie unscharf weiter, etwa bei "
+                          "Tippfehlern."),
                 m.begriff("Karte und Umkreis",
                           "Vorgänge stehen auf der Karte. Die Umkreissuche zeigt, was rund um eine Adresse beraten "
                           "wird."),
@@ -87,32 +90,33 @@ def seite():
                           "Gibt die Verwaltung den Umsetzungsstand frei, zeigt das Portal, was aus einem Beschluss "
                           "geworden ist: beschlossen, in Umsetzung, umgesetzt. Einzelne Beschlüsse lassen sich "
                           "abonnieren.",
-                          marke="mit mandari Session"),
-                m.begriff("Barrierefrei bedienbar",
-                          "Tastaturbedienung, Kontrast von mindestens 4,5:1, Dunkelmodus und Darstellung bis 320 px "
-                          "Breite. Den Stand jedes Bereichs nennt unsere Erklärung.",
+                          marke="mit mandari Session (Pilotphase)"),
+                m.begriff("Für alle bedienbar",
+                          "Bedienung per Tastatur, Kontrast von mindestens 4,5:1, Dunkelmodus und Darstellung bis "
+                          "320 px Breite. Laut unserer Erklärung zur Barrierefreiheit ist mandari teilweise konform "
+                          "mit der BITV 2.0; an Karten und komplexen Filtern arbeiten wir.",
                           link_label="Erklärung zur Barrierefreiheit", link_url="/barrierefreiheit/"),
             ],
             subline="Was mandari Insight Bürger:innen bietet, ohne Konto und ohne Vorwissen.",
             anchor="funktionen",
-            note="<p>Alles, was im Bürgerportal steht, ist auch maschinenlesbar: über die "
+            note="<p>Die Ratsdaten im Bürgerportal sind auch maschinenlesbar: über die "
                  "<a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>.</p>",
         ),
         # Muster 8: zwei Wege ins Bürgerportal nach denselben Kriterien
         m.vergleich(
             "Zwei Wege ins Bürgerportal",
-            [("Mit mandari Session", "Veröffentlichung auf Knopfdruck"),
+            [("Mit mandari Session", "Pilotphase, Veröffentlichung per Freigabe"),
              ("Mit Ihrem bisherigen RIS", "Über die OParl-Schnittstelle")],
             [
                 ("Ihre Kommune", ["führt den Sitzungsdienst in mandari Session",
                                   "nutzt ein System mit OParl-Schnittstelle, etwa ALLRIS, SessionNet von Somacos oder "
                                   "SD.NET RIM, und muss nichts wechseln"]),
-                ("Veröffentlichung", ["ein Schalter in den Einstellungen, jede Umstellung im Audit-Log",
+                ("Veröffentlichung", ["per Freigabe in den Einstellungen, jede Umstellung im Audit-Log",
                                       "das Bürgerportal liest die öffentlichen Daten fortlaufend über OParl"]),
-                ("Was erscheint", ["öffentliche Gremien, Personen, Sitzungen, Vorlagen und Anlagen; Nichtöffentliches "
-                                   "bleibt intern",
+                ("Was erscheint", ["was als öffentlich gekennzeichnet ist: Gremien, Personen, Sitzungen, Vorlagen "
+                                   "und Anlagen",
                                    "was Ihr System über OParl öffentlich bereitstellt"]),
-                ("Umsetzungsstand von Beschlüssen", ["auf Wunsch öffentlich, mit eigener Statusmeldung je Beschluss",
+                ("Umsetzungsstand von Beschlüssen", ["nach Ihrer Freigabe, mit eigener Statusmeldung je Beschluss",
                                                      "–"]),
             ],
             subline="Ob Ihre Verwaltung mandari Session nutzt oder ihr bisheriges Ratsinformationssystem behält: "
@@ -121,20 +125,15 @@ def seite():
             note="<p>Ihr System spricht noch kein OParl? Den begleiteten Weg beschreibt die Seite "
                  "<a href=\"/kommunen/#anbindung\">für Verwaltungen</a>.</p>",
         ),
-        # Muster 7: das Bürgerportal im Einsatz, mit Zahlen und Stand
-        m.produktbilder(
-            "Heute im Einsatz",
-            [
-                m.produktbild("insight", "mandari Insight",
-                              "Das Bürgerportal zeigt die öffentlichen Ratsinformationen aller angebundenen Kommunen "
-                              "an einem Ort und wird fortlaufend aktualisiert. Ist eine Quelle länger nicht "
-                              "erreichbar, nennt es den Datenstand.",
-                              fakten=[("Dokumente im Volltext", dokumente), ("Sitzungen", sitzungen),
-                                      ("Kommunen und Körperschaften", kommunen), ("Stand", KENNZAHLEN_STAND)],
-                              link_label="Bürgerportal öffnen", link_url="/insight/", anchor="insight"),
-            ],
-            subline="Das Bürgerportal ist öffentlich in Betrieb. Sehen Sie selbst, wie es Ratsinformationen "
-                    "zugänglich macht.",
+        # Muster 9a: das Bürgerportal im Einsatz, Zahlen mit Stand (ohne Bild, siehe oben)
+        m.zahlensatz(
+            "Das Bürgerportal im Einsatz",
+            f"Am {KENNZAHLEN_STAND} machte das Bürgerportal <b>{dokumente}</b> Dokumente, <b>{vorgaenge}</b> "
+            f"Vorgänge und Vorlagen und <b>{sitzungen}</b> Sitzungen aus <b>{kommunen}</b> Kommunen und "
+            "Körperschaften im Volltext durchsuchbar.",
+            rand="<p><strong>So zählen wir:</strong> den Bestand im Bürgerportal am Stichtag, nicht Besuche. Ist "
+                 "eine Quelle länger nicht erreichbar, nennt das Portal den Datenstand.</p>"
+                 "<p><a href=\"/insight/\">Bürgerportal öffnen</a></p>",
             anchor="im-einsatz",
         ),
         ("accordion_faq", {
@@ -161,16 +160,18 @@ def seite():
                            "der Ratsmitglieder.</p>"},
                 {"question": "Braucht unsere Kommune mandari Session für das Bürgerportal?",
                  "answer": "<p>Nein. Spricht Ihr Ratsinformationssystem OParl, liest das Bürgerportal die "
-                           "öffentlichen Daten direkt daraus. Mit mandari Session veröffentlichen Sie auf Knopfdruck "
-                           "und können zusätzlich den Umsetzungsstand von Beschlüssen freigeben.</p>"},
+                           "öffentlichen Daten direkt daraus. Mit mandari Session (Pilotphase) veröffentlichen Sie per "
+                           "Freigabe in den Einstellungen und können zusätzlich den Umsetzungsstand von Beschlüssen "
+                           "freigeben.</p>"},
                 {"question": "Welche Inhalte erscheinen im Bürgerportal?",
-                 "answer": "<p>Nur, was die Kommune selbst öffentlich bereitstellt: öffentliche Sitzungen und "
+                 "answer": "<p>Das Bürgerportal zeigt nur, was in mandari Session als öffentlich gekennzeichnet ist "
+                           "oder was Ihr bisheriges System über OParl öffentlich bereitstellt: Sitzungen und "
                            "Tagesordnungen, Vorlagen, Beschlüsse, Gremien und Personen. Nichtöffentliche "
-                           "Sitzungsteile, Personalangelegenheiten und interne Vermerke gelangen nie ins Portal.</p>"},
+                           "Sitzungsteile und interne Vermerke gehören nicht dazu.</p>"},
                 {"question": "Wie barrierefrei ist das Bürgerportal?",
-                 "answer": "<p>Bei der letzten Prüfung im April 2026 war mandari teilweise konform mit der BITV 2.0. "
-                           "Tastaturbedienung, Kontrast, Dunkelmodus und die Darstellung bis 320 px Breite sind "
-                           "konform; an Karten und komplexen Filtern arbeiten wir. Den Stand je Bereich nennt die "
+                 "answer": "<p>Laut unserer Erklärung zur Barrierefreiheit (Stand der Prüfung April 2026) ist mandari "
+                           "teilweise konform mit der BITV 2.0. An Karten, komplexen Filtern und der Beschriftung "
+                           "von Symbolen arbeiten wir; den Stand je Bereich nennt die "
                            "<a href=\"/barrierefreiheit/\">Erklärung zur Barrierefreiheit</a>.</p>"},
                 {"question": "Braucht man ein Konto?",
                  "answer": "<p>Nein. Das Bürgerportal ist ohne Anmeldung nutzbar, ohne Tracking und ohne Werbung. "

@@ -202,7 +202,9 @@ class SeitenTests(TestCase):
         text = sichtbarer_text(haupt)
         self.assertNotIn("€", text)
         self.assertFalse(DU.search(text), DU.search(text))
-        for frage in ("Was ist ein Ratsinformationssystem?", "Was ist OParl?"):
+        # „Was ist OParl?“ beantwortet seit #939 /oparl-schnittstelle/; hier heißt der Abschnitt „Offen über OParl“
+        for frage in ("Was ist ein Ratsinformationssystem?", "Offen über OParl",
+                      "Wie hängen Ratsinformationssystem und OParl zusammen?"):
             self.assertIn(frage, text)
 
     def test_robots_und_security_txt(self):

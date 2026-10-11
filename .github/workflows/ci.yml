@@ -114,7 +114,7 @@ jobs:
               "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
               "/kommunen/": ["Sitzungsdienst ohne Medienbrüche.", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit.", 'href="/ratsinformationssystem/"', 'href="/sitzungsmanagement/"'],
-              "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Was ist OParl?", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"', 'href="/oparl-schnittstelle/"'],
+              "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Offen über OParl", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"', 'href="/oparl-schnittstelle/"'],
               "/sitzungsmanagement/": ["Was ist Sitzungsmanagement?", "Was mandari Session leistet", "Häufige Fragen zum Sitzungsmanagement", '"@type":"FAQPage"', '"@type":"SoftwareApplication"'],
               "/buergerinformationssystem/": ["Was ist ein Bürgerinformationssystem?", "Zwei Wege ins Bürgerportal", "Häufige Fragen zum Bürgerinformationssystem", 'href="/insight/"', '"@type":"FAQPage"'],
               "/oparl-schnittstelle/": ["Was ist OParl?", "Was die Schnittstelle liefert", "Häufige Fragen zur OParl-Schnittstelle", "https://docs.mandari.de/session/oparl-api/", '"@type":"FAQPage"'],
