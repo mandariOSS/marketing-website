@@ -209,10 +209,21 @@ class CrawlerSeiteTests(TestCase):
         # pausiert nur ohne frühere Fassung (_Entry.last_good)
         html = text(self.html())
         self.assertIn("nicht erreichbar ist und wir keine frühere Fassung haben, pausiert unser Abgleich", html)
-        self.assertIn("Unsere übrigen Abrufe von Dokumenten und Fotos ruhen erst, wenn drei Abgleiche in Folge", html)
-        self.assertIn("eine Sperre per robots.txt beachten sie immer", html)
+        self.assertIn(
+            "Das stündliche Nachholen und Prüfen von Dokumenten, das Laden beim Öffnen und die Personenfotos ruhen "
+            "erst, wenn drei Abgleiche in Folge Ihr System nicht erreichen",
+            html,
+        )
+        self.assertIn("Eine Sperre per robots.txt beachten alle Abrufe immer", html)
         self.assertIn("höchstens 24 Stunden, solange sie erreichbar ist", html)
         self.assertNotIn("nicht erreichbar ist, pausieren wir", html)
+
+    def test_texterkennung_ruht_nicht_in_der_pause(self):
+        # extract-daemon (ingestor/src/main.py, extractor.py) prüft nur file_downloads und robots.txt, nicht
+        # source_backoff_until: Die Seite darf nicht zusagen, dass alle Dokumentabrufe ruhen
+        html = text(self.html())
+        self.assertIn("Neue Dateien, deren Text noch fehlt, lädt unsere Texterkennung auch während einer Pause", html)
+        self.assertNotIn("übrigen Abrufe von Dokumenten und Fotos ruhen erst", html)
 
     def test_zeitfenster_nur_fuer_den_vollabgleich(self):
         # full_sync_window begrenzt nur die Listen des Vollabgleichs
@@ -225,7 +236,7 @@ class CrawlerSeiteTests(TestCase):
     def test_pdf_beispiel_mit_grenzen(self):
         # robots.py: $ verankert das Ende, Groß- und Kleinschreibung zählt im Pfad
         html = text(self.html())
-        self.assertIn("Adressen ausschließen, die auf .pdf enden", html)
+        self.assertIn("Adressen ausschließen, die auf .pdf enden; die Schnittstelle bleibt frei", html)
         self.assertIn("sperren Sie deren Pfad", html)
         self.assertNotIn("Nur PDF-Dateien ausschließen", html)
 
