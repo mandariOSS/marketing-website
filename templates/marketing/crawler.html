@@ -13,9 +13,8 @@
     <div class="wrap">
         <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Wie mandari Ratsinformationen abruft</h1>
         <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
-            Unser Dienst mandari-ingestor ruft öffentliche Ratsinformationen ab, damit Bürgerinnen und Bürger sie bei
-            uns durchsuchen können, stets mit Angabe der Quelle. Hier steht, woran Sie die Abrufe erkennen, wie oft
-            sie kommen und wie Sie sie steuern.
+            Hier steht, woran Sie die Abrufe unseres Dienstes mandari-ingestor erkennen, wie oft sie kommen und wie
+            Sie sie steuern.
         </p>
         <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
             <a href="{{ c.mailto }}" class="btn-primary">E-Mail an support@mandari.de</a>
@@ -78,7 +77,7 @@
                     Takt schreiben Sie uns. Änderungen wirken spätestens nach 24 Stunden.</p>
                 <p><strong>Per E-Mail.</strong> Schreiben Sie an <a class="textlink" href="{{ c.mailto }}">support@mandari.de</a>,
                     wenn wir langsamer abrufen sollen (bis zu einer Anfrage alle 30 Sekunden), den Vollabgleich nur in
-                    einem vereinbarten Zeitfenster oder seltener fahren sollen, oder wenn wir Ihr System nicht mehr
+                    einem Zeitfenster ab 1 Uhr nachts oder seltener fahren sollen, oder wenn wir Ihr System nicht mehr
                     abrufen und Ihre Inhalte bei uns entfernen sollen. Nennen Sie uns dazu den Hostnamen Ihres Systems.
                     Wir reagieren zeitnah.</p>
                 <p><strong>Ausnahmen nur mit Freigabe.</strong> Von Ihrer robots.txt weichen wir nur ab, wenn Ihre
@@ -112,8 +111,8 @@ Disallow: /*.pdf$</code></pre>
                 <p><strong>Bevorzugt OParl.</strong> Bietet Ihr System die OParl-Schnittstelle an, nutzen wir sie.
                     Sonst lesen wir ersatzweise die öffentlichen Webseiten, und zwar langsamer: standardmäßig eine Seite
                     alle zwei Sekunden, nacheinander. Viele Ratsinformationssysteme bringen OParl bereits mit.</p>
-                <p><strong>Mit Quellenangabe.</strong> Auf jeder Detailseite nennen und verlinken wir Ihr System als
-                    Quelle. Unsere Daten stehen ihrerseits offen unter
+                <p><strong>Mit Quellenangabe.</strong> Bei uns können Bürgerinnen und Bürger Ihre Inhalte durchsuchen;
+                    auf jeder Detailseite nennen und verlinken wir Ihr System als Quelle. Unsere Daten stehen ihrerseits offen unter
                     <a class="textlink" href="https://oparl.mandari.de">oparl.mandari.de</a> bereit.</p>
             </div>
         </div>
@@ -125,7 +124,7 @@ Disallow: /*.pdf$</code></pre>
                     danach jeweils doppelt so lange, bis höchstens 6 Stunden. Nach fünf Serverfehlern in Folge
                     pausieren wir mindestens 30 Minuten, lehnt Ihr Server gezielt unsere Kennung ab (HTTP 403),
                     mindestens eine Stunde.</p>
-                <p><strong>Keine Umgehung.</strong> Sperren umgehen wir nicht, Kennung und Adresse wechseln wir nicht.
+                <p><strong>Keine Umgehung.</strong> Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.
                     Einen anderen User-Agent setzen wir nur, wenn Sie ihn mit uns vereinbaren. Auf ein HTTP 403 folgt je
                     Abgleich höchstens eine Vergleichsanfrage mit der Standardkennung unserer HTTP-Bibliothek
                     (<span class="font-mono text-[0.95em]">python-httpx</span>), nur um zu erkennen, ob sich die Sperre gegen

@@ -1,9 +1,18 @@
 """Crawler-Seite /crawler/ (mandariOSS/mandari#1027): vollständige Kennung, Abruf-Adresse und Kontakt, Takt aus
 marketing/muster_daten.py; frühere Angaben, die nicht mehr stimmten, kehren nicht zurück."""
 
+import re
+from pathlib import Path
+
+from django.template.loader import get_template
 from django.test import TestCase
 
 from marketing import muster_daten
+
+
+def text(html):
+    """Fließtext ohne Zeilenumbrüche aus dem Template, damit Sätze über Zeilen hinweg gefunden werden."""
+    return " ".join(html.split())
 
 
 class CrawlerSeiteTests(TestCase):
@@ -30,6 +39,59 @@ class CrawlerSeiteTests(TestCase):
             self.assertIn(zeile["abruf"], html)
             self.assertIn(zeile["wann"], html)
 
+    def test_takt_je_hostname_und_zwei_gleichzeitig_nur_im_abgleich(self):
+        # Gedrosselt wird je Hostname über Redis für alle Dienste; die Grenze von zwei offenen Anfragen ist eine
+        # Semaphore je Prozess (host_pacing.py) und gilt deshalb nur für den Abgleich, nicht für alle Dienste.
+        html = self.html()
+        self.assertIn("<b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen", html)
+        self.assertIn("Unser Abgleich hält dabei höchstens zwei Anfragen gleichzeitig offen", html)
+        self.assertNotIn("<b>zwei</b>", html)
+        self.assertNotIn("pro Sekunde</b> je Server", html)
+
+    def test_aenderungsfenster_seit_dem_letzten_erfolgreichen_durchlauf(self):
+        # Beginn des letzten vollständig gelesenen Laufs (auch inkrementell), nicht des letzten Vollabgleichs
+        html = self.html()
+        self.assertIn(
+            "seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem vorigen vor 10 Minuten", html
+        )
+        self.assertNotIn("seit dem letzten vollständigen Abgleich", html)
+
+    def test_zeitfenster_des_vollabgleichs_ab_1_uhr(self):
+        # Der Vollabgleich startet nur um 1 Uhr; ein Fenster, das später beginnt, führte nie zu einem Vollabgleich
+        self.assertEqual(text(self.html()).count("Zeitfenster ab 1 Uhr nachts"), 2)
+
+    def test_dokumentabruf_ohne_freischaltung(self):
+        # Der Dokumentabruf ist je Quelle standardmäßig an und lässt sich nur abschalten (sync_config file_downloads)
+        html = self.html()
+        self.assertIn("Für einzelne Systeme schalten wir den Dokumentabruf ab", html)
+        self.assertNotIn("freigeschaltet", html)
+
+    def test_kopf_mit_einem_satz(self):
+        # Slop-Regel 2: Überschrift, ein erklärender Satz, genau ein Aufruf
+        kopf = re.search(r'<section class="band-hell hero">(.*?)</section>', self.html(), re.S).group(1)
+        lead = text(re.search(r'<p class="t-lead[^"]*">(.*?)</p>', kopf, re.S).group(1))
+        self.assertEqual(len(re.findall(r"[.!?](?:\s|$)", lead)), 1, lead)
+        self.assertEqual(kopf.count("<a "), 1)
+
+    def test_einladung_ohne_abruf_adresse(self):
+        # Eine IP-Adresse ist kein Kontaktweg; sie steht nur in der Kennung
+        self.assertNotIn("Abruf-Adresse", [weg["label"] for weg in muster_daten.WEGE["crawler"]])
+        self.assertEqual(self.html().count(muster_daten.CRAWLER_ADRESSE), 1)
+
+    def test_keine_zusage_gegen_einen_adresswechsel(self):
+        # Ob die Abruf-Adresse bleibt, ist offen; zugesagt wird nur, Sperren nicht durch einen Wechsel zu umgehen
+        html = text(self.html())
+        self.assertIn("Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.", html)
+        self.assertNotIn("Kennung und Adresse wechseln wir nicht", html)
+
+    def test_keine_betriebsinterna_im_quelltext(self):
+        # Das Repository ist öffentlich: keine internen Hostnamen und keine Nummern aus dem privaten Repository
+        dateien = [Path(muster_daten.__file__), Path(get_template("marketing/crawler.html").origin.name)]
+        for datei in dateien:
+            inhalt = datei.read_text(encoding="utf-8")
+            for intern in ["web01", "intern#"]:
+                self.assertNotIn(intern, inhalt, f"{datei.name}: {intern}")
+
     def test_robots_beispiel_fuer_unser_token(self):
         self.assertIn("User-agent: mandari-ingestor\nDisallow: /</code>", self.html().replace("\r\n", "\n"))
 
@@ -42,5 +104,6 @@ class CrawlerSeiteTests(TestCase):
             "keine parallelen Zugriffe",
             "nur bei tatsächlichen Änderungen",
             "hello@mandari.de",
+            "Nur für Kommunen, die wir dafür freigeschaltet haben",
         ]:
             self.assertNotIn(alt, html, alt)

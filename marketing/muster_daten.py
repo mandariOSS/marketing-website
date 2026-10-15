@@ -34,7 +34,6 @@ WEGE = {
     ],
     "crawler": [
         {"label": "E-Mail", "wert": "support@mandari.de", "url": ""},
-        {"label": "Abruf-Adresse", "wert": "144.76.153.200", "url": ""},
         {"label": "Datenquellen", "wert": "Quellennachweise", "url": "/quellen/"},
         {"label": "Unsere Schnittstelle", "wert": "oparl.mandari.de", "url": "https://oparl.mandari.de"},
     ],
@@ -154,7 +153,7 @@ DISCLOSURE_GELTUNG = {
 CRAWLER_USER_AGENT = "mandari-ingestor/<Version> (+https://mandari.de/crawler/; support@mandari.de)"
 #: shared/mandari_oparl/crawler.py, PRODUCT_TOKEN; ausgewertet in shared/mandari_oparl/robots.py (RFC 9309)
 CRAWLER_TOKEN = "mandari-ingestor"
-#: Ausgehende Adresse der von uns betriebenen Instanz (NAT von web01, Docker-Netz ohne IPv6), intern#113
+#: Ausgehende Adresse der von uns betriebenen Instanz, nur IPv4
 CRAWLER_ADRESSE = "144.76.153.200"
 #: shared/mandari_oparl/crawler.py, CONTACT
 CRAWLER_KONTAKT = "support@mandari.de"
@@ -177,42 +176,55 @@ CRAWLER_KENNUNG = [
 
 # Takt (Zahl im Satz) und Häufigkeit je Abrufart (Tabelle). Fundstellen:
 # - eine Anfrage je Sekunde: shared/mandari_oparl/pacing.py DEFAULT_INTERVAL (Redis-Zeitstempel je Hostname über
-#   alle Prozesse); je Quelle nur langsamer (sync_config request_interval, Werte unter 1,0 s angehoben, mandari#1025;
-#   höchstens MAX_REQUEST_INTERVAL 30 s)
-# - zwei gleichzeitig: ingestor/src/config.py host_max_concurrent (je Prozess und Hostname)
+#   alle Prozesse; ist Redis nicht erreichbar, drosselt jeder Prozess für sich, LocalSchedule); je Quelle nur
+#   langsamer (sync_config request_interval, Werte unter 1,0 s angehoben, mandari#1025; höchstens
+#   MAX_REQUEST_INTERVAL 30 s). Gezählt wird je Hostname (host_of), nicht je Server.
+# - zwei gleichzeitig: ingestor/src/client/host_pacing.py HostPacer.limit mit ingestor/src/config.py
+#   host_max_concurrent, eine asyncio-Semaphore je Prozess und Hostname. Deshalb nur für den Abgleich zugesagt: Die
+#   Texterkennung hat eigene zwei Plätze, die Anwendung (Dokument-Cache, Vorschau, Löschabgleich, Personenfotos)
+#   nur den Takt. Eine Grenze über alle Dienste bräuchte zuerst eine Grenze in Redis im Code, nicht diesen Text.
 # - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Abgleich
 #   noch, entfällt der nächste (ingestor/src/scheduler, _is_syncing)
-# - Änderungsfenster: Beginn des letzten vollständigen Abgleichs der Kommune abzüglich
-#   INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120), fehlende Listen bis zum nächsten Vollabgleich nicht anfragen
-#   (sync_config missing_lists), beides mandari#1025 (vorher fest 7 Tage); ohne Filter Abbruch nach fünf Seiten ohne
-#   Änderung (ingestor/src/sync/orchestrator.py, stale_pages_to_stop)
-# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1; Abstand und Zeitfenster je Quelle: sync_config
-#   full_sync_every_days (heute 28 für Köln, Münster, Bezirksregierung Köln, Bonn) und full_sync_window
-#   (ingestor/src/client/source_options.py, mandari#1023)
-# - Dokumente: mandari/hub/ris/abruf.py (einmal je Datei, Ablage), insight_core/services/file_reconcile.py (neu
-#   laden bei gemeldeter Änderung, HEAD-Stichproben)
+# - Änderungsfenster: Beginn des letzten vollständig erfolgreichen Durchlaufs der Kommune, inkrementell oder voll
+#   (ingestor/src/sync/orchestrator.py, set_body_sync_started bei leerem stats["incomplete"]), meist also der
+#   vorige 10-Minuten-Lauf, abzüglich INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120); fehlende Listen bis zum
+#   nächsten Vollabgleich nicht anfragen (sync_config missing_lists), beides mandari#1025 (vorher fest 7 Tage);
+#   ohne Filter Abbruch nach fünf Seiten ohne Änderung (orchestrator.py, stale_pages_to_stop)
+# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Cron im Scheduler, der einzige Start eines
+#   Vollabgleichs); Abstand und Zeitfenster je Quelle: sync_config full_sync_every_days (heute 28 für Köln, Münster,
+#   Bezirksregierung Köln, Bonn) und full_sync_window (ingestor/src/client/source_options.py, mandari#1023). Liegt
+#   der Start außerhalb des Fensters, läuft nur der Änderungsabgleich (orchestrator.py, _full_sync_plan): Ein
+#   vereinbartes Fenster muss deshalb 1 Uhr enthalten.
+# - Dokumente: Abruf je Quelle standardmäßig an und nur abschaltbar (sync_config file_downloads false:
+#   ingestor/src/client/source_options.py FILE_DOWNLOADS_KEY, mandari/hub/ris/abruf.py source_fetch_allowed), es
+#   gibt keine Freischaltung. Einmal je Datei (Ablage, mandari/hub/ris/abruf.py) gilt erst mit der Dokumentkette
+#   (mandari#919, Texterkennung aus der Ablage); vorher lädt die Texterkennung jede Datei zusätzlich selbst.
+#   insight_core/services/file_reconcile.py: neu laden bei gemeldeter Änderung, HEAD-Stichproben.
 # - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden), Störung zurückstellen
 CRAWLER_TAKT = {
-    "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Server und höchstens <b>zwei</b> gleichzeitig offen. "
+    "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
             "Schneller rufen wir nie ab, auf Ihren Wunsch langsamer.",
-    "erlaeuterung": "Der Takt gilt je Hostname, für alle unsere Dienste zusammen und auch dann, wenn mehrere "
-                    "Kommunen unter demselben Hostnamen liegen. Verschiedene Hostnamen zählen getrennt.",
+    "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen. Verschiedene Hostnamen "
+                    "zählen getrennt, auch auf demselben Server. Unser Abgleich hält dabei höchstens zwei Anfragen "
+                    "gleichzeitig offen.",
     "zeilen": [
         {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
-         "umfang": "Je Liste nur, was sich seit dem letzten vollständigen Abgleich geändert hat, mit zwei Stunden "
-                   "Puffer (OParl-Filter modified_since); ohne Änderung ist das eine Seite je Liste. Listen, die Ihr "
-                   "System nicht anbietet, fragen wir erst im nächsten Vollabgleich wieder an. Filtert ein System "
-                   "nicht nach Änderungsdatum, lesen wir die Liste von vorn und hören nach fünf Seiten ohne Änderung "
-                   "auf. Läuft ein Abgleich noch, entfällt der nächste."},
+         "umfang": "Je Liste nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem "
+                   "vorigen vor 10 Minuten, mit zwei Stunden Puffer (OParl-Filter modified_since); ohne Änderung ist "
+                   "das eine Seite je Liste. Listen, die Ihr System nicht anbietet, fragen wir erst im nächsten "
+                   "Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen wir die Liste von "
+                   "vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, entfällt der nächste."},
         {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
          "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Wie oft, "
                    "stellen wir je Quelle ein: bei Systemen, die zuverlässig nach Änderungsdatum filtern, höchstens "
-                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster; was bis zu "
-                   "dessen Ende fehlt, folgt in der nächsten Nacht."},
+                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster ab 1 Uhr nachts; "
+                   "was bis zu dessen Ende fehlt, folgt in der nächsten Nacht."},
         {"abruf": "Dokumente", "wann": "einmal je Datei",
-         "umfang": "Nur für Kommunen, die wir dafür freigeschaltet haben. Erneut laden wir eine Datei nur, wenn ein "
-                   "Abruf fehlschlug oder sie sich geändert hat. Einzelne HEAD-Anfragen prüfen, ob ein Dokument noch "
-                   "vorhanden ist: Was Sie löschen, verschwindet so auch bei uns."},
+         "umfang": "Wir laden Dokumente, um ihren Text durchsuchbar zu machen. Für einzelne Systeme schalten wir den "
+                   "Dokumentabruf ab, etwa wenn Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das "
+                   "wünschen. Erneut laden wir eine Datei nur, wenn ein Abruf fehlschlug oder sie sich geändert hat. "
+                   "Einzelne HEAD-Anfragen prüfen, ob ein Dokument noch vorhanden ist: Was Sie löschen, verschwindet "
+                   "so auch bei uns."},
         {"abruf": "robots.txt", "wann": "alle 24 Stunden",
          "umfang": "Wir lesen sie vor dem ersten Abruf und danach spätestens alle 24 Stunden neu. Ist sie nicht "
                    "erreichbar (Serverfehler, HTTP 429), stellen wir alle Abrufe zurück, bis sie es wieder ist."},
