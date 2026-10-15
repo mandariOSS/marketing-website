@@ -28,7 +28,7 @@ class CrawlerSeiteTests(TestCase):
         # Abruf-Adresse mit eigener Sprungmarke, damit man sie direkt verlinken und übernehmen kann
         self.assertIn('id="abruf-adresse"', html)
         self.assertIn(muster_daten.CRAWLER_ADRESSE, html)
-        self.assertIn("Über IPv6 rufen wir nicht ab", html)
+        self.assertIn("nur über IPv4", html)
         self.assertIn(f'href="{muster_daten.CRAWLER_MAILTO}"', html)
         self.assertIn(muster_daten.CRAWLER_ABRUFREGELN, html)
 
@@ -74,7 +74,8 @@ class CrawlerSeiteTests(TestCase):
         # Vergleichsanfrage nach HTTP 403 mit python-httpx wie im Abgleich, keine Browserkennung
         html = text(self.html())
         self.assertIn("prüfen wir mit höchstens fünf Anfragen", html)
-        self.assertIn("je Abgleich und je Erstprüfung höchstens eine Vergleichsanfrage", html)
+        self.assertIn("je Server und Abgleich sowie je Erstprüfung höchstens eine Vergleichsanfrage", html)
+        self.assertIn("im Takt und ohne Weiterleitung", html)
         self.assertNotIn("Mozilla", html)
 
     def test_dokumentabruf_ohne_freischaltung(self):
@@ -89,7 +90,7 @@ class CrawlerSeiteTests(TestCase):
         html = text(self.html())
         self.assertIn("fragen wir höchstens einmal am Tag und in jedem Vollabgleich wieder an", html)
         self.assertIn("gilt die zuletzt gelesene Fassung weiter; gab es keine, stellen wir die Abrufe zurück", html)
-        self.assertIn("bei neuen oder geänderten Dateien", html)
+        self.assertIn("mit dem Abgleich und stündlich", html)
         for alt in ["erst im nächsten Vollabgleich wieder an", "stellen wir alle Abrufe zurück", "einmal je Datei"]:
             self.assertNotIn(alt, html, alt)
 
@@ -134,3 +135,63 @@ class CrawlerSeiteTests(TestCase):
             "Nur für Kommunen, die wir dafür freigeschaltet haben",
         ]:
             self.assertNotIn(alt, html, alt)
+
+    def test_abruf_adresse_kann_sich_aendern(self):
+        # ABRUFREGELN.md „Abruf-Adresse“: erkennen am User-Agent, die Adresse kann sich ändern; keine Zusage zur
+        # Exklusivität der Adresse
+        html = text(self.html())
+        self.assertIn("Erkennen Sie uns bitte vor allem am User-Agent: Die Adresse kann sich ändern", html)
+        self.assertNotIn("exklusiv", html)
+
+    def test_selbstbetrieb_mit_eigener_kennung(self):
+        # Selbstbetreiber rufen von eigener Adresse ab, können INGESTOR_USER_AGENT setzen; mandari-ingestor gilt weiter
+        html = text(self.html())
+        self.assertIn("Selbst betriebene Installationen.", html)
+        self.assertIn("kann eine eigene Kennung mit eigener Kontaktadresse setzen", html)
+        self.assertIn("Ihre Regeln für mandari-ingestor gelten auch für solche Installationen", html)
+
+    def test_robots_txt_nicht_erreichbar_und_eigene_gruppe(self):
+        # shared/mandari_oparl/robots.py: 4xx gilt als nicht vorhanden, 5xx/408/429/Netzfehler als nicht erreichbar,
+        # neuer Abruf nach RETRY_UNREACHABLE_SECONDS (15 Minuten); eine Gruppe für mandari-ingestor gilt anstelle von *
+        html = text(self.html())
+        self.assertIn("Fehlt sie (HTTP 4xx), ist alles erlaubt.", html)
+        self.assertIn("HTTP 408 oder 429, Netzfehler, mehr als fünf Weiterleitungen", html)
+        self.assertIn("versuchen wir es frühestens nach 15 Minuten wieder", html)
+        self.assertIn("mit eigener Gruppe gelten nur deren Regeln", html)
+        self.assertIn("mandari-file-cache und mandari", html)
+
+    def test_weiterleitungen_im_takt_und_nach_robots(self):
+        # redirects.py (Ingestor und Anwendung): höchstens fünf, vor jeder die robots.txt des Ziels und der Takt
+        html = text(self.html())
+        self.assertIn("Jede Anfrage zählt, auch der Abruf Ihrer robots.txt und jede Weiterleitung.", html)
+        self.assertIn("höchstens fünfmal je Abruf und nur, wenn die robots.txt ihres Ziels es erlaubt", html)
+
+    def test_takt_ohne_redis_offen_benannt(self):
+        # pacing.py: ohne Redis drosselt jeder Prozess für sich; deshalb keine Zusage „nie schneller“
+        html = text(self.html())
+        self.assertIn("Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.", html)
+        self.assertIn("hält jeder Dienst den Takt für sich, bis sie wieder steht", html)
+        self.assertNotIn("Schneller rufen wir nie ab", html)
+
+    def test_personenfotos_zeitplan_menge_und_wiederholung(self):
+        # schedules.py fetch_person_photos montags 03:00; person_photos.py limit 500, max_age_days 30, _source_blocked
+        html = text(self.html())
+        self.assertIn("Personenfotos", html)
+        self.assertIn("montags um 3 Uhr", html)
+        self.assertIn("höchstens 500 Personen je Kommune", html)
+        self.assertIn("vor mehr als 30 Tagen geprüft haben, auch wenn es fehlte oder der Abruf fehlschlug", html)
+        self.assertIn("pausieren wir es nach wiederholten Fehlern, laden wir keine Fotos", html)
+
+    def test_dokumente_wiederholungen_und_pruefung(self):
+        # abruf.py BACKOFF und ERROR_RETRY; loeschabgleich --head-limit 30, --interval 2, FILE_PURGE_AFTER_DAYS 30
+        html = text(self.html())
+        self.assertIn("nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach frühestens nach sieben Tagen", html)
+        self.assertIn("höchstens 30 je Kommune", html)
+        self.assertIn("mindestens 2 Sekunden", html)
+        self.assertIn("Retry-After-Header werten wir nicht aus", html)
+
+    def test_link_auf_die_abrufregeln_im_zweig_dev(self):
+        self.assertEqual(
+            muster_daten.CRAWLER_ABRUFREGELN, "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
+        )
+        self.assertIn(f'href="{muster_daten.CRAWLER_ABRUFREGELN}"', self.html())

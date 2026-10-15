@@ -144,16 +144,18 @@ DISCLOSURE_GELTUNG = {
 
 
 # ── /crawler/ ─────────────────────────────────────────────────────────────────
-# Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Jeder Wert ist im
-# mandari-Repository oder in der Produktionskonfiguration belegt, die Fundstelle steht am Eintrag; die technische
-# Referenz ist docs/ABRUFREGELN.md dort. Ändert sich der Abruf (etwa der Takt nach Bedarf, mandari#1026), werden
-# nur diese Daten angepasst, das Template bleibt.
+# Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Maßgeblich ist der Code im Zweig
+# dev des mandari-Repositorys; die technische Referenz mit allen Fundstellen ist dort docs/ABRUFREGELN.md (Stand nach
+# mandari#1029, #1031 und #1030). Die Fundstelle jeder Angabe steht am Eintrag. Ändert sich der Abruf (etwa der Takt
+# nach Bedarf, mandari#1026), werden nur diese Daten angepasst, das Template bleibt.
 
-#: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor), Infoseite, Kontakt
+#: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor: ingestor/pyproject.toml,
+#: ingestor/src/config.py DEFAULT_USER_AGENT), Infoseite, Kontakt
 CRAWLER_USER_AGENT = "mandari-ingestor/<Version> (+https://mandari.de/crawler/; support@mandari.de)"
 #: shared/mandari_oparl/crawler.py, PRODUCT_TOKEN; ausgewertet in shared/mandari_oparl/robots.py (RFC 9309)
 CRAWLER_TOKEN = "mandari-ingestor"
-#: Ausgehende Adresse der von uns betriebenen Instanz, nur IPv4
+#: Ausgehende Adresse der von uns betriebenen Instanz, nur IPv4 (ABRUFREGELN.md, „Abruf-Adresse“). Sie kann sich
+#: ändern; die Seite nennt deshalb den User-Agent als Erkennungsmerkmal zuerst.
 CRAWLER_ADRESSE = "144.76.153.200"
 #: shared/mandari_oparl/crawler.py, CONTACT
 CRAWLER_KONTAKT = "support@mandari.de"
@@ -162,97 +164,128 @@ CRAWLER_ABRUFREGELN = "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUF
 
 CRAWLER_KENNUNG = [
     {"anker": "user-agent", "begriff": "User-Agent", "wert": CRAWLER_USER_AGENT,
-     # Django (Dokumente, Vorschau) ruft user_agent() ohne Version auf: mandari/insight_core/services/robots.py
-     "notiz": "Abrufe von Dokumenten aus der Anwendung tragen dieselbe Kennung ohne Versionsnummer. Die Version "
-              "wechselt mit jeder Ausgabe; prüfen Sie deshalb auf den Anfang mandari-ingestor."},
-    {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": CRAWLER_ADRESSE,
-     "notiz": "IPv4. Über IPv6 rufen wir nicht ab. Die Adresse gilt für die Instanz, die wir betreiben. mandari ist "
-              "Open Source: Installationen anderer Betreiber rufen mit derselben Kennung von eigenen Adressen ab."},
+     # Die Anwendung sendet die Kennung ohne Version: mandari/insight_core/services/robots.py USER_AGENT (Dokument-
+     # Cache, Vorschau, Löschabgleich, Personenfotos, Texterkennung im Worker, add_oparl_source). Die Version ist die
+     # Paketversion des Ingestors, keine Ausgabe-Nummer; sie kann sich ändern.
+     "notiz": "Die Version kann sich ändern; prüfen Sie deshalb auf den Anfang mandari-ingestor. Einige Abrufe, "
+              "etwa von Dokumenten und Fotos, tragen dieselbe Kennung ohne Versionsnummer."},
     {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": CRAWLER_TOKEN,
-     "notiz": "Eine Regel für dieses Token gilt für alle unsere Abrufe; Groß- und Kleinschreibung zählt nicht."},
+     # robots.py _rules_for: eine Gruppe für das Token gilt anstelle von *, nicht zusätzlich; geprüft wird immer
+     # mandari-ingestor (ingestor/src/client/robots.py, insight_core/services/robots.py, probe/ris_probe.py).
+     # crawler.py LEGACY_TOKENS: frühere Kennungen nur mit eigener Gruppe, und sie können nur sperren.
+     "notiz": "Eine Gruppe für dieses Token gilt für alle unsere Abrufe; Groß- und Kleinschreibung zählt nicht. "
+              "Gruppen für unsere früheren Kennungen mandari-file-cache und mandari beachten wir weiter, soweit sie "
+              "etwas sperren."},
+    {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": CRAWLER_ADRESSE,
+     "notiz": "Von dieser Adresse ruft derzeit die Instanz ab, die wir betreiben, nur über IPv4. Erkennen Sie uns "
+              "bitte vor allem am User-Agent: Die Adresse kann sich ändern, etwa bei einem Serverumzug."},
     {"anker": "kontakt-abrufe", "begriff": "Kontakt", "wert": CRAWLER_KONTAKT, "url": CRAWLER_MAILTO,
      "notiz": "Für Fragen, einen langsameren Takt, ein Zeitfenster oder den Ausschluss Ihres Systems."},
 ]
 
-# Takt (Zahl im Satz) und Häufigkeit je Abrufart (Tabelle). Fundstellen:
-# - eine Anfrage je Sekunde: shared/mandari_oparl/pacing.py DEFAULT_INTERVAL (Redis-Zeitstempel je Hostname über
-#   alle Prozesse; ist Redis nicht erreichbar, drosselt jeder Prozess für sich, LocalSchedule); je Quelle nur
-#   langsamer (sync_config request_interval, Werte unter 1,0 s angehoben, mandari#1025; höchstens
-#   MAX_REQUEST_INTERVAL 30 s). Gezählt wird je Hostname (host_of), nicht je Server.
-# - zwei gleichzeitig: ingestor/src/client/host_pacing.py HostPacer.limit mit ingestor/src/config.py
-#   host_max_concurrent, eine asyncio-Semaphore je Prozess und Hostname. Deshalb nur für den Abgleich zugesagt: Die
-#   Texterkennung hat eigene zwei Plätze, die Anwendung (Dokument-Cache, Vorschau, Löschabgleich, Personenfotos)
-#   nur den Takt. Eine Grenze über alle Dienste bräuchte zuerst eine Grenze in Redis im Code, nicht diesen Text.
-# - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Abgleich
-#   noch, entfällt der nächste (ingestor/src/scheduler, _is_syncing)
-# - Änderungsfenster: Beginn des letzten vollständig erfolgreichen Durchlaufs der Kommune, inkrementell oder voll
-#   (ingestor/src/sync/orchestrator.py, set_body_sync_started bei leerem stats["incomplete"]), meist also der
-#   vorige 10-Minuten-Lauf, abzüglich INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120); fehlende Listen vermerkt
-#   (sync_config missing_lists), inkrementell höchstens einmal am Tag wieder angefragt (orchestrator.py
-#   MISSING_LIST_RECHECK), im Vollabgleich jedes Mal, beides mandari#1025 (vorher fest 7 Tage);
-#   ohne Filter Abbruch nach fünf Seiten ohne Änderung (orchestrator.py, stale_pages_to_stop)
-# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Cron im Scheduler, ingestor/src/scheduler
-#   _run_full_sync; läuft um 1 Uhr noch ein Änderungsabgleich, folgt der Vollabgleich direkt danach, mandari#1031).
-#   Von Hand startet ihn außerdem der Admin-Trigger (Redis-Kanal mandari:sync:trigger mit full=true, scheduler
-#   _listen_for_triggers) oder sync --full, beides zu jeder Tageszeit; full_sync_window begrenzt alle drei Wege
-#   (source_options.py). Abstand und Zeitfenster je Quelle: sync_config full_sync_every_days (heute 28 für Köln,
-#   Münster, Bezirksregierung Köln, Bonn) und full_sync_window (ingestor/src/client/source_options.py,
-#   mandari#1023). Liegt der Start außerhalb des Fensters, läuft nur der Änderungsabgleich (orchestrator.py,
-#   _full_sync_plan): Ein vereinbartes Fenster muss deshalb 1 Uhr enthalten. Endet das Fenster vor dem
-#   Vollabgleich, rückt last_successful_full_sync nicht vor (storage/database.py update_source_sync_time,
-#   complete=False), und in der nächsten Nacht beginnt er von vorn, ohne Wiedereinstieg: Das Fenster muss für einen
-#   ganzen Vollabgleich reichen.
-# - Dokumente: Abruf je Quelle standardmäßig an und nur abschaltbar (sync_config file_downloads false:
-#   ingestor/src/client/source_options.py FILE_DOWNLOADS_KEY, mandari/hub/ris/abruf.py source_fetch_allowed), es
-#   gibt keine Freischaltung. Bewusst nicht „einmal je Datei“: Bis zur Dokumentkette (mandari#919,
-#   TEXT_EXTRACTION_RUNNER=worker) lädt die Texterkennung im Ingestor selbst; nur mit INGESTOR_STORES_FILES=true legt
-#   sie dabei ab, sonst holt der Dokument-Cache die Datei ein zweites Mal (docs/FILE_CACHE.md, „Ein Abruf je
-#   Datei“). Die Vorschau lädt Dokumente von Kommunen ohne Ablage bei jedem Öffnen (insight_core/views/files.py,
-#   Write-Through nur mit abruf.stores_file). insight_core/services/file_reconcile.py: neu laden bei gemeldeter
-#   Änderung, HEAD-Stichproben.
-# - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden). Nicht erreichbar: letzte gültige Fassung
-#   gilt weiter, ohne sie zurückstellen, neuer Abruf frühestens nach RETRY_UNREACHABLE_SECONDS (15 Minuten)
-#   (ingestor/src/client/robots.py, mandari/insight_core/services/robots.py)
-# - Erstprüfung: ingestor/src/probe/ris_probe.py (probe-ris aus mandari#114, MAX_REQUESTS 5: robots.txt, Startseite,
-#   bei HTTP 403 die Vergleichsanfrage, danach OParl-Kandidaten; gesperrte Pfade nicht). Aufnahme: mandari/
-#   insight_core/management/commands/add_oparl_source.py (System und Körperschaftsliste). Erst mit mandari#1031
-#   halten beide den Takt je Host, zählt jede Weiterleitung der Erstprüfung als Anfrage und trägt deren
-#   Vergleichsanfrage python-httpx/<Version> (vorher eine Browserkennung).
+# Selbst betriebene Installationen (ABRUFREGELN.md, „Für Selbstbetreiber“): Abruf von der Adresse des eigenen Servers;
+# eigene Kennung über INGESTOR_USER_AGENT (ingestor/src/config.py) bzw. je Quelle sync_config["download_headers"];
+# Regeln für mandari-ingestor gelten trotzdem, weil Ingestor und Anwendung dieses Token immer zusätzlich prüfen.
+CRAWLER_SELBSTBETRIEB = (
+    "mandari ist Open Source. Wer es selbst betreibt, ruft von der Adresse des eigenen Servers ab und kann eine eigene "
+    "Kennung mit eigener Kontaktadresse setzen. Ihre Regeln für mandari-ingestor gelten auch für solche "
+    "Installationen, denn mandari prüft dieses Token immer mit."
+)
+
+# Takt (Zahl im Satz) und Häufigkeit je Abrufart (Tabelle). Fundstellen im mandari-Repository, Zweig dev:
+# - eine Anfrage je Sekunde: shared/mandari_oparl/pacing.py DEFAULT_INTERVAL, Zeitstempel je Hostname in Redis über
+#   Ingestor, Anwendung und Werkzeuge (RESERVE_SCRIPT, host_of); je Quelle nur langsamer (request_interval, Werte unter
+#   1 s angehoben: MIN_REQUEST_INTERVAL, at_least_minimum; höchstens MAX_REQUEST_INTERVAL 30 s). Ohne Redis drosselt
+#   jeder Prozess für sich und versucht es nach 60 s wieder (REDIS_RETRY_SECONDS in beiden host_pacing.py); deshalb
+#   „nicht schneller“ statt „nie“, und der Ausfall steht im Text.
+# - Weiterleitungen: höchstens fünf je Abruf (MAX_REDIRECTS in ingestor/src/client/redirects.py und
+#   insight_core/services/redirects.py), vor jeder die robots.txt des Ziels und ein eigener Zeitpunkt im Takt; auch
+#   der Abruf der robots.txt reserviert einen Zeitpunkt.
+# - zwei gleichzeitig: ingestor/src/client/host_pacing.py HostPacer.limit mit config.py host_max_concurrent, eine
+#   Semaphore je Prozess und Hostname. Deshalb nur für den Abgleich zugesagt, nicht für alle Dienste.
+# - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Lauf noch,
+#   entfällt der nächste Termin (ingestor/src/scheduler, max_instances=1)
+# - Änderungsfenster: ingestor/src/sync/orchestrator.py modified_since_for (Beginn des letzten vollständig
+#   erfolgreichen Abgleichs der Kommune minus INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES 120), kurzes Fenster nur für
+#   Listen in sync_config timed_lists, sonst ab Tagesbeginn (day_start_window); fehlende optionale Listen
+#   (OPTIONAL_LIST_TYPES) in missing_lists vermerkt, inkrementell einmal am Tag (MISSING_LIST_RECHECK), im
+#   Vollabgleich jedes Mal; Abbruch nach fünf Seiten ohne Änderung (stale_pages_to_stop)
+# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Standard 3). Läuft noch ein Lauf, folgt er direkt danach
+#   (scheduler _full_sync_pending); während er läuft, entfallen die inkrementellen Läufe. Je Quelle
+#   full_sync_every_days (heute 28 bei Quellen mit verlässlichem Filter) und full_sync_window
+#   (ingestor/src/client/source_options.py full_sync_plan); ein Vollabgleich mit Lücke zählt nicht. Nach Fensterende
+#   keine weitere Seite (FetchWindowClosedError), kein Wiedereinstieg. Von Hand: Admin-Trigger oder sync --full, das
+#   Fenster gilt auch dann.
+# - Dokumente: Texterkennung im Ingestor mit dem Abgleich (ingestor/src/extraction/extractor.py), Dokument-Cache
+#   stündlich um :40 (mandari/apps/common/schedules.py cache_files, DOCUMENT_FETCH_MAX_QUEUED 200 je Quelle),
+#   Wiederholungen mandari/hub/ris/abruf.py BACKOFF (15 min, 1, 6, 24, 72 h) und ERROR_RETRY (7 Tage), Vorschau auf
+#   Anforderung (insight_core/views/files.py); abschaltbar je Quelle mit sync_config file_downloads false
+# - Dokumente prüfen: loeschabgleich stündlich um :15 (--changed-limit 200, --head-limit 30, --interval 2 s), nach 429
+#   oder 503 Schluss für den Server im Lauf, Löschen nach FILE_PURGE_AFTER_DAYS 30
+# - Personenfotos: fetch_person_photos montags 03:00 (schedules.py), insight_core/services/person_photos.py
+#   fetch_photos_for_body (limit 500, max_age_days 30), ruht wie der Dokument-Cache (_source_blocked)
+# - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS 24 h, from_response (4xx: nicht vorhanden; 5xx, 408, 429,
+#   Netzfehler, zu viele Weiterleitungen: nicht erreichbar), RETRY_UNREACHABLE_SECONDS 15 min; letzte gültige Fassung
+#   gilt weiter (ingestor/src/client/robots.py _Entry.last_good, insight_core/services/robots.py). Zwischenspeicher je
+#   Ingestor-Prozess bzw. gemeinsam in der Anwendung, deshalb „jeder unserer Dienste“
+# - Erstprüfung: ingestor/src/probe/ris_probe.py (MAX_REQUESTS 5, Weiterleitungen und robots.txt neuer Hosts
+#   eingerechnet, robots.txt nicht erreichbar: keine weitere Anfrage); Aufnahme: add_oparl_source (MAX_BODY_PAGES 20)
 CRAWLER_TAKT = {
     "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
-            "Schneller rufen wir nie ab, auf Ihren Wunsch langsamer.",
-    "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen. Verschiedene Hostnamen "
-                    "zählen getrennt, auch auf demselben Server. Unser Abgleich hält dabei höchstens zwei Anfragen "
-                    "gleichzeitig offen.",
+            "Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.",
+    "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen; verschiedene Hostnamen "
+                    "zählen getrennt, auch auf demselben Server. Jede Anfrage zählt, auch der Abruf Ihrer robots.txt "
+                    "und jede Weiterleitung. Einer Weiterleitung folgen wir höchstens fünfmal je Abruf und nur, wenn "
+                    "die robots.txt ihres Ziels es erlaubt. Unser Abgleich hält dabei höchstens zwei Anfragen "
+                    "gleichzeitig offen. Ist die Abstimmung zwischen unseren Diensten gestört, hält jeder Dienst den "
+                    "Takt für sich, bis sie wieder steht.",
     "zeilen": [
         {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
          "umfang": "Je Liste nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem "
-                   "vorigen vor 10 Minuten, mit zwei Stunden Puffer (OParl-Filter modified_since); ohne Änderung ist "
-                   "das eine Seite je Liste. Listen, die Ihr System nicht anbietet, fragen wir höchstens einmal am "
-                   "Tag und in jedem Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen "
-                   "wir die Liste von vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, "
-                   "entfällt der nächste."},
+                   "vorigen vor 10 Minuten, mit zwei Stunden Puffer (OParl-Filter modified_since). Dieses kurze "
+                   "Fenster bekommen nur Listen, deren Änderungsdatum nachweislich eine Uhrzeit trägt; die übrigen "
+                   "fragen wir ab Tagesbeginn an. Ohne Änderung ist das eine Seite je Liste. Optionale Listen, die "
+                   "Ihr System nicht anbietet, etwa Orte oder Beratungen, fragen wir höchstens einmal am Tag und in "
+                   "jedem Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen wir die Liste "
+                   "von vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, entfällt der "
+                   "nächste."},
         {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
-         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Wie oft, "
-                   "stellen wir je Quelle ein: bei Systemen, die zuverlässig nach Änderungsdatum filtern, höchstens "
-                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster ab 1 Uhr nachts. "
-                   "Reicht das Fenster nicht, endet der Vollabgleich mit dem Fenster und beginnt in der nächsten Nacht "
-                   "von vorn. Von Hand starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme eines neuen Systems; "
-                   "ein vereinbartes Zeitfenster gilt auch dann."},
-        {"abruf": "Dokumente", "wann": "bei neuen oder geänderten Dateien",
-         "umfang": "Wir laden Dokumente, um ihren Text durchsuchbar zu machen. Für einzelne Systeme schalten wir den "
-                   "Dokumentabruf ab, etwa wenn Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das "
-                   "wünschen. Erneut laden wir eine Datei, wenn ein Abruf fehlschlug oder sie sich geändert hat, und "
-                   "wenn jemand ein Dokument bei uns öffnet, das wir nicht gespeichert haben. Einzelne HEAD-Anfragen "
-                   "prüfen, ob ein Dokument noch vorhanden ist: Was Sie löschen, verschwindet so auch bei uns."},
-        {"abruf": "robots.txt", "wann": "alle 24 Stunden",
-         "umfang": "Wir lesen sie vor dem ersten Abruf und danach spätestens alle 24 Stunden neu. Ist sie nicht "
-                   "erreichbar (Serverfehler, HTTP 429), gilt die zuletzt gelesene Fassung weiter; gab es keine, "
-                   "stellen wir die Abrufe zurück, bis sie erreichbar ist."},
+         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet; die "
+                   "Änderungsabgleiche ruhen so lange. Wie oft, stellen wir je Quelle ein: jede Nacht oder seltener, "
+                   "bei Systemen, die zuverlässig nach Änderungsdatum filtern, derzeit alle 28 Tage. Ein "
+                   "unvollständiger Vollabgleich zählt dabei nicht. Auf Wunsch nur in einem vereinbarten Zeitfenster "
+                   "ab 1 Uhr nachts. Reicht das Fenster nicht, endet der Vollabgleich mit dem Fenster und beginnt in "
+                   "der nächsten Nacht von vorn. Von Hand starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme "
+                   "eines neuen Systems; ein vereinbartes Zeitfenster gilt auch dann."},
+        {"abruf": "Dokumente", "wann": "mit dem Abgleich und stündlich",
+         "umfang": "Neue Dateien laden wir, um ihren Text durchsuchbar zu machen und sie bei uns abzulegen; stündlich "
+                   "holen wir höchstens 200 fehlende Dateien je System nach. Schlägt ein Abruf fehl, etwa mit HTTP 429 "
+                   "oder einem Serverfehler, versuchen wir es nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach "
+                   "frühestens nach sieben Tagen. Öffnet jemand bei uns ein Dokument, das wir nicht abgelegt haben, "
+                   "laden wir es dafür bei Ihnen. Für einzelne Systeme schalten wir den Dokumentabruf ab, etwa wenn "
+                   "Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das wünschen."},
+        {"abruf": "Dokumente prüfen", "wann": "stündlich",
+         "umfang": "Dokumente, die Sie nach unserer Kopie geändert haben, laden wir neu, höchstens 200 je Lauf. "
+                   "Einzelne HEAD-Anfragen, höchstens 30 je Kommune, prüfen, ob Dokumente noch vorhanden sind; "
+                   "zwischen zwei Prüfungen am selben Server liegen mindestens 2 Sekunden. Nach HTTP 429 oder 503 "
+                   "fragt der Lauf Ihren Server nicht weiter an. Was Sie löschen, entfernen wir nach 30 Tagen auch "
+                   "bei uns."},
+        {"abruf": "Personenfotos", "wann": "montags um 3 Uhr",
+         "umfang": "Nur bei Systemen, für die wir die Adressen der Fotos eingerichtet haben, höchstens 500 Personen je "
+                   "Kommune. Ein Foto fragen wir erst wieder an, wenn wir es zuletzt vor mehr als 30 Tagen geprüft "
+                   "haben, auch wenn es fehlte oder der Abruf fehlschlug. Ist der Dokumentabruf für Ihr System "
+                   "abgeschaltet oder pausieren wir es nach wiederholten Fehlern, laden wir keine Fotos."},
+        {"abruf": "robots.txt", "wann": "vor dem ersten Abruf, dann täglich",
+         "umfang": "Jeder unserer Dienste liest sie vor seinem ersten Abruf und nutzt eine gelesene Fassung höchstens "
+                   "24 Stunden. Fehlt sie (HTTP 4xx), ist alles erlaubt. Ist sie nicht erreichbar (Serverfehler, "
+                   "HTTP 408 oder 429, Netzfehler, mehr als fünf Weiterleitungen), versuchen wir es frühestens nach "
+                   "15 Minuten wieder. Bis das gelingt, gilt die zuletzt gelesene Fassung weiter; gab es keine, "
+                   "stellen wir die Abrufe zurück."},
         {"abruf": "Erstprüfung", "wann": "vor der Aufnahme",
          "umfang": "Ob ein System für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
-                   "Startseite und die üblichen Adressen einer OParl-Schnittstelle. Was Ihre robots.txt sperrt, fragen "
-                   "wir dabei nicht an."},
+                   "Startseite und die üblichen Adressen einer OParl-Schnittstelle, Weiterleitungen eingerechnet. Was "
+                   "Ihre robots.txt sperrt, fragen wir dabei nicht an; ist sie nicht erreichbar, fragen wir nichts "
+                   "weiter an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten."},
     ],
 }
 
@@ -304,6 +337,6 @@ DATEN = {
     "disclosure_zusage": DISCLOSURE_ZUSAGE,
     "disclosure_zeitskala": DISCLOSURE_ZEITSKALA,
     "disclosure_geltung": DISCLOSURE_GELTUNG,
-    "crawler": {"kennung": CRAWLER_KENNUNG, "takt": CRAWLER_TAKT, "mailto": CRAWLER_MAILTO,
-                "abrufregeln": CRAWLER_ABRUFREGELN},
+    "crawler": {"kennung": CRAWLER_KENNUNG, "selbstbetrieb": CRAWLER_SELBSTBETRIEB, "takt": CRAWLER_TAKT,
+                "mailto": CRAWLER_MAILTO, "abrufregeln": CRAWLER_ABRUFREGELN},
 }
