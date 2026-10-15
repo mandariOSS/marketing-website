@@ -1,75 +1,144 @@
 {% extends "base.html" %}
 {% load muster %}
 
-{% block title %}Über unseren Crawler{% endblock %}
+{% block title %}Unser Crawler: Kennung, Takt und Abruf-Adresse{% endblock %}
 
-{% block meta_description %}Informationen zum mandari-ingestor: Wie mandari öffentliche Ratsinformationen abruft, welche Regeln der Crawler einhält und wie Kommunen Kontakt aufnehmen oder widersprechen können.{% endblock %}
+{% block meta_description %}Woran Sie die Abrufe von mandari-ingestor erkennen, wie oft wir Ratsinformationssysteme abrufen und wie Sie uns drosseln, ausschließen oder erreichen.{% endblock %}
 
 {% block content %}
+{# Partitur: Kopf (Weiß) → Kennung zum Übernehmen (Grau) → Takt als Zahl im Satz und Tabelle (Weiß) → Drosseln und Ausschließen mit robots.txt-Beispielen (Grau) → Inhalte und Fehlerverhalten (Weiß) → Einladung (Tinte). Werte: marketing/muster_daten.py, Belege im mandari-Repository (mandariOSS/mandari#1027). #}
+{% muster_daten "crawler" as c %}
 
 <section class="band-hell hero">
     <div class="wrap">
-        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Über unseren Crawler</h1>
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Wie mandari Ratsinformationen abruft</h1>
         <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
-            mandari macht öffentliche Ratsinformationen deutscher Kommunen zentral durchsuchbar. Dafür ruft unser
-            Dienst <code class="text-[0.9em]">mandari-ingestor</code>
-            ausschließlich <strong>öffentlich zugängliche</strong> Seiten und Dokumente von Ratsinformationssystemen
-            ab – bevorzugt über die standardisierte OParl-Schnittstelle, ersatzweise über die öffentlichen Webseiten.
+            Unser Dienst mandari-ingestor ruft öffentliche Ratsinformationen ab, damit Bürgerinnen und Bürger sie bei
+            uns durchsuchen können, stets mit Angabe der Quelle. Hier steht, woran Sie die Abrufe erkennen, wie oft
+            sie kommen und wie Sie sie steuern.
         </p>
+        <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <a href="{{ c.mailto }}" class="btn-primary">E-Mail an support@mandari.de</a>
+        </div>
     </div>
 </section>
 
-{# Muster 5a: Text in Lesebreite, rechts die Eckdaten des Crawlers (marketing/muster_daten.py) #}
-{% muster_daten "crawler_rand" as rand %}
-<section class="band-grau abschnitt">
-    <div class="wrap grid gap-y-12 lg:grid-cols-12 lg:gap-x-10">
-        <aside class="min-w-0 lg:col-span-4 lg:col-start-9 lg:row-start-1" aria-label="Eckdaten des Crawlers">
-            <div class="dok-klebt flaeche rounded-lg p-6 lg:p-7 space-y-8">{% include "marketing/muster/_rand.html" with rand=rand %}</div>
-        </aside>
-        <div class="min-w-0 lg:col-span-7 lg:row-start-1 max-w-[45rem] space-y-12">
-
-            <div>
-                <h2 class="t-h2-dok text-gray-900 dark:text-white">Woran Sie uns erkennen</h2>
-                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">Unsere Abrufe tragen immer diesen User-Agent:</p>
-                <pre class="mt-3 flaeche rounded-lg px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap">mandari-ingestor (+https://mandari.de/crawler)</pre>
+{# Kennung: Werte in Festbreitenschrift, ein Klick markiert den ganzen Wert; jede Zeile mit eigener Sprungmarke (z. B. #abruf-adresse) #}
+<section id="kennung" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Woran Sie unsere Abrufe erkennen</h2>
+            <p class="t-lead m-text mt-5">Diese Angaben können Sie unverändert in Freigaben, Filter und Ihre robots.txt übernehmen.</p>
+        </div>
+        <dl class="border-b m-linie">
+            {% for k in c.kennung %}
+            <div id="{{ k.anker }}" class="grid gap-y-2 py-6 border-t m-linie scroll-mt-24 lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">{{ k.begriff }}</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    {% if k.url %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words"><a class="textlink" href="{{ k.url }}">{{ k.wert }}</a></p>{% else %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words select-all">{{ k.wert }}</p>{% endif %}
+                    <p class="mt-2 text-base m-text max-w-[45rem]">{{ k.notiz }}</p>
+                </dd>
             </div>
+            {% endfor %}
+        </dl>
+    </div>
+</section>
 
-            <div>
-                <h2 class="t-h2-dok text-gray-900 dark:text-white">Regeln, die wir einhalten</h2>
-                <ul class="mt-4 space-y-3 t-body text-gray-600 dark:text-gray-300 list-disc pl-5 marker:text-gray-400">
-                    <li><strong class="text-gray-900 dark:text-white">Nur öffentliche Inhalte:</strong> Wir rufen ausschließlich Seiten und Dokumente ab, die ohne Anmeldung zugänglich sind. Nichtöffentliche Bereiche werden nicht angefasst.</li>
-                    <li><strong class="text-gray-900 dark:text-white">robots.txt:</strong> Wir respektieren die Crawl-Direktiven Ihrer Website nach RFC 9309. Ein Disallow genügt, und wir bleiben fern.</li>
-                    <li><strong class="text-gray-900 dark:text-white">Ressourcenschonend:</strong> Standardmäßig höchstens eine Anfrage alle zwei Sekunden pro Server, keine parallelen Zugriffe, Wiederholungsabrufe nur bei tatsächlichen Änderungen.</li>
-                    <li><strong class="text-gray-900 dark:text-white">Transparent:</strong> Identifizierbarer User-Agent mit dieser Kontaktseite; auf Wunsch nennen wir Ihnen die abgerufenen Inhalte im Detail.</li>
-                </ul>
+{# Takt: die eine Zahl im Satz, darunter jede Abrufart mit Häufigkeit (Daten änderbar ohne Template, mandari#1026) #}
+<section id="takt" class="band-hell abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf kopf-dicht">
+            <h2 class="t-h2 m-tinte">Wann und wie oft wir abrufen</h2>
+        </div>
+        <p class="zahlensatz max-w-5xl">{{ c.takt.satz|safe }}</p>
+        <p class="mt-6 t-body m-text max-w-[45rem]">{{ c.takt.erlaeuterung }}</p>
+        <table class="reg mt-12 lg:mt-14">
+            <caption class="sr-only">Abrufarten und wie oft sie vorkommen</caption>
+            <thead><tr><th scope="col" class="w-56">Abruf</th><th scope="col" class="w-64">Wann</th><th scope="col">Umfang</th></tr></thead>
+            <tbody>
+                {% for z in c.takt.zeilen %}<tr><th scope="row" class="reg-titel t-body">{{ z.abruf }}</th><td class="t-body font-semibold m-tinte" data-spalte="Wann">{{ z.wann }}</td><td class="t-body" data-spalte="Umfang">{{ z.umfang }}</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+{# Steuern: Wege links, robots.txt-Beispiele rechts (Codebeispiele nur hier, wo sie erklären) #}
+<section id="steuern" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Drosseln, Zeitfenster vereinbaren oder ausschließen</h2>
+        </div>
+        <div class="grid gap-y-10 lg:grid-cols-12 lg:gap-x-10">
+            <div class="min-w-0 lg:col-span-7 stichworte t-body m-text max-w-[45rem]">
+                <p><strong>Per robots.txt.</strong> Ein Disallow für mandari-ingestor genügt: Danach stellen wir keine
+                    Anfrage mehr und lesen nur noch Ihre robots.txt, etwa einmal am Tag. Regeln für dieses Token gelten
+                    für alle unsere Abrufe, für die Schnittstelle wie für Dokumente; ohne eigene Gruppe gelten Ihre
+                    Regeln für alle (<span class="font-mono text-[0.95em]">User-agent: *</span>). Wir werten Allow und
+                    Disallow mit den Platzhaltern * und $ nach RFC 9309 aus, Crawl-delay nicht: Für einen langsameren
+                    Takt schreiben Sie uns. Änderungen wirken spätestens nach 24 Stunden.</p>
+                <p><strong>Per E-Mail.</strong> Schreiben Sie an <a class="textlink" href="{{ c.mailto }}">support@mandari.de</a>,
+                    wenn wir langsamer abrufen sollen (bis zu einer Anfrage alle 30 Sekunden), den Vollabgleich nur in
+                    einem vereinbarten Zeitfenster oder seltener fahren sollen, oder wenn wir Ihr System nicht mehr
+                    abrufen und Ihre Inhalte bei uns entfernen sollen. Nennen Sie uns dazu den Hostnamen Ihres Systems.
+                    Wir reagieren zeitnah.</p>
+                <p><strong>Ausnahmen nur mit Freigabe.</strong> Von Ihrer robots.txt weichen wir nur ab, wenn Ihre
+                    Stelle das ausdrücklich freigibt, und halten die Freigabe fest.</p>
             </div>
-
-            <div>
-                <h2 class="t-h2-dok text-gray-900 dark:text-white">Warum wir das tun</h2>
-                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">
-                    Ratsinformationen sind öffentliche Informationen. mandari stellt sie Bürgerinnen und Bürgern zentral,
-                    barrierearm und durchsuchbar zur Verfügung – als Open-Source-Projekt und als OParl-konforme
-                    Schnittstelle unter <a href="https://oparl.mandari.de" class="textlink">oparl.mandari.de</a>.
-                    Kommunen entsteht dadurch kein Aufwand; die Quelle wird auf allen Detailseiten genannt und verlinkt.
-                </p>
+            <div class="min-w-0 space-y-8 lg:col-span-5 lg:col-start-8">
+                <figure>
+                    <figcaption class="text-base m-leise">Alle Abrufe von mandari ausschließen</figcaption>
+                    <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
+Disallow: /</code></pre>
+                </figure>
+                <figure>
+                    <figcaption class="text-base m-leise">Nur PDF-Dateien ausschließen, die Schnittstelle bleibt frei</figcaption>
+                    <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
+Disallow: /*.pdf$</code></pre>
+                </figure>
             </div>
-
-            <div>
-                <h2 class="t-h2-dok text-gray-900 dark:text-white">Kontakt und Widerspruch</h2>
-                <p class="t-body text-gray-600 dark:text-gray-300 mt-4">
-                    Sie betreiben ein Ratsinformationssystem und haben Fragen, möchten die Abrufrate anpassen oder der
-                    Übernahme Ihrer Inhalte widersprechen? Schreiben Sie uns – wir reagieren zeitnah und entfernen
-                    Inhalte auf Wunsch der Kommune vollständig.
-                </p>
-                <p class="mt-7"><a href="mailto:hello@mandari.de?subject=Crawler%20mandari-ingestor" class="btn-primary">E-Mail an hello@mandari.de</a></p>
-                <p class="t-body text-gray-600 dark:text-gray-300 mt-6">
-                    Noch besser als Scraping ist eine OParl-Schnittstelle – viele RIS-Produkte bringen sie bereits mit.
-                    Gern unterstützen wir bei der Aktivierung.
-                </p>
-            </div>
-
         </div>
     </div>
+</section>
+
+{# Was wir abrufen und wie wir uns bei Fehlern verhalten: zwei kurze Texte nebeneinander, Stichwort am Absatzanfang #}
+<section class="band-hell abschnitt">
+    <div class="wrap grid gap-y-14 lg:grid-cols-2 lg:gap-x-16">
+        <div id="inhalte" class="min-w-0 scroll-mt-24">
+            <h2 class="t-h2-dok m-tinte">Was wir abrufen</h2>
+            <div class="mt-6 stichworte t-body m-text">
+                <p><strong>Nur Öffentliches.</strong> Wir rufen nur ab, was ohne Anmeldung erreichbar ist: Sitzungen,
+                    Tagesordnungen, Vorlagen, Gremien, Personen und Dokumente. Steht ein Dokument hinter einer Prüfung
+                    für Menschen, laden wir es nicht.</p>
+                <p><strong>Bevorzugt OParl.</strong> Bietet Ihr System die OParl-Schnittstelle an, nutzen wir sie.
+                    Sonst lesen wir ersatzweise die öffentlichen Webseiten, und zwar langsamer: standardmäßig eine Seite
+                    alle zwei Sekunden, nacheinander. Viele Ratsinformationssysteme bringen OParl bereits mit.</p>
+                <p><strong>Mit Quellenangabe.</strong> Auf jeder Detailseite nennen und verlinken wir Ihr System als
+                    Quelle. Unsere Daten stehen ihrerseits offen unter
+                    <a class="textlink" href="https://oparl.mandari.de">oparl.mandari.de</a> bereit.</p>
+            </div>
+        </div>
+        <div id="fehler" class="min-w-0 scroll-mt-24">
+            <h2 class="t-h2-dok m-tinte">Bei Fehlern und Sperren</h2>
+            <div class="mt-6 stichworte t-body m-text">
+                <p><strong>Automatische Pause.</strong> Eine einzelne Anfrage wiederholen wir bei Serverfehlern höchstens
+                    zweimal. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir die Quelle: zuerst 10 Minuten,
+                    danach jeweils doppelt so lange, bis höchstens 6 Stunden. Nach fünf Serverfehlern in Folge
+                    pausieren wir mindestens 30 Minuten, lehnt Ihr Server gezielt unsere Kennung ab (HTTP 403),
+                    mindestens eine Stunde.</p>
+                <p><strong>Keine Umgehung.</strong> Sperren umgehen wir nicht, Kennung und Adresse wechseln wir nicht.
+                    Einen anderen User-Agent setzen wir nur, wenn Sie ihn mit uns vereinbaren. Auf ein HTTP 403 folgt je
+                    Abgleich höchstens eine Vergleichsanfrage mit der Standardkennung unserer HTTP-Bibliothek
+                    (<span class="font-mono text-[0.95em]">python-httpx</span>), nur um zu erkennen, ob sich die Sperre gegen
+                    unsere Kennung richtet. Abgerufen wird danach weiter nur mit unserer Kennung.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["crawler"]) #}
+{% einladung_wege None "crawler" as wege %}
+<section class="on-ink band-tinte text-white abschnitt">
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten zeitnah und richten unsere Abrufe nach Ihren Vorgaben." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
 </section>
 
 {% endblock %}

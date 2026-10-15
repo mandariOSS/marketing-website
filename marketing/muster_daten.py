@@ -33,10 +33,10 @@ WEGE = {
         {"label": "Maschinenlesbar", "wert": "security.txt", "url": "/.well-known/security.txt"},
     ],
     "crawler": [
-        {"label": "E-Mail", "wert": "hello@mandari.de", "url": ""},
-        {"label": "User-Agent", "wert": "mandari-ingestor", "url": ""},
+        {"label": "E-Mail", "wert": "support@mandari.de", "url": ""},
+        {"label": "Abruf-Adresse", "wert": "144.76.153.200", "url": ""},
         {"label": "Datenquellen", "wert": "Quellennachweise", "url": "/quellen/"},
-        {"label": "Schnittstelle", "wert": "oparl.mandari.de", "url": "https://oparl.mandari.de"},
+        {"label": "Unsere Schnittstelle", "wert": "oparl.mandari.de", "url": "https://oparl.mandari.de"},
     ],
 }
 
@@ -145,15 +145,79 @@ DISCLOSURE_GELTUNG = {
 
 
 # ── /crawler/ ─────────────────────────────────────────────────────────────────
+# Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Jeder Wert ist im
+# mandari-Repository oder in der Produktionskonfiguration belegt, die Fundstelle steht am Eintrag; die technische
+# Referenz ist docs/ABRUFREGELN.md dort. Ändert sich der Abruf (etwa der Takt nach Bedarf, mandari#1026), werden
+# nur diese Daten angepasst, das Template bleibt.
 
-CRAWLER_RAND = [
-    {"type": "fakten", "value": {"titel": "", "fakten": [
-        {"begriff": "User-Agent", "wert": "mandari-ingestor (+https://mandari.de/crawler)"},
-        {"begriff": "Abrufrate", "wert": "höchstens eine Anfrage alle zwei Sekunden je Server"},
-        {"begriff": "Regeln", "wert": "robots.txt nach RFC 9309"},
-        {"begriff": "Kontakt", "wert": "hello@mandari.de"},
-    ]}},
+#: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor), Infoseite, Kontakt
+CRAWLER_USER_AGENT = "mandari-ingestor/<Version> (+https://mandari.de/crawler/; support@mandari.de)"
+#: shared/mandari_oparl/crawler.py, PRODUCT_TOKEN; ausgewertet in shared/mandari_oparl/robots.py (RFC 9309)
+CRAWLER_TOKEN = "mandari-ingestor"
+#: Ausgehende Adresse der von uns betriebenen Instanz (NAT von web01, Docker-Netz ohne IPv6), intern#113
+CRAWLER_ADRESSE = "144.76.153.200"
+#: shared/mandari_oparl/crawler.py, CONTACT
+CRAWLER_KONTAKT = "support@mandari.de"
+CRAWLER_MAILTO = "mailto:support@mandari.de?subject=Abrufe%20von%20mandari-ingestor"
+CRAWLER_ABRUFREGELN = "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
+
+CRAWLER_KENNUNG = [
+    {"anker": "user-agent", "begriff": "User-Agent", "wert": CRAWLER_USER_AGENT,
+     # Django (Dokumente, Vorschau) ruft user_agent() ohne Version auf: mandari/insight_core/services/robots.py
+     "notiz": "Abrufe von Dokumenten aus der Anwendung tragen dieselbe Kennung ohne Versionsnummer. Die Version "
+              "wechselt mit jeder Ausgabe; prüfen Sie deshalb auf den Anfang mandari-ingestor."},
+    {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": CRAWLER_ADRESSE,
+     "notiz": "IPv4. Über IPv6 rufen wir nicht ab. Die Adresse gilt für die Instanz, die wir betreiben. mandari ist "
+              "Open Source: Installationen anderer Betreiber rufen mit derselben Kennung von eigenen Adressen ab."},
+    {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": CRAWLER_TOKEN,
+     "notiz": "Eine Regel für dieses Token gilt für alle unsere Abrufe; Groß- und Kleinschreibung zählt nicht."},
+    {"anker": "kontakt-abrufe", "begriff": "Kontakt", "wert": CRAWLER_KONTAKT, "url": CRAWLER_MAILTO,
+     "notiz": "Für Fragen, einen langsameren Takt, ein Zeitfenster oder den Ausschluss Ihres Systems."},
 ]
+
+# Takt (Zahl im Satz) und Häufigkeit je Abrufart (Tabelle). Fundstellen:
+# - eine Anfrage je Sekunde: shared/mandari_oparl/pacing.py DEFAULT_INTERVAL (Redis-Zeitstempel je Hostname über
+#   alle Prozesse); je Quelle nur langsamer (sync_config request_interval, Werte unter 1,0 s angehoben, mandari#1025;
+#   höchstens MAX_REQUEST_INTERVAL 30 s)
+# - zwei gleichzeitig: ingestor/src/config.py host_max_concurrent (je Prozess und Hostname)
+# - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Abgleich
+#   noch, entfällt der nächste (ingestor/src/scheduler, _is_syncing)
+# - Änderungsfenster: Beginn des letzten vollständigen Abgleichs der Kommune abzüglich
+#   INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120), fehlende Listen bis zum nächsten Vollabgleich nicht anfragen
+#   (sync_config missing_lists), beides mandari#1025 (vorher fest 7 Tage); ohne Filter Abbruch nach fünf Seiten ohne
+#   Änderung (ingestor/src/sync/orchestrator.py, stale_pages_to_stop)
+# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1; Abstand und Zeitfenster je Quelle: sync_config
+#   full_sync_every_days (heute 28 für Köln, Münster, Bezirksregierung Köln, Bonn) und full_sync_window
+#   (ingestor/src/client/source_options.py, mandari#1023)
+# - Dokumente: mandari/hub/ris/abruf.py (einmal je Datei, Ablage), insight_core/services/file_reconcile.py (neu
+#   laden bei gemeldeter Änderung, HEAD-Stichproben)
+# - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden), Störung zurückstellen
+CRAWLER_TAKT = {
+    "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Server und höchstens <b>zwei</b> gleichzeitig offen. "
+            "Schneller rufen wir nie ab, auf Ihren Wunsch langsamer.",
+    "erlaeuterung": "Der Takt gilt je Hostname, für alle unsere Dienste zusammen und auch dann, wenn mehrere "
+                    "Kommunen unter demselben Hostnamen liegen. Verschiedene Hostnamen zählen getrennt.",
+    "zeilen": [
+        {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
+         "umfang": "Je Liste nur, was sich seit dem letzten vollständigen Abgleich geändert hat, mit zwei Stunden "
+                   "Puffer (OParl-Filter modified_since); ohne Änderung ist das eine Seite je Liste. Listen, die Ihr "
+                   "System nicht anbietet, fragen wir erst im nächsten Vollabgleich wieder an. Filtert ein System "
+                   "nicht nach Änderungsdatum, lesen wir die Liste von vorn und hören nach fünf Seiten ohne Änderung "
+                   "auf. Läuft ein Abgleich noch, entfällt der nächste."},
+        {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
+         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Wie oft, "
+                   "stellen wir je Quelle ein: bei Systemen, die zuverlässig nach Änderungsdatum filtern, höchstens "
+                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster; was bis zu "
+                   "dessen Ende fehlt, folgt in der nächsten Nacht."},
+        {"abruf": "Dokumente", "wann": "einmal je Datei",
+         "umfang": "Nur für Kommunen, die wir dafür freigeschaltet haben. Erneut laden wir eine Datei nur, wenn ein "
+                   "Abruf fehlschlug oder sie sich geändert hat. Einzelne HEAD-Anfragen prüfen, ob ein Dokument noch "
+                   "vorhanden ist: Was Sie löschen, verschwindet so auch bei uns."},
+        {"abruf": "robots.txt", "wann": "alle 24 Stunden",
+         "umfang": "Wir lesen sie vor dem ersten Abruf und danach spätestens alle 24 Stunden neu. Ist sie nicht "
+                   "erreichbar (Serverfehler, HTTP 429), stellen wir alle Abrufe zurück, bis sie es wieder ist."},
+    ],
+}
 
 
 # ── M4: Randspalte der Dokumentseiten (Rechtstexte, Quellen) ───────────────────
@@ -203,5 +267,6 @@ DATEN = {
     "disclosure_zusage": DISCLOSURE_ZUSAGE,
     "disclosure_zeitskala": DISCLOSURE_ZEITSKALA,
     "disclosure_geltung": DISCLOSURE_GELTUNG,
-    "crawler_rand": CRAWLER_RAND,
+    "crawler": {"kennung": CRAWLER_KENNUNG, "takt": CRAWLER_TAKT, "mailto": CRAWLER_MAILTO,
+                "abrufregeln": CRAWLER_ABRUFREGELN},
 }
