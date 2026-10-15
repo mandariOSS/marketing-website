@@ -180,16 +180,23 @@ CRAWLER_KENNUNG = [
      "notiz": "Von dieser Adresse ruft derzeit die Instanz ab, die wir betreiben, nur über IPv4. Erkennen Sie uns "
               "bitte vor allem am User-Agent: Die Adresse kann sich ändern, etwa bei einem Serverumzug."},
     {"anker": "kontakt-abrufe", "begriff": "Kontakt", "wert": CRAWLER_KONTAKT, "url": CRAWLER_MAILTO,
-     "notiz": "Für Fragen, einen langsameren Takt, ein Zeitfenster oder den Ausschluss Ihres Systems."},
+     "notiz": "Für Fragen, einen langsameren Takt, ein Zeitfenster für den Vollabgleich oder den Ausschluss Ihres "
+              "Systems."},
 ]
 
 # Selbst betriebene Installationen (ABRUFREGELN.md, „Für Selbstbetreiber“): Abruf von der Adresse des eigenen Servers;
-# eigene Kennung über INGESTOR_USER_AGENT (ingestor/src/config.py) bzw. je Quelle sync_config["download_headers"];
-# Regeln für mandari-ingestor gelten trotzdem, weil Ingestor und Anwendung dieses Token immer zusätzlich prüfen.
+# eigene Kennung für den Ingestor (Abgleich, Scraper, Texterkennung, Sondierung) über INGESTOR_USER_AGENT
+# (ingestor/src/config.py). Die Abrufe der Anwendung (Dokument-Cache, Vorschau, Löschabgleich, Personenfotos,
+# Quellenanlage) senden die feste Kennung samt support@mandari.de (insight_core/services/robots.py USER_AGENT),
+# abweichend nur je Quelle über sync_config["download_headers"]; ein Sync aus dem Admin läuft im Worker und nutzt ohne
+# eigene Umgebungsvariable ebenfalls unsere Kennung. Regeln für mandari-ingestor gelten trotzdem, weil Ingestor und
+# Anwendung dieses Token immer zusätzlich prüfen.
 CRAWLER_SELBSTBETRIEB = (
-    "mandari ist Open Source. Wer es selbst betreibt, ruft von der Adresse des eigenen Servers ab und kann eine eigene "
-    "Kennung mit eigener Kontaktadresse setzen. Ihre Regeln für mandari-ingestor gelten auch für solche "
-    "Installationen, denn mandari prüft dieses Token immer mit."
+    "mandari ist Open Source. Wer es selbst betreibt, ruft von der Adresse des eigenen Servers ab und kann für den "
+    "Abgleich eine eigene Kennung mit eigener Kontaktadresse setzen. Andere Abrufe, etwa von Dokumenten, senden auch "
+    "dort meist unsere Kennung. Abrufe mit unserer Kennung von anderen Adressen als der oben genannten können also "
+    "von solchen Installationen stammen. Ihre Regeln für mandari-ingestor gelten auch für solche Installationen, denn "
+    "mandari prüft dieses Token immer mit."
 )
 
 # Takt (Zahl im Satz) und Häufigkeit je Abrufart (Tabelle). Fundstellen im mandari-Repository, Zweig dev:
@@ -202,7 +209,8 @@ CRAWLER_SELBSTBETRIEB = (
 #   insight_core/services/redirects.py), vor jeder die robots.txt des Ziels und ein eigener Zeitpunkt im Takt; auch
 #   der Abruf der robots.txt reserviert einen Zeitpunkt.
 # - zwei gleichzeitig: ingestor/src/client/host_pacing.py HostPacer.limit mit config.py host_max_concurrent, eine
-#   Semaphore je Prozess und Hostname. Deshalb nur für den Abgleich zugesagt, nicht für alle Dienste.
+#   Semaphore je Prozess und Hostname. Deshalb nur je Abgleich zugesagt, nicht für alle Dienste: Ein Sync aus dem
+#   Admin läuft im Worker der Anwendung, also in einem eigenen Prozess mit eigenen zwei Plätzen.
 # - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Lauf noch,
 #   entfällt der nächste Termin (ingestor/src/scheduler, max_instances=1)
 # - Änderungsfenster: ingestor/src/sync/orchestrator.py modified_since_for (Beginn des letzten vollständig
@@ -228,17 +236,23 @@ CRAWLER_SELBSTBETRIEB = (
 #   Netzfehler, zu viele Weiterleitungen: nicht erreichbar), RETRY_UNREACHABLE_SECONDS 15 min; letzte gültige Fassung
 #   gilt weiter (ingestor/src/client/robots.py _Entry.last_good, insight_core/services/robots.py). Zwischenspeicher je
 #   Ingestor-Prozess bzw. gemeinsam in der Anwendung, deshalb „jeder unserer Dienste“
-# - Erstprüfung: ingestor/src/probe/ris_probe.py (MAX_REQUESTS 5, Weiterleitungen und robots.txt neuer Hosts
-#   eingerechnet, robots.txt nicht erreichbar: keine weitere Anfrage); Aufnahme: add_oparl_source (MAX_BODY_PAGES 20)
+# - Erstprüfung: ingestor/src/probe/ris_probe.py (MAX_REQUESTS 5 je Kommune, Weiterleitungen und robots.txt neuer
+#   Hosts eingerechnet, robots.txt nicht erreichbar: keine weitere Anfrage), zwischen zwei Kommunen 2 s Pause
+#   (ingestor/src/main.py probe_ris); Aufnahme: add_oparl_source (MAX_BODY_PAGES 20)
+# - Pausen im Fehlerfall (Template, „Automatische Pause“): orchestrator.py BACKOFF_* gelten für Abgleich samt
+#   Texterkennung und Scraper; Dokument-Cache, Vorschau, Löschabgleich und Personenfotos ruhen erst nach
+#   INSIGHT_SOURCE_BACKOFF_FAILURES (3) fehlgeschlagenen Läufen in Folge (ABRUFREGELN.md, „Fehler und Schonung“)
+# - Wiederholungen der Dokumente: BACKOFF sind frühestmögliche Zeitpunkte, ausgeführt im Dokument-Cache um :40
 CRAWLER_TAKT = {
     "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
             "Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.",
     "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen; verschiedene Hostnamen "
                     "zählen getrennt, auch auf demselben Server. Jede Anfrage zählt, auch der Abruf Ihrer robots.txt "
                     "und jede Weiterleitung. Einer Weiterleitung folgen wir höchstens fünfmal je Abruf und nur, wenn "
-                    "die robots.txt ihres Ziels es erlaubt. Unser Abgleich hält dabei höchstens zwei Anfragen "
+                    "die robots.txt ihres Ziels es erlaubt. Jeder Abgleich hält dabei höchstens zwei Anfragen "
                     "gleichzeitig offen. Ist die Abstimmung zwischen unseren Diensten gestört, hält jeder Dienst den "
-                    "Takt für sich, bis sie wieder steht.",
+                    "Takt für sich, bis sie wieder steht; in dieser Zeit können mehr als eine Anfrage pro Sekunde "
+                    "ankommen.",
     "zeilen": [
         {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
          "umfang": "Je Liste nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem "
@@ -260,10 +274,10 @@ CRAWLER_TAKT = {
         {"abruf": "Dokumente", "wann": "mit dem Abgleich und stündlich",
          "umfang": "Neue Dateien laden wir, um ihren Text durchsuchbar zu machen und sie bei uns abzulegen; stündlich "
                    "holen wir höchstens 200 fehlende Dateien je System nach. Schlägt ein Abruf fehl, etwa mit HTTP 429 "
-                   "oder einem Serverfehler, versuchen wir es nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach "
-                   "frühestens nach sieben Tagen. Öffnet jemand bei uns ein Dokument, das wir nicht abgelegt haben, "
-                   "laden wir es dafür bei Ihnen. Für einzelne Systeme schalten wir den Dokumentabruf ab, etwa wenn "
-                   "Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das wünschen."},
+                   "oder einem Serverfehler, versuchen wir es frühestens nach 15 Minuten, 1, 6, 24 und 72 Stunden "
+                   "erneut, danach frühestens nach sieben Tagen. Öffnet jemand bei uns ein Dokument, das wir nicht "
+                   "abgelegt haben, laden wir es dafür bei Ihnen. Für einzelne Systeme schalten wir den Dokumentabruf "
+                   "ab, etwa wenn Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das wünschen."},
         {"abruf": "Dokumente prüfen", "wann": "stündlich",
          "umfang": "Dokumente, die Sie nach unserer Kopie geändert haben, laden wir neu, höchstens 200 je Lauf. "
                    "Einzelne HEAD-Anfragen, höchstens 30 je Kommune, prüfen, ob Dokumente noch vorhanden sind; "
@@ -277,15 +291,16 @@ CRAWLER_TAKT = {
                    "abgeschaltet oder pausieren wir es nach wiederholten Fehlern, laden wir keine Fotos."},
         {"abruf": "robots.txt", "wann": "vor dem ersten Abruf, dann täglich",
          "umfang": "Jeder unserer Dienste liest sie vor seinem ersten Abruf und nutzt eine gelesene Fassung höchstens "
-                   "24 Stunden. Fehlt sie (HTTP 4xx), ist alles erlaubt. Ist sie nicht erreichbar (Serverfehler, "
-                   "HTTP 408 oder 429, Netzfehler, mehr als fünf Weiterleitungen), versuchen wir es frühestens nach "
-                   "15 Minuten wieder. Bis das gelingt, gilt die zuletzt gelesene Fassung weiter; gab es keine, "
-                   "stellen wir die Abrufe zurück."},
+                   "24 Stunden, solange sie erreichbar ist. Fehlt sie (HTTP 4xx), ist alles erlaubt. Ist sie nicht "
+                   "erreichbar (Serverfehler, HTTP 408 oder 429, Netzfehler, mehr als fünf Weiterleitungen), versuchen "
+                   "wir es frühestens nach 15 Minuten wieder. Bis das gelingt, gilt die zuletzt gelesene Fassung "
+                   "weiter; gab es keine, stellen wir die Abrufe zurück."},
         {"abruf": "Erstprüfung", "wann": "vor der Aufnahme",
-         "umfang": "Ob ein System für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
-                   "Startseite und die üblichen Adressen einer OParl-Schnittstelle, Weiterleitungen eingerechnet. Was "
-                   "Ihre robots.txt sperrt, fragen wir dabei nicht an; ist sie nicht erreichbar, fragen wir nichts "
-                   "weiter an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten."},
+         "umfang": "Ob eine Kommune für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
+                   "Startseite und die üblichen Adressen einer OParl-Schnittstelle, Weiterleitungen eingerechnet. "
+                   "Prüfen wir mehrere Kommunen, liegen zwischen zwei Kommunen zusätzlich 2 Sekunden. Was Ihre "
+                   "robots.txt sperrt, fragen wir dabei nicht an; ist sie nicht erreichbar, fragen wir nichts weiter "
+                   "an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten."},
     ],
 }
 

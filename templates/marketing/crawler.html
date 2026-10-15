@@ -69,7 +69,7 @@
 <section id="steuern" class="band-grau abschnitt scroll-mt-24">
     <div class="wrap">
         <div class="kopf">
-            <h2 class="t-h2 m-tinte">Drosseln, Zeitfenster vereinbaren oder ausschließen</h2>
+            <h2 class="t-h2 m-tinte">Drosseln oder ausschließen</h2>
         </div>
         <div class="grid gap-y-10 lg:grid-cols-12 lg:gap-x-10">
             <div class="min-w-0 lg:col-span-7 stichworte t-body m-text max-w-[45rem]">
@@ -84,9 +84,10 @@
                 <p><strong>Per E-Mail.</strong> Schreiben Sie an <a class="textlink" href="{{ c.mailto }}">support@mandari.de</a>,
                     wenn wir langsamer abrufen sollen (bis zu einer Anfrage alle 30 Sekunden), den Vollabgleich nur in
                     einem Zeitfenster ab 1 Uhr nachts oder seltener fahren sollen, keine Dokumente mehr laden sollen
-                    oder wenn wir Ihr System nicht mehr abrufen und Ihre Inhalte bei uns entfernen sollen. Nennen Sie
-                    uns dazu den Hostnamen Ihres Systems; liegen dort mehrere Kommunen, gilt die Vereinbarung für alle.
-                    Wir reagieren zeitnah.</p>
+                    oder wenn wir Ihr System nicht mehr abrufen und Ihre Inhalte bei uns entfernen sollen. Ein solches
+                    Zeitfenster gilt nur für den Vollabgleich: Änderungsabgleich und Dokumentabrufe laufen auch dann
+                    rund um die Uhr im Takt. Nennen Sie uns den Hostnamen Ihres Systems; liegen dort mehrere Kommunen,
+                    gilt die Vereinbarung für alle. Wir reagieren zeitnah.</p>
                 <p><strong>Ausnahmen nur mit Freigabe.</strong> Von Ihrer robots.txt weichen wir nur ab, wenn Ihre
                     Stelle das ausdrücklich freigibt, je nach Freigabe für die Schnittstelle, für Dokumente oder für
                     beides, und halten die Freigabe fest.</p>
@@ -98,9 +99,13 @@
 Disallow: /</code></pre>
                 </figure>
                 <figure>
-                    <figcaption class="text-base m-leise">Nur PDF-Dateien ausschließen, die Schnittstelle bleibt frei</figcaption>
+                    <figcaption class="text-base m-leise">Adressen ausschließen, die auf .pdf enden, die Schnittstelle bleibt frei</figcaption>
                     <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
 Disallow: /*.pdf$</code></pre>
+                    <p class="mt-3 text-base m-text">Liegen Ihre Dokumente unter anderen Adressen, etwa
+                        <span class="font-mono text-[0.95em]">getfile.asp?id=…</span>, sperren Sie deren Pfad. Groß- und
+                        Kleinschreibung zählt: <span class="font-mono text-[0.95em]">.pdf</span> erfasst nicht
+                        <span class="font-mono text-[0.95em]">.PDF</span>.</p>
                 </figure>
             </div>
         </div>
@@ -119,8 +124,10 @@ Disallow: /*.pdf$</code></pre>
                 <p><strong>Bevorzugt OParl.</strong> Bietet Ihr System die OParl-Schnittstelle an, nutzen wir sie.
                     Sonst lesen wir ersatzweise die öffentlichen Webseiten, und zwar langsamer: standardmäßig eine Seite
                     alle zwei Sekunden, nacheinander. Viele Ratsinformationssysteme bringen OParl bereits mit.</p>
-                <p><strong>Mit Quellenangabe.</strong> Bei uns können Bürgerinnen und Bürger Ihre Inhalte durchsuchen;
-                    auf jeder Detailseite nennen und verlinken wir Ihr System als Quelle. Unsere Daten stehen ihrerseits offen unter
+                <p><strong>Mit Quellenangabe.</strong> Bei uns können Bürgerinnen und Bürger Ihre Inhalte durchsuchen.
+                    Auf unseren Seiten zu Ihrer Kommune nennen wir Ihr Ratsinformationssystem als Quelle; bei Vorlagen
+                    verlinken wir die Seite in Ihrem System, wenn Ihre Schnittstelle sie angibt. Unsere Daten stehen
+                    ihrerseits offen unter
                     <a class="textlink" href="https://oparl.mandari.de">oparl.mandari.de</a> bereit.</p>
             </div>
         </div>
@@ -132,11 +139,14 @@ Disallow: /*.pdf$</code></pre>
                     Server im selben Abgleich, auch HTTP 429, fragen wir ihn eine Minute lang nicht an; einen
                     Retry-After-Header werten wir nicht aus. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir
                     die Quelle: zuerst 10&nbsp;Minuten, danach jeweils doppelt so lange, bis höchstens 6&nbsp;Stunden. Nach fünf
-                    Serverfehlern in Folge oder wenn Ihre robots.txt nicht erreichbar ist, pausieren wir mindestens
-                    30&nbsp;Minuten, lehnt Ihr Server gezielt unsere Kennung ab (HTTP 403), mindestens eine Stunde, sperrt
-                    Ihre robots.txt jede Anfrage, 24&nbsp;Stunden.</p>
+                    Serverfehlern in Folge oder wenn Ihre robots.txt nicht erreichbar ist und wir keine frühere Fassung
+                    haben, pausiert unser Abgleich mindestens 30&nbsp;Minuten, lehnt Ihr Server gezielt unsere Kennung ab
+                    (HTTP 403), mindestens eine Stunde, sperrt Ihre robots.txt jede Anfrage, 24&nbsp;Stunden. Unsere
+                    übrigen Abrufe von Dokumenten und Fotos ruhen erst, wenn drei Abgleiche in Folge Ihr System nicht
+                    erreichen; eine Sperre per robots.txt beachten sie immer.</p>
                 <p><strong>Keine Umgehung.</strong> Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.
-                    Einen anderen User-Agent setzen wir nur, wenn Sie ihn mit uns vereinbaren. Auf ein HTTP 403 folgt je
+                    Eine abweichende Kennung für Ihr System setzen wir nur, wenn Sie sie mit uns vereinbaren, etwa weil
+                    Ihr Server bestimmte Wörter im User-Agent ablehnt. Auf ein HTTP 403 folgt je
                     Server und Abgleich sowie je Erstprüfung höchstens eine Vergleichsanfrage mit der Standardkennung
                     unserer HTTP-Bibliothek (<span class="font-mono text-[0.95em]">python-httpx</span>), im Takt und
                     ohne Weiterleitung, nur um zu erkennen, ob sich die Sperre gegen unsere Kennung richtet. Abgerufen
@@ -149,7 +159,7 @@ Disallow: /*.pdf$</code></pre>
 {# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["crawler"]) #}
 {% einladung_wege None "crawler" as wege %}
 <section class="on-ink band-tinte text-white abschnitt">
-    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten zeitnah und richten unsere Abrufe nach Ihren Vorgaben." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten zeitnah und stimmen unsere Abrufe mit Ihnen ab." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
 </section>
 
 {% endblock %}

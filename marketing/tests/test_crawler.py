@@ -44,7 +44,7 @@ class CrawlerSeiteTests(TestCase):
         # Semaphore je Prozess (host_pacing.py) und gilt deshalb nur für den Abgleich, nicht für alle Dienste.
         html = self.html()
         self.assertIn("<b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen", html)
-        self.assertIn("Unser Abgleich hält dabei höchstens zwei Anfragen gleichzeitig offen", html)
+        self.assertIn("Jeder Abgleich hält dabei höchstens zwei Anfragen gleichzeitig offen", html)
         self.assertNotIn("<b>zwei</b>", html)
         self.assertNotIn("pro Sekunde</b> je Server", html)
 
@@ -73,7 +73,8 @@ class CrawlerSeiteTests(TestCase):
         # probe-ris (mandari#1031): höchstens fünf Anfragen, Weiterleitungen mitgezählt, im Takt je Host; die
         # Vergleichsanfrage nach HTTP 403 mit python-httpx wie im Abgleich, keine Browserkennung
         html = text(self.html())
-        self.assertIn("prüfen wir mit höchstens fünf Anfragen", html)
+        self.assertIn("Ob eine Kommune für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen", html)
+        self.assertIn("liegen zwischen zwei Kommunen zusätzlich 2 Sekunden", html)
         self.assertIn("je Server und Abgleich sowie je Erstprüfung höchstens eine Vergleichsanfrage", html)
         self.assertIn("im Takt und ohne Weiterleitung", html)
         self.assertNotIn("Mozilla", html)
@@ -147,7 +148,8 @@ class CrawlerSeiteTests(TestCase):
         # Selbstbetreiber rufen von eigener Adresse ab, können INGESTOR_USER_AGENT setzen; mandari-ingestor gilt weiter
         html = text(self.html())
         self.assertIn("Selbst betriebene Installationen.", html)
-        self.assertIn("kann eine eigene Kennung mit eigener Kontaktadresse setzen", html)
+        self.assertIn("kann für den Abgleich eine eigene Kennung mit eigener Kontaktadresse setzen", html)
+        self.assertIn("Abrufe mit unserer Kennung von anderen Adressen als der oben genannten", html)
         self.assertIn("Ihre Regeln für mandari-ingestor gelten auch für solche Installationen", html)
 
     def test_robots_txt_nicht_erreichbar_und_eigene_gruppe(self):
@@ -170,7 +172,8 @@ class CrawlerSeiteTests(TestCase):
         # pacing.py: ohne Redis drosselt jeder Prozess für sich; deshalb keine Zusage „nie schneller“
         html = text(self.html())
         self.assertIn("Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.", html)
-        self.assertIn("hält jeder Dienst den Takt für sich, bis sie wieder steht", html)
+        self.assertIn("hält jeder Dienst den Takt für sich, bis sie wieder steht; in dieser Zeit können mehr als eine "
+                      "Anfrage pro Sekunde ankommen", html)
         self.assertNotIn("Schneller rufen wir nie ab", html)
 
     def test_personenfotos_zeitplan_menge_und_wiederholung(self):
@@ -185,10 +188,51 @@ class CrawlerSeiteTests(TestCase):
     def test_dokumente_wiederholungen_und_pruefung(self):
         # abruf.py BACKOFF und ERROR_RETRY; loeschabgleich --head-limit 30, --interval 2, FILE_PURGE_AFTER_DAYS 30
         html = text(self.html())
-        self.assertIn("nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach frühestens nach sieben Tagen", html)
+        self.assertIn(
+            "frühestens nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach frühestens nach sieben Tagen", html
+        )
         self.assertIn("höchstens 30 je Kommune", html)
         self.assertIn("mindestens 2 Sekunden", html)
         self.assertIn("Retry-After-Header werten wir nicht aus", html)
+
+    def test_quellenangabe_wie_im_buergerportal(self):
+        # insight_footer.html nennt das RIS der Kommune als Text, einen Link gibt es nur auf der Vorlagenseite
+        # (insight_core/views/papers.py source_url aus raw_json.web)
+        html = text(self.html())
+        self.assertIn("Auf unseren Seiten zu Ihrer Kommune nennen wir Ihr Ratsinformationssystem als Quelle", html)
+        self.assertIn("bei Vorlagen verlinken wir die Seite in Ihrem System, wenn Ihre Schnittstelle sie angibt", html)
+        self.assertNotIn("auf jeder Detailseite nennen und verlinken wir", html)
+
+    def test_pausen_gelten_fuer_den_abgleich(self):
+        # ABRUFREGELN.md „Fehler und Schonung“: Pausen für Abgleich und Scraper; die Anwendung ruht erst nach
+        # INSIGHT_SOURCE_BACKOFF_FAILURES Läufen, robots.txt beachtet sie immer; nicht erreichbare robots.txt
+        # pausiert nur ohne frühere Fassung (_Entry.last_good)
+        html = text(self.html())
+        self.assertIn("nicht erreichbar ist und wir keine frühere Fassung haben, pausiert unser Abgleich", html)
+        self.assertIn("Unsere übrigen Abrufe von Dokumenten und Fotos ruhen erst, wenn drei Abgleiche in Folge", html)
+        self.assertIn("eine Sperre per robots.txt beachten sie immer", html)
+        self.assertIn("höchstens 24 Stunden, solange sie erreichbar ist", html)
+        self.assertNotIn("nicht erreichbar ist, pausieren wir", html)
+
+    def test_zeitfenster_nur_fuer_den_vollabgleich(self):
+        # full_sync_window begrenzt nur die Listen des Vollabgleichs
+        html = text(self.html())
+        self.assertIn("ein Zeitfenster für den Vollabgleich", html)
+        self.assertIn("Änderungsabgleich und Dokumentabrufe laufen auch dann rund um die Uhr im Takt", html)
+        self.assertNotIn("Zeitfenster vereinbaren", html)
+        self.assertNotIn("nach Ihren Vorgaben", html)
+
+    def test_pdf_beispiel_mit_grenzen(self):
+        # robots.py: $ verankert das Ende, Groß- und Kleinschreibung zählt im Pfad
+        html = text(self.html())
+        self.assertIn("Adressen ausschließen, die auf .pdf enden", html)
+        self.assertIn("sperren Sie deren Pfad", html)
+        self.assertNotIn("Nur PDF-Dateien ausschließen", html)
+
+    def test_abweichende_kennung_nur_mit_vereinbarung(self):
+        # config.py DEFAULT_USER_AGENT (#123): Kennung je Quelle für Server, die Wörter im User-Agent filtern
+        html = text(self.html())
+        self.assertIn("Eine abweichende Kennung für Ihr System setzen wir nur, wenn Sie sie mit uns vereinbaren", html)
 
     def test_link_auf_die_abrufregeln_im_zweig_dev(self):
         self.assertEqual(
