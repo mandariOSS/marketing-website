@@ -57,8 +57,25 @@ class CrawlerSeiteTests(TestCase):
         self.assertNotIn("seit dem letzten vollständigen Abgleich", html)
 
     def test_zeitfenster_des_vollabgleichs_ab_1_uhr(self):
-        # Der Vollabgleich startet nur um 1 Uhr; ein Fenster, das später beginnt, führte nie zu einem Vollabgleich
+        # Der geplante Vollabgleich startet um 1 Uhr; ein Fenster, das später beginnt, führte nie zu einem Vollabgleich
         self.assertEqual(text(self.html()).count("Zeitfenster ab 1 Uhr nachts"), 2)
+
+    def test_vollabgleich_von_hand_und_ende_des_fensters(self):
+        # Ein Vollabgleich, der mit dem Fenster endet, wird nicht fortgesetzt: In der nächsten Nacht beginnt er von
+        # vorn. Von Hand (Admin-Trigger, sync --full) startet er zu jeder Tageszeit, auch dann im Fenster.
+        html = text(self.html())
+        self.assertIn("endet der Vollabgleich mit dem Fenster und beginnt in der nächsten Nacht von vorn", html)
+        self.assertIn("Von Hand starten wir ihn nur ausnahmsweise", html)
+        self.assertIn("ein vereinbartes Zeitfenster gilt auch dann", html)
+        self.assertNotIn("folgt in der nächsten Nacht", html)
+
+    def test_erstpruefung_mit_hoechstens_fuenf_anfragen(self):
+        # probe-ris (mandari#1031): höchstens fünf Anfragen, Weiterleitungen mitgezählt, im Takt je Host; die
+        # Vergleichsanfrage nach HTTP 403 mit python-httpx wie im Abgleich, keine Browserkennung
+        html = text(self.html())
+        self.assertIn("prüfen wir mit höchstens fünf Anfragen", html)
+        self.assertIn("je Abgleich und je Erstprüfung höchstens eine Vergleichsanfrage", html)
+        self.assertNotIn("Mozilla", html)
 
     def test_dokumentabruf_ohne_freischaltung(self):
         # Der Dokumentabruf ist je Quelle standardmäßig an und lässt sich nur abschalten (sync_config file_downloads)

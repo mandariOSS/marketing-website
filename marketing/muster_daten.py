@@ -190,17 +190,28 @@ CRAWLER_KENNUNG = [
 #   vorige 10-Minuten-Lauf, abzüglich INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120); fehlende Listen bis zum
 #   nächsten Vollabgleich nicht anfragen (sync_config missing_lists), beides mandari#1025 (vorher fest 7 Tage);
 #   ohne Filter Abbruch nach fünf Seiten ohne Änderung (orchestrator.py, stale_pages_to_stop)
-# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Cron im Scheduler, der einzige Start eines
-#   Vollabgleichs); Abstand und Zeitfenster je Quelle: sync_config full_sync_every_days (heute 28 für Köln, Münster,
-#   Bezirksregierung Köln, Bonn) und full_sync_window (ingestor/src/client/source_options.py, mandari#1023). Liegt
-#   der Start außerhalb des Fensters, läuft nur der Änderungsabgleich (orchestrator.py, _full_sync_plan): Ein
-#   vereinbartes Fenster muss deshalb 1 Uhr enthalten.
+# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Cron im Scheduler, ingestor/src/scheduler
+#   _run_full_sync; läuft um 1 Uhr noch ein Änderungsabgleich, folgt der Vollabgleich direkt danach, mandari#1031).
+#   Von Hand startet ihn außerdem der Admin-Trigger (Redis-Kanal mandari:sync:trigger mit full=true, scheduler
+#   _listen_for_triggers) oder sync --full, beides zu jeder Tageszeit; full_sync_window begrenzt alle drei Wege
+#   (source_options.py). Abstand und Zeitfenster je Quelle: sync_config full_sync_every_days (heute 28 für Köln,
+#   Münster, Bezirksregierung Köln, Bonn) und full_sync_window (ingestor/src/client/source_options.py,
+#   mandari#1023). Liegt der Start außerhalb des Fensters, läuft nur der Änderungsabgleich (orchestrator.py,
+#   _full_sync_plan): Ein vereinbartes Fenster muss deshalb 1 Uhr enthalten. Endet das Fenster vor dem
+#   Vollabgleich, rückt last_successful_full_sync nicht vor (storage/database.py update_source_sync_time,
+#   complete=False), und in der nächsten Nacht beginnt er von vorn, ohne Wiedereinstieg: Das Fenster muss für einen
+#   ganzen Vollabgleich reichen.
 # - Dokumente: Abruf je Quelle standardmäßig an und nur abschaltbar (sync_config file_downloads false:
 #   ingestor/src/client/source_options.py FILE_DOWNLOADS_KEY, mandari/hub/ris/abruf.py source_fetch_allowed), es
 #   gibt keine Freischaltung. Einmal je Datei (Ablage, mandari/hub/ris/abruf.py) gilt erst mit der Dokumentkette
 #   (mandari#919, Texterkennung aus der Ablage); vorher lädt die Texterkennung jede Datei zusätzlich selbst.
 #   insight_core/services/file_reconcile.py: neu laden bei gemeldeter Änderung, HEAD-Stichproben.
 # - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden), Störung zurückstellen
+# - Erstprüfung: ingestor/src/probe/ris_probe.py (probe-ris aus mandari#114, MAX_REQUESTS 5: robots.txt, Startseite,
+#   bei HTTP 403 die Vergleichsanfrage, danach OParl-Kandidaten; gesperrte Pfade nicht). Aufnahme: mandari/
+#   insight_core/management/commands/add_oparl_source.py (System und Körperschaftsliste). Erst mit mandari#1031
+#   halten beide den Takt je Host, zählt jede Weiterleitung der Erstprüfung als Anfrage und trägt deren
+#   Vergleichsanfrage python-httpx/<Version> (vorher eine Browserkennung).
 CRAWLER_TAKT = {
     "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
             "Schneller rufen wir nie ab, auf Ihren Wunsch langsamer.",
@@ -217,8 +228,10 @@ CRAWLER_TAKT = {
         {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
          "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Wie oft, "
                    "stellen wir je Quelle ein: bei Systemen, die zuverlässig nach Änderungsdatum filtern, höchstens "
-                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster ab 1 Uhr nachts; "
-                   "was bis zu dessen Ende fehlt, folgt in der nächsten Nacht."},
+                   "alle 28 Tage, sonst jede Nacht. Auf Wunsch nur in einem vereinbarten Zeitfenster ab 1 Uhr nachts. "
+                   "Reicht das Fenster nicht, endet der Vollabgleich mit dem Fenster und beginnt in der nächsten Nacht "
+                   "von vorn. Von Hand starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme eines neuen Systems; "
+                   "ein vereinbartes Zeitfenster gilt auch dann."},
         {"abruf": "Dokumente", "wann": "einmal je Datei",
          "umfang": "Wir laden Dokumente, um ihren Text durchsuchbar zu machen. Für einzelne Systeme schalten wir den "
                    "Dokumentabruf ab, etwa wenn Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das "
@@ -228,6 +241,10 @@ CRAWLER_TAKT = {
         {"abruf": "robots.txt", "wann": "alle 24 Stunden",
          "umfang": "Wir lesen sie vor dem ersten Abruf und danach spätestens alle 24 Stunden neu. Ist sie nicht "
                    "erreichbar (Serverfehler, HTTP 429), stellen wir alle Abrufe zurück, bis sie es wieder ist."},
+        {"abruf": "Erstprüfung", "wann": "vor der Aufnahme",
+         "umfang": "Ob ein System für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
+                   "Startseite und die üblichen Adressen einer OParl-Schnittstelle. Was Ihre robots.txt sperrt, fragen "
+                   "wir dabei nicht an."},
     ],
 }
 
