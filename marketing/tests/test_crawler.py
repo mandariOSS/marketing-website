@@ -83,6 +83,16 @@ class CrawlerSeiteTests(TestCase):
         self.assertIn("Für einzelne Systeme schalten wir den Dokumentabruf ab", html)
         self.assertNotIn("freigeschaltet", html)
 
+    def test_fehlende_listen_robots_und_dokumente_wie_in_den_abrufregeln(self):
+        # docs/ABRUFREGELN.md im mandari-Repository: vermerkte Listen inkrementell einmal am Tag (MISSING_LIST_RECHECK),
+        # bei nicht erreichbarer robots.txt gilt die letzte gültige Fassung, Dokumente nicht zugesagt „einmal je Datei“
+        html = text(self.html())
+        self.assertIn("fragen wir höchstens einmal am Tag und in jedem Vollabgleich wieder an", html)
+        self.assertIn("gilt die zuletzt gelesene Fassung weiter; gab es keine, stellen wir die Abrufe zurück", html)
+        self.assertIn("bei neuen oder geänderten Dateien", html)
+        for alt in ["erst im nächsten Vollabgleich wieder an", "stellen wir alle Abrufe zurück", "einmal je Datei"]:
+            self.assertNotIn(alt, html, alt)
+
     def test_kopf_mit_einem_satz(self):
         # Slop-Regel 2: Überschrift, ein erklärender Satz, genau ein Aufruf
         kopf = re.search(r'<section class="band-hell hero">(.*?)</section>', self.html(), re.S).group(1)

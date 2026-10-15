@@ -187,8 +187,9 @@ CRAWLER_KENNUNG = [
 #   noch, entfällt der nächste (ingestor/src/scheduler, _is_syncing)
 # - Änderungsfenster: Beginn des letzten vollständig erfolgreichen Durchlaufs der Kommune, inkrementell oder voll
 #   (ingestor/src/sync/orchestrator.py, set_body_sync_started bei leerem stats["incomplete"]), meist also der
-#   vorige 10-Minuten-Lauf, abzüglich INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120); fehlende Listen bis zum
-#   nächsten Vollabgleich nicht anfragen (sync_config missing_lists), beides mandari#1025 (vorher fest 7 Tage);
+#   vorige 10-Minuten-Lauf, abzüglich INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES (120); fehlende Listen vermerkt
+#   (sync_config missing_lists), inkrementell höchstens einmal am Tag wieder angefragt (orchestrator.py
+#   MISSING_LIST_RECHECK), im Vollabgleich jedes Mal, beides mandari#1025 (vorher fest 7 Tage);
 #   ohne Filter Abbruch nach fünf Seiten ohne Änderung (orchestrator.py, stale_pages_to_stop)
 # - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Cron im Scheduler, ingestor/src/scheduler
 #   _run_full_sync; läuft um 1 Uhr noch ein Änderungsabgleich, folgt der Vollabgleich direkt danach, mandari#1031).
@@ -203,10 +204,15 @@ CRAWLER_KENNUNG = [
 #   ganzen Vollabgleich reichen.
 # - Dokumente: Abruf je Quelle standardmäßig an und nur abschaltbar (sync_config file_downloads false:
 #   ingestor/src/client/source_options.py FILE_DOWNLOADS_KEY, mandari/hub/ris/abruf.py source_fetch_allowed), es
-#   gibt keine Freischaltung. Einmal je Datei (Ablage, mandari/hub/ris/abruf.py) gilt erst mit der Dokumentkette
-#   (mandari#919, Texterkennung aus der Ablage); vorher lädt die Texterkennung jede Datei zusätzlich selbst.
-#   insight_core/services/file_reconcile.py: neu laden bei gemeldeter Änderung, HEAD-Stichproben.
-# - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden), Störung zurückstellen
+#   gibt keine Freischaltung. Bewusst nicht „einmal je Datei“: Bis zur Dokumentkette (mandari#919,
+#   TEXT_EXTRACTION_RUNNER=worker) lädt die Texterkennung im Ingestor selbst; nur mit INGESTOR_STORES_FILES=true legt
+#   sie dabei ab, sonst holt der Dokument-Cache die Datei ein zweites Mal (docs/FILE_CACHE.md, „Ein Abruf je
+#   Datei“). Die Vorschau lädt Dokumente von Kommunen ohne Ablage bei jedem Öffnen (insight_core/views/files.py,
+#   Write-Through nur mit abruf.stores_file). insight_core/services/file_reconcile.py: neu laden bei gemeldeter
+#   Änderung, HEAD-Stichproben.
+# - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS (24 Stunden). Nicht erreichbar: letzte gültige Fassung
+#   gilt weiter, ohne sie zurückstellen, neuer Abruf frühestens nach RETRY_UNREACHABLE_SECONDS (15 Minuten)
+#   (ingestor/src/client/robots.py, mandari/insight_core/services/robots.py)
 # - Erstprüfung: ingestor/src/probe/ris_probe.py (probe-ris aus mandari#114, MAX_REQUESTS 5: robots.txt, Startseite,
 #   bei HTTP 403 die Vergleichsanfrage, danach OParl-Kandidaten; gesperrte Pfade nicht). Aufnahme: mandari/
 #   insight_core/management/commands/add_oparl_source.py (System und Körperschaftsliste). Erst mit mandari#1031
@@ -222,9 +228,10 @@ CRAWLER_TAKT = {
         {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
          "umfang": "Je Liste nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem "
                    "vorigen vor 10 Minuten, mit zwei Stunden Puffer (OParl-Filter modified_since); ohne Änderung ist "
-                   "das eine Seite je Liste. Listen, die Ihr System nicht anbietet, fragen wir erst im nächsten "
-                   "Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen wir die Liste von "
-                   "vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, entfällt der nächste."},
+                   "das eine Seite je Liste. Listen, die Ihr System nicht anbietet, fragen wir höchstens einmal am "
+                   "Tag und in jedem Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen "
+                   "wir die Liste von vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, "
+                   "entfällt der nächste."},
         {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
          "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Wie oft, "
                    "stellen wir je Quelle ein: bei Systemen, die zuverlässig nach Änderungsdatum filtern, höchstens "
@@ -232,15 +239,16 @@ CRAWLER_TAKT = {
                    "Reicht das Fenster nicht, endet der Vollabgleich mit dem Fenster und beginnt in der nächsten Nacht "
                    "von vorn. Von Hand starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme eines neuen Systems; "
                    "ein vereinbartes Zeitfenster gilt auch dann."},
-        {"abruf": "Dokumente", "wann": "einmal je Datei",
+        {"abruf": "Dokumente", "wann": "bei neuen oder geänderten Dateien",
          "umfang": "Wir laden Dokumente, um ihren Text durchsuchbar zu machen. Für einzelne Systeme schalten wir den "
                    "Dokumentabruf ab, etwa wenn Dokumente nur hinter einer Prüfung für Menschen liegen oder Sie das "
-                   "wünschen. Erneut laden wir eine Datei nur, wenn ein Abruf fehlschlug oder sie sich geändert hat. "
-                   "Einzelne HEAD-Anfragen prüfen, ob ein Dokument noch vorhanden ist: Was Sie löschen, verschwindet "
-                   "so auch bei uns."},
+                   "wünschen. Erneut laden wir eine Datei, wenn ein Abruf fehlschlug oder sie sich geändert hat, und "
+                   "wenn jemand ein Dokument bei uns öffnet, das wir nicht gespeichert haben. Einzelne HEAD-Anfragen "
+                   "prüfen, ob ein Dokument noch vorhanden ist: Was Sie löschen, verschwindet so auch bei uns."},
         {"abruf": "robots.txt", "wann": "alle 24 Stunden",
          "umfang": "Wir lesen sie vor dem ersten Abruf und danach spätestens alle 24 Stunden neu. Ist sie nicht "
-                   "erreichbar (Serverfehler, HTTP 429), stellen wir alle Abrufe zurück, bis sie es wieder ist."},
+                   "erreichbar (Serverfehler, HTTP 429), gilt die zuletzt gelesene Fassung weiter; gab es keine, "
+                   "stellen wir die Abrufe zurück, bis sie erreichbar ist."},
         {"abruf": "Erstprüfung", "wann": "vor der Aufnahme",
          "umfang": "Ob ein System für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
                    "Startseite und die üblichen Adressen einer OParl-Schnittstelle. Was Ihre robots.txt sperrt, fragen "
