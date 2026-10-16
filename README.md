@@ -131,6 +131,10 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
   Angabe“; was mandari fehlt, steht als „Noch nicht verfügbar“ mit der Roadmap-Stufe. Die Tests in
   `marketing/tests/test_vergleich.py` prüfen das. Nach Änderungen `refresh_seeded_page vergleich --force`,
   `refresh_seeded_page mandari-vs-<anbieter> --force` und `refresh_seeded_page roadmap --force`.
+- **Crawler-Seite** (`/crawler/`, für IT-Verantwortliche der Kommunen und Anbieter): User-Agent, Abruf-Adresse,
+  Kontakt, Takt und Häufigkeit je Abrufart stehen in `marketing/muster_daten.py` (`CRAWLER_*`), jede Angabe mit ihrer
+  Fundstelle im mandari-Repository. Ändern sich dort die Abrufregeln (`docs/ABRUFREGELN.md`, etwa der Takt nach Bedarf),
+  werden nur diese Daten nachgezogen; `marketing/tests/test_crawler.py` prüft Kennung, Adresse und Takt auf der Seite.
 - **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
   Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
   (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das
