@@ -137,7 +137,11 @@ class CrawlerSeiteTests(TestCase):
         # docs/ABRUFREGELN.md im mandari-Repository: vermerkte Listen inkrementell einmal am Tag (MISSING_LIST_RECHECK),
         # bei nicht erreichbarer robots.txt gilt die letzte gültige Fassung, Dokumente nicht zugesagt „einmal je Datei“
         html = text(self.html())
-        self.assertIn("fragen wir höchstens einmal am Tag und in jedem Vollabgleich wieder an", html)
+        self.assertIn(
+            "fragen wir höchstens einmal am Tag und in jedem Vollabgleich wieder an, außer wenn wir ihn in "
+            "Zeitabschnitten ausführen",
+            html,
+        )
         self.assertIn("gilt die zuletzt gelesene Fassung weiter; gab es keine, stellen wir die Abrufe zurück", html)
         self.assertIn("mit dem Abgleich und stündlich", html)
         for alt in ["erst im nächsten Vollabgleich wieder an", "stellen wir alle Abrufe zurück", "einmal je Datei"]:

@@ -289,7 +289,8 @@ CRAWLER_TAKT = {
                    "modified_since). Dieses kurze Fenster bekommen nur Listen, deren Änderungsdatum nachweislich eine "
                    "Uhrzeit trägt; die übrigen fragen wir ab Tagesbeginn an. Ohne Änderung ist das eine Seite je "
                    "Liste. Optionale Listen, die Ihr System nicht anbietet, etwa Orte oder Beratungen, fragen wir "
-                   "höchstens einmal am Tag und in jedem Vollabgleich wieder an. Filtert ein System nicht nach "
+                   "höchstens einmal am Tag und in jedem Vollabgleich wieder an, außer wenn wir ihn in "
+                   "Zeitabschnitten ausführen. Filtert ein System nicht nach "
                    "Änderungsdatum, lesen wir die Liste von vorn und hören nach fünf Seiten ohne Änderung auf."},
         {"abruf": "Langsame Listen", "wann": "nach einer Zeitüberschreitung",
          "umfang": "Bricht die Abfrage einer optionalen Liste, etwa der Beratungen, nach 60 Sekunden ohne Antwort "
