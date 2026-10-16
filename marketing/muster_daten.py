@@ -286,7 +286,11 @@ CRAWLER_SELBSTBETRIEB = (
 #   kein Text, nicht in Suche und OParl-Ausgabe), sobald OParl deleted oder ein per GET bestätigtes 404/410 bemerkt
 #   ist; Kopie und Text erst nach FILE_PURGE_AFTER_DAYS 30 gelöscht (vorher GET, liefert die Quelle wieder: entsperrt).
 #   HEAD-Stichproben nur bei gelisteten Kommunen, die am längsten nicht geprüften zuerst (sample_queryset), dazu die
-#   Bremse FILE_RECONCILE_MAX_MISSING: Für Löschungen ohne OParl deleted gibt es deshalb keine Frist.
+#   Bremse FILE_RECONCILE_MAX_MISSING: Für Löschungen ohne OParl deleted gibt es deshalb keine Frist. Liefern in einem
+#   Lauf mehr als 10 Dokumente einer Quelle neu 404/410, sperrt Run.commit_missing keines davon und setzt auch
+#   source_checked_at nicht; dieselben kommen im nächsten Lauf wieder zuerst, die Bremse greift erneut. Gemeldet wird
+#   das nur im Protokoll des Workers (logger.warning, stderr von loeschabgleich). Viele Löschungen auf einmal bleiben
+#   so bis zu einem Eingriff von Hand sichtbar; deshalb die Bitte um eine Nachricht (Prüfung Runde 2, 16.10.2026).
 # - Personenfotos: fetch_person_photos montags 03:00 (schedules.py), insight_core/services/person_photos.py
 #   fetch_photos_for_body (limit 500, max_age_days 30), ruht wie der Dokument-Cache (_source_blocked)
 # - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS 24 h, from_response (4xx: nicht vorhanden; 5xx, 408, 429,
@@ -333,11 +337,11 @@ CRAWLER_TAKT = {
                    "so lange, höchstens 24 Stunden. Die übrigen Listen gleichen wir weiter ab; danach holen wir die "
                    "ausgelassenen Änderungen nach."},
         {"abruf": "Vollabgleich", "wann": "nachts im Zeitfenster, standardmäßig ab 1 Uhr",
-         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet: "
-                   "höchstens einmal je Nacht, standardmäßig mit Beginn zwischen 1 und 6 Uhr, bei zuverlässig "
-                   "filternden Systemen derzeit alle 28 Tage. Bei Systemen mit OParl-Schnittstelle legen wir ihn auf "
-                   "Wunsch in ein eigenes Zeitfenster; er endet mit dem Fenster, das auch gilt, wenn wir ihn "
-                   "ausnahmsweise von Hand starten. Ohne eigenes Fenster kann er von Hand auch tagsüber laufen."},
+         "umfang": "Alle Listen vollständig, höchstens einmal je Nacht, standardmäßig mit Beginn zwischen 1 und 6 "
+                   "Uhr, bei zuverlässig filternden Systemen derzeit alle 28 Tage. Bei Systemen mit "
+                   "OParl-Schnittstelle legen wir ihn auf Wunsch in ein eigenes Zeitfenster; er endet mit dem "
+                   "Fenster, das auch gilt, wenn wir ihn ausnahmsweise von Hand starten. Ohne eigenes Fenster kann er "
+                   "von Hand auch tagsüber laufen."},
         {"abruf": "Dokumente", "wann": "mit dem Abgleich und stündlich",
          "umfang": "Neue Dateien laden wir, um ihren Text durchsuchbar zu machen und sie bei uns abzulegen; stündlich "
                    "holen wir höchstens 200 fehlende je System nach. Schlägt ein Abruf fehl, versuchen wir es "
@@ -346,9 +350,9 @@ CRAWLER_TAKT = {
         {"abruf": "Dokumente prüfen", "wann": "stündlich",
          "umfang": "Meldet Ihre Schnittstelle ein Dokument als gelöscht oder ist es bei Ihnen nicht mehr abrufbar, "
                    "sperren wir es bei uns, sobald wir das bemerken; Kopie und Text löschen wir 30 Tage später. "
-                   "Löschungen, die Ihre Schnittstelle nicht meldet, finden wir über Stichproben per HEAD, höchstens "
-                   "30 je Kommune und Lauf; bei vielen Dokumenten kann das länger dauern. Geänderte Dokumente laden "
-                   "wir neu, höchstens 200 je Lauf."},
+                   "Nicht gemeldete Löschungen finden wir über Stichproben per HEAD, höchstens 30 je Kommune und "
+                   "Lauf; das kann dauern. Löschen Sie viele Dokumente auf einmal, schreiben Sie uns bitte. Geänderte "
+                   "Dokumente laden wir neu, höchstens 200 je Lauf."},
         {"abruf": "Personenfotos", "wann": "montags um 3 Uhr",
          "umfang": "Nur bei Systemen, für die wir die Adressen der Fotos eingerichtet haben, höchstens 500 Personen je "
                    "Kommune. Jedes Foto fragen wir höchstens alle 30 Tage an, auch wenn es fehlte oder der Abruf "

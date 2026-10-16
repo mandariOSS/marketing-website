@@ -91,6 +91,9 @@ class CrawlerSeiteTests(TestCase):
         self.assertIn("nachts im Zeitfenster, standardmäßig ab 1 Uhr", html)
         self.assertIn("höchstens einmal je Nacht, standardmäßig mit Beginn zwischen 1 und 6 Uhr", html)
         self.assertIn("den Vollabgleich nur in einem bestimmten Zeitfenster oder seltener fahren sollen", html)
+        # Kurzfassung (Prüfung Runde 2): Zweck des Vollabgleichs steht auf docs.mandari.de, nicht in der Tabelle
+        self.assertIn("Alle Listen vollständig, höchstens einmal je Nacht", html)
+        self.assertNotIn("Sicherheitsnetz", html)
 
     def test_eigenes_zeitfenster_nur_bei_oparl(self):
         # orchestrator.py sync_source: Scraper-Quellen gehen vor _full_sync_plan in ScraperSyncRunner.run(full=full),
@@ -316,9 +319,13 @@ class CrawlerSeiteTests(TestCase):
         self.assertIn("Meldet Ihre Schnittstelle ein Dokument als gelöscht oder ist es bei Ihnen nicht mehr abrufbar, "
                       "sperren wir es bei uns, sobald wir das bemerken; Kopie und Text löschen wir 30 Tage später.",
                       html)
-        self.assertIn("Löschungen, die Ihre Schnittstelle nicht meldet, finden wir über Stichproben per HEAD", html)
-        self.assertIn("bei vielen Dokumenten kann das länger dauern", html)
+        self.assertIn("Nicht gemeldete Löschungen finden wir über Stichproben per HEAD, höchstens 30 je Kommune und "
+                      "Lauf; das kann dauern.", html)
         self.assertNotIn("entfernen wir nach 30 Tagen auch bei uns", html)
+        # Bremse FILE_RECONCILE_MAX_MISSING: Liefern in einem Lauf mehr als 10 Dokumente einer Quelle neu 404/410,
+        # sperrt der Löschabgleich keines davon, und das wiederholt sich jede Stunde. Viele Löschungen auf einmal
+        # brauchen deshalb einen Eingriff von Hand; die Seite bittet um eine Nachricht.
+        self.assertIn("Löschen Sie viele Dokumente auf einmal, schreiben Sie uns bitte.", html)
 
     def test_wiederholung_einer_anfrage_fruehestens(self):
         # OParl: oparl_max_retries 3, Pausen 1 und 2 s; Scraper (politeness.py): bei 5xx 2 und 4 s, Netzfehler im
