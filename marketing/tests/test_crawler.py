@@ -57,7 +57,8 @@ class CrawlerSeiteTests(TestCase):
             html,
         )
         self.assertNotIn("seit dem letzten vollständigen Abgleich", html)
-        # Der Takt je Quelle (mandari#1039) macht „vor 10 Minuten“ falsch: nachts und am Wochenende liegt mehr dazwischen
+        # Der Takt je Quelle (mandari#1039) macht „vor 10 Minuten“ falsch: nachts und am Wochenende liegt mehr
+        # dazwischen
         self.assertNotIn("meist also seit dem vorigen vor 10 Minuten", html)
 
     def test_takt_je_quelle_nach_bedarf(self):
@@ -205,16 +206,52 @@ class CrawlerSeiteTests(TestCase):
         self.assertIn("Ihre Regeln für mandari-ingestor gelten auch für solche Installationen", html)
 
     def test_streaming_und_geodienste_mit_unserer_kennung_ohne_robots(self):
-        # mandari#1036 (insight_core/services/dienste.py, ABRUFREGELN.md „Andere Abrufe“): Live-Übertragung und
-        # Geodienste senden dieselbe Kennung, werten die robots.txt nicht aus und halten einen eigenen Takt je Host.
-        # Die Zusage zur robots.txt gilt deshalb nur für Abrufe bei Ratsinformationssystemen.
+        # mandari#1036/#1038 (insight_core/services/dienste.py, ABRUFREGELN.md „Andere Abrufe“): Live-Übertragung und
+        # Geodienste senden dieselbe Kennung und werten die robots.txt nicht aus. Die Zusage zur robots.txt gilt
+        # deshalb nur für Abrufe bei Ratsinformationssystemen.
         html = text(self.html())
         self.assertIn("Dieselbe Kennung tragen auch unsere Abrufe bei Streaming-Anbietern und Geodiensten", html)
-        self.assertIn("Dort gelten die Nutzungsregeln des Dienstes und ein eigener Takt, nicht die robots.txt.", html)
+        self.assertIn("Dort gelten die Nutzungsregeln des Dienstes, nicht die robots.txt.", html)
+        # Seit #1038 teilen sie den Zeitstempel je Hostname mit den RIS-Abrufen; „eigener Takt“ wäre irreführend
+        self.assertNotIn("ein eigener Takt", html)
         self.assertIn("Eine Gruppe für dieses Token gilt für alle unsere Abrufe bei Ratsinformationssystemen", html)
         self.assertIn("Regeln für dieses Token gelten für alle unsere Abrufe bei Ratsinformationssystemen", html)
         self.assertIn("wenn wir Ihr System oder Ihr Geoportal nicht mehr abrufen", html)
         self.assertNotIn("Regeln für dieses Token gelten für alle unsere Abrufe,", html)
+
+    def test_live_und_geoportale_im_takt_je_hostname(self):
+        # dienste.py ABSTAND (1 s für LIVE und GEOPORTAL, gemeinsamer Zeitstempel in Redis), NEBEN_RIS mit
+        # QUELLEN_TAKTE_SEKUNDEN 300; hub/live/services.py VORLAUF 45 min, FENSTER 10 h, live_status_abfragen jede
+        # Minute; sync_plan_boundaries täglich 04:50. Einzige schnellere Ausnahme: KACHELN 0,05 s bei OpenStreetMap.
+        html = text(self.html())
+        self.assertIn("Live-Übertragung und Geoportale", html)
+        self.assertIn("rund um Sitzungen und täglich um 4:50 Uhr", html)
+        self.assertIn("einmal je Minute, ob übertragen wird, ab 45 Minuten vor dem Beginn und längstens bis 10 Stunden "
+                      "danach", html)
+        self.assertIn("gilt auch ein dort vereinbarter langsamerer Takt, spätestens nach fünf Minuten", html)
+        self.assertIn("Ihre robots.txt werten diese Abrufe nicht aus; möchten Sie sie nicht, schreiben Sie uns.", html)
+        self.assertIn("Den Takt halten auch unsere Abrufe bei Streaming-Anbietern und Geoportalen ein; schneller laden "
+                      "wir nur Kartenkacheln vom Kachelserver von OpenStreetMap, bis zu 20 je Sekunde.", html)
+
+    def test_robots_txt_je_hostname(self):
+        # shared/mandari_oparl/robots.py host_key (mandari#1036): Schema und Port ergeben keinen eigenen Eintrag
+        html = text(self.html())
+        self.assertIn("Je Hostname lesen wir eine robots.txt, auch wenn Ihr System unter mehreren Ports oder über "
+                      "http und https erreichbar ist.", html)
+
+    def test_zeitscheiben_nie_ungefiltert(self):
+        # oparl_client.py strict_filter: kein Rückfall auf die ungefilterte Liste; slices.py SLICE_TOLERANCE und
+        # FILTER_IGNORED_RECHECK: bei ignoriertem Filter Abbruch und 30 Tage nur Änderungsabgleich
+        html = text(self.html())
+        self.assertIn("fragen wir diese Listen nur in Zeitabschnitten an (modified_since und modified_until), nie "
+                      "ungefiltert und nur im Zeitfenster", html)
+        self.assertIn("Übergeht Ihr System dabei den Filter, brechen wir ab und gleichen 30 Tage lang nur Änderungen "
+                      "ab.", html)
+        # Langsame Listen ruhen auch im Vollabgleich und kommen danach auch ohne Filter nach, nur ohne Tagesscheiben
+        self.assertIn("höchstens 24 Stunden, auch im Vollabgleich", html)
+        self.assertIn("Danach holen wir die ausgelassenen Änderungen der Liste nach; filtert Ihr System nach "
+                      "Änderungsdatum, in Abschnitten zu einem Tag.", html)
+        self.assertNotIn("Änderungen der Liste nach, wenn Ihr System nach Änderungsdatum filtert", html)
 
     def test_robots_txt_nicht_erreichbar_und_eigene_gruppe(self):
         # shared/mandari_oparl/robots.py: 4xx gilt als nicht vorhanden, 5xx/408/429/Netzfehler als nicht erreichbar,

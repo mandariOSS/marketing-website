@@ -167,12 +167,13 @@ CRAWLER_KENNUNG = [
      # Die Anwendung sendet die Kennung ohne Version: mandari/insight_core/services/robots.py USER_AGENT (Dokument-
      # Cache, Vorschau, Löschabgleich, Personenfotos, Texterkennung im Worker, add_oparl_source). Die Version ist die
      # Paketversion des Ingestors, keine Ausgabe-Nummer; sie kann sich ändern. Live-Übertragung und Geodienste
-     # (mandari#1036, insight_core/services/dienste.py) senden dieselbe Kennung ohne Version, werten die robots.txt
-     # nicht aus und halten einen eigenen Takt je Host (ABRUFREGELN.md, „Andere Abrufe“).
+     # (mandari#1036/#1038, insight_core/services/dienste.py USER_AGENT) senden dieselbe Kennung ohne Version und
+     # werten die robots.txt nicht aus; ihren Takt (ABSTAND, gemeinsamer Zeitstempel in Redis) nennt CRAWLER_TAKT
+     # (ABRUFREGELN.md, „Andere Abrufe“).
      "notiz": "Die Version kann sich ändern; prüfen Sie deshalb auf den Anfang mandari-ingestor. Einige Abrufe, "
               "etwa von Dokumenten und Fotos, tragen dieselbe Kennung ohne Versionsnummer. Dieselbe Kennung tragen "
               "auch unsere Abrufe bei Streaming-Anbietern und Geodiensten, etwa dem Geoportal einer Kommune. Dort "
-              "gelten die Nutzungsregeln des Dienstes und ein eigener Takt, nicht die robots.txt."},
+              "gelten die Nutzungsregeln des Dienstes, nicht die robots.txt."},
     {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": CRAWLER_TOKEN,
      # robots.py _rules_for: eine Gruppe für das Token gilt anstelle von *, nicht zusätzlich; geprüft wird immer
      # mandari-ingestor (ingestor/src/client/robots.py, insight_core/services/robots.py, probe/ris_probe.py).
@@ -210,6 +211,16 @@ CRAWLER_SELBSTBETRIEB = (
 #   1 s angehoben: MIN_REQUEST_INTERVAL, at_least_minimum; höchstens MAX_REQUEST_INTERVAL 30 s). Ohne Redis drosselt
 #   jeder Prozess für sich und versucht es nach 60 s wieder (REDIS_RETRY_SECONDS in beiden host_pacing.py); deshalb
 #   „nicht schneller“ statt „nie“, und der Ausfall steht im Text.
+# - Andere Dienste (mandari#1036/#1038, mandari/insight_core/services/dienste.py, ABRUFREGELN.md „Andere Abrufe“):
+#   derselbe Zeitstempel je Hostname in Redis, ABSTAND 1 s für LIVE, GEOPORTAL, NOMINATIM, OVERPASS, PHOTON; für LIVE
+#   und GEOPORTAL (NEBEN_RIS) gilt der größere request_interval einer registrierten Quelle, auch einer inaktiven, auf
+#   demselben Hostnamen, spätestens nach QUELLEN_TAKTE_SEKUNDEN 300. Ausnahme vom Satz „eine Anfrage pro Sekunde“:
+#   KACHELN 0,05 s (tile.openstreetmap.org, bis zu 20 je Sekunde), deshalb steht sie in der Erläuterung.
+#   Live (nur mit LIVE_UEBERTRAGUNG_AKTIV): mandari/hub/live/schedules.py live_status_abfragen jede Minute,
+#   hub/live/services.py VORLAUF 45 min, FENSTER 10 h; Einzelbilder im Takt der Übertragungsquelle
+#   (BroadcastSource.interval_seconds, Standard 10 s, mindestens 5 s). Geoportale: sync_plan_boundaries täglich 04:50
+#   (mandari/apps/common/schedules.py), plan_boundaries.py mit 1 s Pause zwischen zwei Seiten. Abschalten nur über uns
+#   (PlanBoundarySource.is_active); eine robots.txt-Gruppe stoppt diese Abrufe nicht.
 # - Weiterleitungen: höchstens fünf je Abruf (MAX_REDIRECTS in ingestor/src/client/redirects.py und
 #   insight_core/services/redirects.py), vor jeder die robots.txt des Ziels und ein eigener Zeitpunkt im Takt; auch
 #   der Abruf der robots.txt reserviert einen Zeitpunkt.
@@ -226,7 +237,9 @@ CRAWLER_SELBSTBETRIEB = (
 #   (INGESTOR_SYNC_POOL_SIZE). Einen gemeinsamen 10-Minuten-Zyklus mit max_instances=1 gibt es nicht mehr.
 # - Langsame Listen (mandari#1033, #1040; ingestor/src/sync/slices.py slow_backoff): eine optionale Liste
 #   (OPTIONAL_LIST_TYPES) nach Zeitüberschreitung oder HTTP 504 ausgesetzt, SLOW_LIST_BASE 1 h, verdoppelt bis
-#   SLOW_LIST_MAX 24 h; danach in Scheiben zu einem Tag nachgeholt (SLOW_LIST_SLICE), nur bei Servern, die filtern.
+#   SLOW_LIST_MAX 24 h; währenddessen fragt kein Lauf die Liste an, auch kein Vollabgleich. Danach ab ihrem eigenen
+#   Fensteranfang nachgeholt (slow_lists since), in Scheiben zu einem Tag (SLOW_LIST_SLICE) nur bei Servern, die
+#   filtern (OParlClient.filters_list), sonst ohne Scheiben (_slice_fallback).
 # - Neue Quellen und Kommunen (mandari#1037, ABRUFREGELN.md „Neue Quellen und Kommunen“): add_oparl_source und der
 #   Ingestor (upsert_source) legen Quellen inaktiv an, neue Kommunen ungelistet (upsert_body). Das Admin-Formular ist
 #   mit „Aktiv“ vorbelegt; die Seite sagt deshalb „wenn wir es danach eigens aktivieren“, als Ablauf bei uns.
@@ -243,7 +256,10 @@ CRAWLER_SELBSTBETRIEB = (
 #   full_sync_every_days (heute 28 bei Quellen mit verlässlichem Filter; ingestor/src/client/source_options.py
 #   full_sync_plan); ein Vollabgleich mit Lücke zählt nicht. Das Standardfenster begrenzt nur den Beginn; nach dem Ende
 #   eines eigenen Fensters keine weitere Seite (FetchWindowClosedError), der nächste beginnt neu. Zeitscheiben
-#   (full_sync_slices, mandari#1040) nur im Fenster, sie setzen am Fortschritt fort (full_sync_progress). Von Hand
+#   (full_sync_slices, mandari#1040) nur im Fenster, sie setzen am Fortschritt fort (full_sync_progress). Nie ohne
+#   Filter (oparl_client.py strict_filter, kein Rückfall bei 400/401/403); die Begrenzung auf einzelne Listen
+#   (full_sync_slices.lists) deckt „diese Listen“. Ignoriert der Server den Filter (SLICE_TOLERANCE 1 Tag), Abbruch
+#   und 30 Tage nur Änderungsabgleich (full_sync_filter_ignored, FILTER_IGNORED_RECHECK). Von Hand
 #   (Admin-Trigger, sync --full): ein eigenes Fenster gilt auch dann; ohne eigenes Fenster beginnt er sofort, in
 #   Zeitscheiben nur im Standardfenster.
 # - Dokumente: Texterkennung im Ingestor mit dem Abgleich (ingestor/src/extraction/extractor.py), Dokument-Cache
@@ -255,9 +271,10 @@ CRAWLER_SELBSTBETRIEB = (
 # - Personenfotos: fetch_person_photos montags 03:00 (schedules.py), insight_core/services/person_photos.py
 #   fetch_photos_for_body (limit 500, max_age_days 30), ruht wie der Dokument-Cache (_source_blocked)
 # - robots.txt: shared/mandari_oparl/robots.py CACHE_SECONDS 24 h, from_response (4xx: nicht vorhanden; 5xx, 408, 429,
-#   Netzfehler, zu viele Weiterleitungen: nicht erreichbar), RETRY_UNREACHABLE_SECONDS 15 min; letzte gültige Fassung
-#   gilt weiter (ingestor/src/client/robots.py _Entry.last_good, insight_core/services/robots.py). Zwischenspeicher je
-#   Ingestor-Prozess bzw. gemeinsam in der Anwendung, deshalb „jeder unserer Dienste“
+#   Netzfehler, zu viele Weiterleitungen: nicht erreichbar), RETRY_UNREACHABLE_SECONDS 15 min; eine Fassung je
+#   Hostname und Kennung, Schema und Port ergeben keinen eigenen Eintrag (host_key, mandari#1036); letzte gültige
+#   Fassung gilt weiter (ingestor/src/client/robots.py _Entry.last_good, insight_core/services/robots.py).
+#   Zwischenspeicher je Ingestor-Prozess bzw. gemeinsam in der Anwendung, deshalb „jeder unserer Dienste“
 # - Erstprüfung: ingestor/src/probe/ris_probe.py (MAX_REQUESTS 5 je Kommune, Weiterleitungen und robots.txt neuer
 #   Hosts eingerechnet, robots.txt nicht erreichbar: keine weitere Anfrage), zwischen zwei Kommunen 2 s Pause
 #   (ingestor/src/main.py probe_ris); Aufnahme: add_oparl_source (MAX_BODY_PAGES 20)
@@ -274,8 +291,10 @@ CRAWLER_TAKT = {
             "Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.",
     "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen; verschiedene Hostnamen "
                     "zählen getrennt, auch auf demselben Server. Jede Anfrage zählt, auch der Abruf Ihrer robots.txt "
-                    "und jede Weiterleitung. Einer Weiterleitung folgen wir höchstens fünfmal je Abruf und nur, wenn "
-                    "die robots.txt ihres Ziels es erlaubt. Jeder Abgleich hält dabei höchstens zwei Anfragen "
+                    "und jede Weiterleitung. Den Takt halten auch unsere Abrufe bei Streaming-Anbietern und "
+                    "Geoportalen ein; schneller laden wir nur Kartenkacheln vom Kachelserver von OpenStreetMap, bis "
+                    "zu 20 je Sekunde. Einer Weiterleitung folgen wir höchstens fünfmal je Abruf und nur, wenn die "
+                    "robots.txt ihres Ziels es erlaubt. Jeder Abgleich hält dabei höchstens zwei Anfragen "
                     "gleichzeitig offen. Ist die Abstimmung zwischen unseren Diensten gestört, hält jeder Dienst den "
                     "Takt für sich, bis sie wieder steht; in dieser Zeit können mehr als eine Anfrage pro Sekunde "
                     "ankommen.",
@@ -295,21 +314,22 @@ CRAWLER_TAKT = {
         {"abruf": "Langsame Listen", "wann": "nach einer Zeitüberschreitung",
          "umfang": "Bricht die Abfrage einer optionalen Liste, etwa der Beratungen, nach 60 Sekunden ohne Antwort "
                    "oder mit HTTP 504 ab, lassen wir diese Liste ruhen: zuerst eine Stunde, danach jeweils doppelt so "
-                   "lange, höchstens 24 Stunden. Die übrigen Listen gleichen wir weiter ab. Danach holen wir die "
-                   "Änderungen der Liste nach, wenn Ihr System nach Änderungsdatum filtert, in Abschnitten zu einem "
-                   "Tag."},
+                   "lange, höchstens 24 Stunden, auch im Vollabgleich. Die übrigen Listen gleichen wir weiter ab. "
+                   "Danach holen wir die ausgelassenen Änderungen der Liste nach; filtert Ihr System nach "
+                   "Änderungsdatum, in Abschnitten zu einem Tag."},
         {"abruf": "Vollabgleich", "wann": "nachts im Zeitfenster, standardmäßig ab 1 Uhr",
          "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Er "
                    "beginnt im Zeitfenster Ihres Systems, standardmäßig zwischen 1 und 6 Uhr, höchstens einmal je "
-                   "Nacht; nur die Änderungsabgleiche Ihres Systems ruhen so lange. Wie oft, stellen wir je Quelle ein: jede Nacht "
-                   "oder seltener, bei Systemen, die zuverlässig nach Änderungsdatum filtern, derzeit alle 28 Tage. "
-                   "Ein unvollständiger Vollabgleich zählt dabei nicht. Auf Wunsch legen wir ihn in ein eigenes "
-                   "Zeitfenster. Reicht es nicht, endet er mit dem Fenster und beginnt in der nächsten Nacht neu. "
-                   "Liefert Ihr System vollständige Listen nicht aus, fragen wir sie in Zeitabschnitten an "
-                   "(modified_since und modified_until), nur im Zeitfenster; ein unterbrochener Durchgang setzt in der "
-                   "nächsten Nacht dort fort, wo er stehen blieb. Von Hand starten wir ihn nur ausnahmsweise, etwa "
-                   "nach der Aufnahme eines neuen Systems; ein vereinbartes Zeitfenster gilt auch dann, ohne ein "
-                   "solches kann er dann auch tagsüber laufen."},
+                   "Nacht; nur die Änderungsabgleiche Ihres Systems ruhen so lange. Wie oft, stellen wir je Quelle "
+                   "ein: jede Nacht oder seltener, bei Systemen, die zuverlässig nach Änderungsdatum filtern, derzeit "
+                   "alle 28 Tage. Ein unvollständiger Vollabgleich zählt dabei nicht. Auf Wunsch legen wir ihn in ein "
+                   "eigenes Zeitfenster. Reicht es nicht, endet er mit dem Fenster und beginnt in der nächsten Nacht "
+                   "neu. Liefert Ihr System vollständige Listen nicht aus, fragen wir diese Listen nur in "
+                   "Zeitabschnitten an (modified_since und modified_until), nie ungefiltert und nur im Zeitfenster; "
+                   "ein unterbrochener Durchgang setzt in der nächsten Nacht dort fort, wo er stehen blieb. Übergeht "
+                   "Ihr System dabei den Filter, brechen wir ab und gleichen 30 Tage lang nur Änderungen ab. Von Hand "
+                   "starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme eines neuen Systems; ein vereinbartes "
+                   "Zeitfenster gilt auch dann, ohne ein solches kann er dann auch tagsüber laufen."},
         {"abruf": "Dokumente", "wann": "mit dem Abgleich und stündlich",
          "umfang": "Neue Dateien laden wir, um ihren Text durchsuchbar zu machen und sie bei uns abzulegen; stündlich "
                    "holen wir höchstens 200 fehlende Dateien je System nach. Schlägt ein Abruf fehl, etwa mit HTTP 429 "
@@ -330,10 +350,11 @@ CRAWLER_TAKT = {
                    "abgeschaltet oder pausieren wir es nach wiederholten Fehlern, laden wir keine Fotos."},
         {"abruf": "robots.txt", "wann": "vor dem ersten Abruf, dann täglich",
          "umfang": "Jeder unserer Dienste liest sie vor seinem ersten Abruf und nutzt eine gelesene Fassung höchstens "
-                   "24 Stunden, solange sie erreichbar ist. Fehlt sie (HTTP 4xx), ist alles erlaubt. Ist sie nicht "
-                   "erreichbar (Serverfehler, HTTP 408 oder 429, Netzfehler, mehr als fünf Weiterleitungen), versuchen "
-                   "wir es frühestens nach 15 Minuten wieder. Bis das gelingt, gilt die zuletzt gelesene Fassung "
-                   "weiter; gab es keine, stellen wir die Abrufe zurück."},
+                   "24 Stunden, solange sie erreichbar ist. Je Hostname lesen wir eine robots.txt, auch wenn Ihr "
+                   "System unter mehreren Ports oder über http und https erreichbar ist. Fehlt sie (HTTP 4xx), ist "
+                   "alles erlaubt. Ist sie nicht erreichbar (Serverfehler, HTTP 408 oder 429, Netzfehler, mehr als "
+                   "fünf Weiterleitungen), versuchen wir es frühestens nach 15 Minuten wieder. Bis das gelingt, gilt "
+                   "die zuletzt gelesene Fassung weiter; gab es keine, stellen wir die Abrufe zurück."},
         {"abruf": "Erstprüfung", "wann": "vor der Aufnahme",
          "umfang": "Ob eine Kommune für uns infrage kommt, prüfen wir mit höchstens fünf Anfragen: robots.txt, "
                    "Startseite und die üblichen Adressen einer OParl-Schnittstelle, Weiterleitungen eingerechnet. "
@@ -342,6 +363,14 @@ CRAWLER_TAKT = {
                    "an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten. "
                    "Regelmäßig fragen wir ein neues System erst ab, wenn wir es danach eigens aktivieren; neu "
                    "entdeckte Kommunen zeigen wir erst, wenn wir sie geprüft haben."},
+        {"abruf": "Live-Übertragung und Geoportale", "wann": "rund um Sitzungen und täglich um 4:50\u00a0Uhr",
+         "umfang": "Begleiten wir eine Sitzung live, fragen wir beim Streaming-Anbieter einmal je Minute, ob "
+                   "übertragen wird, ab 45 Minuten vor dem Beginn und längstens bis 10 Stunden danach. Während der "
+                   "Übertragung lesen wir standardmäßig alle 10 Sekunden ein Einzelbild, mit 2 bis 4 Anfragen. "
+                   "Geoportale von Kommunen und Ländern fragen wir täglich nach den Umrissen von Bebauungsplänen, mit "
+                   "einer Sekunde Pause zwischen zwei Seiten. Liegt ein solcher Dienst unter dem Hostnamen eines "
+                   "Ratsinformationssystems, gilt auch ein dort vereinbarter langsamerer Takt, spätestens nach fünf "
+                   "Minuten. Ihre robots.txt werten diese Abrufe nicht aus; möchten Sie sie nicht, schreiben Sie uns."},
     ],
 }
 
