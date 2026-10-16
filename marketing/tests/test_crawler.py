@@ -152,6 +152,18 @@ class CrawlerSeiteTests(TestCase):
         self.assertIn("Abrufe mit unserer Kennung von anderen Adressen als der oben genannten", html)
         self.assertIn("Ihre Regeln für mandari-ingestor gelten auch für solche Installationen", html)
 
+    def test_streaming_und_geodienste_mit_unserer_kennung_ohne_robots(self):
+        # mandari#1036 (insight_core/services/dienste.py, ABRUFREGELN.md „Andere Abrufe“): Live-Übertragung und
+        # Geodienste senden dieselbe Kennung, werten die robots.txt nicht aus und halten einen eigenen Takt je Host.
+        # Die Zusage zur robots.txt gilt deshalb nur für Abrufe bei Ratsinformationssystemen.
+        html = text(self.html())
+        self.assertIn("Dieselbe Kennung tragen auch unsere Abrufe bei Streaming-Anbietern und Geodiensten", html)
+        self.assertIn("Dort gelten die Nutzungsregeln des Dienstes und ein eigener Takt, nicht die robots.txt.", html)
+        self.assertIn("Eine Gruppe für dieses Token gilt für alle unsere Abrufe bei Ratsinformationssystemen", html)
+        self.assertIn("Regeln für dieses Token gelten für alle unsere Abrufe bei Ratsinformationssystemen", html)
+        self.assertIn("wenn wir Ihr System oder Ihr Geoportal nicht mehr abrufen", html)
+        self.assertNotIn("Regeln für dieses Token gelten für alle unsere Abrufe,", html)
+
     def test_robots_txt_nicht_erreichbar_und_eigene_gruppe(self):
         # shared/mandari_oparl/robots.py: 4xx gilt als nicht vorhanden, 5xx/408/429/Netzfehler als nicht erreichbar,
         # neuer Abruf nach RETRY_UNREACHABLE_SECONDS (15 Minuten); eine Gruppe für mandari-ingestor gilt anstelle von *

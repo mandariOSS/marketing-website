@@ -146,8 +146,8 @@ DISCLOSURE_GELTUNG = {
 # ── /crawler/ ─────────────────────────────────────────────────────────────────
 # Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Maßgeblich ist der Code im Zweig
 # dev des mandari-Repositorys; die technische Referenz mit allen Fundstellen ist dort docs/ABRUFREGELN.md (Stand nach
-# mandari#1029, #1031 und #1030). Die Fundstelle jeder Angabe steht am Eintrag. Ändert sich der Abruf (etwa der Takt
-# nach Bedarf, mandari#1026), werden nur diese Daten angepasst, das Template bleibt.
+# mandari#1029, #1031, #1030 und #1036). Die Fundstelle jeder Angabe steht am Eintrag. Ändert sich der Abruf (etwa
+# der Takt nach Bedarf, mandari#1026), werden nur diese Daten angepasst, das Template bleibt.
 
 #: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor: ingestor/pyproject.toml,
 #: ingestor/src/config.py DEFAULT_USER_AGENT), Infoseite, Kontakt
@@ -166,14 +166,19 @@ CRAWLER_KENNUNG = [
     {"anker": "user-agent", "begriff": "User-Agent", "wert": CRAWLER_USER_AGENT,
      # Die Anwendung sendet die Kennung ohne Version: mandari/insight_core/services/robots.py USER_AGENT (Dokument-
      # Cache, Vorschau, Löschabgleich, Personenfotos, Texterkennung im Worker, add_oparl_source). Die Version ist die
-     # Paketversion des Ingestors, keine Ausgabe-Nummer; sie kann sich ändern.
+     # Paketversion des Ingestors, keine Ausgabe-Nummer; sie kann sich ändern. Live-Übertragung und Geodienste
+     # (mandari#1036, insight_core/services/dienste.py) senden dieselbe Kennung ohne Version, werten die robots.txt
+     # nicht aus und halten einen eigenen Takt je Host (ABRUFREGELN.md, „Andere Abrufe“).
      "notiz": "Die Version kann sich ändern; prüfen Sie deshalb auf den Anfang mandari-ingestor. Einige Abrufe, "
-              "etwa von Dokumenten und Fotos, tragen dieselbe Kennung ohne Versionsnummer."},
+              "etwa von Dokumenten und Fotos, tragen dieselbe Kennung ohne Versionsnummer. Dieselbe Kennung tragen "
+              "auch unsere Abrufe bei Streaming-Anbietern und Geodiensten, etwa dem Geoportal einer Kommune. Dort "
+              "gelten die Nutzungsregeln des Dienstes und ein eigener Takt, nicht die robots.txt."},
     {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": CRAWLER_TOKEN,
      # robots.py _rules_for: eine Gruppe für das Token gilt anstelle von *, nicht zusätzlich; geprüft wird immer
      # mandari-ingestor (ingestor/src/client/robots.py, insight_core/services/robots.py, probe/ris_probe.py).
      # crawler.py LEGACY_TOKENS: frühere Kennungen nur mit eigener Gruppe, und sie können nur sperren.
-     "notiz": "Eine Gruppe für dieses Token gilt für alle unsere Abrufe; Groß- und Kleinschreibung zählt nicht. "
+     "notiz": "Eine Gruppe für dieses Token gilt für alle unsere Abrufe bei Ratsinformationssystemen; Groß- und "
+              "Kleinschreibung zählt nicht. "
               "Gruppen für unsere früheren Kennungen mandari-file-cache und mandari beachten wir weiter, soweit sie "
               "etwas sperren."},
     {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": CRAWLER_ADRESSE,
