@@ -240,11 +240,12 @@ CRAWLER_SELBSTBETRIEB = (
 #   Hosts eingerechnet, robots.txt nicht erreichbar: keine weitere Anfrage), zwischen zwei Kommunen 2 s Pause
 #   (ingestor/src/main.py probe_ris); Aufnahme: add_oparl_source (MAX_BODY_PAGES 20)
 # - Pausen im Fehlerfall (Template, „Automatische Pause“): orchestrator.py BACKOFF_* gelten für Abgleich samt
-#   Texterkennung im Sync-Daemon und Scraper; Dokument-Cache, Vorschau, Löschabgleich und Personenfotos ruhen erst
-#   nach INSIGHT_SOURCE_BACKOFF_FAILURES (3) fehlgeschlagenen Läufen in Folge (ABRUFREGELN.md, „Fehler und
-#   Schonung“). Der getrennte OCR-Worker extract-daemon (ingestor/src/main.py, extractor.py) prüft nur
-#   file_downloads und robots.txt, nicht source_backoff_until: Er lädt ausstehende Dateien auch während einer Pause,
-#   im Takt (host_pacer). Die Seite sagt deshalb nicht, dass alle Dokumentabrufe ruhen.
+#   Texterkennung im Sync-Daemon und Scraper. Template, „Dokumente und Fotos“: Dokument-Cache, Vorschau,
+#   Löschabgleich und Personenfotos ruhen erst nach INSIGHT_SOURCE_BACKOFF_FAILURES (3) fehlgeschlagenen Läufen
+#   in Folge (ABRUFREGELN.md, „Fehler und Schonung“). Der getrennte OCR-Worker extract-daemon
+#   (ingestor/src/main.py, extractor.py) prüft nur file_downloads und robots.txt, nicht source_backoff_until: Er
+#   lädt ausstehende Dateien auch während einer Pause, im Takt (host_pacer). Die Seite sagt deshalb nicht, dass alle
+#   Dokumentabrufe ruhen.
 # - Wiederholungen der Dokumente: BACKOFF sind frühestmögliche Zeitpunkte, ausgeführt im Dokument-Cache um :40
 CRAWLER_TAKT = {
     "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
