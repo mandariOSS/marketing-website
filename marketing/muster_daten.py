@@ -146,8 +146,8 @@ DISCLOSURE_GELTUNG = {
 # ── /crawler/ ─────────────────────────────────────────────────────────────────
 # Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Maßgeblich ist der Code im Zweig
 # dev des mandari-Repositorys; die technische Referenz mit allen Fundstellen ist dort docs/ABRUFREGELN.md (Stand nach
-# mandari#1029, #1031, #1030 und #1036). Die Fundstelle jeder Angabe steht am Eintrag. Ändert sich der Abruf (etwa
-# der Takt nach Bedarf, mandari#1026), werden nur diese Daten angepasst, das Template bleibt.
+# mandari#1029, #1031, #1030, #1036, #1037, #1039, #1040 und #1042). Die Fundstelle jeder Angabe steht am Eintrag.
+# Ändert sich der Abruf, werden nur diese Daten angepasst, das Template bleibt.
 
 #: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor: ingestor/pyproject.toml,
 #: ingestor/src/config.py DEFAULT_USER_AGENT), Infoseite, Kontakt
@@ -193,9 +193,9 @@ CRAWLER_KENNUNG = [
 # eigene Kennung für den Ingestor (Abgleich, Scraper, Texterkennung, Sondierung) über INGESTOR_USER_AGENT
 # (ingestor/src/config.py). Die Abrufe der Anwendung (Dokument-Cache, Vorschau, Löschabgleich, Personenfotos,
 # Quellenanlage) senden die feste Kennung samt support@mandari.de (insight_core/services/robots.py USER_AGENT),
-# abweichend nur je Quelle über sync_config["download_headers"]; ein Sync aus dem Admin läuft im Worker und nutzt ohne
-# eigene Umgebungsvariable ebenfalls unsere Kennung. Regeln für mandari-ingestor gelten trotzdem, weil Ingestor und
-# Anwendung dieses Token immer zusätzlich prüfen.
+# abweichend nur je Quelle über sync_config["download_headers"]; ein Sync aus dem Admin läuft ohne Daemon und für
+# abgeschaltete Quellen im Worker und nutzt dort ohne eigene Umgebungsvariable ebenfalls unsere Kennung. Regeln für
+# mandari-ingestor gelten trotzdem, weil Ingestor und Anwendung dieses Token immer zusätzlich prüfen.
 CRAWLER_SELBSTBETRIEB = (
     "mandari ist Open Source. Wer es selbst betreibt, ruft von der Adresse des eigenen Servers ab und kann für den "
     "Abgleich eine eigene Kennung mit eigener Kontaktadresse setzen. Andere Abrufe, etwa von Dokumenten, senden auch "
@@ -215,20 +215,37 @@ CRAWLER_SELBSTBETRIEB = (
 #   der Abruf der robots.txt reserviert einen Zeitpunkt.
 # - zwei gleichzeitig: ingestor/src/client/host_pacing.py HostPacer.limit mit config.py host_max_concurrent, eine
 #   Semaphore je Prozess und Hostname. Deshalb nur je Abgleich zugesagt, nicht für alle Dienste: Ein Sync aus dem
-#   Admin läuft im Worker der Anwendung, also in einem eigenen Prozess mit eigenen zwei Plätzen.
-# - alle 10 Minuten: docker-compose.yml, Dienst ingestor, --interval ${INGESTOR_INTERVAL:-10}; läuft ein Lauf noch,
-#   entfällt der nächste Termin (ingestor/src/scheduler, max_instances=1)
+#   Admin läuft ohne Daemon und für abgeschaltete Quellen im Worker der Anwendung, also in einem eigenen Prozess mit
+#   eigenen zwei Plätzen.
+# - Takt je Quelle nach Bedarf (mandari#1026, #1039; ingestor/src/scheduler/takt.py, ABRUFREGELN.md „Rhythmus“):
+#   werktags 07–19 Uhr WORKDAY_MINUTES 10 (daemon --interval, docker-compose.yml ${INGESTOR_INTERVAL:-10}), sonst
+#   OFF_HOURS_MINUTES 60, Samstag und Sonntag WEEKEND_MINUTES 120; Sitzungstag und Vortag 07–22 Uhr MEETING_MINUTES 5
+#   (Sitzungen laut eigenem Bestand, get_meeting_starts); nach IDLE_RUNS 3 Läufen ohne Änderung doppelter Abstand bis
+#   IDLE_MAX_MINUTES 120, an Sitzungstagen bis MEETING_IDLE_MAX_MINUTES 10. Nächster Lauf einen Abstand nach dem Ende
+#   des vorigen (SyncSchedule.next_due); je Quelle höchstens ein Lauf, höchstens 4 Quellen zugleich
+#   (INGESTOR_SYNC_POOL_SIZE). Einen gemeinsamen 10-Minuten-Zyklus mit max_instances=1 gibt es nicht mehr.
+# - Langsame Listen (mandari#1033, #1040; ingestor/src/sync/slices.py slow_backoff): eine optionale Liste
+#   (OPTIONAL_LIST_TYPES) nach Zeitüberschreitung oder HTTP 504 ausgesetzt, SLOW_LIST_BASE 1 h, verdoppelt bis
+#   SLOW_LIST_MAX 24 h; danach in Scheiben zu einem Tag nachgeholt (SLOW_LIST_SLICE), nur bei Servern, die filtern.
+# - Neue Quellen und Kommunen (mandari#1037, ABRUFREGELN.md „Neue Quellen und Kommunen“): add_oparl_source und der
+#   Ingestor (upsert_source) legen Quellen inaktiv an, neue Kommunen ungelistet (upsert_body). Das Admin-Formular ist
+#   mit „Aktiv“ vorbelegt; die Seite sagt deshalb „wenn wir es danach eigens aktivieren“, als Ablauf bei uns.
 # - Änderungsfenster: ingestor/src/sync/orchestrator.py modified_since_for (Beginn des letzten vollständig
 #   erfolgreichen Abgleichs der Kommune minus INGESTOR_MODIFIED_SINCE_MARGIN_MINUTES 120), kurzes Fenster nur für
 #   Listen in sync_config timed_lists, sonst ab Tagesbeginn (day_start_window); fehlende optionale Listen
 #   (OPTIONAL_LIST_TYPES) in missing_lists vermerkt, inkrementell einmal am Tag (MISSING_LIST_RECHECK), im
 #   Vollabgleich jedes Mal; Abbruch nach fünf Seiten ohne Änderung (stale_pages_to_stop)
-# - Vollabgleich 1 Uhr: Produktion INGESTOR_FULL_SYNC_HOUR=1 (Standard 3). Läuft noch ein Lauf, folgt er direkt danach
-#   (scheduler _full_sync_pending); während er läuft, entfallen die inkrementellen Läufe. Je Quelle
-#   full_sync_every_days (heute 28 bei Quellen mit verlässlichem Filter) und full_sync_window
-#   (ingestor/src/client/source_options.py full_sync_plan); ein Vollabgleich mit Lücke zählt nicht. Nach Fensterende
-#   keine weitere Seite (FetchWindowClosedError), kein Wiedereinstieg. Von Hand: Admin-Trigger oder sync --full, das
-#   Fenster gilt auch dann.
+# - Vollabgleich (ABRUFREGELN.md „Vollabgleich“): einmal je Fenster (takt.py full_sync_due, sync_state
+#   full_attempted). Standardfenster ab --full-sync-hour für 5 Stunden (default_full_sync_window,
+#   FULL_SYNC_DEFAULT_HOURS); Produktion INGESTOR_FULL_SYNC_HOUR=1 (Standard 3), also Beginn zwischen 1 und 6 Uhr. Ein
+#   eigenes full_sync_window gilt unabhängig von --full-sync-hour (mandari#1039). Läuft noch ein Änderungsabgleich der
+#   Quelle, folgt er direkt danach; während er läuft, entfallen nur die Änderungsabgleiche derselben Quelle. Je Quelle
+#   full_sync_every_days (heute 28 bei Quellen mit verlässlichem Filter; ingestor/src/client/source_options.py
+#   full_sync_plan); ein Vollabgleich mit Lücke zählt nicht. Das Standardfenster begrenzt nur den Beginn; nach dem Ende
+#   eines eigenen Fensters keine weitere Seite (FetchWindowClosedError), der nächste beginnt neu. Zeitscheiben
+#   (full_sync_slices, mandari#1040) nur im Fenster, sie setzen am Fortschritt fort (full_sync_progress). Von Hand
+#   (Admin-Trigger, sync --full): ein eigenes Fenster gilt auch dann; ohne eigenes Fenster beginnt er sofort, in
+#   Zeitscheiben nur im Standardfenster.
 # - Dokumente: Texterkennung im Ingestor mit dem Abgleich (ingestor/src/extraction/extractor.py), Dokument-Cache
 #   stündlich um :40 (mandari/apps/common/schedules.py cache_files, DOCUMENT_FETCH_MAX_QUEUED 200 je Quelle),
 #   Wiederholungen mandari/hub/ris/abruf.py BACKOFF (15 min, 1, 6, 24, 72 h) und ERROR_RETRY (7 Tage), Vorschau auf
@@ -263,23 +280,35 @@ CRAWLER_TAKT = {
                     "Takt für sich, bis sie wieder steht; in dieser Zeit können mehr als eine Anfrage pro Sekunde "
                     "ankommen.",
     "zeilen": [
-        {"abruf": "Änderungsabgleich", "wann": "alle 10 Minuten",
-         "umfang": "Je Liste nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem "
-                   "vorigen vor 10 Minuten, mit zwei Stunden Puffer (OParl-Filter modified_since). Dieses kurze "
-                   "Fenster bekommen nur Listen, deren Änderungsdatum nachweislich eine Uhrzeit trägt; die übrigen "
-                   "fragen wir ab Tagesbeginn an. Ohne Änderung ist das eine Seite je Liste. Optionale Listen, die "
-                   "Ihr System nicht anbietet, etwa Orte oder Beratungen, fragen wir höchstens einmal am Tag und in "
-                   "jedem Vollabgleich wieder an. Filtert ein System nicht nach Änderungsdatum, lesen wir die Liste "
-                   "von vorn und hören nach fünf Seiten ohne Änderung auf. Läuft ein Abgleich noch, entfällt der "
-                   "nächste."},
-        {"abruf": "Vollabgleich", "wann": "nachts ab 1 Uhr",
-         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet; die "
-                   "Änderungsabgleiche ruhen so lange. Wie oft, stellen wir je Quelle ein: jede Nacht oder seltener, "
-                   "bei Systemen, die zuverlässig nach Änderungsdatum filtern, derzeit alle 28 Tage. Ein "
-                   "unvollständiger Vollabgleich zählt dabei nicht. Auf Wunsch nur in einem vereinbarten Zeitfenster "
-                   "ab 1 Uhr nachts. Reicht das Fenster nicht, endet der Vollabgleich mit dem Fenster und beginnt in "
-                   "der nächsten Nacht von vorn. Von Hand starten wir ihn nur ausnahmsweise, etwa nach der Aufnahme "
-                   "eines neuen Systems; ein vereinbartes Zeitfenster gilt auch dann."},
+        {"abruf": "Änderungsabgleich", "wann": "nach Bedarf, alle 5 Minuten bis alle 2 Stunden",
+         "umfang": "Werktags von 7 bis 19 Uhr alle 10 Minuten, sonst stündlich, am Wochenende alle 2 Stunden. An "
+                   "Tagen mit einer Sitzung und am Tag davor von 7 bis 22 Uhr alle 5 Minuten. Ändert sich mehrmals in "
+                   "Folge nichts, fragen wir seltener, an Sitzungstagen bis alle 10 Minuten, sonst bis alle 2 "
+                   "Stunden. Der Abstand zählt ab dem Ende des vorigen Abgleichs. Je Liste fragen wir nur, was sich "
+                   "seit dem letzten erfolgreichen Durchlauf geändert hat, mit zwei Stunden Puffer (OParl-Filter "
+                   "modified_since). Dieses kurze Fenster bekommen nur Listen, deren Änderungsdatum nachweislich eine "
+                   "Uhrzeit trägt; die übrigen fragen wir ab Tagesbeginn an. Ohne Änderung ist das eine Seite je "
+                   "Liste. Optionale Listen, die Ihr System nicht anbietet, etwa Orte oder Beratungen, fragen wir "
+                   "höchstens einmal am Tag und in jedem Vollabgleich wieder an. Filtert ein System nicht nach "
+                   "Änderungsdatum, lesen wir die Liste von vorn und hören nach fünf Seiten ohne Änderung auf."},
+        {"abruf": "Langsame Listen", "wann": "nach einer Zeitüberschreitung",
+         "umfang": "Bricht die Abfrage einer optionalen Liste, etwa der Beratungen, nach 60 Sekunden ohne Antwort "
+                   "oder mit HTTP 504 ab, lassen wir diese Liste ruhen: zuerst eine Stunde, danach jeweils doppelt so "
+                   "lange, höchstens 24 Stunden. Die übrigen Listen gleichen wir weiter ab. Danach holen wir die "
+                   "Änderungen der Liste nach, wenn Ihr System nach Änderungsdatum filtert, in Abschnitten zu einem "
+                   "Tag."},
+        {"abruf": "Vollabgleich", "wann": "nachts im Zeitfenster, standardmäßig ab 1 Uhr",
+         "umfang": "Alle Listen vollständig, als Sicherheitsnetz für Änderungen, die ein Filter nicht meldet. Er "
+                   "beginnt im Zeitfenster Ihres Systems, standardmäßig zwischen 1 und 6 Uhr, höchstens einmal je "
+                   "Nacht; nur die Änderungsabgleiche Ihres Systems ruhen so lange. Wie oft, stellen wir je Quelle ein: jede Nacht "
+                   "oder seltener, bei Systemen, die zuverlässig nach Änderungsdatum filtern, derzeit alle 28 Tage. "
+                   "Ein unvollständiger Vollabgleich zählt dabei nicht. Auf Wunsch legen wir ihn in ein eigenes "
+                   "Zeitfenster. Reicht es nicht, endet er mit dem Fenster und beginnt in der nächsten Nacht neu. "
+                   "Liefert Ihr System vollständige Listen nicht aus, fragen wir sie in Zeitabschnitten an "
+                   "(modified_since und modified_until), nur im Zeitfenster; ein unterbrochener Durchgang setzt in der "
+                   "nächsten Nacht dort fort, wo er stehen blieb. Von Hand starten wir ihn nur ausnahmsweise, etwa "
+                   "nach der Aufnahme eines neuen Systems; ein vereinbartes Zeitfenster gilt auch dann, ohne ein "
+                   "solches kann er dann auch tagsüber laufen."},
         {"abruf": "Dokumente", "wann": "mit dem Abgleich und stündlich",
          "umfang": "Neue Dateien laden wir, um ihren Text durchsuchbar zu machen und sie bei uns abzulegen; stündlich "
                    "holen wir höchstens 200 fehlende Dateien je System nach. Schlägt ein Abruf fehl, etwa mit HTTP 429 "
@@ -309,7 +338,9 @@ CRAWLER_TAKT = {
                    "Startseite und die üblichen Adressen einer OParl-Schnittstelle, Weiterleitungen eingerechnet. "
                    "Prüfen wir mehrere Kommunen, liegen zwischen zwei Kommunen zusätzlich 2 Sekunden. Was Ihre "
                    "robots.txt sperrt, fragen wir dabei nicht an; ist sie nicht erreichbar, fragen wir nichts weiter "
-                   "an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten."},
+                   "an. Bei der Aufnahme lesen wir das System und die Liste der Kommunen, höchstens 20 Seiten. "
+                   "Regelmäßig fragen wir ein neues System erst ab, wenn wir es danach eigens aktivieren; neu "
+                   "entdeckte Kommunen zeigen wir erst, wenn wir sie geprüft haben."},
     ],
 }
 

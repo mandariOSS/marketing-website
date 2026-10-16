@@ -50,24 +50,72 @@ class CrawlerSeiteTests(TestCase):
 
     def test_aenderungsfenster_seit_dem_letzten_erfolgreichen_durchlauf(self):
         # Beginn des letzten vollständig gelesenen Laufs (auch inkrementell), nicht des letzten Vollabgleichs
-        html = self.html()
+        html = text(self.html())
         self.assertIn(
-            "seit dem letzten erfolgreichen Durchlauf geändert hat, meist also seit dem vorigen vor 10 Minuten", html
+            "Je Liste fragen wir nur, was sich seit dem letzten erfolgreichen Durchlauf geändert hat, mit zwei Stunden "
+            "Puffer",
+            html,
         )
         self.assertNotIn("seit dem letzten vollständigen Abgleich", html)
+        # Der Takt je Quelle (mandari#1039) macht „vor 10 Minuten“ falsch: nachts und am Wochenende liegt mehr dazwischen
+        self.assertNotIn("meist also seit dem vorigen vor 10 Minuten", html)
 
-    def test_zeitfenster_des_vollabgleichs_ab_1_uhr(self):
-        # Der geplante Vollabgleich startet um 1 Uhr; ein Fenster, das später beginnt, führte nie zu einem Vollabgleich
-        self.assertEqual(text(self.html()).count("Zeitfenster ab 1 Uhr nachts"), 2)
+    def test_takt_je_quelle_nach_bedarf(self):
+        # mandari#1026/#1039, ingestor/src/scheduler/takt.py: WORKDAY_MINUTES 10 (07–19 Uhr), OFF_HOURS_MINUTES 60,
+        # WEEKEND_MINUTES 120, MEETING_MINUTES 5 an Sitzungstag und Vortag 07–22 Uhr; ohne Änderung bis
+        # MEETING_IDLE_MAX_MINUTES 10 bzw. IDLE_MAX_MINUTES 120; nächster Lauf ab dem Ende des vorigen (next_due)
+        html = text(self.html())
+        self.assertIn("nach Bedarf, alle 5 Minuten bis alle 2 Stunden", html)
+        self.assertIn("Werktags von 7 bis 19 Uhr alle 10 Minuten, sonst stündlich, am Wochenende alle 2 Stunden.", html)
+        self.assertIn("An Tagen mit einer Sitzung und am Tag davor von 7 bis 22 Uhr alle 5 Minuten.", html)
+        self.assertIn("an Sitzungstagen bis alle 10 Minuten, sonst bis alle 2 Stunden", html)
+        self.assertIn("Der Abstand zählt ab dem Ende des vorigen Abgleichs.", html)
+
+    def test_langsame_listen_ruhen(self):
+        # mandari#1033/#1040, ingestor/src/sync/slices.py: nur optionale Listen, 1 h, verdoppelt, höchstens 24 h;
+        # danach Tagesscheiben nur bei Servern, die filtern
+        html = text(self.html())
+        self.assertIn("Langsame Listen", html)
+        self.assertIn("nach 60 Sekunden ohne Antwort oder mit HTTP 504 ab, lassen wir diese Liste ruhen", html)
+        self.assertIn("zuerst eine Stunde, danach jeweils doppelt so lange, höchstens 24 Stunden", html)
+        self.assertIn("Die übrigen Listen gleichen wir weiter ab.", html)
+
+    def test_zeitfenster_des_vollabgleichs_nicht_an_1_uhr_gebunden(self):
+        # Seit mandari#1039 beginnt der Vollabgleich im eigenen Fenster der Quelle, unabhängig von --full-sync-hour;
+        # das Standardfenster reicht in Produktion von 1 bis 6 Uhr (FULL_SYNC_DEFAULT_HOURS 5)
+        html = text(self.html())
+        self.assertNotIn("Zeitfenster ab 1 Uhr nachts", html)
+        self.assertIn("nachts im Zeitfenster, standardmäßig ab 1 Uhr", html)
+        self.assertIn("beginnt im Zeitfenster Ihres Systems, standardmäßig zwischen 1 und 6 Uhr, höchstens einmal je "
+                      "Nacht", html)
+        self.assertIn("den Vollabgleich nur in einem bestimmten Zeitfenster oder seltener fahren sollen", html)
 
     def test_vollabgleich_von_hand_und_ende_des_fensters(self):
-        # Ein Vollabgleich, der mit dem Fenster endet, wird nicht fortgesetzt: In der nächsten Nacht beginnt er von
-        # vorn. Von Hand (Admin-Trigger, sync --full) startet er zu jeder Tageszeit, auch dann im Fenster.
+        # Ein Vollabgleich, der mit dem eigenen Fenster endet, beginnt im nächsten Fenster neu; in Zeitscheiben setzt er
+        # am Fortschritt fort (full_sync_progress). Während er läuft, ruhen nur die Änderungsabgleiche derselben
+        # Quelle. Von Hand (Admin-Trigger, sync --full) gilt ein eigenes Fenster, ohne eines läuft er sofort.
         html = text(self.html())
-        self.assertIn("endet der Vollabgleich mit dem Fenster und beginnt in der nächsten Nacht von vorn", html)
+        self.assertIn("Reicht es nicht, endet er mit dem Fenster und beginnt in der nächsten Nacht neu", html)
+        self.assertIn("ein unterbrochener Durchgang setzt in der nächsten Nacht dort fort, wo er stehen blieb", html)
+        self.assertIn("nur die Änderungsabgleiche Ihres Systems ruhen so lange", html)
         self.assertIn("Von Hand starten wir ihn nur ausnahmsweise", html)
-        self.assertIn("ein vereinbartes Zeitfenster gilt auch dann", html)
-        self.assertNotIn("folgt in der nächsten Nacht", html)
+        self.assertIn("ein vereinbartes Zeitfenster gilt auch dann, ohne ein solches kann er dann auch tagsüber laufen",
+                      html)
+        for alt in ["folgt in der nächsten Nacht", "beginnt in der nächsten Nacht von vorn",
+                    "meldet; die Änderungsabgleiche ruhen so lange"]:
+            self.assertNotIn(alt, html, alt)
+
+    def test_neue_systeme_erst_nach_aktivierung(self):
+        # mandari#1037: add_oparl_source und der Ingestor legen Quellen inaktiv an, neue Kommunen ungelistet
+        html = text(self.html())
+        self.assertIn("Regelmäßig fragen wir ein neues System erst ab, wenn wir es danach eigens aktivieren", html)
+        self.assertIn("neu entdeckte Kommunen zeigen wir erst, wenn wir sie geprüft haben", html)
+
+    def test_kein_gemeinsamer_zyklus_mehr(self):
+        # Vor mandari#1039 lief ein Zyklus alle 10 Minuten über alle Quellen (max_instances=1)
+        html = text(self.html())
+        for alt in ["Läuft ein Abgleich noch, entfällt der nächste", ">alle 10 Minuten<"]:
+            self.assertNotIn(alt, html, alt)
 
     def test_erstpruefung_mit_hoechstens_fuenf_anfragen(self):
         # probe-ris (mandari#1031): höchstens fünf Anfragen, Weiterleitungen mitgezählt, im Takt je Host; die
