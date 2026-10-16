@@ -27,7 +27,7 @@
     <div class="wrap">
         <div class="kopf">
             <h2 class="t-h2 m-tinte">Woran Sie unsere Abrufe erkennen</h2>
-            <p class="t-lead m-text mt-5">Diese Angaben können Sie unverändert in Freigaben, Filter und Ihre robots.txt übernehmen.</p>
+            <p class="t-lead m-text mt-5">Diese Angaben können Sie unverändert in Freigaben, Filter und Ihre robots.txt übernehmen; beim User-Agent genügt der Anfang mandari-ingestor.</p>
         </div>
         <dl class="border-b m-linie">
             {% for k in c.kennung %}
@@ -62,6 +62,8 @@
                 {% for z in c.takt.zeilen %}<tr><th scope="row" class="reg-titel t-body">{{ z.abruf }}</th><td class="t-body font-semibold m-tinte" data-spalte="Wann">{{ z.wann }}</td><td class="t-body" data-spalte="Umfang">{{ z.umfang }}</td></tr>{% endfor %}
             </tbody>
         </table>
+        {# Die Tabelle ist die Kurzfassung; alle Einzelheiten auf docs.mandari.de (erst mit mandariOSS/docs#9 live) #}
+        <p class="mt-8 t-body"><a class="textlink" href="{{ c.einzelheiten }}">Alle Einzelheiten auf docs.mandari.de</a></p>
     </div>
 </section>
 
@@ -84,17 +86,18 @@
                 <p><strong>Per E-Mail.</strong> Schreiben Sie an <a class="textlink" href="{{ c.mailto }}">support@mandari.de</a>,
                     wenn wir langsamer (bis zu einer Anfrage alle 30 Sekunden) oder seltener abrufen sollen, den
                     Vollabgleich nur in einem bestimmten Zeitfenster oder seltener fahren sollen, keine Dokumente mehr laden sollen
-                    oder wenn wir Ihr System oder Ihr Geoportal nicht mehr abrufen und Ihre Inhalte bei uns entfernen
-                    sollen. Ein solches Zeitfenster gilt nur für den Vollabgleich: Änderungsabgleich und Dokumentabrufe laufen auch dann
+                    oder wenn wir Ihr System oder Ihr Geoportal nicht mehr abrufen sollen. Ein solches Zeitfenster gilt
+                    nur für den Vollabgleich: Änderungsabgleich und Dokumentabrufe laufen auch dann
                     rund um die Uhr im Takt. Nennen Sie uns den Hostnamen Ihres Systems; liegen dort mehrere Kommunen,
-                    gilt die Vereinbarung für alle. Wir reagieren zeitnah.</p>
+                    gilt die Vereinbarung für alle. Wünsche, Inhalte bei uns zu entfernen, prüfen wir im Einzelfall.
+                    Wir antworten innerhalb von fünf Werktagen.</p>
                 <p><strong>Ausnahmen nur mit Freigabe.</strong> Von Ihrer robots.txt weichen wir nur ab, wenn Ihre
                     Stelle das ausdrücklich freigibt, je nach Freigabe für die Schnittstelle, für Dokumente oder für
                     beides, und halten die Freigabe fest.</p>
             </div>
             <div class="min-w-0 space-y-8 lg:col-span-5 lg:col-start-8">
                 <figure>
-                    <figcaption class="text-base m-leise">Alle Abrufe von mandari ausschließen</figcaption>
+                    <figcaption class="text-base m-leise">Alle Abrufe bei Ihrem Ratsinformationssystem ausschließen</figcaption>
                     <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
 Disallow: /</code></pre>
                 </figure>
@@ -135,7 +138,7 @@ Disallow: /*.pdf$</code></pre>
             <h2 class="t-h2-dok m-tinte">Bei Fehlern und Sperren</h2>
             <div class="mt-6 stichworte t-body m-text">
                 <p><strong>Automatische Pause.</strong> Eine einzelne Anfrage wiederholen wir bei Netz- und
-                    Serverfehlern höchstens zweimal, nach einer und nach zwei Sekunden. Nach fünf Fehlversuchen an einem
+                    Serverfehlern höchstens zweimal, frühestens nach einer und nach zwei Sekunden. Nach fünf Fehlversuchen an einem
                     Server im selben Abgleich, auch HTTP 429, fragen wir ihn eine Minute lang nicht an; einen
                     Retry-After-Header werten wir nicht aus. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir
                     die Quelle: zuerst 10&nbsp;Minuten, danach jeweils doppelt so lange, bis höchstens 6&nbsp;Stunden. Nach fünf
@@ -145,7 +148,7 @@ Disallow: /*.pdf$</code></pre>
                 <p><strong>Dokumente und Fotos.</strong> Das stündliche Nachholen und Prüfen von Dokumenten, das Laden
                     beim Öffnen und die Personenfotos ruhen erst, wenn drei Abgleiche in Folge Ihr System nicht
                     erreichen. Neue Dateien, deren Text noch fehlt, lädt unsere Texterkennung auch während einer Pause,
-                    im üblichen Takt. Eine Sperre per robots.txt beachten alle Abrufe immer.</p>
+                    im üblichen Takt. Eine Sperre per robots.txt beachten diese Abrufe immer.</p>
                 <p><strong>Keine Umgehung.</strong> Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.
                     Eine abweichende Kennung für Ihr System setzen wir nur, wenn Sie sie mit uns vereinbaren, etwa weil
                     Ihr Server bestimmte Wörter im User-Agent ablehnt. Auf ein HTTP 403 folgt je
@@ -161,7 +164,7 @@ Disallow: /*.pdf$</code></pre>
 {# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["crawler"]) #}
 {% einladung_wege None "crawler" as wege %}
 <section class="on-ink band-tinte text-white abschnitt">
-    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten zeitnah und stimmen unsere Abrufe mit Ihnen ab." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten innerhalb von fünf Werktagen und stimmen unsere Abrufe mit Ihnen ab." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
 </section>
 
 {% endblock %}
