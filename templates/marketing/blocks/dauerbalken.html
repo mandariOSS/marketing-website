@@ -1,0 +1,37 @@
+{% load baender muster %}
+{# M1b Dauerbalken: Schritte nacheinander auf einer Wochenachse; kräftig = frühestmöglich, hell = Spielraum bis spätestens, Raute = fester Tag. Kopf: Überschrift links, Satz rechts unten. #}
+{% dauer_plan self as plan %}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap"{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %}>
+        <div class="m-kopf-zeile">
+            <h2 class="t-h2 m-tinte">{{ self.header.title }}</h2>
+            {% if self.header.subline %}<p class="t-lead m-text">{{ self.header.subline }}</p>{% endif %}
+        </div>
+        <div class="gantt-kopf" aria-hidden="true">
+            <span>Schritt und Dauer</span>
+            <div class="skala">{% for s in plan.skala %}<span style="left:{{ s.links }}">{{ s.label }}</span>{% endfor %}</div>
+        </div>
+        <ol>
+            {% for z in plan.zeilen %}
+            <li class="gantt-zeile">
+                <div>
+                    <h3 class="text-lg font-semibold m-tinte"><span class="tabular-nums mr-2">{{ z.nr }}</span>{{ z.titel }} <span class="font-normal m-leise">{{ z.dauer }}</span></h3>
+                    {% if z.text %}<p class="mt-1 text-base m-text">{{ z.text }}</p>{% endif %}
+                </div>
+                <div class="spur" style="background-size:{{ plan.raster }} 100%" aria-hidden="true">
+                    {% if z.art == "meilenstein" %}
+                    <span class="spur-linie" style="left:{{ z.frueh }};width:{{ z.linie }}"></span><span class="spur-raute" style="left:{{ z.frueh }}"></span><span class="spur-raute offen" style="left:calc({{ z.spaet }} - 8px)"></span>
+                    {% else %}
+                    <span class="spur-frueh" style="left:{{ z.start }};width:{{ z.frueh_breite }}"></span><span class="spur-spiel" style="left:{{ z.spiel_start }};width:{{ z.spiel_breite }}"></span>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+        <p class="mt-6 text-base m-text flex flex-wrap gap-x-8 gap-y-2" aria-hidden="true">
+            <span><span class="legende-frueh"></span>frühestmöglich</span>
+            <span><span class="legende-spiel"></span>Spielraum bis spätestens</span>
+            {% if self.legende_meilenstein %}<span><span class="legende-raute"></span>{{ self.legende_meilenstein }} frühestens <span class="legende-raute offen ml-3"></span>spätestens</span>{% endif %}
+        </p>
+    </div>
+</section>

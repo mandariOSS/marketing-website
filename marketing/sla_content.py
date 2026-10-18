@@ -17,6 +17,7 @@ Keine Preise, keine Infrastrukturdetails.
 SLA_VERSION = "1.0"
 SLA_DATE = "17.09.2026"
 SLA_DATE_ISO = "2026-09-17"
+SLA_DATE_TEXT = "17. September 2026"
 
 # Ablage der PDF-Fassung unterhalb von static/ (ausgeliefert unter STATIC_URL).
 SLA_PDF_FILENAME = f"mandari-sla-v{SLA_VERSION}.pdf"

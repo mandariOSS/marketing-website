@@ -1,15 +1,12 @@
-{# Inhaltsverzeichnis (Schnell-Nav) für Legal-Pages #}
-<section class="py-8">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-            <h2 class="text-sm font-bold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
-                <i data-lucide="list" class="w-4 h-4"></i>{{ self.title }}
-            </h2>
-            <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                {% for item in self.items %}
-                <li><a href="#{{ item.anchor }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ item.number }} {{ item.text }}</a></li>
-                {% endfor %}
-            </ol>
-        </div>
+{% load baender %}
+{# Inhaltsverzeichnis: Überschrift und Sprungmarken, ohne Kasten. #}
+<nav class="{% abschnitt band band_anfang band_ende art='kompakt' %}" aria-label="{{ self.title }}">
+    <div class="wrap">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ self.title }}</h2>
+        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2 max-w-4xl text-base">
+            {% for item in self.items %}
+            <li><a href="#{{ item.anchor }}" class="textlink">{{ item.number }} {{ item.text }}</a></li>
+            {% endfor %}
+        </ol>
     </div>
-</section>
+</nav>

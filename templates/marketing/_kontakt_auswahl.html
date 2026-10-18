@@ -1,0 +1,12 @@
+{# Auswahlfeld der Kontaktformulare – dieselbe Höhe und Gestalt wie die Eingabefelder (Klasse feld) #}
+<div>
+    <label for="{{ id }}" class="block text-base font-medium text-gray-900 dark:text-white">{{ label }}</label>
+    <select id="{{ id }}" name="{{ field.html_name }}" required{% if field.errors %} aria-invalid="true" aria-describedby="{{ id }}-fehler"{% endif %}
+            class="feld{% if field.errors %} feld-fehler{% endif %}">
+        {% if placeholder %}<option value="">{{ placeholder }}</option>{% endif %}
+        {% with current=field.value|default_if_none:""|stringformat:"s" %}
+        {% for value, text in choices %}<option value="{{ value }}"{% if value == current %} selected{% endif %}>{{ text }}</option>{% endfor %}
+        {% endwith %}
+    </select>
+    {% if field.errors %}<p id="{{ id }}-fehler" class="mt-1.5 text-sm text-red-700 dark:text-red-400">{{ field.errors.0 }}</p>{% endif %}
+</div>

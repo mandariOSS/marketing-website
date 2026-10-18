@@ -40,6 +40,9 @@ wait_for_db
 echo "Running migrations..."
 python manage.py migrate --noinput
 
+# Shared cache table for the contact forms (idempotent, see settings.CACHES)
+python manage.py createcachetable
+
 # Create initial page structure (idempotent)
 echo "Setting up pages..."
 python manage.py setup_initial_pages

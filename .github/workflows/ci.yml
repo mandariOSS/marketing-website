@@ -30,6 +30,14 @@ jobs:
       - name: Django system check
         run: python manage.py check
 
+      - name: Migrationen vollständig (makemigrations --check)
+        # Jede Änderung an Modellen oder StreamField-Bausteinen braucht eine Migration; sonst
+        # meldet makemigrations offene Änderungen und der Schritt schlägt fehl.
+        run: python manage.py makemigrations --check --dry-run
+
+      - name: Unit-Tests (retire_page, SEO, Strukturdaten, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
+        run: python manage.py test --buffer
+
       - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
         run: python scripts/check_template_comments.py templates
 
@@ -38,11 +46,11 @@ jobs:
           npm ci
           npm run build:css
 
-      - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS)
-        # Die Block-Templates setzen Farbklassen dynamisch zusammen
-        # (bg-{{ card.color }}-600 u. ä.) — dieser Check stellt sicher, dass
-        # der Tailwind-Build alle Palette-Klassen enthält und nicht wieder
-        # Klassen wegpurged (Safelist in tailwind.config.js).
+      - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS, Größe)
+        # Zwei Block-Templates setzen Farbklassen dynamisch zusammen (bg-{{ self.color }}-50 in
+        # disclaimer_box.html, text-{{ e.color }}-600 in email_directory.html) — dieser Check stellt
+        # sicher, dass der Tailwind-Build sie enthält (Safelist: @source inline in static/css/input.css). Die Obergrenze
+        # hält ungenutztes CSS klein: Das Stylesheet blockiert auf jeder Seite das erste Rendern.
         run: |
           python - <<'EOF'
           css = open("static/css/styles.css", encoding="utf-8").read()
@@ -50,13 +58,16 @@ jobs:
           needles = []
           for c in colors:
               needles += [
-                  f".bg-{c}-100", f".bg-{c}-600",
-                  f".hover\\:bg-{c}-700:hover",
-                  f".text-{c}-600", f".border-{c}-200",
+                  f".bg-{c}-50", f".dark\\:bg-{c}-900\\/20",
+                  f".text-{c}-600", f".dark\\:text-{c}-400",
               ]
           missing = [n for n in needles if n not in css]
           assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
-          print(f"OK: {len(needles)} Klassen im CSS vorhanden")
+          groesse = len(css.encode("utf-8"))
+          # Grenze: 65,6 KB vor dem Musterkatalog, die Abschnittsmuster (Zeitskala, Register, Dokumentseite …)
+          # bringen rund 15 KB (gzip 3 KB); darüber deutet ein Sprung auf ungenutzte Klassen in der Safelist.
+          assert groesse < 84_000, f"styles.css hat {groesse} Bytes (Grenze 84.000) – ungenutzte Klassen in der Safelist?"
+          print(f"OK: {len(needles)} Klassen im CSS vorhanden, {groesse} Bytes")
           EOF
 
       - name: Migrationen (frische SQLite)
@@ -77,6 +88,16 @@ jobs:
       - name: StreamField-Seeds anwenden
         run: python manage.py migrate_pages_to_streamfield
 
+      - name: Unternehmensseiten und Kontaktformular (Tests)
+        # Inhalte und Sie-Form, Stufenschalter Vorgründung/Gesellschaft, Logo-Paket, Weiterleitung
+        # /ueber-uns/, Seed-Befehle sowie die Formulare mit Spamschutz, Prüfung und Zustellung.
+        run: python manage.py test company --buffer
+
+      - name: Karriere zurückziehen (wie in Produktion)
+        # /karriere/ ruht: unpublish und 301 auf /unternehmen/. Der Seed bleibt erhalten, die Seite lässt
+        # sich im CMS wieder veröffentlichen (README, „Karriere reaktivieren“).
+        run: python manage.py retire_page karriere --redirect /unternehmen/
+
       - name: Render-Smoke (alle Kernseiten liefern 200 mit Inhalt)
         run: |
           python - <<'EOF'
@@ -88,29 +109,45 @@ jobs:
           c = Client()
           # URL -> Textbausteine, die im gerenderten HTML stehen muessen
           checks = {
-              "/": ["Demo anfragen", "Zum RIS-Vergleich", "Ehrlich in Beta"],
-              "/produkt/": ["Mandari Insight", "Welches Modul kann was"],
+              "/": ["Software für die offene Verwaltung", "Erstgespräch vereinbaren", "Ratsinformationen im Bürgerportal ansehen", "hero-insight-muenster-800.webp", "hero-work-800.webp", "hero-session-800.webp"],
+              "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt", "in Prüfung (ohne Termin)", "Mitteilung an das Finanzamt"],
+              "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
-              "/kommunen/": ["Ratsinformationssystem"],
+              "/kommunen/": ["Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit.", 'href="/ratsinformationssystem/"'],
+              "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Was ist OParl?", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"'],
               "/migration/": ["Bestandsaufnahme"],
-              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb"],
-              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe"],
-              "/vergleich/mandari-vs-sternberg/": ["Stand Juli 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium"],
-              "/vergleich/mandari-vs-regisafe/": ["BITV-Zertifikat", "Funktion / Kriterium"],
-              "/releases/": ["mandari 0.9 (Beta)", "Release- und Support-Politik", "72 Stunden"],
+              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
+              "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen", 'href="/sla/"'],
+              "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
+              "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
+              "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
+              "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
+              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt", "In Prüfung, ohne Termin", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
+              "/vergleich/mandari-vs-sternberg/": ["Stand Oktober 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium", "Noch nicht verfügbar", "[ST1]"],
+              "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
+              "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
+              "/vergleich/mandari-vs-regisafe/": ["barrierefrei zertifiziert", "Funktion / Kriterium", "Noch nicht verfügbar", "[RS1]"],
+              "/releases/": ["mandari 0.11", "mandari 0.9 (Beta)", "Release- und Support-Politik", "72 Stunden"],
+              "/releases/mandari-0-11/": ["Sitzungsdienst", "v0.11.0", "Vorherige Version"],
               "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
-              "/trust/": ["Subprocessoren", "Nachweise und Fahrplan", "/sla/"],
+              "/trust/": ["Subprocessoren", "Nachweise und Fahrplan", 'href="/sla/"'],
               "/sla/": ["Service Level Agreement", "99,5", "Störungsklassen", "Gutschriften", "Version 1.0"],
               "/sla/druck/": ["Service Level Agreement", "Version 1.0 vom 17.09.2026", "Wartungsfenster"],
-              "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen", "SLA lesen"],
-              "/transparenz/": ["Transparenzbericht"],
-              "/impressum/": ["Impressum"],
+              "/transparenz/": ["Transparenzbericht", "Reichweite des Bürgerportals", "204.819"],
+              "/impressum/": ["Impressum", "AGPL-3.0-or-later"],
               "/datenschutz/": ["Datenschutz"],
               "/agb/": ["AGB", "mandari.de/sla/"],
               "/kontakt/": ["Kontakt"],
-              "/blog/": ["Blog"],
+              "/sicherheit/disclosure/": ["Sicherheitslücke gefunden?", "Safe Harbor", 'id="hall-of-fame"', "5D06 A2BC B71C 6095 7A23"],
+              "/ingestor/": ["mandari-ingestor/&lt;Version&gt; (+https://mandari.de/ingestor/; support@mandari.de)", 'id="abruf-adresse"', "144.76.153.200", "eine Anfrage pro Sekunde", "Drosseln oder ausschließen"],
+          }
+          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern, /crawler/ heißt seit 18.10.2026 /ingestor/)
+          redirects = {
+              "/status/": "https://status.mandari.de/",
+              "/blog/": "/releases/",
+              "/blog/feed/": "/releases/",
+              "/karriere/": "/unternehmen/",
+              "/crawler/": "/ingestor/",
           }
           errors = []
           for url, needles in checks.items():
@@ -122,6 +159,309 @@ jobs:
               for n in needles:
                   if n not in body:
                       errors.append(f"{url}: '{n}' fehlt")
+          for url, target in redirects.items():
+              r = c.get(url)
+              if r.status_code != 301 or r.get("Location") != target:
+                  errors.append(f"{url}: HTTP {r.status_code} -> {r.get('Location')} (erwartet 301 -> {target})")
+          releases = c.get("/releases/").content.decode("utf-8")
+          if releases.find("mandari 0.11") > releases.find("mandari 0.9 (Beta)"):
+              errors.append("/releases/: neueste Version steht nicht zuerst")
+          # Kopfzeile: „Für Bürger:innen“ im Produkte-Menü, „Bürgerportal“ genau einmal als direkter Link,
+          # mobil ein Slide-Menü als modaler Dialog
+          kopf = c.get("/preise/").content.decode("utf-8")
+          kopf = kopf[kopf.find('role="banner"'):kopf.find('role="main"')]
+          if kopf.count('href="/produkte/#insight"') != 2 or kopf.count("Für Bürger:innen") != 2:
+              errors.append("Kopfzeile: 'Für Bürger:innen' fehlt im Produkte-Menü (Desktop und mobil)")
+          if kopf.count("Bürgerportal") != 1 or kopf.count('href="/insight/"') != 1:
+              errors.append("Kopfzeile: 'Bürgerportal' nicht genau einmal als direkter Link")
+          if 'role="dialog" aria-modal="true"' not in kopf or 'aria-controls="mobilmenue"' not in kopf:
+              errors.append("Kopfzeile: Slide-Menü ohne role=dialog, aria-modal und Menü-Knopf")
           assert not errors, "Render-Smoke fehlgeschlagen: " + "; ".join(errors)
-          print(f"OK: {len(checks)} Seiten gerendert und geprueft")
+          print(f"OK: {len(checks)} Seiten gerendert, {len(redirects)} Weiterleitungen geprueft")
           EOF
+
+      - name: Struktur-Test (alle Seiten verlinkt, keine toten Links, eindeutige Titel, Kopf- und Fußzeile)
+        # Ausstehende Ziele der parallelen Relaunch-PRs sind Warnungen, siehe AUSSTEHENDE_PFADE im Skript;
+        # nach dem Merge aller Relaunch-PRs mit --strict aufrufen.
+        env:
+          SITE_URL: "https://mandari.de"
+        run: python scripts/check_site_structure.py
+
+      - name: Kritisches CSS (Größe, Seitenkopf auf jeder Seite, Abdeckung von Kopfzeile und Seitenkopf)
+        # Das kritische CSS steht inline im Kopf jeder Seite, styles.css lädt danach ohne Blockade
+        # (marketing/templatetags/stile.py). Fehlt dort eine Klasse aus Kopfzeile oder Seitenkopf, sähe die erste
+        # Ansicht vor styles.css anders aus und verschöbe sich danach (CLS).
+        run: python scripts/check_kritisches_css.py
+
+      - name: Sicherheitsfristen (security.txt und Policy wie SECURITY.md im mandari-Repository)
+        # Eingangsbestätigung, Korrekturfristen und Offenlegung müssen mit der SECURITY.md von
+        # mandariOSS/mandari übereinstimmen; alte Angaben (5 Werktage, 14 Tage) dürfen nicht zurückkehren.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          fristen = ["3 Werktage", "zwei Wochen", "72 Stunden", "7 Tage", "30 Tage", "90 Tage nach"]
+          veraltet = ["5 Werktage", "14 Tage"]
+          errors = []
+          for url in ["/.well-known/security.txt", "/sicherheit/disclosure/"]:
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}")
+                  continue
+              # Zeilenumbrüche und Einrückung der Vorlage zählen als ein Leerzeichen.
+              body = " ".join(r.content.decode("utf-8").split())
+              errors += [f"{url}: '{f}' fehlt" for f in fristen if f not in body]
+              errors += [f"{url}: veraltet '{v}'" for v in veraltet if v in body]
+          assert not errors, "Sicherheitsfristen weichen ab: " + "; ".join(errors)
+          print("OK: security.txt und Disclosure-Policy nennen die Fristen aus SECURITY.md")
+          EOF
+
+      - name: Anrede (Sie-Form auf Verwaltungs- und allgemeinen Seiten)
+        # Du-Form nur auf /karriere/ und /mitmachen/ (Leitfaden mandari-texte). Geprüft wird der
+        # sichtbare Text im Hauptbereich.
+        run: |
+          python - <<'EOF'
+          import os, re, django
+          from html.parser import HTMLParser
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+
+          class Main(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.depth = self.skip = 0; self.parts = []
+              def handle_starttag(self, tag, attrs):
+                  self.depth += tag == "main"; self.skip += tag in ("script", "style")
+              def handle_endtag(self, tag):
+                  self.depth -= tag == "main"; self.skip -= tag in ("script", "style")
+              def handle_data(self, data):
+                  if self.depth and not self.skip:
+                      self.parts.append(data)
+
+          du = re.compile(r"\b(du|dich|dir|dein\w*|euch|euer|eure\w*)\b", re.IGNORECASE)
+          pages = ["/preise/", "/kommunen/", "/ratsinformationssystem/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
+                   "/barrierefreiheit/", "/abuse/", "/vergleich/", "/quellen/", "/agb/", "/avv/", "/kuendigung/",
+                   "/sicherheit/disclosure/", "/ingestor/"]
+          c, errors = Client(), []
+          for url in pages:
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}"); continue
+              parser = Main(); parser.feed(r.content.decode("utf-8"))
+              text = " ".join(" ".join(parser.parts).replace("\u00ad", "").split())  # ohne weiche Trennstriche
+              errors += [f"{url}: …{text[max(0, m.start() - 30):m.end() + 20]}…" for m in du.finditer(text)]
+          assert not errors, "Du-Form auf Sie-Seiten: " + "; ".join(errors)
+          print(f"OK: {len(pages)} Seiten in Sie-Form")
+          EOF
+
+      - name: Ruhige Bestandsseiten (keine Leiste unter dem Hero, Pilotangebot einmal, eine Datenschutzadresse)
+        # Was dort stehen muss und was nicht zurückkehren darf: Faktenleisten unter dem Hero, gelbe
+        # Pilot-Kästen, zwei Aufrufe zum selben Formular, privacy@ statt datenschutz@, „Mandari“ groß.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          pages = {
+              "/abuse/": (["Was möchten Sie melden?", "mailto:datenschutz@mandari.de"],
+                          ["DSA &amp; NetzDG", "privacy@mandari.de", "Notfall-Kontakte"]),
+              "/migration/": (["Bestandsaufnahme", "Pilotkommunen erhalten Sonderkonditionen", "/kontakt/?subject=Migration-Beratung#termin"],
+                              ["Migrations-Gespräch", "Pilot-Kommunen bekommen Sonderkonditionen", "ersten 5", "Rollback"]),
+              "/barrierefreiheit/": (["teilweise konform mit der BITV 2.0"], ["Letzte Prüfung:", "Wir sind ehrlich"]),
+              "/mitmachen/": (["Such dir aus, was zu dir passt"], ["100 % Open Source", "IONOS"]),
+              "/preise/": (["Pilotkommunen starten jetzt", "Rechenzentren in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
+              "/kommunen/": (["Drei Bausteine", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
+              "/quellen/": (["mandari aggregiert", "mandari nutzt", "mandari nimmt"], ["Mandari "]),
+          }
+          errors = []
+          for url, (present, absent) in pages.items():
+              r = c.get(url)
+              if r.status_code != 200:
+                  errors.append(f"{url}: HTTP {r.status_code}"); continue
+              body = r.content.decode("utf-8")
+              errors += [f"{url}: '{n}' fehlt" for n in present if n not in body]
+              errors += [f"{url}: '{n}' ist zurück" for n in absent if n in body]
+          assert not errors, "Bestandsseiten: " + "; ".join(errors)
+          print(f"OK: {len(pages)} Bestandsseiten ruhig")
+          EOF
+
+      - name: Urheber- und Lizenzangabe (Fußzeile wie in mandariOSS/mandari)
+        # Urheber ist Sven Konopka, Lizenz AGPL-3.0-or-later. Die Fußzeile muss das nennen, und jedes
+        # Urheberzeichen in einer versionierten HTML-Datei muss den Urheber nennen (Ausnahme:
+        # Namensnennung von OpenStreetMap).
+        run: |
+          python - <<'EOF'
+          import os, re, subprocess, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          errors = []
+          r = Client().get("/")
+          if r.status_code != 200:
+              errors.append(f"/: HTTP {r.status_code}")
+          else:
+              body = " ".join(r.content.decode("utf-8").split())
+              muster = r"&copy; 2025–\d{4} Sven Konopka\. mandari ist Open Source unter der Lizenz AGPL-3\.0-or-later\."
+              if not re.search(muster, body):
+                  errors.append("/: Fußzeile ohne Urheber Sven Konopka und AGPL-3.0-or-later")
+          dateien = subprocess.run(
+              ["git", "ls-files", "*.html"], capture_output=True, text=True, check=True
+          ).stdout.splitlines()
+          for datei in dateien:
+              with open(datei, encoding="utf-8", errors="replace") as fh:
+                  for nr, zeile in enumerate(fh, 1):
+                      if ("&copy;" in zeile or "©" in zeile) and not (
+                          "Sven Konopka" in zeile or "OpenStreetMap" in zeile
+                      ):
+                          errors.append(f"{datei}:{nr}: Urheberangabe ohne Sven Konopka")
+          assert not errors, "Urheberangabe weicht ab: " + "; ".join(errors)
+          print(f"OK: Fußzeile und {len(dateien)} HTML-Dateien nennen den Urheber")
+          EOF
+
+      - name: Weiterleitungen Produkte (/produkt/ und /loesungen/)
+        # /produkt/ ist aufgeteilt in /produkte/ und /fraktionen/; alte Adressen leiten dauerhaft weiter.
+        run: |
+          python - <<'EOF'
+          import os, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          c = Client()
+          redirects = {"/produkt/": "/fraktionen/", "/loesungen/": "/produkte/"}
+          errors = []
+          for url, target in redirects.items():
+              r = c.get(url)
+              if r.status_code != 301 or r.get("Location") != target:
+                  errors.append(f"{url}: HTTP {r.status_code} -> {r.get('Location')} (erwartet 301 -> {target})")
+          assert not errors, "Weiterleitungen fehlerhaft: " + "; ".join(errors)
+          print(f"OK: {len(redirects)} Weiterleitungen")
+          EOF
+
+      - name: Render-Smoke Versionsangaben (keine veraltete Version außerhalb der Release-Notes)
+        # Seiten nennen den Entwicklungsstand ohne Versionsnummer und verweisen auf /releases/. Nur die
+        # Release-Notes selbst nennen Versionen. Geprüft wird der sichtbare Text jeder veröffentlichten Seite.
+        # AUSNAHMEN: Seiten, deren Bereinigung in einem offenen PR liegt; der Schritt meldet, sobald eine
+        # Ausnahme überflüssig ist, dann hier streichen.
+        run: |
+          python - <<'EOF'
+          import os, re, django
+          os.environ.setdefault("DJANGO_SETTINGS_MODULE", "website.settings")
+          os.environ.setdefault("ALLOWED_HOSTS", "testserver")
+          django.setup()
+          from django.test import Client
+          from wagtail.models import Page
+          c = Client()
+          veraltet = re.compile(r"\b(?:Version|Beta)\s+0\.9\b|\b0\.9\s+Beta\b")
+          AUSNAHMEN = set()  # derzeit keine; /kommunen/ ist seit der Sie-Form-Überarbeitung bereinigt
+          pflicht = {"/vergleich/", "/vergleich/mandari-vs-sternberg/", "/vergleich/mandari-vs-allris/",
+                     "/vergleich/mandari-vs-somacos/", "/vergleich/mandari-vs-regisafe/", "/roadmap/"}
+          urls = {p.url for p in Page.objects.live().specific() if p.url}
+          errors = [f"{u}: Seite fehlt" for u in sorted(pflicht - urls)]
+          geprueft = 0
+          for url in sorted(urls):
+              if url.startswith("/releases/"):
+                  continue
+              r = c.get(url)
+              if r.status_code != 200:
+                  continue
+              text = " ".join(re.sub(r"<[^>]+>", " ", r.content.decode("utf-8")).split())
+              treffer = veraltet.findall(text)
+              geprueft += 1
+              if url in AUSNAHMEN:
+                  if not treffer:
+                      print(f"Hinweis: {url} ist bereinigt, Ausnahme streichen")
+                  continue
+              errors += [f"{url}: veraltete Versionsangabe '{t}'" for t in treffer]
+          assert not errors, "Versionsangaben: " + "; ".join(errors)
+          print(f"OK: {geprueft} Seiten ohne veraltete Versionsangabe")
+          EOF
+
+      - name: Ruhige Oberflaeche (kein Hover-Sprung, keine Verlaeufe, Pillen oder Viertelkreise)
+        # Gestaltungsregeln: Zustaende aendern Farbe oder Unterstreichung, nie die Position. Alle Templates
+        # kommen ohne Farbverlauf, Pillen-Etikett und Deko-Viertelkreis aus. Ausgenommen ist nur der ruhende
+        # Blog (templates/blog/, siehe README „Blog reaktivieren“); vor dem Reaktivieren angleichen.
+        run: |
+          python - <<'EOF'
+          import pathlib, re
+          pille = re.compile(r'<span class="[^"]*\brounded-full\b[^"]*\bbg-[a-z]+-(?:50|100)\b')
+          errors, geprueft = [], 0
+          for f in sorted(pathlib.Path("templates").rglob("*.html")):
+              text = f.read_text(encoding="utf-8")
+              if re.search(r"hover:-?translate-y", text):
+                  errors.append(f"{f}: Hover mit translate-y")
+              if f.parts[1] == "blog":
+                  continue
+              geprueft += 1
+              if "bg-gradient" in text:
+                  errors.append(f"{f}: Farbverlauf")
+              if "rounded-bl-full" in text:
+                  errors.append(f"{f}: Deko-Viertelkreis")
+              if pille.search(text):
+                  errors.append(f"{f}: Pillen-Etikett")
+          assert not errors, "; ".join(errors)
+          print(f"OK: keine Hover-Spruenge; {geprueft} Templates ohne Verlauf, Pille und Viertelkreis")
+          EOF
+
+      - name: Gestaltungssystem (Abstaende und Schriftgroessen aus der Skala)
+        # Jedes Band setzt seinen Innenabstand ueber die Skala (Klassen abschnitt, abschnitt-kompakt, hero oder
+        # das Tag {% abschnitt %}), keine Zwischengroesse 15 px im Inhalt, keine Zeilen „Ueberschrift links, Text
+        # rechts“ in den Bausteinen. Kopf- und Fusszeile (templates/components/) und der ruhende Blog sind ausgenommen.
+        run: |
+          python - <<'EOF'
+          import pathlib, re
+          band = re.compile(r'<(?:section|article|nav|div)\b[^>]*class="([^"]*\bband-(?!fuss)[a-z]+[^"]*)"')
+          errors, geprueft = [], 0
+          for f in sorted(pathlib.Path("templates").rglob("*.html")):
+              if f.parts[1] in ("components", "blog") and f.name not in ("release.html", "release_index.html"):
+                  continue
+              text = f.read_text(encoding="utf-8")
+              geprueft += 1
+              for m in band.finditer(text):
+                  if not re.search(r"\b(?:abschnitt|abschnitt-kompakt|hero)\b", m.group(1)):
+                      errors.append(f"{f}: Band ohne Abstand aus der Skala ({m.group(1)[:50]})")
+              if "text-[0.9375rem]" in text:
+                  errors.append(f"{f}: Schriftgroesse 15 px ausserhalb der Skala")
+              if f.parent.name == "blocks" and "lg:col-span-7 lg:col-start-6" in text:
+                  errors.append(f"{f}: Zeilen Ueberschrift links, Text rechts")
+          assert not errors, "; ".join(errors)
+          print(f"OK: {geprueft} Templates mit Abstaenden und Schriftgroessen aus der Skala")
+          EOF
+
+      - name: Gestaltungssystem – keine leere rechte Hälfte (jeder Abschnitt füllt bei 1440 px mindestens 80 % der Rasterbreite)
+        # Musterkatalog, Regel 6 (Rückmeldung vom 04.10.2026): Text, der schmal bleiben muss, bekommt eine Randspalte
+        # oder ein Bild, sonst geht das Layout über die volle Breite. Gemessen im Browser an allen Seiten der Sitemap
+        # (scripts/check_fuellung.py); der Seitenkopf ist ausgenommen.
+        env:
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python manage.py runserver 127.0.0.1:8191 --noreload > runserver.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8191/ && break; sleep 1; done
+          python scripts/check_fuellung.py || (tail -20 runserver.log; exit 1)
+
+      - name: Content-Security-Policy im Browser (keine Verstöße auf allen Seiten, wie im Betrieb ohne DEBUG)
+        # Jeder Verstoß ginge im Betrieb mit jedem Seitenaufruf als Meldung an /csp-report/ und bräche die Seite, sobald
+        # CSP_MODUS=scharf gilt. Ohne DEBUG steht das kritische CSS inline wie in Produktion (Hash in der Policy); auf
+        # /kontakt/ lädt und rechnet der Spamschutz (Altcha: Stil, Worker, Abruf der Aufgabe). Neuer Inline-Code gehört
+        # in csp_inline (marketing/sicherheit.py). Prüft außerdem Permissions-Policy und eine 404-Seite.
+        env:
+          DEBUG: "false"
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+          SITE_URL: "http://127.0.0.1:8192"
+          CONTACT_SMTP_HOST: "127.0.0.1"
+        run: |
+          python manage.py collectstatic --noinput > /dev/null
+          python manage.py runserver 127.0.0.1:8192 --noreload > csp-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8192/ && break; sleep 1; done
+          BASE_URL=http://127.0.0.1:8192 python scripts/check_csp.py || (tail -20 csp-server.log; exit 1)

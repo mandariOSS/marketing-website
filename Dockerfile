@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install system dependencies (Pillow + curl for healthcheck)
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies (Pillow + curl for healthcheck); vorher die Sicherheitsupdates von Debian
+RUN apt-get update && apt-get upgrade -y --no-install-recommends && apt-get install -y --no-install-recommends \
     libjpeg62-turbo-dev \
     zlib1g-dev \
     libwebp-dev \
@@ -24,11 +24,16 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-COPY package.json tailwind.config.js ./
-RUN npm install
+# Tailwind CSS 4 in den Versionen aus package-lock.json, wie in der CI
+COPY package.json package-lock.json tailwind.config.js tailwind.kritisch.config.js ./
+RUN npm ci
 
-COPY static/css/input.css ./static/css/input.css
+# styles.css und das kritische CSS für den Kopf jeder Seite (static/css/kritisch.css, scripts/kritisches_css.js);
+# Vorlagen und Rechtstexte sind die Quellen der Klassen (@source in static/css/input.css)
+COPY static/css/input.css static/css/erste-ansicht.css ./static/css/
+COPY scripts/kritisches_css.js ./scripts/kritisches_css.js
 COPY templates/ ./templates/
+COPY .legal-content/ ./.legal-content/
 
 RUN npm run build:css
 
@@ -41,7 +46,7 @@ RUN pip install --no-cache-dir .
 
 # Copy application code
 COPY . .
-COPY --from=css-builder /app/static/css/styles.css ./static/css/styles.css
+COPY --from=css-builder /app/static/css/styles.css /app/static/css/kritisch.css ./static/css/
 
 # Create static directory
 RUN mkdir -p /app/staticfiles

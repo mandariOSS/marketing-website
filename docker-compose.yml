@@ -78,18 +78,12 @@ services:
       WEBSITE_SECRET_KEY: ${WEBSITE_SECRET_KEY:-dev-only-insecure-change-me-when-deploying}
       DEBUG: ${DEBUG:-True}
       SITE_URL: ${SITE_URL:-http://localhost:6500}
-      # "website" allows Kener (and any other intra-network service) to call
-      # /health/ via the Docker service name. localhost/127.0.0.1 cover host access.
+      # "website" allows intra-network services to call /health/ via the Docker
+      # service name. localhost/127.0.0.1 cover host access.
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,website}
       CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-http://localhost:6500,http://127.0.0.1:6500}
-      # Cross-service link (not required for the website to render)
-      MANDARI_API_URL: ${MANDARI_API_URL:-http://localhost:8000/api}
-      # Status page — public link target shown on /status/
-      STATUS_PAGE_URL: ${STATUS_PAGE_URL:-http://localhost:6501}
-      # Internal URL the website backend uses to call Kener's REST API
-      KENER_INTERNAL_URL: ${KENER_INTERNAL_URL:-http://kener:3000}
-      # API token (generate in Kener admin → Settings → API Keys)
-      KENER_API_TOKEN: ${KENER_API_TOKEN:-}
+      # Public status page — /status/ redirects here, the footer links it
+      STATUS_PAGE_URL: ${STATUS_PAGE_URL:-https://status.mandari.de/}
       # Booking URL for "Call buchen" CTAs. Default = internal contact-page anchor.
       # Override only if migrating to an external booking tool.
       BOOKING_URL: ${BOOKING_URL:-/kontakt/#termin-buchen}
@@ -118,65 +112,6 @@ services:
       retries: 5
       start_period: 30s
 
-  # ===========================================================================
-  # Redis — required by Kener for monitor scheduling and queues
-  # ===========================================================================
-  kener-redis:
-    image: redis:7-alpine
-    container_name: marketing-website-kener-redis
-    restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - kener_redis_data:/data
-    networks:
-      - marketing
-    mem_limit: 128m
-    security_opt:
-      - no-new-privileges:true
-    logging: *default-logging
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
-  # ===========================================================================
-  # Kener — self-hosted status page (https://github.com/rajnandan1/kener)
-  # ===========================================================================
-  # Public status page:  http://localhost:${KENER_PORT:-6501}/
-  # Admin UI:            http://localhost:${KENER_PORT:-6501}/manage
-  #   Default credentials are created on first startup; check container logs:
-  #     docker compose logs kener | grep -i "password\|admin"
-  # ===========================================================================
-  kener:
-    image: rajnandan1/kener:latest
-    container_name: marketing-website-kener
-    restart: unless-stopped
-    ports:
-      - "${KENER_PORT:-6501}:3000"
-    environment:
-      KENER_SECRET_KEY: ${KENER_SECRET_KEY:-dev-only-kener-secret-change-me}
-      ORIGIN: ${KENER_ORIGIN:-http://localhost:6501}
-      REDIS_URL: redis://kener-redis:6379
-      TZ: ${TZ:-Europe/Berlin}
-    volumes:
-      - kener_data:/app/database
-    depends_on:
-      kener-redis:
-        condition: service_healthy
-    networks:
-      - marketing
-    mem_limit: 512m
-    security_opt:
-      - no-new-privileges:true
-    logging: *default-logging
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:3000/ > /dev/null || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-
 # =============================================================================
 # Volumes (persistent data)
 # =============================================================================
@@ -185,10 +120,6 @@ volumes:
     name: marketing_website_postgres_data
   website_media:
     name: marketing_website_media
-  kener_data:
-    name: marketing_website_kener_data
-  kener_redis_data:
-    name: marketing_website_kener_redis_data
 
 # =============================================================================
 # Network (isolated from the main mandari stack)

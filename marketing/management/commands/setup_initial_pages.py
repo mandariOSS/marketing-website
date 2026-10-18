@@ -13,56 +13,126 @@ from django.template import TemplateDoesNotExist
 from django.template.loader import get_template as load_template
 from wagtail.models import Page, Site
 
+from marketing import seo_texte
+
+# Kontaktseite (ContactPage, eigener Seitentyp) – `refresh_seeded_page kontakt --force`
+# bringt Titel und SEO-Felder einer bestehenden Seite auf diesen Stand.
+CONTACT_PAGE_META = {
+    "title": "Kontakt",
+    "slug": "kontakt",
+    "seo_title": "Kontakt",
+    "search_description": (
+        "Erstgespräch mit mandari vereinbaren oder eine Nachricht schreiben – für Verwaltungen, Fraktionen, "
+        "Partner und Presse. Antwort innerhalb eines Werktags."
+    ),
+}
+
+
+def seeded_custom_template(slug: str) -> str:
+    """Template, das der Seed für eine Marketing-Seite vorsieht ('' = Standard-Template).
+
+    Steht im Eintrag von MARKETING_PAGE_META ein ``custom_template`` (Seiten mit festen
+    Abschnitten, z. B. company/unternehmen.html), setzen es `migrate_pages_to_streamfield`
+    und `refresh_seeded_page`; sonst rendert marketing_page.html.
+    """
+    meta = next((m for m in MARKETING_PAGE_META if m["slug"] == slug), None)
+    return (meta or {}).get("custom_template", "")
+
+
+# ── Startseite: Metadaten ─────────────────────────────────────────────────
+# Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
+# SEO-Felder hier, damit `refresh_seeded_page startseite --force` sie auf
+# bestehenden Datenbanken nachzieht.
+HOME_PAGE_META = {
+    "title": "mandari",
+    "subtitle": "Software für die offene Verwaltung",
+    "seo_title": "mandari – Software für die offene Verwaltung",
+    "search_description": (
+        "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
+        "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
+    ),
+}
+
 
 # ── Marketing-Seiten: Metadaten (Titel, SEO) ──────────────────────────────
 # Modul-Level, damit `refresh_seeded_page` bei Live-Updates auch Titel und
 # SEO-Felder auf den aktuellen Seed-Stand bringen kann.
+# SEO-Titel und Descriptions einzelner Seiten überschreibt marketing/seo_texte.py (unter der Liste).
 MARKETING_PAGE_META = [
     # ── Produkt / Lösungen ────────────────────────────────────────────
+    # /produkte/ (Plattform-Übersicht) und /fraktionen/ (mandari Work) ersetzen
+    # das frühere /produkt/ — es leitet per 301 auf /fraktionen/ (website/urls.py)
+    # und wird mit `retire_page produkt --redirect /fraktionen/` zurückgezogen.
     {
-        "title": "Produkt",
-        "slug": "produkt",
-        "seo_title": "Produkt – Mandari",
-        "search_description": "Drei Module für kommunalpolitische Transparenz: Insight, Work und Session.",
+        "title": "Produkte",
+        "slug": "produkte",
+        "seo_title": "Produkte für die offene Verwaltung",
+        "search_description": (
+            "Ratsinformationssystem, Fraktionsarbeit und Bürgerportal auf einer offenen Plattform: "
+            "mandari Session, Work und Insight mit allen Funktionen im Überblick."
+        ),
+    },
+    # Sachseite zum Begriff (SEO, Issue mandariOSS/mandari#914): Was ein Ratsinformationssystem ist und was
+    # mandari davon abdeckt. Ohne Preise; im Produkte-Menü und in der Fußzeile verlinkt.
+    {
+        "title": "Ratsinformationssystem",
+        "slug": "ratsinformationssystem",
+        "seo_title": "Ratsinformationssystem für Kommunen",
+        "search_description": (
+            "Was ein Ratsinformationssystem leistet und wie mandari es umsetzt: Sitzungsdienst, Fraktionsarbeit "
+            "und Bürgerportal mit offener OParl-Schnittstelle."
+        ),
+    },
+    {
+        "title": "Für Fraktionen",
+        "slug": "fraktionen",
+        "seo_title": "Software für Fraktionen",
+        "search_description": (
+            "mandari Work für Fraktionen: Sitzungen im Team vorbereiten, Anträge mit Fristen "
+            "und Freigaben führen, mit jedem Ratsinformationssystem. 39,90 € im Monat."
+        ),
     },
     {
         "title": "Preise",
         "slug": "preise",
-        "seo_title": "Preise – Mandari",
-        "search_description": "Transparente Preisgestaltung. Insight ist kostenlos, Work ab 39,90€/Monat.",
+        "seo_title": "Preise",
+        "search_description": (
+            "Was mandari kostet: Das Bürgerportal ist kostenlos, mandari Work gibt es ab 39,90 € im Monat, "
+            "mandari Session kalkulieren wir je Kommune."
+        ),
     },
     {
         "title": "Für Kommunen & Verwaltungen",
         "slug": "kommunen",
-        "seo_title": "Für Kommunen & Verwaltungen – Mandari",
+        "seo_title": "Sitzungsdienst & Ratsinformationssystem für Kommunen",
         "search_description": (
-            "Verwaltungs-RIS mandari Session, OParl-konforme Veröffentlichung, Bürgerportal "
-            "Insight — deutsches Hosting, DSGVO-konform, Open Source ohne Vendor-Lock-in."
+            "Ratsinformationssystem und Sitzungsdienst für Kommunen: mandari Session mit OParl, kostenlosem "
+            "Bürgerportal und Betrieb in Deutschland. Open Source."
         ),
     },
     {
         "title": "Migration",
         "slug": "migration",
-        "seo_title": "Migration vom Alt-RIS – Mandari",
-        "search_description": "Wechsel von ALLRIS, regisafe oder Somacos zu Mandari Session. Vier-Schritte-Plan, was mitkommt, Pilot-Konditionen.",
+        "seo_title": "Migration vom Alt-RIS",
+        "search_description": "Wechsel von ALLRIS, regisafe oder Somacos zu mandari Session. Vier-Schritte-Plan, was mitkommt, Pilot-Konditionen.",
     },
     {
         "title": "Roadmap",
         "slug": "roadmap",
-        "seo_title": "Roadmap – Mandari",
+        "seo_title": "Roadmap",
         "search_description": "Öffentliche Roadmap und geplante Features.",
     },
 
     # ── Vergleich (Übersicht + Unterseiten via "parent"-Key) ──────────
-    # Inhalte kommen aus migrate_pages_to_streamfield (_VERGLEICH_ANBIETER).
+    # Inhalte kommen aus marketing/seeds_vergleich.py.
     {
         "title": "RIS-Vergleich",
         "slug": "vergleich",
         "show_in_menus": False,
-        "seo_title": "Ratsinformationssysteme im Vergleich – mandari vs. etablierte Anbieter",
+        "seo_title": "Ratsinformationssysteme im Vergleich",
         "search_description": (
-            "mandari im sachlichen Vergleich mit Sternberg SD.NET, ALLRIS, Somacos Session "
-            "und regisafe — Open Source, Preistransparenz, OParl, Bürgerportal, Hosting."
+            "mandari im sachlichen Vergleich mit Somacos, Sternberg, ALLRIS und regisafe: "
+            "48 Funktionen mit Quellen, dazu offen, was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -70,10 +140,10 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-sternberg",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. Sternberg SD.NET – RIS-Vergleich",
+        "seo_title": "SD.NET-Alternative? mandari vs. Sternberg im Vergleich",
         "search_description": (
-            "mandari und Sternberg SD.NET im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und Sternberg SD.NET im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -81,10 +151,10 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-allris",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. ALLRIS (CC e-gov) – RIS-Vergleich",
+        "seo_title": "ALLRIS-Alternative? mandari vs. ALLRIS im Vergleich",
         "search_description": (
-            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -92,10 +162,10 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-somacos",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. Somacos Session – RIS-Vergleich",
+        "seo_title": "SessionNet-Alternative? mandari vs. Somacos Session",
         "search_description": (
-            "mandari und Somacos Session im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und Somacos Session im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
     {
@@ -103,10 +173,10 @@ MARKETING_PAGE_META = [
         "slug": "mandari-vs-regisafe",
         "parent": "vergleich",
         "show_in_menus": False,
-        "seo_title": "mandari vs. regisafe – RIS-Vergleich",
+        "seo_title": "regisafe-Alternative? mandari vs. regisafe im Vergleich",
         "search_description": (
-            "mandari und regisafe im sachlichen Vergleich: Open Source, "
-            "Preistransparenz, OParl, Bürgerportal, Hosting. Stand Juli 2026."
+            "mandari und regisafe im sachlichen Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
         ),
     },
 
@@ -127,23 +197,27 @@ MARKETING_PAGE_META = [
             "Verfügbarkeitszusage, Wartungsfenster, Störungsklassen, Reaktions- und Wiederherstellungszeiten, "
             "Datensicherung und Gutschriften für das Managed Hosting von mandari. Version 1.0 vom 17.09.2026."
         ),
+        # Dokumentseite (Musterkatalog M4) wie Trust Center: Inhaltsleiste, Text, Randspalte mit Eckdaten
+        "custom_template": "marketing/dokument.html",
     },
     {
         "title": "Trust Center",
         "slug": "trust",
         "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",
         "search_description": "Komplette Sicherheits- & Vertrauensübersicht: AVV nach Art. 28 DSGVO, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
+        # Dokumentseite (Musterkatalog M4): Inhaltsleiste, Text, Randspalte mit Eckdaten
+        "custom_template": "marketing/dokument.html",
     },
     {
         "title": "Transparenzbericht",
         "slug": "transparenz",
-        "seo_title": "Transparenzbericht 2026 – Mandari",
+        "seo_title": "Transparenzbericht 2026",
         "search_description": "Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Finanztransparenz, Open-Source-Beiträge.",
     },
     {
         "title": "Barrierefreiheit",
         "slug": "barrierefreiheit",
-        "seo_title": "Erklärung zur Barrierefreiheit – Mandari",
+        "seo_title": "Erklärung zur Barrierefreiheit",
         "search_description": "Pflichterklärung nach BFSG, BITV 2.0, EN 301 549. Konformitätsstand, Feedback, Schlichtungsstelle.",
     },
     {
@@ -157,34 +231,62 @@ MARKETING_PAGE_META = [
     {
         "title": "Open Source",
         "slug": "open-source",
-        "seo_title": "Open Source – Mandari",
-        "search_description": "Mandari ist Open Source unter AGPL-3.0. Selbst-Hosting möglich.",
+        "seo_title": "Open Source",
+        "search_description": (
+            "mandari steht vollständig unter AGPL-3.0. Was offener Quellcode für Verwaltungen bedeutet: "
+            "freie Anbieterwahl, Prüfbarkeit bis zur letzten Zeile, dauerhafte Verfügbarkeit."
+        ),
     },
     {
         "title": "Mitmachen",
         "slug": "mitmachen",
-        "seo_title": "Mitmachen – Mandari",
-        "search_description": "Werde Teil der Mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
+        "seo_title": "Mitmachen",
+        "search_description": "Werde Teil der mandari-Community. Entwicklung, Dokumentation, Übersetzung.",
     },
 
-    # ── Über uns ──────────────────────────────────────────────────────
+    # ── Unternehmen ───────────────────────────────────────────────────
+    # Inhalte: marketing/seeds_unternehmen.py. /ueber-uns/ ist in /unternehmen/
+    # aufgegangen: 301 in website/urls.py, eine bestehende Seite zieht
+    # `retire_page ueber-uns --redirect /unternehmen/` zurück.
     {
-        "title": "Über uns",
-        "slug": "ueber-uns",
-        "seo_title": "Über uns – Mission & Werte",
-        "search_description": "Mandari — Mission, Werte und das Projekt hinter dem offenen Ratsinformationssystem.",
+        "title": "Unternehmen",
+        "slug": "unternehmen",
+        "seo_title": "Unternehmen",
+        "search_description": (
+            "mandari ist ein GovTech-Startup aus Münster: Mission, Wertekompass, Geschäftsmodell, Wegmarken "
+            "und die Angaben zum Unternehmen für Eignungsprüfung und Vergabe."
+        ),
+        # Angaben zum Unternehmen kommen aus „Einstellungen → Unternehmensangaben“ (company.CompanySettings)
+        "custom_template": "company/unternehmen.html",
+    },
+    {
+        "title": "Karriere",
+        "slug": "karriere",
+        "seo_title": "Karriere",
+        "search_description": (
+            "Arbeiten bei mandari, dem GovTech-Startup aus Münster: Software mit Wirkung bauen, Open Source "
+            "by default, früh dabei sein. So arbeiten wir – und so bewirbst du dich."
+        ),
     },
     {
         "title": "Partner",
         "slug": "partner",
-        "seo_title": "Partner – Mandari",
-        "search_description": "Partnerschaften mit Kommunen, Fraktionen und zivilgesellschaftlichen Organisationen.",
+        "seo_title": "Partner",
+        "search_description": (
+            "Mit mandari zusammenarbeiten: kommunale IT-Dienstleister und Systemhäuser, Pilotkommunen, "
+            "Förderer und Stiftungen sowie die Civic-Tech-Gemeinschaft."
+        ),
     },
     {
         "title": "Presse",
         "slug": "presse",
-        "seo_title": "Presse – Mandari",
-        "search_description": "Pressematerial und Kontakt für Journalist:innen.",
+        "seo_title": "Presse",
+        "search_description": (
+            "Pressebereich von mandari: Kurzprofil, Fakten und Kennzahlen mit Stand, das Logo-Paket zum "
+            "Herunterladen und der direkte Weg für Presseanfragen."
+        ),
+        # Logo-Paket aus static/brand/ (templates/company/_logopaket.html)
+        "custom_template": "company/presse.html",
     },
     # /faq/ wurde aufgelöst — Page-spezifische FAQs sind direkt in
     # /preise/, /kontakt/, /migration/ integriert
@@ -196,6 +298,63 @@ MARKETING_PAGE_META = [
     # Über-uns / Open-Source konsolidiert — werden via Django-Redirects
     # in website/urls.py auf die neuen URLs umgeleitet.
 ]
+
+# SEO-Titel und Descriptions mit geprüften Längen (Issue mandariOSS/mandari#914) gehen den Einträgen oben vor.
+seo_texte.anwenden(MARKETING_PAGE_META)
+
+
+# ── Blog ──────────────────────────────────────────────────────────────────
+# Der Blog ruht (keine Beiträge): /blog/ und /blog/feed/ leiten auf /releases/
+# (website/urls.py), ein vorhandener Blog-Index wird mit
+# `retire_page /blog/ --redirect /releases/` zurückgezogen. Neue Datenbanken
+# bekommen keinen Blog-Index mehr. Reaktivieren: README, Abschnitt „Blog reaktivieren“.
+BLOG_ENABLED = False
+
+# ── Meta-Descriptions für Seiten ohne eigene Seed-Beschreibung ─────────────
+# Werden nur in LEERE search_description-Felder geschrieben (neue und bestehende
+# Seiten); im CMS gepflegte Texte bleiben unangetastet.
+SEO_DESCRIPTION_DEFAULTS = {
+    "impressum": (
+        "Impressum von mandari: Anbieter nach § 5 DDG, Kontakt, Umsatzsteuer-Identifikationsnummer "
+        "und inhaltlich Verantwortliche."
+    ),
+    "datenschutz": (
+        "Datenschutzerklärung von mandari: welche Daten wir beim Besuch der Website und bei der "
+        "Nutzung unserer Dienste verarbeiten, wozu und welche Rechte Sie haben."
+    ),
+    "agb": (
+        "Allgemeine Geschäftsbedingungen für mandari Work und mandari Session: Leistungen, Preise, "
+        "Laufzeit und Kündigung, Verfügbarkeit, Datenschutz und Haftung."
+    ),
+    "quellen": (
+        "Quellennachweise von mandari: OParl-Schnittstellen der Kommunen, Lizenzen der "
+        "Ratsinformationen, Karten, Geokodierung und KI-Komponenten."
+    ),
+}
+
+# ── Release-Übersicht ─────────────────────────────────────────────────────
+# Frühere Seed-Fassungen werden ersetzt, im CMS geänderte Texte bleiben.
+RELEASE_INDEX_META = {
+    "seo_title": "Releases: alle Versionen mit Release-Notes",
+    "search_description": (
+        "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
+        "Fraktionen und Bürgerportal, die neueste Version zuerst."
+    ),
+    "intro": (
+        "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
+        "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
+        '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
+    ),
+}
+RELEASE_INDEX_LEGACY = {
+    "seo_title": {"Releases – Mandari", "Releases"},
+    "search_description": {
+        "Versionshistorie und Changelogs.",
+        "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
+        "Fraktionen und Bürgerportal.",
+    },
+    "intro": {"<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>"},
+}
 
 
 class Command(BaseCommand):
@@ -219,15 +378,9 @@ class Command(BaseCommand):
         home = HomePage.objects.first()
         if not home:
             home = HomePage(
-                title="Mandari",
                 slug="mandari",
-                subtitle="Kommunalpolitische Transparenz für Deutschland",
-                seo_title="Mandari – Kommunalpolitische Transparenz für Deutschland",
-                search_description=(
-                    "Mandari macht kommunalpolitische Entscheidungen transparent und zugänglich. "
-                    "Open Source unter AGPL-3.0."
-                ),
                 show_in_menus=True,
+                **HOME_PAGE_META,
             )
             root.add_child(instance=home)
             home.save_revision().publish()
@@ -247,7 +400,7 @@ class Command(BaseCommand):
                 hostname="localhost",
                 root_page=home,
                 is_default_site=True,
-                site_name="Mandari",
+                site_name="mandari",
             )
             self.stdout.write(self.style.SUCCESS("  Site erstellt"))
 
@@ -271,10 +424,10 @@ class Command(BaseCommand):
                 page.delete()
                 self.stdout.write(self.style.WARNING(f"  {slug}/ entfernt (konsolidiert)"))
 
-        # Note: custom_template wird bewusst NICHT mehr geseedet — die alten
-        # Spezial-Templates (marketing/produkt.html, …) existieren in diesem
-        # Repo nicht. Inhalte kommen aus dem StreamField-Seed
-        # (`migrate_pages_to_streamfield`), gerendert über marketing_page.html.
+        # Note: Inhalte kommen aus dem StreamField-Seed (`migrate_pages_to_streamfield`),
+        # gerendert über marketing_page.html. Ein custom_template steht nur dort im
+        # Seed, wo die Seite feste Abschnitte ergänzt (z. B. company/unternehmen.html);
+        # die alten Spezial-Templates (marketing/produkt.html, …) gibt es nicht mehr.
         for page_data in marketing_pages:
             slug = page_data.pop("slug")
             show_in_menus = page_data.pop("show_in_menus", True)
@@ -309,10 +462,7 @@ class Command(BaseCommand):
 
         if not ContactPage.objects.exists():
             contact = ContactPage(
-                title="Kontakt",
-                slug="kontakt",
-                seo_title="Kontakt – Mandari",
-                search_description="Kontaktformular und Ansprechpartner.",
+                **CONTACT_PAGE_META,
                 intro="<p>Wir freuen uns über Ihre Nachricht.</p>",
                 thank_you_text="<p>Vielen Dank für Ihre Nachricht! Wir melden uns so schnell wie möglich.</p>",
                 show_in_menus=True,
@@ -349,7 +499,7 @@ class Command(BaseCommand):
             {
                 "title": "Auftragsverarbeitungsvertrag (AVV)",
                 "slug": "avv",
-                "seo_title": "Auftragsverarbeitungsvertrag (AVV) – Mandari",
+                "seo_title": "Auftragsverarbeitungsvertrag (AVV)",
                 "search_description": (
                     "Muster-Auftragsverarbeitungsvertrag nach Art. 28 DSGVO für mandari work — "
                     "TOMs, Subunternehmer, Löschung, Kontrollrechte."
@@ -359,7 +509,7 @@ class Command(BaseCommand):
             {
                 "title": "Kündigung & Widerruf",
                 "slug": "kuendigung",
-                "seo_title": "Vertrag kündigen – Mandari",
+                "seo_title": "Vertrag kündigen",
                 "search_description": (
                     "Kündigungsbutton nach § 312k BGB: ordentliche und außerordentliche "
                     "Kündigung sowie Widerruf für mandari work — direkt online kündigen."
@@ -382,8 +532,16 @@ class Command(BaseCommand):
 
         for page_data in legal_pages:
             slug = page_data.pop("slug")
+            if slug in SEO_DESCRIPTION_DEFAULTS:
+                page_data.setdefault("search_description", SEO_DESCRIPTION_DEFAULTS[slug])
 
             existing = LegalPage.objects.filter(slug=slug).first()
+            if existing and not existing.search_description and page_data.get("search_description"):
+                existing.search_description = page_data["search_description"]
+                existing.save()
+                if existing.live:
+                    existing.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  {page_data['title']}: Meta-Description ergänzt"))
             if existing:
                 new_body = page_data.get("body", "")
                 if new_body and (not existing.body or placeholder_marker in existing.body):
@@ -406,13 +564,15 @@ class Command(BaseCommand):
 
         # ── Blog ──────────────────────────────────────────────────────────
 
-        if not BlogIndexPage.objects.exists():
+        if not BLOG_ENABLED:
+            self.stdout.write("  Blog ruht (BLOG_ENABLED = False) – kein Blog-Index angelegt")
+        elif not BlogIndexPage.objects.exists():
             blog = BlogIndexPage(
                 title="Blog",
                 slug="blog",
-                seo_title="Blog – Mandari",
-                search_description="Neuigkeiten, Tutorials und Community-Beiträge rund um Mandari.",
-                intro="<p>Neuigkeiten und Einblicke aus der Entwicklung von Mandari.</p>",
+                seo_title="Blog",
+                search_description="Neuigkeiten, Tutorials und Community-Beiträge rund um mandari.",
+                intro="<p>Neuigkeiten und Einblicke aus der Entwicklung von mandari.</p>",
                 show_in_menus=True,
             )
             home.add_child(instance=blog)
@@ -423,20 +583,31 @@ class Command(BaseCommand):
 
         # ── Releases ──────────────────────────────────────────────────────
 
-        if not ReleaseIndexPage.objects.exists():
+        releases = ReleaseIndexPage.objects.first()
+        if not releases:
             releases = ReleaseIndexPage(
                 title="Releases",
                 slug="releases",
-                seo_title="Releases – Mandari",
-                search_description="Versionshistorie und Changelogs.",
-                intro="<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>",
                 show_in_menus=True,
+                **RELEASE_INDEX_META,
             )
             home.add_child(instance=releases)
             releases.save_revision().publish()
             self.stdout.write(self.style.SUCCESS("  Releases erstellt"))
         else:
-            self.stdout.write("  Releases existiert bereits")
+            changed = [
+                field for field, value in RELEASE_INDEX_META.items()
+                if getattr(releases, field) in RELEASE_INDEX_LEGACY[field] and getattr(releases, field) != value
+            ]
+            for field in changed:
+                setattr(releases, field, RELEASE_INDEX_META[field])
+            if changed:
+                releases.save()
+                if releases.live:
+                    releases.save_revision().publish()
+                self.stdout.write(self.style.SUCCESS(f"  Releases: {', '.join(changed)} aktualisiert"))
+            else:
+                self.stdout.write("  Releases existiert bereits")
 
         # ── Release-Einträge (aus get_release_definitions) ────────────────
         # Idempotent: nur fehlende ReleasePages werden angelegt. Updates an

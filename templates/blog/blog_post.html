@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block title %}{{ page.title }}{% endblock %}
@@ -22,7 +23,7 @@
                     {{ page.date|date:"d. F Y" }}
                 </time>
                 <span class="text-sm text-gray-400 dark:text-gray-500 flex items-center gap-1">
-                    <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                    {% icon "clock" "w-3.5 h-3.5" %}
                     {{ page.reading_time }} Min. Lesezeit
                 </span>
             </div>
@@ -86,7 +87,7 @@
             <div class="flex items-center gap-4 mt-6" x-data="{ copied: false }">
                 <button @click="navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 2000)"
                         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <i data-lucide="link" class="w-4 h-4" aria-hidden="true"></i>
+                    {% icon "link" "w-4 h-4" %}
                     <span x-show="!copied">Link kopieren</span>
                     <span x-show="copied" x-cloak class="text-green-600 dark:text-green-400">Kopiert!</span>
                 </button>
@@ -108,7 +109,7 @@
                         <img src="{{ rel_img.url }}" alt="{{ post.title }}" class="w-full h-40 object-cover">
                         {% else %}
                         <div class="w-full h-40 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900 dark:to-primary-800 flex items-center justify-center">
-                            <i data-lucide="newspaper" class="w-10 h-10 text-primary-400"></i>
+                            {% icon "newspaper" "w-10 h-10 text-primary-400" %}
                         </div>
                         {% endif %}
                         <div class="p-5">
@@ -137,7 +138,7 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <a href="{{ page.get_parent.url }}"
                class="inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors">
-                <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i>
+                {% icon "arrow-left" "w-4 h-4" %}
                 Zurück zum Blog
             </a>
         </div>

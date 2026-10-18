@@ -22,24 +22,14 @@ if shared_env_path.exists():
 SECRET_KEY = os.environ.get("WEBSITE_SECRET_KEY", os.environ.get("SECRET_KEY", "django-insecure-change-me"))
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
+# Öffentliche Basisadresse. Canonical, og:url, og:image, Sitemap, robots.txt und
+# security.txt bauen ihre absoluten Adressen daraus – nie aus dem Host-Header.
+# Produktion: SITE_URL=https://mandari.de
 SITE_URL = os.environ.get("SITE_URL", "http://localhost:8001")
-MANDARI_API_URL = os.environ.get("MANDARI_API_URL", "http://mandari:8000/api")
 
-# Public URL of the Kener status page — used as the "open status page directly"
-# fallback link. Default is the public production status page; the local
-# docker-compose stack overrides this with its bundled Kener instance.
-STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de")
-
-# Server-side URL the marketing-site backend uses to call Kener's REST API.
-# In Docker this is the internal service name; in local dev outside Docker
-# this is typically the same host as STATUS_PAGE_URL.
-KENER_INTERNAL_URL = os.environ.get("KENER_INTERNAL_URL", "http://kener:3000")
-
-# API token for the Kener REST API. Generate one in the Kener admin under
-# Settings → API Keys after logging in at /account/signin.
-# Without a token the /status/ page degrades to a "open status page directly"
-# fallback — it never breaks.
-KENER_API_TOKEN = os.environ.get("KENER_API_TOKEN", "")
+# Öffentliche Statusseite. /status/ leitet dauerhaft dorthin weiter,
+# die Fußzeile verlinkt sie.
+STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de/").rstrip("/") + "/"
 
 # Booking URL for "Call buchen" CTAs across the site.
 # Defaults to the internal /kontakt/#termin-buchen anchor (native form on the
@@ -56,6 +46,18 @@ ALTCHA_HMAC_KEY = os.environ.get(
 )
 ALTCHA_CHALLENGE_URL = os.environ.get("ALTCHA_CHALLENGE_URL", "/altcha/challenge/")
 ALTCHA_MAX_NUMBER = int(os.environ.get("ALTCHA_MAX_NUMBER", "100000"))
+
+# Sicherheits-Header (marketing/sicherheit.py): Permissions-Policy immer, Content-Security-Policy je nach Modus.
+# CSP_MODUS: "report" (Standard, Content-Security-Policy-Report-Only: der Browser meldet Verstöße, blockiert nichts),
+# "scharf" (Content-Security-Policy: der Browser blockiert) oder "aus". Verstöße gehen an CSP_REPORT_URI, in
+# Produktion den Endpunkt der mandari-Anwendung auf derselben Domain (Reverse Proxy: /csp-report/ → mandari).
+CSP_MODUS = os.environ.get("CSP_MODUS", "report").strip().lower()
+CSP_REPORT_URI = os.environ.get("CSP_REPORT_URI", "/csp-report/").strip()
+
+# IndexNow (marketing/indexnow.py): meldet veröffentlichte und zurückgezogene Seiten an Bing, Yandex & Co.
+# Ohne Schlüssel aus. Derselbe Wert gilt für die mandari-Anwendung unter derselben Domain.
+INDEXNOW_KEY = os.environ.get("INDEXNOW_KEY", "").strip()
+INDEXNOW_ENDPOINT = os.environ.get("INDEXNOW_ENDPOINT", "").strip() or "https://api.indexnow.org/indexnow"
 
 from urllib.parse import urlparse
 
@@ -77,6 +79,7 @@ INSTALLED_APPS = [
     # Wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -95,17 +98,21 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    "website.apps.StatischeDateienConfig",  # django.contrib.staticfiles ohne static/css/input.css
     "django.contrib.sitemaps",
     "django.contrib.postgres",
     # Project apps
     "marketing",
     "blog",
+    "company",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    # ETag für HTML: Seiten ohne Formular sind bytegleich (CSP über Hashes, ohne Nonce); bei unveränderter Seite
+    # antwortet die Website auf If-None-Match mit 304. Vor allen Middlewares, die den Inhalt ändern könnten.
+    "django.middleware.http.ConditionalGetMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -116,6 +123,8 @@ MIDDLEWARE = [
     # RFC 8288 Link headers for agent / crawler discovery
     # (sitemap, license, privacy-policy, security.txt, vcs-git)
     "marketing.middleware.LinkHeaderMiddleware",
+    # Permissions-Policy und Content-Security-Policy (CSP_MODUS, siehe oben)
+    "marketing.sicherheit.SicherheitsHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "website.urls"
@@ -156,6 +165,18 @@ DATABASES = {
     )
 }
 
+# Zwischenspeicher. "formulare" liegt in der Datenbank, damit alle gunicorn-Worker dieselben
+# Einträge sehen (Einmal-Prüfung des Spamschutzes, Begrenzung der Kontaktanfragen).
+# Tabelle anlegen: python manage.py createcachetable (idempotent, läuft im Container-Start).
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "formulare": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "website_formular_cache",
+        "OPTIONS": {"MAX_ENTRIES": 20000},
+    },
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -184,7 +205,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Wagtail settings
-WAGTAIL_SITE_NAME = "Mandari"
+WAGTAIL_SITE_NAME = "mandari"
 WAGTAILADMIN_BASE_URL = SITE_URL
 WAGTAIL_ADMIN_URL = "cms-admin/"
 

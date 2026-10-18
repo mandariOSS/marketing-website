@@ -1,0 +1,3 @@
+{% extends "marketing/marketing_page.html" %}
+{# /presse/: Redaktionsinhalt aus Wagtail, dazu das Logo-Paket aus static/brand/ #}
+{% block content %}{% include "company/_inhalt_mit_abschnitt.html" with abschnitt="company/_logopaket.html" nach_anker="fakten" %}{% endblock %}

@@ -1,42 +1,62 @@
-{% load static wagtailcore_tags %}
-<!DOCTYPE html>
-<html lang="de" class="scroll-smooth"
-      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
-      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
-      :class="{ 'dark': darkMode }">
+{% load static wagtailcore_tags seo baender sicherheit %}<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
 <head>
+    {% seo_meta as seo %}
+    {% capture as head_title %}{% block title %}{{ seo.title }}{% endblock %}{% endcapture %}
+    {% capture as head_description %}{% block meta_description %}{{ seo.description }}{% endblock %}{% endcapture %}
+    {% capture as canonical_url %}{% block canonical %}{{ seo.canonical }}{% endblock %}{% endcapture %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{% block meta_description %}Mandari - Kommunalpolitische Transparenz{% endblock %}">
+    {% comment %}
+    Kommentare im Kopf als Template-Kommentar: Sie gehen nicht mit jeder Seite über die Leitung. Das HTML bleibt so mit
+    dem kritischen CSS in den ersten TCP-Paketen (rund 14 KB gzip, marketing/templatetags/stile.py).
+    Dunkler Modus vor dem ersten Zeichnen (kein heller Blitz); den Schalter verwaltet static/js/kopfzeile.js.
+    Bewusst kein x-data am <html>: Alpine durchliefe sonst beim Start jede Zeile jeder Tabelle.
+    Inline-Skripte und -Stile stehen in csp_inline: Die Content-Security-Policy erlaubt genau ihre Hashes
+    (marketing/sicherheit.py).
+    {% endcomment %}
+    {% csp_inline %}<script>try { if (localStorage.getItem("darkMode") === "true") document.documentElement.classList.add("dark"); } catch (e) {}</script>{% endcsp_inline %}
+    <title>{{ head_title|full_title:seo.is_home }}</title>
+    <meta name="description" content="{{ head_description|meta_text }}">
     <meta name="theme-color" content="#4f46e5">
 
-    <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}Mandari{% endif %}{% endblock %} | Mandari</title>
+    {# Ohne Canonical (leerer Block, z. B. 404): auch kein og:url #}
+    {% if canonical_url %}<link rel="canonical" href="{{ canonical_url }}">{% endif %}
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="{% block og_title %}{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}Mandari{% endif %}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}{% if self.search_description %}{{ self.search_description }}{% else %}Kommunalpolitische Transparenz{% endif %}{% endblock %}">
+    {# Open Graph und Twitter-Card: gleiche Angaben wie Titel, Beschreibung und Canonical #}
+    <meta property="og:title" content="{{ head_title|full_title:seo.is_home }}">
+    <meta property="og:description" content="{{ head_description|meta_text }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% block og_image %}{% static 'images/og-default.png' %}{% endblock %}">
+    {% if canonical_url %}<meta property="og:url" content="{{ canonical_url }}">{% endif %}
+    <meta property="og:image" content="{% block og_image %}{{ seo.og_image }}{% endblock %}">
     <meta property="og:locale" content="de_DE">
-    <meta property="og:site_name" content="Mandari">
-
-    <!-- Twitter Card -->
+    <meta property="og:site_name" content="{{ seo.site_name }}">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{% if self.seo_title %}{{ self.seo_title }}{% elif self.title %}{{ self.title }}{% else %}Mandari{% endif %}">
-    <meta name="twitter:description" content="{% if self.search_description %}{{ self.search_description }}{% else %}Kommunalpolitische Transparenz{% endif %}">
+    <meta name="twitter:title" content="{{ head_title|full_title:seo.is_home }}">
+    <meta name="twitter:description" content="{{ head_description|meta_text }}">
 
-    <!-- Favicon (Brand: "m." — siehe scripts/generate_logo.py) -->
+    {# Favicon (Brand: "m." — siehe scripts/generate_logo.py) #}
     <link rel="icon" href="{% static 'brand/favicon.svg' %}" type="image/svg+xml">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'brand/favicon-32.png' %}">
     <link rel="icon" type="image/png" sizes="192x192" href="{% static 'brand/favicon-192.png' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'brand/apple-touch-icon.png' %}">
 
-    <!-- Inter lokal gehostet (Marken-Schrift der Wortmarke; DSGVO-konform) -->
-    <style>
+    {# Früh laden, was die erste Ansicht braucht: Schrift (latin, crossorigin wie bei @font-face) und das größte Hero-Bild #}
+    <link rel="preload" href="{% static 'fonts/inter-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+    {% block bild_vorladen %}{% hero_vorladen %}{% endblock %}
+
+    {% comment %}
+    Inter lokal gehostet (Marken-Schrift der Wortmarke; DSGVO-konform). Variable Schrift, Achse wght auf 400–700
+    begrenzt (scripts/schrift_teilmenge.py). font-display: swap, damit Inter auch beim ersten Aufruf über das
+    Mobilnetz erscheint (mit optional blieb ab rund 60 ms Latenz die Systemschrift stehen). Die Seite zeichnet vor
+    styles.css; damit der Wechsel zu Inter den Text nicht verschiebt (CLS), steht davor „Inter Ersatz“: Arial bzw.
+    Roboto (Android), auf Laufweite und Zeilenmaße von Inter angepasst. Arial mit den Werten von next/font für Inter,
+    Roboto aus den Laufweiten von Inter-Regular und Roboto-Regular am Text der Seiten; beide gegen alle Seiten der
+    Sitemap bei 360–1440 px geprüft. Den Schriftstapel setzt tailwind.config.js.
+    {% endcomment %}
+    {% csp_inline %}<style>
+      @font-face { font-family: 'Inter Ersatz'; src: local('Arial'), local('Liberation Sans'); size-adjust: 107.12%; ascent-override: 90.44%; descent-override: 22.52%; }
+      @font-face { font-family: 'Inter Ersatz Roboto'; src: local('Roboto'); size-adjust: 107.3%; ascent-override: 90.3%; descent-override: 22.5%; }
       @font-face {
         font-family: 'Inter';
         font-style: normal;
@@ -53,111 +73,88 @@
         src: url("{% static 'fonts/inter-latin-ext.woff2' %}") format('woff2');
         unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
       }
-    </style>
+    </style>{% endcsp_inline %}
 
-    <!-- TailwindCSS (lokal kompiliert, DSGVO-konform) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {# TailwindCSS (lokal kompiliert, DSGVO-konform): kritisches CSS inline, styles.css ohne Blockade (stile.py) #}
+    {% load stile %}{% stile %}
 
-    <!-- Alpine.js (lokal) -->
+    {# Kopfzeile (Produkte-Menü, Slide-Menü) – registriert sich vor dem Start von Alpine #}
+    <script defer src="{% static 'js/kopfzeile.js' %}"></script>
+
+    {# Alpine.js (lokal) #}
     <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
 
-    <!-- Lucide Icons (lokal) -->
-    <script src="{% static 'vendor/lucide/lucide.min.js' %}"></script>
-
-    <!-- Custom Styles -->
-    <style>
+    {% csp_inline %}<style>
         [x-cloak] { display: none !important; }
 
-        /* Skip Link - WCAG 2.1 */
-        .skip-link {
-            position: absolute;
-            top: -100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #4f46e5;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 500;
-            z-index: 9999;
-            transition: top 0.2s;
-        }
-        .skip-link:focus {
-            top: 1rem;
-            outline: 2px solid white;
-            outline-offset: 2px;
-        }
+        {% comment %}
+        In den Ebenen von Tailwind 4, damit wie mit Tailwind 3 die Spezifität entscheidet (ohne Ebene gingen diese Regeln
+        allen Utilities vor): Grundstile in „base“, dort gehen Utilities (scroll-mt-24, scroll-smooth) und Bausteine (Fokus
+        der Formularfelder .feld) vor. Fokusfarbe im Dunkeln und Radius im Fokus in „utilities“: Sie gelten über .feld,
+        rounded-lg und .btn-primary, focus-visible:rounded-lg (Menüs) geht dem Radius vor.
+        {% endcomment %}
+        @layer base {
+            {# Sprunglink – WCAG 2.4.1 #}
+            .skip-link {
+                position: absolute;
+                top: -100%;
+                left: 1rem;
+                background: #4f46e5;
+                color: white;
+                padding: 0.75rem 1.25rem;
+                border-radius: 0.5rem;
+                text-decoration: none;
+                font-weight: 500;
+                z-index: 9999;
+            }
+            .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
 
-        /* Focus visible styles - WCAG 2.1 */
-        :focus-visible {
-            outline: 2px solid #4f46e5;
-            outline-offset: 2px;
-        }
-        .dark :focus-visible {
-            outline-color: #818cf8;
-        }
+            {# Sichtbarer Tastaturfokus – WCAG 2.4.7 #}
+            :focus-visible { outline: 2px solid #4f46e5; outline-offset: 2px; }
 
-        a:focus-visible,
-        button:focus-visible,
-        [role="button"]:focus-visible {
-            outline: 2px solid #4f46e5;
-            outline-offset: 2px;
-            border-radius: 0.25rem;
-        }
-        .dark a:focus-visible,
-        .dark button:focus-visible,
-        .dark [role="button"]:focus-visible {
-            outline-color: #818cf8;
-        }
+            {# clip statt hidden: hidden machte body zum Scroll-Container, dann haftet die Kopfzeile nicht. #}
+            html, body { overflow-x: hidden; overflow-x: clip; max-width: 100vw; }
 
-        .touch-target {
-            min-width: 44px;
-            min-height: 44px;
-        }
+            {% comment %}
+            Abstand zur haftenden Kopfzeile, wenn der Browser zu einem Anker oder zum Fokus scrollt.
+            Bewusst nicht als scroll-padding am html: Dann hält Chrome Elemente in der Kopfzeile für verdeckt
+            und scrollt bei jedem Tab darin die Seite nach oben. Haftende Leisten liegen ohnehin sichtbar oben.
+            {% endcomment %}
+            main, main *, footer * { scroll-margin-top: 5rem; }
+            @media (min-width: 1024px) { main, main *, footer * { scroll-margin-top: 6rem; } }
+            .sticky * { scroll-margin-top: 0; }
 
-        html, body {
-            overflow-x: hidden;
-            max-width: 100vw;
+            @media (prefers-reduced-motion: reduce) {
+                html { scroll-behavior: auto; }
+                *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+            }
         }
-
-        .break-anywhere {
-            word-break: break-word;
-            overflow-wrap: anywhere;
+        @layer utilities {
+            .dark :focus-visible { outline-color: #818cf8; }
+            a:focus-visible, button:focus-visible, [role="button"]:focus-visible { border-radius: 0.25rem; }
         }
-    </style>
+    </style>{% endcsp_inline %}
 
-    <!-- RSS Feed -->
-    <link rel="alternate" type="application/rss+xml" title="Mandari Blog" href="/blog/feed/">
+    {# Strukturierte Daten (schema.org, marketing/strukturdaten.py): unsichtbarer Datenblock, nach Schrift, CSS und Skripten #}
+    {% strukturdaten %}
 
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 overflow-x-hidden">
-    <!-- Skip Link for Accessibility -->
-    <a href="#main-content" class="skip-link">
-        Zum Hauptinhalt springen
-    </a>
+<body class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 antialiased overflow-x-clip">
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
 
-    <!-- Navigation -->
-    <header role="banner">
+    <header role="banner" class="sticky top-0 z-40">
         {% include "components/navbar.html" %}
     </header>
 
-    <!-- Main Content -->
-    <main id="main-content" class="pt-16" role="main" tabindex="-1">
+    <main id="main-content" role="main" tabindex="-1">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer role="contentinfo">
         {% include "components/footer.html" %}
     </footer>
-
-    <!-- Initialize Lucide icons -->
-    <script>
-        lucide.createIcons();
-    </script>
 
     {% block extra_scripts %}{% endblock %}
 </body>

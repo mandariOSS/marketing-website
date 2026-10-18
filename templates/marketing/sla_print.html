@@ -3,7 +3,7 @@ Druckoptimierte, eigenständige Ansicht des Service Level Agreement.
 Wird unter /sla/druck/ ausgeliefert (marketing.views.sla_print_view) und von
 scripts/build_sla_pdf.py für die PDF-Fassung gerendert. Inhalt kommt aus
 marketing/sla_content.py — hier nichts hardcoden.
-{% endcomment %}<!DOCTYPE html>
+{% endcomment %}{% load sicherheit %}<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@ marketing/sla_content.py — hier nichts hardcoden.
     <meta name="robots" content="noindex, follow">
     <title>Service Level Agreement (SLA) – Version {{ sla_version }} vom {{ sla_date }} | mandari</title>
     <link rel="canonical" href="{{ canonical_url }}">
-    <style>
+    {% csp_inline %}<style>
         @page { size: A4; margin: 18mm 16mm 20mm 16mm; }
         * { box-sizing: border-box; }
         html { font-size: 11pt; }
@@ -51,7 +51,7 @@ marketing/sla_content.py — hier nichts hardcoden.
                       font-size: 9.5pt; margin: 0 0 16px; }
         @media print { .print-hint { display: none; } .page { padding: 0; max-width: none; } }
         @media screen { body { background: #f3f4f6; } .page { background: #fff; padding: 16mm; box-shadow: 0 1px 4px rgba(0,0,0,.12); margin: 16px auto; } }
-    </style>
+    </style>{% endcsp_inline %}
 </head>
 <body>
 <div class="page">

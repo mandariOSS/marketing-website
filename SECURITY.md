@@ -2,8 +2,8 @@
 
 ## Reporting a Vulnerability
 
-Mandari nimmt jede gutgläubige Sicherheitsmeldung ernst — wir bestätigen den
-Eingang **innerhalb von 5 Werktagen** und behandeln dich mit Respekt: keine
+mandari nimmt jede gutgläubige Sicherheitsmeldung ernst — wir bestätigen den
+Eingang **innerhalb von 3 Werktagen** und behandeln dich mit Respekt: keine
 Anwälte, keine Drohungen, kein Hacker-Paragraph-202c-Brief.
 
 ### Wie melden?
@@ -34,10 +34,13 @@ Vollständige Policy: <https://mandari.de/sicherheit/disclosure/>
 
 ### Was du erwarten kannst
 
-- **≤ 5 Werktage**: persönliche Eingangsbestätigung
-- **≤ 14 Tage**: Erstbewertung und Schwere-Einstufung nach CVSS 3.1
-- **Behebung nach Schweregrad** — mit laufender Statusinformation an dich
-- **Koordinierte Veröffentlichung** in der Regel nach spätestens 90 Tagen:
+- **≤ 3 Werktage**: persönliche Eingangsbestätigung
+- **≤ 7 Tage**: Erstbewertung und Schwere-Einstufung nach CVSS 3.1
+- **≤ 2 Wochen**: erster Zwischenstand
+- **Behebung nach Schweregrad**: kritisch innerhalb von 72 Stunden, hoch innerhalb
+  von 7 Tagen, mittel innerhalb von 30 Tagen — mit laufender Statusinformation an dich
+- **Koordinierte Veröffentlichung**: vollständige Offenlegung 90 Tage nach dem Fix,
+  früher bei bereits ausgenutzten Lücken:
   Security Advisory, Erwähnung in der Hall of Fame (sofern gewünscht)
 
 ### Safe Harbor
@@ -52,7 +55,7 @@ verzichten wir auf zivil- oder strafrechtliche Verfolgung.
 
 - `mandari.de` und alle Subdomains
 - Source-Code in `mandariOSS/marketing-website` und `mandariOSS/mandari`
-- Selbst gehostete Mandari-Instanzen (mit Erlaubnis der Betreiber)
+- Selbst gehostete mandari-Instanzen (mit Erlaubnis der Betreiber)
 
 ### Out of Scope
 

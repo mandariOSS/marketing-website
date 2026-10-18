@@ -1,0 +1,18 @@
+{% load wagtailcore_tags muster %}
+{# Inhalt einer Randspalte (Muster 5a): kleiner Ablauf, Links zum Mitnehmen, Fakten oder ein kurzer Text. rand: StreamField-Wert oder Liste aus dicts mit type und value. #}
+{% for teil in rand %}
+<div>
+    {% if teil.block_type == "ablauf" or teil.type == "ablauf" %}
+    <h3 class="font-semibold m-tinte">{{ teil.value.titel }}</h3>
+    <ol class="ablauf mt-5">{% for s in teil.value.schritte %}<li><p class="font-semibold m-tinte tabular-nums">{{ s.marke }}</p><p class="m-text">{{ s.text }}</p></li>{% endfor %}</ol>
+    {% elif teil.block_type == "links" or teil.type == "links" %}
+    <h3 class="font-semibold m-tinte">{{ teil.value.titel }}</h3>
+    <ul class="mt-3 space-y-2 text-base">{% for l in teil.value.links %}<li><a class="textlink" href="{{ l.url }}">{{ l.label }}</a></li>{% endfor %}</ul>
+    {% elif teil.block_type == "fakten" or teil.type == "fakten" %}
+    {% if teil.value.titel %}<h3 class="font-semibold m-tinte">{{ teil.value.titel }}</h3>{% endif %}
+    <dl class="dok-rand{% if teil.value.titel %} mt-4{% endif %} text-base">{% for f in teil.value.fakten %}<dt>{{ f.begriff }}</dt><dd>{{ f.wert|kontaktwert }}</dd>{% endfor %}</dl>
+    {% else %}
+    <div class="text-base m-text richtext">{{ teil.value|richtext }}</div>
+    {% endif %}
+</div>
+{% endfor %}
