@@ -63,6 +63,9 @@ FUSSZEILE = {
     "Produkte": [
         ("Übersicht", "/produkte/"),
         ("Ratsinformationssystem", "/ratsinformationssystem/"),
+        ("Sitzungsmanagement", "/sitzungsmanagement/"),
+        ("Bürgerinformationssystem", "/buergerinformationssystem/"),
+        ("OParl-Schnittstelle", "/oparl-schnittstelle/"),
         ("Für Verwaltungen", "/kommunen/"),
         ("Für Fraktionen", "/fraktionen/"),
         ("Für Bürger:innen", "/produkte/#insight"),
@@ -101,7 +104,8 @@ FUSSZEILE = {
     ],
 }
 
-STARTSEITE_TITEL = "mandari – Software für die offene Verwaltung"
+# Mit dem Suchbegriff Ratsinformationssystem (Issue mandari#939); für die Startseite gilt kein Längenziel (unten).
+STARTSEITE_TITEL = "mandari – Ratsinformationssystem und Software für die offene Verwaltung"
 
 # TODO(Relaunch-Abnahme): Diese Ziele legen die parallelen Relaunch-PRs an (Produkte/Fraktionen,
 # Unternehmen/Karriere, neue Startseite). Solange sie fehlen, meldet der Test Warnungen statt Fehler.

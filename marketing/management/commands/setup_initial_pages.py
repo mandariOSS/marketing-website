@@ -41,12 +41,15 @@ def seeded_custom_template(slug: str) -> str:
 
 # ── Startseite: Metadaten ─────────────────────────────────────────────────
 # Inhalt der Startseite steht in templates/marketing/landing.html; Titel und
-# SEO-Felder hier, damit `refresh_seeded_page startseite --force` sie auf
+# SEO-Felder hier, damit `refresh_seeded_page startseite --nur-meta` sie auf
 # bestehenden Datenbanken nachzieht.
+# Seitentitel mit dem Suchbegriff „Ratsinformationssystem“ (Entscheidung Sven, Issue mandariOSS/mandari#939). Er ist
+# länger als die 60 Zeichen der Unterseiten; für die Startseite gilt kein Längenziel (scripts/check_site_structure.py).
+# H1, Text und Blöcke der Startseite bleiben unverändert.
 HOME_PAGE_META = {
     "title": "mandari",
     "subtitle": "Software für die offene Verwaltung",
-    "seo_title": "mandari – Software für die offene Verwaltung",
+    "seo_title": "mandari – Ratsinformationssystem und Software für die offene Verwaltung",
     "search_description": (
         "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
         "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
@@ -83,13 +86,45 @@ MARKETING_PAGE_META = [
             "und Bürgerportal mit offener OParl-Schnittstelle."
         ),
     },
+    # Sachseiten zu weiteren Suchbegriffen (SEO-Kaufbegriffe, Issue mandariOSS/mandari#939), ohne Preise; in der
+    # Fußzeile unter Produkte und als Textlinks aus /produkte/, /kommunen/ und /ratsinformationssystem/ verlinkt.
+    # Inhalte: marketing/seeds_sitzungsmanagement.py, seeds_buergerinformationssystem.py, seeds_oparl.py.
+    {
+        "title": "Sitzungsmanagement",
+        "slug": "sitzungsmanagement",
+        "seo_title": "Sitzungsmanagement-Software für Verwaltungen",
+        "search_description": (
+            "Sitzungs- und Gremienmanagement mit mandari Session (Pilotphase): Sitzungen, Ladung, Vorlagen, "
+            "Niederschrift und Beschlusskontrolle in einem System."
+        ),
+    },
+    {
+        "title": "Bürgerinformationssystem",
+        "slug": "buergerinformationssystem",
+        "seo_title": "Bürgerinformationssystem und Bürgerportal",
+        "search_description": (
+            "Das Bürgerinformationssystem mandari Insight: Sitzungen, Vorlagen und Beschlüsse Ihrer Kommune im "
+            "Volltext finden, auf der Karte sehen, ohne Anmeldung."
+        ),
+    },
+    # Nicht /oparl/: Den Pfad bedient in jeder Installation die mandari-Anwendung (OParl-API, Caddyfile).
+    {
+        "title": "OParl-Schnittstelle",
+        "slug": "oparl-schnittstelle",
+        "seo_title": "OParl-Schnittstelle für offene Ratsdaten",
+        "search_description": (
+            "Die OParl-Schnittstelle von mandari: Ratsdaten nach OParl 1.1 maschinenlesbar abrufen, als offene "
+            "Daten nachnutzen und aus dem bisherigen RIS einlesen."
+        ),
+    },
+    # Suchbegriff „Fraktionssoftware“ (#939); keine Preise in Titel und Description
     {
         "title": "Für Fraktionen",
         "slug": "fraktionen",
-        "seo_title": "Software für Fraktionen",
+        "seo_title": "Fraktionssoftware für die Ratsarbeit",
         "search_description": (
-            "mandari Work für Fraktionen: Sitzungen im Team vorbereiten, Anträge mit Fristen "
-            "und Freigaben führen, mit jedem Ratsinformationssystem. 39,90 € im Monat."
+            "Fraktionssoftware mandari Work: Sitzungen im Team vorbereiten, Anträge mit Fristen und Freigaben "
+            "führen – mit den Ratsdaten Ihrer Kommune."
         ),
     },
     {
@@ -101,13 +136,15 @@ MARKETING_PAGE_META = [
             "mandari Session kalkulieren wir je Kommune."
         ),
     },
+    # Suchbegriff „Sitzungsdienst“ (#939); den Begriff Ratsinformationssystem trägt /ratsinformationssystem/,
+    # Sitzungsmanagement als Sachbegriff /sitzungsmanagement/
     {
         "title": "Für Kommunen & Verwaltungen",
         "slug": "kommunen",
-        "seo_title": "Sitzungsdienst & Ratsinformationssystem für Kommunen",
+        "seo_title": "Sitzungsdienst-Software für Kommunen",
         "search_description": (
-            "Ratsinformationssystem und Sitzungsdienst für Kommunen: mandari Session mit OParl, kostenlosem "
-            "Bürgerportal und Betrieb in Deutschland. Open Source."
+            "mandari Session für Ihren Sitzungsdienst: Sitzungen, Vorlagen und Niederschriften in einem System, mit "
+            "OParl, Betrieb in Deutschland und offenem Code."
         ),
     },
     {

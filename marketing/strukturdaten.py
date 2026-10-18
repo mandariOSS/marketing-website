@@ -34,7 +34,9 @@ BESCHREIBUNG = "mandari ist ein Open-Source-Ratsinformationssystem für Verwaltu
 SAME_AS = ["https://github.com/mandariOSS"]
 LOGO = "brand/mandari-logo.png"
 # Seiten, auf denen die Software selbst beschrieben ist (Slugs)
-SOFTWARE_SEITEN = {"ratsinformationssystem", "kommunen", "produkte"}
+SOFTWARE_SEITEN = {"ratsinformationssystem", "kommunen", "produkte",
+                   # Sachseiten zu weiteren Suchbegriffen (Issue mandariOSS/mandari#939)
+                   "sitzungsmanagement", "buergerinformationssystem", "oparl-schnittstelle"}
 SOFTWARE_URL = "/produkte/"
 LIZENZ = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
 
