@@ -2,7 +2,7 @@
 """
 Content-Security-Policy im Browser prüfen: keine Verstöße auf irgendeiner Seite.
 
-Öffnet jede Seite der Sitemap (dazu Disclosure, Crawler und eine 404-Seite) in Chromium und sammelt jeden Verstoß gegen
+Öffnet jede Seite der Sitemap (dazu Disclosure, Ingestor und eine 404-Seite) in Chromium und sammelt jeden Verstoß gegen
 die Policy (Ereignis ``securitypolicyviolation``; im Report-Modus meldet der Browser, statt zu blockieren). Auf
 /kontakt/ betritt das Skript ein Formularfeld, damit der Spamschutz (Altcha: Stil, Worker, Abruf der Aufgabe) lädt
 und rechnet. Außerdem: Kopfzeilen ``Permissions-Policy`` und CSP vorhanden, keine Fehlermeldung des Browsers zur
@@ -28,7 +28,7 @@ import urllib.request
 from playwright.sync_api import sync_playwright
 
 BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8191").rstrip("/")
-ZUSATZ = ["/sicherheit/disclosure/", "/crawler/", "/gibt-es-nicht/"]
+ZUSATZ = ["/sicherheit/disclosure/", "/ingestor/", "/gibt-es-nicht/"]
 CSP_HEADER = ("content-security-policy", "content-security-policy-report-only")
 
 MITSCHNITT = """

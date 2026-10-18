@@ -137,14 +137,15 @@ jobs:
               "/agb/": ["AGB"],
               "/kontakt/": ["Kontakt"],
               "/sicherheit/disclosure/": ["Sicherheitslücke gefunden?", "Safe Harbor", 'id="hall-of-fame"', "5D06 A2BC B71C 6095 7A23"],
-              "/crawler/": ["mandari-ingestor (+https://mandari.de/crawler)", "Kontakt und Widerspruch"],
+              "/ingestor/": ["mandari-ingestor/&lt;Version&gt; (+https://mandari.de/ingestor/; support@mandari.de)", 'id="abruf-adresse"', "144.76.153.200", "eine Anfrage pro Sekunde", "Drosseln oder ausschließen"],
           }
-          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern)
+          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern, /crawler/ heißt seit 18.10.2026 /ingestor/)
           redirects = {
               "/status/": "https://status.mandari.de/",
               "/blog/": "/releases/",
               "/blog/feed/": "/releases/",
               "/karriere/": "/unternehmen/",
+              "/crawler/": "/ingestor/",
           }
           errors = []
           for url, needles in checks.items():
@@ -243,7 +244,7 @@ jobs:
           du = re.compile(r"\b(du|dich|dir|dein\w*|euch|euer|eure\w*)\b", re.IGNORECASE)
           pages = ["/preise/", "/kommunen/", "/ratsinformationssystem/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
                    "/barrierefreiheit/", "/abuse/", "/vergleich/", "/quellen/", "/agb/", "/avv/", "/kuendigung/",
-                   "/sicherheit/disclosure/", "/crawler/"]
+                   "/sicherheit/disclosure/", "/ingestor/"]
           c, errors = Client(), []
           for url in pages:
               r = c.get(url)

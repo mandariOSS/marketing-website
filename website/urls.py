@@ -16,10 +16,10 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from marketing import indexnow
 from marketing.docs_redirects import docs_redirect
-from marketing.sitemaps import MandariSitemap
+from marketing.sitemaps import FesteSeitenSitemap, MandariSitemap
 from marketing.views import (
     altcha_challenge,
-    crawler_info_view,
+    ingestor_info_view,
     robots_txt,
     security_disclosure_view,
     security_txt,
@@ -36,7 +36,12 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("cms-admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
-    path("sitemap.xml", sitemap, {"sitemaps": {"wagtail": MandariSitemap}}, name="sitemap"),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": {"wagtail": MandariSitemap, "feste": FesteSeitenSitemap}},
+        name="sitemap",
+    ),
     # RFC 9309 robots.txt — Crawl-Direktiven für Suchmaschinen und Bots.
     # Plain text, MUSS unter /robots.txt erreichbar sein, referenziert sitemap.xml.
     path("robots.txt", robots_txt, name="robots_txt"),
@@ -57,8 +62,11 @@ urlpatterns = [
     # Django-View statt Wagtail (Wagtail unterstützt Page-Nesting hier nicht
     # ohne Umbau der MarketingPage-Struktur).
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
-    # Crawler-Infoseite — der User-Agent des mandari-ingestor verweist hierauf.
-    path("crawler/", crawler_info_view, name="crawler_info"),
+    # Infoseite zum mandari-ingestor — sein User-Agent verweist hierauf.
+    path("ingestor/", ingestor_info_view, name="ingestor_info"),
+    # Bis 18.10.2026 hieß sie /crawler/ (Adresse in älteren User-Agents, Mails und Logs). Der Ingestor ist kein
+    # Crawler, und Server können User-Agents mit dem Wort „crawler“ ablehnen. Query-String bleibt erhalten.
+    path("crawler/", RedirectView.as_view(url="/ingestor/", permanent=True, query_string=True)),
     # Unternehmensseiten (Relaunch 2026): Logo-Paket der Presse, /ueber-uns/ → /unternehmen/
     path("", include("company.urls")),
     # Dokumentation lebt auf docs.mandari.de (Repo mandariOSS/docs); alte Pfade leiten dauerhaft weiter

@@ -15,7 +15,7 @@ from urllib.parse import urlsplit
 from django.core.management.base import BaseCommand, CommandError
 
 from marketing import indexnow, seo
-from marketing.sitemaps import MandariSitemap
+from marketing.sitemaps import FesteSeitenSitemap, MandariSitemap
 
 
 class Command(BaseCommand):
@@ -52,8 +52,11 @@ class Command(BaseCommand):
     @staticmethod
     def _sitemap():
         sitemap = MandariSitemap()
-        return [
+        seiten = [
             seo.absolute_url(urlsplit(info["location"]).path)
             for seite in sitemap.items()
             for info in seite.get_sitemap_urls(None)
         ]
+        # Feste Django-Seiten aus der Sitemap (heute /ingestor/)
+        feste = FesteSeitenSitemap()
+        return seiten + [seo.absolute_url(feste.location(name)) for name in feste.items()]

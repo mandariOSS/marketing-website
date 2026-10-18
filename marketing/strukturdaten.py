@@ -93,7 +93,7 @@ def brotkrumen(page) -> list[dict]:
 
 
 def graph(page=None) -> list[dict]:
-    """Alle Knoten für eine Seite (``page`` ist ``None`` bei Django-Seiten wie /crawler/)."""
+    """Alle Knoten für eine Seite (``page`` ist ``None`` bei Django-Seiten wie /ingestor/)."""
     basis = seo.absolute_url("/")
     organisation = basis + "#organisation"
     knoten = [

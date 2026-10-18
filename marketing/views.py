@@ -3,8 +3,9 @@ Marketing-specific Django views.
 
 Most marketing pages are rendered by Wagtail. This module holds the few routes
 that live outside the page tree: Altcha challenges, robots.txt, security.txt,
-the Responsible-Disclosure policy and the crawler info page. /status/ is a plain
-301 to the public status page (see website/urls.py).
+the Responsible-Disclosure policy and the info page of the mandari-ingestor
+(/ingestor/). /status/ and the former /crawler/ are plain 301 redirects (see
+website/urls.py).
 """
 
 from __future__ import annotations
@@ -181,13 +182,14 @@ def security_disclosure_view(request):
     return render(request, "marketing/sicherheit_disclosure.html")
 
 
-def crawler_info_view(request):
-    """Render /crawler/ — Infoseite zum mandari-ingestor.
+def ingestor_info_view(request):
+    """Render /ingestor/ — Infoseite zum mandari-ingestor.
 
-    Der Crawler-User-Agent verweist auf diese Seite (Transparenz gegenüber
+    Der User-Agent des Ingestors verweist auf diese Seite (Transparenz gegenüber
     RIS-Betreibern); via Django-View vor dem Wagtail-Catch-all registriert.
+    Bis 18.10.2026 hieß sie /crawler/, die alte Adresse leitet dauerhaft hierher.
     """
-    return render(request, "marketing/crawler.html")
+    return render(request, "marketing/ingestor.html")
 
 
 @require_http_methods(["GET", "HEAD"])
