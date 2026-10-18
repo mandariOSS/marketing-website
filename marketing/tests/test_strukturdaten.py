@@ -83,14 +83,14 @@ class SeitenTests(TestCase):
 
     def test_jede_seite_ein_parsebarer_block_ohne_preise(self):
         urls = sorted({p.url for p in Page.objects.live().specific() if p.url})
-        urls += ["/crawler/", "/sicherheit/disclosure/"]
+        urls += ["/ingestor/", "/sicherheit/disclosure/"]
         self.assertIn("/ratsinformationssystem/", urls)
         for url in urls:
             graph = self.graph(url)
             self.assertFalse(PREIS_SCHLUESSEL & set(schluessel(graph)), url)
 
     def test_organisation_und_website_ueberall(self):
-        for url in ["/", "/kontakt/", "/preise/", "/impressum/", "/crawler/", "/vergleich/mandari-vs-allris/"]:
+        for url in ["/", "/kontakt/", "/preise/", "/impressum/", "/ingestor/", "/vergleich/mandari-vs-allris/"]:
             typen = [k["@type"] for k in self.graph(url)]
             self.assertEqual(typen.count("Organization"), 1, url)
             self.assertEqual(typen.count("WebSite"), 1, url)

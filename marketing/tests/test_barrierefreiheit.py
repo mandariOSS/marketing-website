@@ -81,7 +81,7 @@ class SeitenTests(TestCase):
 
     def alle_seiten(self):
         urls = {p.url for p in Page.objects.live().specific() if p.url}
-        return sorted(urls | {"/sicherheit/disclosure/", "/crawler/"})
+        return sorted(urls | {"/sicherheit/disclosure/", "/ingestor/"})
 
     def test_kontakt_link_nicht_im_label_und_kaestchen_beschrieben(self):
         html = self.html("/kontakt/")

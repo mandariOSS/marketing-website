@@ -23,8 +23,8 @@ separat gehostet und entwickelt werden.
   verarbeitungsvertrag nach Art. 28 DSGVO), Quellennachweise — Texte liegen
   versioniert in `.legal-content/` (siehe unten)
 - **Django-Views** außerhalb von Wagtail — `/sicherheit/disclosure/`
-  (Responsible Disclosure) und `/crawler/` (Infoseite zum Crawler);
-  `/status/` leitet dauerhaft auf <https://status.mandari.de/>
+  (Responsible Disclosure) und `/ingestor/` (Infoseite zum mandari-ingestor);
+  `/status/` leitet dauerhaft auf <https://status.mandari.de/>, das frühere `/crawler/` auf `/ingestor/`
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
@@ -131,6 +131,13 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
   Angabe“; was mandari fehlt, steht als „Noch nicht verfügbar“ mit der Roadmap-Stufe. Die Tests in
   `marketing/tests/test_vergleich.py` prüfen das. Nach Änderungen `refresh_seeded_page vergleich --force`,
   `refresh_seeded_page mandari-vs-<anbieter> --force` und `refresh_seeded_page roadmap --force`.
+- **Ingestor-Seite** (`/ingestor/`, für IT-Verantwortliche der Kommunen und Anbieter): User-Agent, Abruf-Adresse,
+  Kontakt, Takt und Häufigkeit je Abrufart stehen in `marketing/muster_daten.py` (`ABRUF_*`), jede Angabe mit ihrer
+  Fundstelle im mandari-Repository. Ändern sich dort die Abrufregeln (`docs/ABRUFREGELN.md`, etwa der Takt nach Bedarf),
+  werden nur diese Daten nachgezogen; `marketing/tests/test_ingestor.py` prüft Kennung, Adresse und Takt auf der Seite.
+  Bis 18.10.2026 hieß die Seite `/crawler/`; die alte Adresse leitet dauerhaft (301, mit Query-String) auf
+  `/ingestor/` (`website/urls.py`). Der Ingestor ist kein Crawler, und Server können User-Agents mit dem Wort
+  „crawler“ ablehnen. Die Seite steht in der Sitemap (`FesteSeitenSitemap` in `marketing/sitemaps.py`).
 - **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
   Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
   (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das
@@ -215,7 +222,7 @@ marketing-website/
 │   ├── models.py             # HomePage, MarketingPage, ContactPage, LegalPage
 │   ├── blocks.py             # StreamField-Blöcke des Mandari Design Systems
 │   ├── legal_content.py      # Lädt Rechtstexte aus .legal-content/
-│   ├── views.py              # security_txt, robots_txt, altcha, Disclosure, Crawler
+│   ├── views.py              # security_txt, robots_txt, altcha, Disclosure, Ingestor
 │   ├── seo.py                # Titel, Meta-Description, Canonical aus SITE_URL
 │   ├── sitemaps.py           # Sitemap mit SITE_URL-Adressen und plausiblem lastmod
 │   ├── middleware.py         # LinkHeaderMiddleware (RFC 8288)
@@ -315,6 +322,19 @@ marketing-website/
   `marketing/fehlerseiten.py`): statisch, ohne Datenbank und ohne Kontextprozessoren, mit Notfalltext, falls
   selbst das Rendern scheitert.
 
+### IndexNow
+
+Veröffentlichte und zurückgezogene Seiten meldet die Website sofort an Bing, Yandex, Seznam, Naver und Yep
+([IndexNow](https://www.indexnow.org/), `marketing/indexnow.py`; Google nimmt nicht teil, dort bleibt die Sitemap).
+Gemeldet werden nur Adressen, keine Inhalte und keine Daten von Besucherinnen und Besuchern. Der Schlüssel
+`INDEXNOW_KEY` liegt als `/<schlüssel>.txt` aus; ohne Schlüssel ist alles aus. Die mandari-Anwendung meldet die Seiten
+des Bürgerportals selbst (gleicher Schlüssel, Datei unter `/insight/<schlüssel>.txt`). Zum Start einmal alle Seiten:
+
+```bash
+python manage.py indexnow_melden --alle --probelauf   # zeigt die Adressen
+python manage.py indexnow_melden --alle
+```
+
 ### Wichtige Umgebungsvariablen
 
 | Variable | Default | Zweck |
@@ -333,6 +353,7 @@ marketing-website/
 | `TZ` | `Europe/Berlin` | Zeitzone |
 | `CSP_MODUS` | `report` | Content-Security-Policy: `report` (nur melden), `scharf` (blockieren) oder `aus` |
 | `CSP_REPORT_URI` | `/csp-report/` | Ziel der CSP-Meldungen (in Produktion die mandari-Anwendung auf derselben Domain) |
+| `INDEXNOW_KEY` | leer (aus) | IndexNow-Schlüssel (8–128 Zeichen A–Z, a–z, 0–9, -), gleicher Wert wie in der mandari-Anwendung |
 
 ## 🎨 Gestaltung
 
@@ -391,7 +412,7 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   Seite mit mindestens einem Element, das kein Fließtext ist (`marketing/tests/test_muster.py`).
   **Keine leere rechte Hälfte:** Kein Abschnitt endet bei 1440 px vor 80 % der Rasterbreite;
   `scripts/check_fuellung.py` misst das im Browser (CI). Hinweise direkt nach dem Seitenkopf
-  stehen in dessen Randspalte. Feste Seiten (Startseite, Disclosure, Crawler) holen ihre Daten
+  stehen in dessen Randspalte. Feste Seiten (Startseite, Disclosure, Ingestor) holen ihre Daten
   aus `marketing/muster_daten.py`.
 - **Produktfarben:** Session Petrol `#0F5E8C` (vom Blau in Session abgeleitet,
   bewusst vom Indigo abgesetzt), Work Indigo `#4F46E5` (Standardfarbe in Work),

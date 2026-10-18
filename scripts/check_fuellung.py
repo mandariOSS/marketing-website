@@ -25,7 +25,7 @@ from playwright.sync_api import sync_playwright
 
 BASE_URL = os.environ.get("BASE_URL", "http://127.0.0.1:8191").rstrip("/")
 MINDESTENS = int(os.environ.get("MINDESTENS", "80"))
-ZUSATZ = ["/sicherheit/disclosure/", "/crawler/"]
+ZUSATZ = ["/sicherheit/disclosure/", "/ingestor/"]
 
 MESSUNG = r"""
 () => {

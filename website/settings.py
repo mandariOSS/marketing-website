@@ -54,6 +54,11 @@ ALTCHA_MAX_NUMBER = int(os.environ.get("ALTCHA_MAX_NUMBER", "100000"))
 CSP_MODUS = os.environ.get("CSP_MODUS", "report").strip().lower()
 CSP_REPORT_URI = os.environ.get("CSP_REPORT_URI", "/csp-report/").strip()
 
+# IndexNow (marketing/indexnow.py): meldet veröffentlichte und zurückgezogene Seiten an Bing, Yandex & Co.
+# Ohne Schlüssel aus. Derselbe Wert gilt für die mandari-Anwendung unter derselben Domain.
+INDEXNOW_KEY = os.environ.get("INDEXNOW_KEY", "").strip()
+INDEXNOW_ENDPOINT = os.environ.get("INDEXNOW_ENDPOINT", "").strip() or "https://api.indexnow.org/indexnow"
+
 from urllib.parse import urlparse
 
 _site_domain = urlparse(SITE_URL).netloc

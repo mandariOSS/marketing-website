@@ -121,7 +121,7 @@ OHNE_LAENGENZIEL = {"/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigu
 ANWENDUNGS_PFADE = ("/insight/", "/work/", "/session/", "/api/", "/accounts/")
 NICHT_PRUEFEN = ("/wstatic/", "/media/", "/documents/", "/cms-admin/", "/django-admin/", "/admin/")
 # Django-Seiten außerhalb des Wagtail-Baums, die erreichbar sein müssen.
-PFLICHT_PFADE = ["/sicherheit/disclosure/", "/crawler/"]
+PFLICHT_PFADE = ["/sicherheit/disclosure/", "/ingestor/"]
 ALTER_PLATZHALTER = "Kommunalpolitische Transparenz"
 
 
