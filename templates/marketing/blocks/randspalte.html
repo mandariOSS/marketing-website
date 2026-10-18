@@ -1,0 +1,16 @@
+{% load wagtailcore_tags baender %}
+{# M5a Text mit Randspalte: Text in Lesebreite mit Stichwort am Absatzanfang, rechts eine Fläche mit dem, was der Text nicht hat (Ablauf, Dateien, Ansprechpartner). Am Handy darunter. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap grid gap-y-12 lg:grid-cols-12 lg:gap-x-10">
+        <div class="lg:col-span-7"{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %}>
+            {% if self.header.title %}<h2 class="t-h2 m-tinte">{{ self.header.title }}</h2>{% endif %}
+            {% if self.header.subline %}<p class="mt-5 t-lead m-text">{{ self.header.subline }}</p>{% endif %}
+            <div class="{% if self.header.title %}mt-8 {% endif %}max-w-[45rem] t-body m-text stichworte richtext prose-links">{{ self.body|richtext }}</div>
+        </div>
+        <aside class="lg:col-span-4 lg:col-start-9">
+            <div class="dok-klebt flaeche rounded-lg p-6 lg:p-7 space-y-8">
+                {% include "marketing/muster/_rand.html" with rand=self.rand %}
+            </div>
+        </aside>
+    </div>
+</section>

@@ -1,5 +1,5 @@
 """
-RSS-Feed für den Mandari Blog.
+RSS-Feed für den mandari Blog.
 """
 
 from django.contrib.syndication.views import Feed
@@ -9,9 +9,12 @@ from .models import BlogPostPage
 
 
 class BlogFeed(Feed):
-    title = "Mandari Blog"
+    title = "mandari Blog"
     link = "/blog/"
-    description = "Neuigkeiten, Tutorials und Updates rund um Mandari – die Open-Source-Plattform für kommunalpolitische Transparenz."
+    description = (
+        "Neuigkeiten, Tutorials und Updates rund um mandari – die Open-Source-Plattform für kommunalpolitische "
+        "Transparenz."
+    )
 
     def items(self):
         return BlogPostPage.objects.live().order_by("-date")[:20]

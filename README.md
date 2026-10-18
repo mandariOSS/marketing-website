@@ -14,7 +14,8 @@ separat gehostet und entwickelt werden.
 
 ## ✨ Was enthält dieses Repo?
 
-- **Marketing-Pages** — Startseite, Produkte, Für Fraktionen, Preise, Kommunen, Migration,
+- **Marketing-Pages** — Startseite, Produkte, Ratsinformationssystem (Sachseite zum Begriff, ohne Preise;
+  Inhalt in `marketing/seeds_ris.py`), Für Fraktionen, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))
@@ -22,8 +23,8 @@ separat gehostet und entwickelt werden.
   verarbeitungsvertrag nach Art. 28 DSGVO), Quellennachweise — Texte liegen
   versioniert in `.legal-content/` (siehe unten)
 - **Django-Views** außerhalb von Wagtail — `/sicherheit/disclosure/`
-  (Responsible Disclosure) und `/crawler/` (Infoseite zum Crawler);
-  `/status/` leitet dauerhaft auf <https://status.mandari.de/>
+  (Responsible Disclosure) und `/ingestor/` (Infoseite zum mandari-ingestor);
+  `/status/` leitet dauerhaft auf <https://status.mandari.de/>, das frühere `/crawler/` auf `/ingestor/`
 - **Wagtail 7 CMS** für inhaltliche Pflege durch Nicht-Entwickler:innen —
   alle Seiten bestehen aus **StreamField-Blöcken** des Mandari Design Systems
   (`marketing/blocks.py`: Hero, Trust-Banner, Mandari-Cards, Pricing-Tabelle,
@@ -32,7 +33,10 @@ separat gehostet und entwickelt werden.
   Textlinks als Komponenten, Inhalte offen auf der Fläche (siehe [Gestaltung](#-gestaltung))
 - **Discoverability** — `robots.txt`, `sitemap.xml` (Adressen und `lastmod` aus
   `SITE_URL`), Canonical/og:url aus `SITE_URL`, Meta-Description aus
-  `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`
+  `search_description`, RFC 8288 Link-Header, `.well-known/security.txt`, strukturierte Daten nach
+  schema.org als JSON-LD (`marketing/strukturdaten.py`: Organization und WebSite auf jeder Seite,
+  SoftwareApplication ohne Preise auf Produktseiten, FAQPage aus dem FAQ-Akkordeon, BreadcrumbList auf
+  Unterseiten)
 - **Compliance** — DSGVO, BFSG, DSA, NetzDG, RFC 9116 (Responsible Disclosure)
 - **DSGVO-konformer Spam-Schutz** via [Altcha](https://altcha.org)
   (selbst-gehostet, kein Captcha, kein Tracking)
@@ -46,7 +50,8 @@ alle Seeds sind deshalb **idempotent**:
 |---|---|
 | `setup_initial_pages` | Erstellt den Wagtail-Page-Tree (überspringt vorhandene Seiten), seedet Rechtstexte aus `.legal-content/` |
 | `migrate_pages_to_streamfield` | Seedet die StreamField-Inhalte aller Marketing-/Legal-Pages (überspringt Seiten, die bereits Blöcke haben; `--force` überschreibt) |
-| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force` |
+| `refresh_seeded_page <slug> [--force]` | Wendet die Seed-Definition **einer** Seite erneut an — für Live-Updates nach Deploys, z. B. `refresh_seeded_page trust --force`. Achtung: `--force` ersetzt den ganzen Inhalt, im CMS geänderte Blöcke gehen verloren |
+| `refresh_seeded_page <slug> --nur-meta` | Übernimmt nur Titel, SEO-Titel und Meta-Description aus dem Seed (`MARKETING_PAGE_META`, `marketing/seo_texte.py`), Inhalt und Vorlage bleiben; Seiten mit unveröffentlichtem Entwurf überspringt der Befehl. Auch für `startseite` und `kontakt` |
 | `retire_page <pfad\|slug> --redirect <ziel> [--dry-run]` | Zieht eine Seite samt Unterseiten zurück (unpublish, bleibt im CMS) und legt eine dauerhafte Weiterleitung an bzw. korrigiert sie; prüft danach per Anfrage, dass der alte Pfad mit 301 auf das Ziel zeigt. Idempotent, z. B. `retire_page /blog/ --redirect /releases/` |
 
 **Seiten zurückziehen:** Fällt eine Seite bei einem Umbau weg, zuerst die
@@ -81,8 +86,10 @@ Zum Reaktivieren:
 mit dem Django-Test-Client und prüft: keine internen Links auf 404, jede
 veröffentlichte Seite verlinkt (Unterseiten von ihrer Elternseite), eindeutige
 Titel der Form „<Titel> | mandari“, eindeutige Meta-Descriptions, Canonical aus
-`SITE_URL`, Kopf- und Fußzeile genau nach Zielstruktur. Die CI führt ihn nach den
-Seeds aus; lokal:
+`SITE_URL`, Kopf- und Fußzeile genau nach Zielstruktur. Titel außerhalb von 30–60 Zeichen
+(samt „ | mandari“) und Descriptions außerhalb von 120–155 Zeichen meldet er als Warnung
+(Rechtstexte und Kontakt ausgenommen); die Texte stehen in `marketing/seo_texte.py`, dort
+prüft `marketing/tests/test_seo_texte.py` die Längen. Die CI führt ihn nach den Seeds aus; lokal:
 
 ```bash
 SITE_URL=https://mandari.de python scripts/check_site_structure.py   # --strict: ausstehende Ziele als Fehler
@@ -124,6 +131,13 @@ das RichText-Feld `LegalPage.body` geseedet (gerendert via
   Angabe“; was mandari fehlt, steht als „Noch nicht verfügbar“ mit der Roadmap-Stufe. Die Tests in
   `marketing/tests/test_vergleich.py` prüfen das. Nach Änderungen `refresh_seeded_page vergleich --force`,
   `refresh_seeded_page mandari-vs-<anbieter> --force` und `refresh_seeded_page roadmap --force`.
+- **Ingestor-Seite** (`/ingestor/`, für IT-Verantwortliche der Kommunen und Anbieter): User-Agent, Abruf-Adresse,
+  Kontakt, Takt und Häufigkeit je Abrufart stehen in `marketing/muster_daten.py` (`ABRUF_*`), jede Angabe mit ihrer
+  Fundstelle im mandari-Repository. Ändern sich dort die Abrufregeln (`docs/ABRUFREGELN.md`, etwa der Takt nach Bedarf),
+  werden nur diese Daten nachgezogen; `marketing/tests/test_ingestor.py` prüft Kennung, Adresse und Takt auf der Seite.
+  Bis 18.10.2026 hieß die Seite `/crawler/`; die alte Adresse leitet dauerhaft (301, mit Query-String) auf
+  `/ingestor/` (`website/urls.py`). Der Ingestor ist kein Crawler, und Server können User-Agents mit dem Wort
+  „crawler“ ablehnen. Die Seite steht in der Sitemap (`FesteSeitenSitemap` in `marketing/sitemaps.py`).
 - **Kontaktformulare** (`/kontakt/#termin`, `/kontakt/#nachricht`): Altcha-Spamschutz,
   Prüfung in `marketing/contact.py`, Zustellung per SMTP an `CONTACT_TO`
   (Umgebungsvariablen `CONTACT_*`, siehe `.env.example`). `?subject=…` wählt das
@@ -168,10 +182,10 @@ Anschließend:
 pip install -e .
 npm install
 
-# Tailwind im Watch-Mode
-npm run dev   # build → dist
-# oder direkt:
-npx tailwindcss -i static/css/input.css -o static/css/styles.css --watch
+# Tailwind im Watch-Mode (nur styles.css; mit DEBUG bindet base.html es wie gewohnt ein)
+npm run watch:css
+# styles.css und das kritische CSS (static/css/kritisch.css) bauen, wie im Docker-Build:
+npm run build:css
 
 # Postgres läuft separat — DATABASE_URL anpassen in .env
 python manage.py migrate
@@ -180,13 +194,20 @@ python manage.py migrate_pages_to_streamfield
 python manage.py runserver 8001
 ```
 
+**Tailwind CSS 4.** `static/css/input.css` bindet Tailwind ein (`@import "tailwindcss"`) und nennt die Quellen
+(`@source`, auch die Safelist für zur Laufzeit zusammengesetzte Klassen); das Theme steht in `tailwind.config.js`
+(`@config`). Die Website sieht aus wie mit Tailwind 3: Farben, Schriftgrößen und Haltepunkte haben dort die Werte von
+Tailwind 3, `dark:`, `hover:` und `transition-colors` verhalten sich wie bisher (Kopf von `input.css`), und die
+Grundstile in `base.html` stehen in der Ebene `base`, damit Utilities ihnen vorgehen. `collectstatic` übergeht
+`input.css` (`website/apps.py`), ausgeliefert werden nur `styles.css` und `kritisch.css`.
+
 ## 🏗 Tech-Stack
 
 | Bereich | Technologie | Lizenz |
 |---|---|---|
 | Backend | Django 6, Wagtail 7 | BSD-3 |
 | Datenbank | PostgreSQL 16 | PostgreSQL |
-| Frontend | HTMX + Alpine.js + Tailwind CSS 3 | MIT / BSD |
+| Frontend | HTMX + Alpine.js + Tailwind CSS 4 | MIT / BSD |
 | Icons | [Lucide](https://lucide.dev) als Inline-SVG (`marketing/templatetags/icons.py`), ohne JavaScript | ISC |
 | Suche | Wagtail-Builtin | BSD-3 |
 | Spam-Schutz | [Altcha](https://altcha.org) v2 | MIT |
@@ -201,7 +222,7 @@ marketing-website/
 │   ├── models.py             # HomePage, MarketingPage, ContactPage, LegalPage
 │   ├── blocks.py             # StreamField-Blöcke des Mandari Design Systems
 │   ├── legal_content.py      # Lädt Rechtstexte aus .legal-content/
-│   ├── views.py              # security_txt, robots_txt, altcha, Disclosure, Crawler
+│   ├── views.py              # security_txt, robots_txt, altcha, Disclosure, Ingestor
 │   ├── seo.py                # Titel, Meta-Description, Canonical aus SITE_URL
 │   ├── sitemaps.py           # Sitemap mit SITE_URL-Adressen und plausiblem lastmod
 │   ├── middleware.py         # LinkHeaderMiddleware (RFC 8288)
@@ -245,6 +266,75 @@ marketing-website/
 - **Deploys gegen bestehende DB**: Migrationen + idempotente Seeds laufen beim
   Start; gezielte Inhalts-Updates per `refresh_seeded_page <slug> --force`.
 
+### Ladezeit
+
+- **Kritisches CSS.** `npm run build:css` baut neben `styles.css` das kleine `static/css/kritisch.css`:
+  Grundgerüst, Kopfzeile und Seitenkopf aller Seitentypen. `scripts/kritisches_css.js` baut es aus `input.css`, mit
+  den Vorlagen in `tailwind.kritisch.config.js` statt der Quellen von `styles.css`, und filtert eigene Klassen, die
+  dort nicht vorkommen. `{% stile %}` (`marketing/templatetags/stile.py`)
+  schreibt es inline in den Kopf und lädt `styles.css` mit `media="print"` nach, ohne das erste Zeichnen
+  aufzuhalten. Bis es da und Alpine gestartet ist, bleibt alles unterhalb des Seitenkopfs ausgeblendet
+  (`static/css/erste-ansicht.css`); danach meldet das Ereignis `stile:fertig`, dass die Seite vollständig steht.
+  Seiten mit Produktbildern unter dem Seitenkopf (`BLOECKE_MIT_BILDERN` in `stile.py`, heute `/produkte/`) laden
+  `styles.css` mit `fetchpriority="high"`. Sonst reiht Lighthouse es hinter diese Bilder und errechnet ein späteres
+  LCP.
+  Mit `DEBUG`, ohne gebautes `kritisch.css` oder mit der Umgebungsvariable `KRITISCHES_CSS=aus` bleibt es beim
+  blockierenden Stylesheet. Wer einen Seitenkopf in
+  einer weiteren Vorlage baut, trägt sie in `tailwind.kritisch.config.js` ein; die CI
+  (`scripts/check_kritisches_css.py`) prüft die Größe (höchstens 6.000 Bytes gzip), dass jede Klasse aus
+  Kopfzeile und Seitenkopf aller Seiten im kritischen CSS steht und dass das HTML von Startseite und `/kontakt/`
+  mit dem kritischen CSS in die ersten TCP-Pakete passt (höchstens 13.800 Bytes gzip; darüber kommt das erste
+  Bild am Handy rund 150 ms später). Kommentare im Kopf von `base.html` deshalb als Template-Kommentar.
+- **Content-Security-Policy.** Das Ladeskript (`LADER` in `stile.py`) ist ein fester Text ohne Inline-Handler.
+  Für eine CSP ohne `'unsafe-inline'` genügt sein Hash (dazu der des Skripts für den Dunkelmodus in `base.html`;
+  die strukturierten Daten im Kopf sind ein Datenblock vom Typ `application/ld+json`, den der Browser
+  nicht ausführt, sie brauchen keinen Hash):
+  `python -c "import base64, hashlib; from marketing.templatetags.stile import LADER; print('sha256-' + base64.b64encode(hashlib.sha256(LADER.encode()).digest()).decode())"`
+- **Schrift.** Inter mit `font-display: swap`, davor im Schriftstapel `Inter Ersatz`: Arial bzw. Roboto, per
+  `size-adjust` und `ascent-/descent-override` auf Inter angepasst (`base.html`, `tailwind.config.js`). Die Seite
+  zeichnet vor `styles.css`; so verschiebt der Wechsel zu Inter den Text nicht (CLS), und Inter erscheint auch beim
+  ersten Aufruf über das Mobilnetz. Wer die Schrift oder ihre Teilmenge ändert, rechnet die Werte neu.
+- **Brotli.** Mit dem Paket `brotli` legt `collectstatic` neben `.gz` auch `.br` an, WhiteNoise liefert CSS, JS
+  und SVG damit aus (Caddy reicht die fertige Kodierung durch). Prüfen:
+  `curl -sI -H 'Accept-Encoding: br' https://mandari.de/wstatic/css/styles.<hash>.css` zeigt `content-encoding: br`.
+- **Hero-Bilder** liegen je Breite als AVIF und WebP vor; vorgeladen wird das AVIF. Neue oder geänderte Bilder:
+  WebP wie bisher ablegen, dann `python scripts/hero_avif.py` (Pillow mit AVIF, Vorlagen siehe Skript).
+- **Spamschutz.** Altcha lädt erst, wenn jemand ein Kontaktformular betritt (`static/js/kontakt.js`).
+
+### Sicherheits-Header und Fehlerseiten
+
+- **Permissions-Policy** auf jeder Antwort: Kamera, Mikrofon, Standort, Zahlungen, USB und weitere
+  Gerätefunktionen sind gesperrt (`marketing/sicherheit.py`, nur Namen, die Chrome kennt).
+- **Content-Security-Policy** mit dem Schalter `CSP_MODUS`: `report` (Standard,
+  `Content-Security-Policy-Report-Only`), `scharf` (`Content-Security-Policy`) oder `aus`. Verstöße meldet der
+  Browser an `CSP_REPORT_URI` (`/csp-report/`, in Produktion der Endpunkt der mandari-Anwendung auf derselben
+  Domain). Inline-Skripte und `<style>`-Elemente erlaubt die Policy nur mit ihrem SHA-256-Hash: Vorlagen
+  schreiben sie in `{% csp_inline %}…{% endcsp_inline %}`, `{% stile %}` meldet kritisches CSS und Ladeskript
+  selbst an, den Stil von Altcha liest `sicherheit.py` aus der Bibliothek (`{% csp_altcha %}` auf `/kontakt/`).
+  Hashes statt Nonce: Seiten ohne Formular bleiben bytegleich, `ConditionalGetMiddleware` setzt ein ETag und
+  antwortet bei unveränderter Seite mit 304. Noch erlaubt sind `'unsafe-eval'` (Alpine) und `style`-Attribute;
+  ausgenommen sind `/cms-admin/` und `/django-admin/`. `scripts/check_csp.py` öffnet in der CI jede Seite im
+  Browser (ohne `DEBUG`, wie im Betrieb) und schlägt bei jedem Verstoß fehl. Policy und Permissions-Policy
+  bleiben kurz, weil sie mit jeder Seite in den ersten TCP-Paketen mitgehen. Plan: nach ein bis zwei Wochen
+  ohne Meldungen auf `CSP_MODUS=scharf` umstellen.
+- **404** (`templates/404.html`): Kopf- und Fußzeile, ein Satz, ein Aufruf zur Startseite und Wegweiser zu
+  Produkten, Preisen, Bürgerportal und Kontakt; Status 404, `noindex`. **500** (`templates/500.html`,
+  `marketing/fehlerseiten.py`): statisch, ohne Datenbank und ohne Kontextprozessoren, mit Notfalltext, falls
+  selbst das Rendern scheitert.
+
+### IndexNow
+
+Veröffentlichte und zurückgezogene Seiten meldet die Website sofort an Bing, Yandex, Seznam, Naver und Yep
+([IndexNow](https://www.indexnow.org/), `marketing/indexnow.py`; Google nimmt nicht teil, dort bleibt die Sitemap).
+Gemeldet werden nur Adressen, keine Inhalte und keine Daten von Besucherinnen und Besuchern. Der Schlüssel
+`INDEXNOW_KEY` liegt als `/<schlüssel>.txt` aus; ohne Schlüssel ist alles aus. Die mandari-Anwendung meldet die Seiten
+des Bürgerportals selbst (gleicher Schlüssel, Datei unter `/insight/<schlüssel>.txt`). Zum Start einmal alle Seiten:
+
+```bash
+python manage.py indexnow_melden --alle --probelauf   # zeigt die Adressen
+python manage.py indexnow_melden --alle
+```
+
 ### Wichtige Umgebungsvariablen
 
 | Variable | Default | Zweck |
@@ -261,6 +351,9 @@ marketing-website/
 | `CONTACT_FROM` / `CONTACT_TO` | `hello@mandari.de` | Absender und Empfänger der Formular-Mails |
 | `CONTACT_TRUSTED_PROXIES` | `1` | Eigene Reverse Proxys vor der Website; bestimmt, welcher `X-Forwarded-For`-Eintrag als Anschluss zählt |
 | `TZ` | `Europe/Berlin` | Zeitzone |
+| `CSP_MODUS` | `report` | Content-Security-Policy: `report` (nur melden), `scharf` (blockieren) oder `aus` |
+| `CSP_REPORT_URI` | `/csp-report/` | Ziel der CSP-Meldungen (in Produktion die mandari-Anwendung auf derselben Domain) |
+| `INDEXNOW_KEY` | leer (aus) | IndexNow-Schlüssel (8–128 Zeichen A–Z, a–z, 0–9, -), gleicher Wert wie in der mandari-Anwendung |
 
 ## 🎨 Gestaltung
 
@@ -269,7 +362,7 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
 
 | | Stufen |
 |---|---|
-| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px |
+| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px. Am Handy `t-h1` 32 px, `t-h2` und große Aussage 28 px, Zahl im Satz 22 px. Unter 1280 px trennen Überschriften, Begriffe und Tabellenköpfe lange Wörter nach Silben (`hyphens: auto`, ab 12 Zeichen) und brechen sie notfalls am Rand, statt überzulaufen |
 | **Abstand** | Abschnitt 96 px (Handy 64) · kompakt 64 px (48) für Hinweise · Unterabschnitt 48 px · Abschnittskopf → Inhalt 48 px, vor Fließtext 24 px |
 | **Raster** | Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen); Einträge in zwei Spalten, bei genau drei Einträgen in drei |
 | **Farbe** | Tinte `#111827`, Text `#4B5563`, Weiß, Hellgrau `#EEF0F4`; Indigo `#4F46E5` nur für den gefüllten Button, Textlinks und den Punkt der Wortmarke |
@@ -279,7 +372,9 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   Produktseiten zeigen rechts ein echtes Bild in derselben Rahmung wie die Startseite:
   `/produkte/` den Stapel aus Session, Work und Insight (`_hero_stapel.html`), `/kommunen/`
   Session und `/fraktionen/` Work (`_hero_einzel.html`, Zuordnung `HERO_BILD` in
-  `marketing/templatetags/baender.py`). Alle anderen Seiten haben einen kompakten Kopf
+  `marketing/templatetags/baender.py`). Steht in der Überschrift ein Wort ab 16 Zeichen
+  („Ratsinformationssystem“), hat der Text neben einem einzelnen Bildschirm sieben statt sechs Spalten, sonst
+  liefe das Wort ab 1280 px (dort ohne Silbentrennung) ins Bild. Alle anderen Seiten haben einen kompakten Kopf
   ohne Bild mit Mindesthöhe; Rechtstexte, Quellen und Releases sind Dokumente: Kopf und Text
   durchgehend auf Weiß.
 - **Bänder:** Jeder Abschnitt liegt auf einem vollbreiten Band, benachbarte
@@ -291,11 +386,34 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   Hinweise setzen das Band davor fort, ohne doppelten Abstand). Das Feld „Hintergrund“
   einzelner Blöcke wirkt nur noch ohne diese Automatik. Farben hell und dunkel als
   Variablen in `static/css/input.css`. Keine Verläufe.
-- **Einträge:** Titel über dem Text, offen auf der Fläche (`split_rows`, `mandari_cards`,
-  Schritte). Kein Muster „Überschrift links, Text rechts“ mehr; Daten in zeitlicher Folge
-  als Zeitleiste (`split_rows` mit Darstellung „Zeitleiste“). Fließtext kann eine
-  **Randspalte** tragen (`richtext_section`, Feld „Randspalte“) für Kernsätze, Kennzahlen
-  mit Stand oder Kontakt – statt einer leeren rechten Hälfte.
+- **Form folgt Inhalt (Musterkatalog):** Jeder Abschnitt bekommt die Form seiner Daten, nicht das
+  eine Raster „fette Zeile + Absatz“. Die Muster sind StreamField-Bausteine (`marketing/blocks.py`,
+  Templates `templates/marketing/blocks/<muster>.html`, Teile in `templates/marketing/muster/`,
+  Geometrie in `marketing/templatetags/muster.py`, Seed-Helfer `marketing/seeds_muster.py`):
+
+  | Inhalt | Muster | Baustein | Beispiel |
+  |---|---|---|---|
+  | Ablauf mit Fristen | Zeitskala, maßstäblich in Tagen, Achsenbruch für offene Zeitpunkte (Achse ab 1280 px, darunter Liste) | `zeitskala` | Disclosure, Abuse, Unternehmen |
+  | Schritte mit Dauern | Dauerbalken (frühestens, Spielraum, fester Tag) | `dauerbalken` | Migration |
+  | Vorhaben mit Zeitpunkt | Quartalsachse, Modul in Kennfarbe, Stufe als Text | `quartalsachse` | Roadmap |
+  | Kurze Folge ohne Fristen | Schrittfolge in einer Zeile mit Ergebnis (ab 1280 px, darunter untereinander) | `schrittfolge` | Mitmachen, Partner |
+  | Sammlung mit Stand | Register: eine Tabelle, Gruppen, Status als Punkt, Bestand im Randkopf | `register` | Vergabe, Lücken, Preisliste, Kontenblatt |
+  | Lange Texte | Dokumentseite: Inhaltsleiste, Text, Randspalte (Stand, Verweise, Kontakt) | `marketing/dokument.html` | Rechtstexte, Quellen, Trust Center, Releases |
+  | Text, der schmal bleibt | Text mit Randspalte (Ablauf, Dateien, Kontakt), Stichwort am Absatzanfang | `randspalte` | Vertragsgrundlagen, Kurzprofil |
+  | Werte, Eigenschaften | Begriffe in der Marginalie | `begriffe` | Wertekompass, Fundament |
+  | Einladung | Schlussband mit den direkten Wegen rechts | `gradient_cta` (Feld „Wege“) | jede Seite |
+  | Zusage | große Aussage, rechts die Bedingungen (höchstens einmal je Seite) | `zusage`, `leitsatz` | Safe Harbor, Warrant Canary |
+  | Produkte | Bildschirm in der Kennfläche des Produkts, rechts und unten angeschnitten bis an den Fensterrand; alle Produkte gleich (Text links, Bild rechts) | `produktbilder` | /produkte/ |
+  | Optionen | Vergleichstabelle Kriterien × Optionen (mehr als zwei Optionen: Tabelle erst ab 1024 px) | `vergleich` | Selbst hosten, Anbindung, Partner |
+  | Zahlen | Zahl im Satz, Null mit Aufschlüsselung | `zahlensatz`, `nullen` | Transparenz, Presse |
+  | Dateien | Download-Leiste: ein Button rechts, Vorschauen nach Rang | `downloads`, `company/_logopaket.html` | Presse, Preisliste |
+
+  Regeln: nie zweimal dasselbe Muster hintereinander, höchstens eine große Aussage je Seite, jede
+  Seite mit mindestens einem Element, das kein Fließtext ist (`marketing/tests/test_muster.py`).
+  **Keine leere rechte Hälfte:** Kein Abschnitt endet bei 1440 px vor 80 % der Rasterbreite;
+  `scripts/check_fuellung.py` misst das im Browser (CI). Hinweise direkt nach dem Seitenkopf
+  stehen in dessen Randspalte. Feste Seiten (Startseite, Disclosure, Ingestor) holen ihre Daten
+  aus `marketing/muster_daten.py`.
 - **Produktfarben:** Session Petrol `#0F5E8C` (vom Blau in Session abgeleitet,
   bewusst vom Indigo abgesetzt), Work Indigo `#4F46E5` (Standardfarbe in Work),
   Insight Grün `#17703F`. Startseite und `/produkte/` zeigen jedes Produkt als eigene Fläche
@@ -330,7 +448,6 @@ Du kannst Mandari auch finanziell unterstützen:
 - [GitHub Sponsors](https://github.com/sponsors/mandariOSS)
 - [Ko-fi](https://ko-fi.com/mandari)
 - [Buy Me a Coffee](https://buymeacoffee.com/mandari)
-- Oder über die [Transparenz-Seite](https://mandari.de/transparenz/#unterstuetzen)
 
 ## 📜 Lizenz
 

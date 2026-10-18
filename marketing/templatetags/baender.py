@@ -11,6 +11,7 @@ Reihenfolge der Blöcke fest – ohne dass Redaktion oder Seeds etwas einstellen
   Artikel im Trust Center, damit lange Seiten am Handy nicht zu einer Textwand werden,
 * eine Einladung mitten auf der Seite auf der Markenfläche (nach Weiß) oder auf Weiß (nach Hellgrau),
   die abschließende Einladung dunkel,
+* eine Zusage (Muster 6a) auf der Markenfläche,
 * kleine Zusätze (Eckdaten, Hinweis, Warrant Canary) bleiben auf dem Band davor,
 * Dokumente (Rechtstexte, Quellen) ruhig: Kopf und Text durchgehend auf Weiß, wie ein gedrucktes Dokument.
 
@@ -37,6 +38,9 @@ HELL, GRAU, MARKE, TINTE = "hell", "grau", "marke", "tinte"
 
 # Gehören zum Abschnitt davor und bekommen kein eigenes Band.
 ANGEHAENGT = {"trust_banner", "disclaimer_box", "warrant_canary"}
+
+# Stehen auf der Markenfläche (Musterkatalog: die Zusage einer Seite)
+MARKE_TYPEN = {"zusage"}
 
 # Seiten mit einem echten Produktbild im Hero: der Stapel aus drei Bildschirmen wie auf der Startseite
 # oder ein Bildschirm des Produkts, dem die Seite gehört.
@@ -74,6 +78,7 @@ PRODUKTE = {
 
 # Bildschirme im Hero (static/images/startseite): Querformat 16:10 in vier Breiten, Work und Insight zusätzlich
 # als Hochformat für den Stapel am Handy. Die Breiten passen zu den angezeigten Größen bei 1x bis 3x Pixeldichte.
+# Jede Breite liegt als AVIF (rund ein Drittel kleiner, scripts/hero_avif.py) und als WebP für ältere Browser vor.
 BILD_ORDNER = "images/startseite"
 QUER_BREITEN = (600, 800, 1200, 1600)
 MOBIL_BREITEN = (400, 480, 640, 780)
@@ -85,8 +90,8 @@ GROESSEN = {
     # Stapel: je Karte 74 % der Figur; Figur höchstens 40rem, ab lg 95 % der halben Spalte
     "stapel": "(min-width: 1280px) 414px, (min-width: 1024px) calc(35vw - 36px), (min-width: 688px) 474px, "
               "calc(74vw - 36px)",
-    # Stapel am Handy: je Karte 58 % der Figur, Figur höchstens 26rem
-    "stapel_mobil": "(min-width: 448px) 242px, calc(58vw - 19px)",
+    # Stapel am Handy: je Karte 48 % der Figur, Figur höchstens 26rem
+    "stapel_mobil": "(min-width: 448px) 200px, calc(48vw - 16px)",
     # Ein Bildschirm: 92 % der Figur, Figur höchstens 36rem, ab lg 95 % der halben Spalte
     "einzel": "(min-width: 1280px) 514px, (min-width: 1024px) calc(44vw - 45px), (min-width: 608px) 530px, "
               "calc(92vw - 30px)",
@@ -97,8 +102,8 @@ GROESSEN = {
 STAPEL_LCP = "work"
 
 
-def _srcset(datei, breiten, zusatz=""):
-    return ", ".join(f"{static(f'{BILD_ORDNER}/{datei}{zusatz}-{b}.webp')} {b}w" for b in breiten)
+def _srcset(datei, breiten, zusatz="", endung="webp"):
+    return ", ".join(f"{static(f'{BILD_ORDNER}/{datei}{zusatz}-{b}.{endung}')} {b}w" for b in breiten)
 
 _PRODUKT_MUSTER = {
     "session": re.compile(r"\bSession\b"),
@@ -128,6 +133,9 @@ def band_folge(typen, ruhig=False):
         elif typ == "gradient_cta":
             # Mitten auf der Seite: Markenfläche nach Weiß, sonst Weiß – nie neben Hellgrau
             band = MARKE if vorher in (None, HELL) else HELL
+        elif typ in MARKE_TYPEN:
+            # Zusage (Muster 6a): die eine Aussage der Seite auf der Markenfläche
+            band = MARKE if vorher != MARKE else HELL
         else:
             band = GRAU if vorher in (None, HELL) else HELL
         baender.append(band)
@@ -155,17 +163,26 @@ def baender(context, body, einschub_nach=None, ruhig=False):
     """Blöcke mit ihrem Band: ``{% baender page.body as abschnitte %}``.
 
     Jeder Eintrag hat ``block``, ``band``, ``anfang``/``ende`` (beginnt oder endet hier ein Band)
-    und ``letzter``. Mit ``einschub_nach`` kommt an der Stelle von ``insert_position`` ein Eintrag mit
+    und ``letzter``; der erste zusätzlich ``rand`` (Hinweise direkt nach dem Seitenkopf, die in dessen
+    Randspalte stehen). Mit ``einschub_nach`` kommt an der Stelle von ``insert_position`` ein Eintrag mit
     ``einschub`` (fester Abschnitt wie die Angaben zum Unternehmen), der im Wechsel mitzählt.
     """
     bloecke = list(body or [])
+    # Hinweise direkt nach dem Seitenkopf (Vorbehalte der Vergleiche) stehen in seiner Randspalte (Muster 5a)
+    kopf_rand = []
+    if bloecke and bloecke[0].block_type == "hero":
+        while len(bloecke) > 1 and bloecke[1].block_type == "disclaimer_box":
+            kopf_rand.append(bloecke.pop(1).value.get("body"))
     eintraege = list(bloecke)
     if einschub_nach is not None:
         from company.templatetags.company_tags import insert_position
 
         eintraege.insert(insert_position(body, einschub_nach), None)
     typen = ["einschub" if e is None else e.block_type for e in eintraege]
-    return _abschnitte(eintraege, band_folge(typen, ruhig=ruhig))
+    abschnitte = _abschnitte(eintraege, band_folge(typen, ruhig=ruhig))
+    if abschnitte:
+        abschnitte[0]["rand"] = kopf_rand
+    return abschnitte
 
 
 @register.simple_tag
@@ -230,7 +247,8 @@ def produkt_zeile(row):
 @register.simple_tag
 def produkt_bild(key):
     """Bildschirm eines Produkts für den Hero: ``url`` (800 px), ``srcset`` (Querformat), bei Work und Insight
-    ``srcset_mobil`` (Hochformat für den Stapel am Handy), ``sizes`` je Einsatz und der Alternativtext."""
+    ``srcset_mobil`` (Hochformat für den Stapel am Handy), je mit ``_avif`` als AVIF, ``sizes`` je Einsatz und der
+    Alternativtext."""
     bild = (PRODUKTE.get(key) or {}).get("bild")
     if not bild:
         return None
@@ -239,36 +257,39 @@ def produkt_bild(key):
         **bild,
         "url": static(f"{BILD_ORDNER}/{datei}-800.webp"),
         "srcset": _srcset(datei, QUER_BREITEN),
+        "srcset_avif": _srcset(datei, QUER_BREITEN, endung="avif"),
         "sizes": GROESSEN,
         "mobil_bis": MOBIL_BIS,
     }
     if key in ("work", "insight"):
         daten["srcset_mobil"] = _srcset(datei, MOBIL_BREITEN, "-mobil")
+        daten["srcset_mobil_avif"] = _srcset(datei, MOBIL_BREITEN, "-mobil", "avif")
     return daten
 
 
 @register.simple_tag(takes_context=True)
 def hero_vorladen(context, art=None):
     """``<link rel="preload">`` für das LCP-Bild im Hero, passend zu ``srcset``/``sizes`` des Bildes, damit der
-    Browser genau die Datei vorlädt, die er danach anzeigt (sonst lädt er doppelt). ``art`` wie ``hero_bild``;
-    ohne Angabe gilt das Bild der aktuellen Seite."""
+    Browser genau die Datei vorlädt, die er danach anzeigt (sonst lädt er doppelt). Vorgeladen wird das AVIF:
+    ``type`` lässt Browser ohne AVIF den Preload überspringen, sie laden das WebP aus ``<picture>``. ``art`` wie
+    ``hero_bild``; ohne Angabe gilt das Bild der aktuellen Seite."""
     art = art if art is not None else hero_bild(context)
     if not art:
         return ""
     if art == "stapel":
         b = produkt_bild(STAPEL_LCP)
         links = [
-            (b["srcset_mobil"], GROESSEN["stapel_mobil"], MOBIL_BIS),
-            (b["srcset"], GROESSEN["stapel"], "(min-width: 640px)"),
+            (b["srcset_mobil_avif"], GROESSEN["stapel_mobil"], MOBIL_BIS),
+            (b["srcset_avif"], GROESSEN["stapel"], "(min-width: 640px)"),
         ]
     else:
         b = produkt_bild(art)
         if not b:
             return ""
-        links = [(b["srcset"], GROESSEN["einzel"], "")]
+        links = [(b["srcset_avif"], GROESSEN["einzel"], "")]
     return format_html_join(
         "\n    ",
-        '<link rel="preload" as="image" type="image/webp" imagesrcset="{}" imagesizes="{}"{} fetchpriority="high">',
+        '<link rel="preload" as="image" type="image/avif" imagesrcset="{}" imagesizes="{}"{} fetchpriority="high">',
         ((srcset, sizes, format_html(' media="{}"', media) if media else "") for srcset, sizes, media in links),
     )
 

@@ -15,30 +15,29 @@
         </div>
     </div>
 </section>
+{# Muster 5b: Version und Datum in der Marginalie, Titel und Kurzfassung daneben – über die volle Breite #}
 <section class="band-hell abschnitt fortsetzung">
     <div class="wrap">
-        <div class="max-w-[45rem]">
-
             {% if releases %}
-            <ol class="divide-y divide-gray-200 dark:divide-gray-800 border-y border-gray-200 dark:border-gray-800">
+            <ol class="begriffe">
                 {% for release in releases %}
-                <li class="py-8">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        <time datetime="{{ release.release_date|date:'Y-m-d' }}">{{ release.release_date|date:"j. F Y" }}</time>, Version {{ release.version }}
+                <li class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-7 lg:py-8">
+                    <p class="lg:col-span-4">
+                        <span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte tabular-nums">Version {{ release.version }}</span>
+                        <span class="block mt-1 text-base m-leise"><time datetime="{{ release.release_date|date:'Y-m-d' }}">{{ release.release_date|date:"j. F Y" }}</time></span>
                     </p>
-                    <h2 class="mt-2 t-h2-dok">
-                        <a href="{% pageurl release %}" class="text-gray-900 dark:text-white hover:underline underline-offset-[6px] decoration-[1.5px] decoration-primary-400">{{ release.title }}</a>
-                    </h2>
-                    {% if release.search_description %}
-                    <p class="mt-3 t-body text-gray-600 dark:text-gray-300">{{ release.search_description }}</p>
-                    {% endif %}
+                    <div class="lg:col-span-7 lg:col-start-6">
+                        <h2 class="t-h2-dok">
+                            <a href="{% pageurl release %}" class="text-gray-900 dark:text-white hover:underline underline-offset-[6px] decoration-[1.5px] decoration-primary-400">{{ release.title }}</a>
+                        </h2>
+                        {% if release.search_description %}<p class="mt-3 t-body m-text">{{ release.search_description }}</p>{% endif %}
+                    </div>
                 </li>
                 {% endfor %}
             </ol>
             {% else %}
             <p class="mt-10 text-gray-600 dark:text-gray-300">Die Release-Notes erscheinen hier mit der nächsten Version.</p>
             {% endif %}
-        </div>
     </div>
 </section>
 {% endblock %}

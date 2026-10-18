@@ -35,7 +35,7 @@ jobs:
         # meldet makemigrations offene Änderungen und der Schritt schlägt fehl.
         run: python manage.py makemigrations --check --dry-run
 
-      - name: Unit-Tests (retire_page, SEO, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
+      - name: Unit-Tests (retire_page, SEO, Strukturdaten, Weiterleitungen, Sitemap, Releases, RIS-Vergleich mit Quellen)
         run: python manage.py test --buffer
 
       - name: Template-Kommentare prüfen (kein mehrzeiliges {# … #})
@@ -49,7 +49,7 @@ jobs:
       - name: CSS-Build-Check (Safelist-Klassen im kompilierten CSS, Größe)
         # Zwei Block-Templates setzen Farbklassen dynamisch zusammen (bg-{{ self.color }}-50 in
         # disclaimer_box.html, text-{{ e.color }}-600 in email_directory.html) — dieser Check stellt
-        # sicher, dass der Tailwind-Build sie enthält (Safelist in tailwind.config.js). Die Obergrenze
+        # sicher, dass der Tailwind-Build sie enthält (Safelist: @source inline in static/css/input.css). Die Obergrenze
         # hält ungenutztes CSS klein: Das Stylesheet blockiert auf jeder Seite das erste Rendern.
         run: |
           python - <<'EOF'
@@ -64,7 +64,9 @@ jobs:
           missing = [n for n in needles if n not in css]
           assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
           groesse = len(css.encode("utf-8"))
-          assert groesse < 72_000, f"styles.css hat {groesse} Bytes (Grenze 72.000) – ungenutzte Klassen in der Safelist?"
+          # Grenze: 65,6 KB vor dem Musterkatalog, die Abschnittsmuster (Zeitskala, Register, Dokumentseite …)
+          # bringen rund 15 KB (gzip 3 KB); darüber deutet ein Sprung auf ungenutzte Klassen in der Safelist.
+          assert groesse < 84_000, f"styles.css hat {groesse} Bytes (Grenze 84.000) – ungenutzte Klassen in der Safelist?"
           print(f"OK: {len(needles)} Klassen im CSS vorhanden, {groesse} Bytes")
           EOF
 
@@ -111,7 +113,8 @@ jobs:
               "/produkte/": ["Heute im Einsatz", 'id="insight"', "Welches Modul kann was", "Was sich anbinden lässt", "in Prüfung (ohne Termin)", "Mitteilung an das Finanzamt"],
               "/fraktionen/": ["Politik machen statt PDFs sortieren", "Funktioniert mit dem RIS Ihrer Kommune", "39,90", 'id="funktionen"'],
               "/preise/": ["39,90", "33,53", "Wer macht was"],
-              "/kommunen/": ["Ratsinformations", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit."],
+              "/kommunen/": ["Ratsinformationssystem und Sitzungsdienst ohne Medienbrüche.", "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit.", 'href="/ratsinformationssystem/"'],
+              "/ratsinformationssystem/": ["Was ist ein Ratsinformationssystem?", "Welcher Begriff meint was?", "Was ist OParl?", "Häufige Fragen zum Ratsinformationssystem", "https://docs.mandari.de/insight/oparl-api/", '"@type":"FAQPage"', '"@type":"SoftwareApplication"'],
               "/migration/": ["Bestandsaufnahme"],
               "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
@@ -119,7 +122,7 @@ jobs:
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
               "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft"],
               "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", "Auf wessen Schultern wir stehen"],
-              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt: in Prüfung", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
+              "/vergleich/": ["mandari vs. Sternberg SD.NET", "mandari vs. regisafe", "Alle Funktionen auf einen Blick", "Was mandari noch fehlt", "In Prüfung, ohne Termin", "[SO1]", "[RS5]", "[MR2]", "[OS2]"],
               "/vergleich/mandari-vs-sternberg/": ["Stand Oktober 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium", "Noch nicht verfügbar", "[ST1]"],
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
               "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
@@ -134,14 +137,15 @@ jobs:
               "/agb/": ["AGB"],
               "/kontakt/": ["Kontakt"],
               "/sicherheit/disclosure/": ["Sicherheitslücke gefunden?", "Safe Harbor", 'id="hall-of-fame"', "5D06 A2BC B71C 6095 7A23"],
-              "/crawler/": ["mandari-ingestor (+https://mandari.de/crawler)", "Kontakt und Widerspruch"],
+              "/ingestor/": ["mandari-ingestor/&lt;Version&gt; (+https://mandari.de/ingestor/; support@mandari.de)", 'id="abruf-adresse"', "144.76.153.200", "eine Anfrage pro Sekunde", "Drosseln oder ausschließen"],
           }
-          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern)
+          # Dauerhafte Weiterleitungen (Blog und Karriere ruhen, Statusseite extern, /crawler/ heißt seit 18.10.2026 /ingestor/)
           redirects = {
               "/status/": "https://status.mandari.de/",
               "/blog/": "/releases/",
               "/blog/feed/": "/releases/",
               "/karriere/": "/unternehmen/",
+              "/crawler/": "/ingestor/",
           }
           errors = []
           for url, needles in checks.items():
@@ -180,6 +184,12 @@ jobs:
         env:
           SITE_URL: "https://mandari.de"
         run: python scripts/check_site_structure.py
+
+      - name: Kritisches CSS (Größe, Seitenkopf auf jeder Seite, Abdeckung von Kopfzeile und Seitenkopf)
+        # Das kritische CSS steht inline im Kopf jeder Seite, styles.css lädt danach ohne Blockade
+        # (marketing/templatetags/stile.py). Fehlt dort eine Klasse aus Kopfzeile oder Seitenkopf, sähe die erste
+        # Ansicht vor styles.css anders aus und verschöbe sich danach (CLS).
+        run: python scripts/check_kritisches_css.py
 
       - name: Sicherheitsfristen (security.txt und Policy wie SECURITY.md im mandari-Repository)
         # Eingangsbestätigung, Korrekturfristen und Offenlegung müssen mit der SECURITY.md von
@@ -232,9 +242,9 @@ jobs:
                       self.parts.append(data)
 
           du = re.compile(r"\b(du|dich|dir|dein\w*|euch|euer|eure\w*)\b", re.IGNORECASE)
-          pages = ["/preise/", "/kommunen/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
+          pages = ["/preise/", "/kommunen/", "/ratsinformationssystem/", "/migration/", "/vergabe/", "/trust/", "/transparenz/", "/roadmap/",
                    "/barrierefreiheit/", "/abuse/", "/vergleich/", "/quellen/", "/agb/", "/avv/", "/kuendigung/",
-                   "/sicherheit/disclosure/", "/crawler/"]
+                   "/sicherheit/disclosure/", "/ingestor/"]
           c, errors = Client(), []
           for url in pages:
               r = c.get(url)
@@ -424,3 +434,32 @@ jobs:
           assert not errors, "; ".join(errors)
           print(f"OK: {geprueft} Templates mit Abstaenden und Schriftgroessen aus der Skala")
           EOF
+
+      - name: Gestaltungssystem – keine leere rechte Hälfte (jeder Abschnitt füllt bei 1440 px mindestens 80 % der Rasterbreite)
+        # Musterkatalog, Regel 6 (Rückmeldung vom 04.10.2026): Text, der schmal bleiben muss, bekommt eine Randspalte
+        # oder ein Bild, sonst geht das Layout über die volle Breite. Gemessen im Browser an allen Seiten der Sitemap
+        # (scripts/check_fuellung.py); der Seitenkopf ist ausgenommen.
+        env:
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          python manage.py runserver 127.0.0.1:8191 --noreload > runserver.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8191/ && break; sleep 1; done
+          python scripts/check_fuellung.py || (tail -20 runserver.log; exit 1)
+
+      - name: Content-Security-Policy im Browser (keine Verstöße auf allen Seiten, wie im Betrieb ohne DEBUG)
+        # Jeder Verstoß ginge im Betrieb mit jedem Seitenaufruf als Meldung an /csp-report/ und bräche die Seite, sobald
+        # CSP_MODUS=scharf gilt. Ohne DEBUG steht das kritische CSS inline wie in Produktion (Hash in der Policy); auf
+        # /kontakt/ lädt und rechnet der Spamschutz (Altcha: Stil, Worker, Abruf der Aufgabe). Neuer Inline-Code gehört
+        # in csp_inline (marketing/sicherheit.py). Prüft außerdem Permissions-Policy und eine 404-Seite.
+        env:
+          DEBUG: "false"
+          ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
+          SITE_URL: "http://127.0.0.1:8192"
+          CONTACT_SMTP_HOST: "127.0.0.1"
+        run: |
+          python manage.py collectstatic --noinput > /dev/null
+          python manage.py runserver 127.0.0.1:8192 --noreload > csp-server.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8192/ && break; sleep 1; done
+          BASE_URL=http://127.0.0.1:8192 python scripts/check_csp.py || (tail -20 csp-server.log; exit 1)

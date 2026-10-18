@@ -3,8 +3,9 @@ Marketing-specific Django views.
 
 Most marketing pages are rendered by Wagtail. This module holds the few routes
 that live outside the page tree: Altcha challenges, robots.txt, security.txt,
-the Responsible-Disclosure policy and the crawler info page. /status/ is a plain
-301 to the public status page (see website/urls.py).
+the Responsible-Disclosure policy and the info page of the mandari-ingestor
+(/ingestor/). /status/ and the former /crawler/ are plain 301 redirects (see
+website/urls.py).
 """
 
 from __future__ import annotations
@@ -146,10 +147,10 @@ def robots_txt(request):
     """
     site_url = (getattr(settings, "SITE_URL", "") or "https://mandari.de").rstrip("/")
 
-    body = f"""# Mandari robots.txt
+    body = f"""# mandari robots.txt
 # RFC 9309 — https://www.rfc-editor.org/rfc/rfc9309
 #
-# Welcome, crawler. Mandari is an open-source Ratsinformationssystem.
+# Welcome, crawler. mandari is an open-source Ratsinformationssystem.
 # Public source: https://github.com/mandariOSS/mandari
 
 # Default rule: crawl everything except admin & system endpoints
@@ -160,7 +161,6 @@ Disallow: /django-admin/
 Disallow: /documents/
 Disallow: /altcha/
 Disallow: /work/
-Crawl-delay: 1
 
 # Sitemaps (sitemaps.org)
 Sitemap: {site_url}/sitemap.xml
@@ -182,13 +182,14 @@ def security_disclosure_view(request):
     return render(request, "marketing/sicherheit_disclosure.html")
 
 
-def crawler_info_view(request):
-    """Render /crawler/ — Infoseite zum mandari-ingestor.
+def ingestor_info_view(request):
+    """Render /ingestor/ — Infoseite zum mandari-ingestor.
 
-    Der Crawler-User-Agent verweist auf diese Seite (Transparenz gegenüber
+    Der User-Agent des Ingestors verweist auf diese Seite (Transparenz gegenüber
     RIS-Betreibern); via Django-View vor dem Wagtail-Catch-all registriert.
+    Bis 18.10.2026 hieß sie /crawler/, die alte Adresse leitet dauerhaft hierher.
     """
-    return render(request, "marketing/crawler.html")
+    return render(request, "marketing/ingestor.html")
 
 
 @require_http_methods(["GET", "HEAD"])
@@ -206,7 +207,7 @@ def security_txt(request):
     # published PGP key (valid until 07/2028); regenerate before expiry.
     expires = "2027-07-31T00:00:00.000Z"
 
-    body = f"""# Mandari Security Disclosure
+    body = f"""# mandari Security Disclosure
 # RFC 9116 — https://www.rfc-editor.org/rfc/rfc9116
 
 Contact: mailto:security@mandari.de

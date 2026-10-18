@@ -1,39 +1,55 @@
 {% load static company_tags %}
-{# Das eine Logo-Paket: Vorschau, ZIP mit allen Dateien, Einzeldateien und Nutzungshinweise #}
+{# Muster 10 Download-Leiste: Titel links, das eine Paket rechts; Vorschauen nach Rang gewichtet (Regelfassung groß, Nebenfassungen gestapelt), Einzeldateien unter ihrer Vorschau, Nutzungsregeln als Zeile darunter #}
 {% logo_rules as logo_rules %}
-{% section_header "Logos und Bildmarke" "Ein Paket mit allen Fassungen, frei verwendbar unter Creative Commons Namensnennung (CC BY)." "material" as kopf %}
 <section class="band-{{ band|default:'hell' }} abschnitt">
     <span id="logo-wortmarke" class="block scroll-mt-24" aria-hidden="true"></span>
-    <div class="wrap">
-        {% block_template "marketing/blocks/section_header.html" kopf %}
-        <div class="grid sm:grid-cols-2 gap-6 max-w-5xl">
-            <div class="rounded-lg border border-gray-200 bg-white px-10 py-14 flex items-center justify-center">
-                <img src="{% static 'brand/mandari-logo.svg' %}" alt="Wortmarke mandari, dunkel auf hellem Grund" width="320" height="90" class="w-56 h-auto">
+    <div class="wrap" id="material">
+        <div class="grid gap-y-6 lg:grid-cols-12 lg:gap-x-10 lg:items-end">
+            <div class="lg:col-span-7">
+                <h2 class="t-h2 m-tinte">Logos und Bildmarke</h2>
+                <p class="mt-4 t-lead m-text">Alle Fassungen, frei verwendbar unter Creative Commons Namensnennung (CC BY).</p>
             </div>
-            <div class="rounded-lg bg-gray-900 px-10 py-14 flex items-center justify-center">
-                <img src="{% static 'brand/mandari-logo-white.svg' %}" alt="Wortmarke mandari, weiß auf dunklem Grund" width="320" height="90" class="w-56 h-auto">
+            <div class="lg:col-span-5 lg:text-right">
+                <a href="{% url 'press_logo_package' %}" class="btn-primary">Logo-Paket herunterladen</a>
+                <p class="mt-3 text-base m-leise">ZIP mit allen Dateien und den Nutzungshinweisen</p>
             </div>
         </div>
-        <div class="max-w-5xl mt-10 grid lg:grid-cols-2 gap-x-12 gap-y-10">
-            <div>
-                <a href="{% url 'press_logo_package' %}" class="btn-primary">Logo-Paket herunterladen</a>
-                <p class="mt-3 text-base text-gray-600 dark:text-gray-400">ZIP mit allen Dateien und den Nutzungshinweisen.</p>
-                <p class="mt-8 t-body text-gray-600 dark:text-gray-300">Einzeln:</p>
-                <ul class="mt-2 space-y-2 t-body">
-                    <li><a href="{% static 'brand/mandari-logo.svg' %}" download class="textlink">Wortmarke dunkel (SVG)</a></li>
-                    <li><a href="{% static 'brand/mandari-logo.png' %}" download class="textlink">Wortmarke dunkel (PNG, 2400 px)</a></li>
-                    <li><a href="{% static 'brand/mandari-logo-white.svg' %}" download class="textlink">Wortmarke weiß (SVG)</a></li>
-                    <li><a href="{% static 'brand/mandari-logo-white.png' %}" download class="textlink">Wortmarke weiß (PNG, 2400 px)</a></li>
-                    <li><a href="{% static 'brand/mandari-logo-print.png' %}" download class="textlink">Wortmarke für den Druck (PNG auf Weiß)</a></li>
-                    <li><a href="{% static 'brand/favicon.svg' %}" download class="textlink">Bildmarke „m.“ (SVG)</a></li>
-                </ul>
-            </div>
-            <div class="t-body text-gray-600 dark:text-gray-300">
-                <h3 class="t-h3 text-gray-900 dark:text-white">So setzen Sie die Wortmarke richtig ein</h3>
-                <ul class="mt-3 space-y-2 list-disc pl-5 marker:text-gray-400">
-                    {% for regel in logo_rules %}<li>{{ regel }}</li>{% endfor %}
-                </ul>
-            </div>
+
+        <div class="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-12">
+            <figure class="md:col-span-7 md:row-span-2 flex flex-col">
+                <div class="vorschau vorschau-hell flex-1 min-h-[14rem] px-10 py-14">
+                    <img src="{% static 'brand/mandari-logo.svg' %}" alt="Wortmarke mandari, dunkel auf hellem Grund" width="320" height="90" class="w-64 lg:w-96 h-auto">
+                </div>
+                <figcaption class="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                    <span class="font-semibold m-tinte">Wortmarke dunkel, die Regel</span>
+                    <span class="flex flex-wrap gap-x-5 text-base"><a href="{% static 'brand/mandari-logo.svg' %}" download class="textlink">SVG</a><a href="{% static 'brand/mandari-logo.png' %}" download class="textlink">PNG, 2400 px</a><a href="{% static 'brand/mandari-logo-print.png' %}" download class="textlink">Druck, PNG auf Weiß</a></span>
+                </figcaption>
+            </figure>
+            <figure class="md:col-span-5">
+                <div class="vorschau vorschau-dunkel h-40">
+                    <img src="{% static 'brand/mandari-logo-white.svg' %}" alt="Wortmarke mandari, weiß auf dunklem Grund" width="320" height="90" class="w-44 h-auto">
+                </div>
+                <figcaption class="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                    <span class="font-semibold m-tinte">Wortmarke weiß</span>
+                    <span class="flex flex-wrap gap-x-5 text-base"><a href="{% static 'brand/mandari-logo-white.svg' %}" download class="textlink">SVG</a><a href="{% static 'brand/mandari-logo-white.png' %}" download class="textlink">PNG, 2400 px</a></span>
+                </figcaption>
+            </figure>
+            <figure class="md:col-span-5">
+                <div class="vorschau vorschau-marke h-40">
+                    <img src="{% static 'brand/favicon.svg' %}" alt="Bildmarke m. von mandari" width="96" height="96" class="w-20 h-auto">
+                </div>
+                <figcaption class="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                    <span class="font-semibold m-tinte">Bildmarke „m.“, für kleine Flächen</span>
+                    <span class="text-base"><a href="{% static 'brand/favicon.svg' %}" download class="textlink">SVG</a></span>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="mt-12 pt-8 border-t m-linie grid gap-y-4 lg:grid-cols-12 lg:gap-x-10">
+            <h3 class="lg:col-span-3 font-semibold m-tinte">So setzen Sie die Wortmarke richtig ein</h3>
+            <ul class="lg:col-span-9 grid gap-x-10 gap-y-3 md:grid-cols-2 text-base m-text">
+                {% for regel in logo_rules %}<li>{{ regel }}</li>{% endfor %}
+            </ul>
         </div>
     </div>
 </section>

@@ -1,0 +1,27 @@
+{% load wagtailcore_tags baender %}
+{# M5b Begriffe in der Marginalie: Begriff groß links, Erklärung rechts, eine Linie zwischen den Zeilen. Kopf: Überschrift links, Satz rechts. Nennt die kleine Zeile ein Produkt, steht sie in dessen Kennfarbe. #}
+<section class="{% abschnitt band band_anfang band_ende %}">
+    <div class="wrap">
+        {% if self.header.title %}
+        <div{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %} class="grid gap-y-4 lg:grid-cols-12 lg:gap-x-10 mb-10 lg:mb-12 scroll-mt-24">
+            <h2 class="lg:col-span-5 t-h2 m-tinte">{{ self.header.title }}</h2>
+            {% if self.header.subline %}<p class="lg:col-span-6 lg:col-start-7 lg:pt-2 t-lead m-text">{{ self.header.subline }}</p>{% endif %}
+        </div>
+        {% endif %}
+        <dl class="begriffe">
+            {% for e in self.eintraege %}
+            <div{% if e.anchor_id %} id="{{ e.anchor_id }}"{% endif %} class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7 scroll-mt-24">
+                {% with p=e.marke|produkt %}<dt class="lg:col-span-5{% if p %} produkt-{{ p }}{% endif %}">
+                    <span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">{{ e.begriff }}</span>
+                    {% if e.marke %}<span class="block mt-1 text-base {% if p %}kenn font-semibold{% else %}m-leise{% endif %}">{{ e.marke }}</span>{% endif %}
+                </dt>{% endwith %}
+                <dd class="lg:col-span-6 lg:col-start-7 t-body m-text">
+                    <div class="richtext">{{ e.text|richtext }}</div>
+                    {% if e.link_label and e.link_url %}<p class="mt-3"><a class="textlink" href="{{ e.link_url }}">{{ e.link_label }}</a></p>{% endif %}
+                </dd>
+            </div>
+            {% endfor %}
+        </dl>
+        {% if self.note %}<div class="mt-8 lg:ml-[calc(50%+1.25rem)] max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

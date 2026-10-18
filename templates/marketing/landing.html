@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load baender %}
+{% load baender muster %}
 
 {# Titel und Meta-Description kommen aus den Seitenfeldern seo_title und search_description (Quelle: HOME_PAGE_META, base.html) #}
 
@@ -41,15 +41,15 @@
     </div>
 </section>
 
-{# Offener Code auf Weiß: eine Aussage, zwei Wege zum Nachprüfen #}
+{# Muster 6b Leitsatz: die Aussage über die ganze Breite, die Begründung rechts versetzt darunter #}
 <section class="band-hell abschnitt">
-    <div class="wrap grid lg:grid-cols-12 gap-x-8 gap-y-6">
-        <h2 class="t-h2 text-gray-900 dark:text-white lg:col-span-5">Öffentliches Geld.<br>Öffentlicher Code.</h2>
-        <div class="lg:col-span-7 lg:col-start-6 lg:pt-1">
-            <p class="t-lead text-gray-700 dark:text-gray-200 max-w-[45rem]">
+    <div class="wrap grid lg:grid-cols-12 lg:gap-x-10">
+        <h2 class="lg:col-span-11 leitsatz">Öffentliches Geld.<br>Öffentlicher Code.</h2>
+        <div class="lg:col-span-5 lg:col-start-7 mt-8 lg:mt-12">
+            <p class="t-body m-text">
                 Jede Zeile von mandari ist unter der AGPL-3.0 öffentlich einsehbar. Ihre Daten bleiben exportierbar, die Schnittstellen folgen dem Standard OParl. Sie entscheiden, ob mandari bei uns in Deutschland läuft oder in Ihrem eigenen Rechenzentrum.
             </p>
-            <p class="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+            <p class="mt-6 flex flex-wrap gap-x-8 gap-y-3">
                 <a class="textlink" href="https://github.com/mandariOSS/mandari">Quellcode ansehen</a>
                 <a class="textlink" href="/trust/">Sicherheit und Datenschutz prüfen</a>
             </p>
@@ -57,14 +57,9 @@
     </div>
 </section>
 
-{# Einladung: dunkles Band, derselbe Aufruf wie im Hero (wie marketing/blocks/gradient_cta.html) #}
+{# Muster 5c: Einladung auf dunklem Band, rechts die direkten Wege (marketing/muster_daten.py, WEGE["start"]) #}
+{% einladung_wege None "start" as wege %}
 <section class="on-ink band-tinte text-white abschnitt">
-    <div class="wrap">
-        <div class="max-w-[45rem]">
-            <h2 class="t-h2">Lassen Sie uns über Ihre Verwaltung sprechen.</h2>
-            <p class="t-lead text-gray-300 mt-5">30 Minuten, unverbindlich: Wir zeigen Ihnen mandari an Ihren eigenen Fragen – per Video, am Telefon oder persönlich in Münster.</p>
-            <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4"><a class="btn-primary" href="/kontakt/#termin">Erstgespräch vereinbaren</a></div>
-        </div>
-    </div>
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Lassen Sie uns über Ihre Verwaltung sprechen." satz="30 Minuten, unverbindlich: Wir zeigen Ihnen mandari an Ihren eigenen Fragen." aufruf="Erstgespräch vereinbaren" aufruf_url="/kontakt/#termin" wege=wege %}
 </section>
 {% endblock %}

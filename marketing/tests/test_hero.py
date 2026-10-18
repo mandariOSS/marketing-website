@@ -41,6 +41,10 @@ class AufrufeTests(SimpleTestCase):
     def test_einladung_rendert_hoechstens_einen_textlink(self):
         block = GradientCTABlock()
         html = block.render(block.to_python({"title": "Fragen?", "ctas": self.ctas}))
-        self.assertEqual(html.count('class="btn-primary"'), 1)
-        self.assertEqual(html.count('class="textlink"'), 1)
+        aufruf, wege = html.split("<dl", 1)
+        self.assertEqual(aufruf.count('class="btn-primary"'), 1)
+        self.assertEqual(aufruf.count('class="textlink"'), 1)
         self.assertNotIn("Dritter Weg", html)
+        # Muster 5c: ohne eigene Wege stehen rechts E-Mail und Gesprächsform
+        self.assertIn("hello@mandari.de", wege)
+        self.assertNotIn("btn-primary", wege)

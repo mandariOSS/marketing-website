@@ -115,7 +115,7 @@ def _invitation(title, subline, label, url):
 
 
 def get_company_page_definitions() -> dict:
-    kennzahlen = "".join(f"<li><strong>{zahl}</strong> {label}</li>" for zahl, label in KENNZAHLEN)
+    from marketing import seeds_muster as m
 
     return {
         # ════════════════════════════════════════════════════════════
@@ -129,8 +129,10 @@ def get_company_page_definitions() -> dict:
                 "Gemeinwesen trägt, muss offen, sicher und für alle verständlich sein.",
                 cta_label="Erstgespräch vereinbaren", cta_url="/kontakt/#termin",
             ),
-            _section(
-                "Warum wir das tun",
+            # Muster 6b: die Mission als Leitsatz, die Begründung rechts versetzt darunter
+            m.leitsatz(
+                "Wir machen Kommunalpolitik für alle zugänglich – und geben Verwaltungen die Werkzeuge, die sie "
+                "dafür brauchen.",
                 "<p>Was den Alltag einer Stadt bestimmt, entscheidet sich im Rat und in seinen Ausschüssen: "
                 "der Bebauungsplan, der Kita-Ausbau, die neue Buslinie. Die Unterlagen dazu sind öffentlich. "
                 "Wer sie sucht, braucht trotzdem Geduld, Vorwissen und das richtige PDF aus dem richtigen Jahr.</p>"
@@ -138,88 +140,98 @@ def get_company_page_definitions() -> dict:
                 "Ehrenamtliche Politiker:innen bereiten sich nach Feierabend mit Papierstapeln und Mailketten auf "
                 "Entscheidungen vor, die Millionen bewegen.</p>"
                 "<p><strong>Das geht besser.</strong> Wir bauen Software, die alle drei Seiten zusammenbringt – "
-                "und wir bauen sie offen, damit sie den Kommunen gehört und nicht uns.</p>",
+                "und wir bauen sie offen, damit sie den Kommunen gehört und nicht uns.</p>"
+                "<p><strong>Unsere Vision:</strong> eine offene Verwaltungswelt. Jede Kommune arbeitet mit Software, "
+                "deren Code sie kennt, deren Daten ihr gehören und deren Anbieter sie frei wählen kann.</p>",
                 anchor="warum",
-                aside=(
-                    "<h3>Unsere Mission</h3>"
-                    "<p>Wir machen Kommunalpolitik für alle zugänglich – und geben Verwaltungen die Werkzeuge, "
-                    "die sie dafür brauchen.</p>"
-                    "<h3>Unsere Vision</h3>"
-                    "<p>Eine offene Verwaltungswelt: Jede Kommune arbeitet mit Software, deren Code sie kennt, "
-                    "deren Daten ihr gehören und deren Anbieter sie frei wählen kann.</p>"
-                ),
             ),
-            _rows(
+            # Muster 5b: Werte als Begriffe in der Marginalie
+            m.begriffe(
                 "Unser Wertekompass",
                 [
-                    _row("Demokratie stärken",
-                         "Vertrauen in Politik entsteht, wenn Entscheidungen nachvollziehbar sind. Wir zeigen "
-                         "Ratsdaten vollständig und unverändert und arbeiten mit allen demokratischen Parteien "
-                         "gleichermaßen."),
-                    _row("Offen aus Überzeugung",
-                         "Unser gesamter Code steht unter AGPL-3.0. Öffentliches Geld verdient öffentlichen Code: "
-                         "prüfbar, wiederverwendbar, unabhängig von uns."),
-                    _row("Souverän und sicher",
-                         "Betrieb in deutschen Rechenzentren, Daten in der Hand der Kommune, Export jederzeit. "
-                         "Digitale Souveränität ist bei uns der Normalfall."),
-                    _row("Für alle gemacht",
-                         "Das Bürgerportal ist kostenlos und braucht keine Anmeldung. Wir gestalten barrierearm "
-                         "und schreiben so, dass man uns versteht."),
-                    _row("Verlässlich",
-                         "Wir sagen, was fertig ist und was kommt – mit Datum und Verbindlichkeit. Verwaltungen "
-                         "planen in Haushaltsjahren. Wir auch."),
-                    _row("Nah an der Praxis",
-                         "Wir entwickeln mit Sitzungsdiensten, Fraktionen und Bürger:innen, nicht über ihre Köpfe "
-                         "hinweg. Pilotkommunen gestalten die Roadmap mit."),
+                    m.begriff("Demokratie stärken",
+                              "Vertrauen in Politik entsteht, wenn Entscheidungen nachvollziehbar sind. Wir zeigen "
+                              "Ratsdaten vollständig und unverändert und arbeiten mit allen demokratischen Parteien "
+                              "gleichermaßen."),
+                    m.begriff("Offen aus Überzeugung",
+                              "Unser gesamter Code steht unter AGPL-3.0. Öffentliches Geld verdient öffentlichen Code: "
+                              "prüfbar, wiederverwendbar, unabhängig von uns."),
+                    m.begriff("Souverän und sicher",
+                              "Betrieb in deutschen Rechenzentren, Daten in der Hand der Kommune, Export jederzeit. "
+                              "Digitale Souveränität ist bei uns der Normalfall."),
+                    m.begriff("Für alle gemacht",
+                              "Das Bürgerportal ist kostenlos und braucht keine Anmeldung. Wir gestalten barrierearm "
+                              "und schreiben so, dass man uns versteht."),
+                    m.begriff("Verlässlich",
+                              "Wir sagen, was fertig ist und was kommt – mit Datum und Verbindlichkeit. Verwaltungen "
+                              "planen in Haushaltsjahren. Wir auch."),
+                    m.begriff("Nah an der Praxis",
+                              "Wir entwickeln mit Sitzungsdiensten, Fraktionen und Bürger:innen, nicht über ihre Köpfe "
+                              "hinweg. Pilotkommunen gestalten die Roadmap mit."),
                 ],
                 anchor="werte", subline="Sechs Zusagen. Wenn Ziele in Konflikt geraten, entscheiden sie.",
             ),
-            _rows(
+            # Muster 8, Variante „Davon leben wir / Davon nie“
+            m.vergleich(
                 "Ein Geschäftsmodell, so offen wie unser Code",
+                [("Davon leben wir", "Leistung, die Sie beauftragen"), ("Davon nie", "was es bei uns nicht gibt")],
                 [
-                    _row("Betrieb",
-                         "Wir betreiben mandari für Fraktionen und Verwaltungen: sicher, aktuell, aus Deutschland."),
-                    _row("Betreuung",
-                         "Wer mandari selbst betreibt, sichert sich Unterstützung und Wartung vertraglich."),
-                    _row("Einführung",
-                         "Datenübernahme aus dem Altsystem, Einrichtung und Schulung – damit der Umstieg gelingt."),
+                    ("Software", ["<strong>Betrieb:</strong> Wir betreiben mandari für Fraktionen und Verwaltungen – "
+                                  "sicher, aktuell, aus Deutschland.",
+                                  "<strong>Lizenzgebühren:</strong> Der Code steht unter AGPL-3.0."]),
+                    ("Selbstbetrieb", ["<strong>Betreuung:</strong> Wer mandari selbst betreibt, sichert sich "
+                                       "Unterstützung und Wartung vertraglich.",
+                                       "<strong>Datenhandel:</strong> Ihre Daten sind nicht unser Geschäft."]),
+                    ("Umstieg", ["<strong>Einführung:</strong> Datenübernahme aus dem Altsystem, Einrichtung und "
+                                 "Schulung – damit der Umstieg gelingt.",
+                                 "<strong>Werbung:</strong> keine, auch nicht im Bürgerportal."]),
+                    ("Finanzierung", ["Einnahmen aus diesen Leistungen",
+                                      "<strong>Investoren,</strong> die morgen den Kurs ändern"]),
                 ],
+                subline="Wir verdienen unser Geld mit Leistung, nicht mit Lizenzen.",
                 anchor="geschaeftsmodell",
-                subline="Wir verdienen unser Geld mit Leistung, nicht mit Lizenzen. Keine Werbung, kein "
-                        "Datenhandel, keine Investoren, die morgen den Kurs ändern.",
                 note='<p><a href="/preise/">Preise ansehen</a></p>',
             ),
-            _rows(
+            # Muster 1a als Chronik: ein Jahr maßstäblich, Version 1.0 am Ende
+            m.zeitskala(
                 "Wir stehen am Anfang. Genau da wollen wir sein.",
-                [
-                    _row("Januar 2026",
-                         "Wir starten so, wie wir arbeiten wollen: mit offenem Quellcode unter AGPL-3.0, vom "
-                         "ersten Tag an.",
-                         label="Der erste öffentliche Commit"),
-                    _row("Juli 2026",
-                         "Das Bürgerportal läuft im Dauerbetrieb und macht Hunderttausende Ratsdokumente "
-                         "durchsuchbar. Work und Session starten in die offene Beta.",
-                         label="mandari 0.9 geht online"),
-                    _row("September 2026",
-                         "Session führt Niederschriften mit Freigabe und Berichtigung, Fraktionen sehen in Work, "
-                         "was aus ihren Anträgen wird.",
-                         label="mandari 0.11", link_label="Alle Releases", link_url="/releases/"),
-                    _row("Herbst 2026",
-                         "Dokumentation, Live-Status, Trust Center und Roadmap sind öffentlich – für alle, ohne "
-                         "Anmeldung.",
-                         label="Transparenz wird Standard"),
-                    _row("2027",
-                         "Übernahme aus Bestandssystemen, vereinbarte Service-Level, externer Penetrationstest.",
-                         label="Version 1.0", status="Geplant",
-                         link_label="Zur Roadmap", link_url="/roadmap/"),
+                subline="Vom ersten öffentlichen Commit zur Plattform für die offene Verwaltung.",
+                anchor="wegmarken",
+                tage=365,
+                marken=[
+                    m.marke(0, "Januar", "Der erste öffentliche Commit"),
+                    m.marke(185, "Juli", "mandari 0.9 geht online"),
+                    m.marke(269, "September", "mandari 0.11"),
+                    m.marke(280, "Herbst", "Transparenz wird Standard"),
+                    m.marke(365, "2027", "Version 1.0", offen=True),
                 ],
-                anchor="wegmarken", subline="Vom ersten öffentlichen Commit zur Plattform für die offene Verwaltung.",
-                layout="zeitleiste",
+                skala=[m.skalenpunkt(0, "Januar 2026"), m.skalenpunkt(90, "April"), m.skalenpunkt(181, "Juli"),
+                       m.skalenpunkt(273, "Oktober"), m.skalenpunkt(365, "2027")],
+                schritte=[
+                    m.schritt("Januar 2026", "Der erste öffentliche Commit",
+                              "Wir starten so, wie wir arbeiten wollen: mit offenem Quellcode unter AGPL-3.0, vom "
+                              "ersten Tag an."),
+                    m.schritt("Juli 2026", "mandari 0.9 geht online",
+                              "Das Bürgerportal läuft im Dauerbetrieb und macht Hunderttausende Ratsdokumente "
+                              "durchsuchbar. Work und Session starten in die offene Beta."),
+                    m.schritt("September 2026", "mandari 0.11",
+                              "Session führt Niederschriften mit Freigabe und Berichtigung, Fraktionen sehen in Work, "
+                              "was aus ihren Anträgen wird."),
+                    m.schritt("Herbst 2026", "Transparenz wird Standard",
+                              "Dokumentation, Live-Status, Trust Center und Roadmap sind öffentlich – für alle, ohne "
+                              "Anmeldung."),
+                    m.schritt("2027, geplant", "Version 1.0",
+                              "Übernahme aus Bestandssystemen, vereinbarte Service-Level, externer Penetrationstest."),
+                ],
+                note='<p><a href="/releases/">Alle Releases</a> und die <a href="/roadmap/">Roadmap</a> zeigen, was '
+                     "seitdem dazugekommen ist und was als Nächstes kommt.</p>",
             ),
-            _invitation(
+            m.einladung(
                 "Lernen wir uns kennen.",
                 "Ob Verwaltung, Fraktion, Partner oder Presse: Wir nehmen uns Zeit für Ihre Fragen.",
                 "Erstgespräch vereinbaren", "/kontakt/#termin",
+                wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
+                      ("Für die Presse", "presse@mandari.de", ""), ("Zusammenarbeit", "Partner werden", "/partner/")],
             ),
         ],
 
@@ -316,7 +328,8 @@ def get_company_page_definitions() -> dict:
                 "zu sagen – und antworten schnell, auch kurz vor Redaktionsschluss.",
                 cta_label="Presseanfrage stellen", cta_url=f"mailto:{PRESSE}?subject=Presseanfrage",
             ),
-            _section(
+            # Muster 5a: Kurzprofil zum Übernehmen, rechts die Eckdaten und die Schreibweise
+            m.randspalte(
                 "Kurzprofil",
                 "<p>mandari ist ein GovTech-Startup aus Münster und entwickelt offene Software für Verwaltung, Politik "
                 "und Bürger:innen. Die Plattform startet dort, wo kommunale Demokratie entschieden wird: im Rat. Das "
@@ -326,52 +339,54 @@ def get_company_page_definitions() -> dict:
                 "AGPL-3.0, betrieben wird mandari in Rechenzentren in Deutschland. Das Unternehmen ist unabhängig "
                 "finanziert.</p>"
                 "<p>Zur Übernahme freigegeben, auch gekürzt.</p>",
+                [
+                    m.rand_fakten("", ("Sitz", "Münster (Westfalen)"),
+                                  ("Produkte", "mandari Session, mandari Work, mandari Insight"),
+                                  ("Lizenz", "AGPL-3.0, freie Software"), ("Pressekontakt", PRESSE)),
+                    m.rand_text("<p><strong>Schreibweise:</strong> mandari klein, auch am Satzanfang. Rechtsträger und "
+                                "Anschrift stehen in den <a href=\"/unternehmen/#angaben\">Angaben zum Unternehmen</a>.</p>"),
+                ],
                 anchor="kurzprofil",
-                aside=(
-                    "<h3>Schreibweise</h3>"
-                    "<p>Der Name wird klein geschrieben: <strong>mandari</strong>, auch am Satzanfang. Die Produkte "
-                    "heißen <strong>mandari Session</strong>, <strong>mandari Work</strong> und "
-                    "<strong>mandari Insight</strong>.</p>"
-                ),
             ),
-            _section(
+            # Muster 9a: Kennzahlen in einem Satz, mit Stand
+            m.zahlensatz(
                 "Fakten und Kennzahlen",
-                "<ul>"
-                "<li><strong>Sitz:</strong> Münster (Westfalen)</li>"
-                "<li><strong>Was wir tun:</strong> offene Software für Verwaltung, Politik und Bürger:innen "
-                "(GovTech)</li>"
-                "<li><strong>Produkte:</strong> mandari Session, mandari Work, mandari Insight</li>"
-                "<li><strong>Lizenz:</strong> AGPL-3.0 (freie Software), Quellcode auf "
-                '<a href="https://github.com/mandariOSS/mandari">GitHub</a></li>'
-                "<li><strong>Aktuelle Version:</strong> mandari 0.11.0 vom 27. September 2026 "
-                '(<a href="/releases/">Releases</a>)</li>'
-                "<li><strong>Rechtsträger und Anschrift:</strong> "
-                '<a href="/unternehmen/#angaben">Angaben zum Unternehmen</a></li>'
-                "</ul>",
-                anchor="fakten", background="gray",
-                aside=(
-                    "<h3>Kennzahlen</h3>"
-                    f"<p>Aus dem Bürgerportal mandari Insight, Stand {KENNZAHLEN_STAND}:</p>"
-                    f"<ul>{kennzahlen}</ul>"
-                ),
+                f"Das Bürgerportal mandari Insight macht <b>{KENNZAHLEN[0][0]}</b> Dokumente, "
+                f"<b>{KENNZAHLEN[1][0]}</b> Vorgänge und Vorlagen und <b>{KENNZAHLEN[2][0]}</b> Sitzungen aus "
+                f"<b>{KENNZAHLEN[3][0]}</b> Kommunen und Körperschaften im Volltext durchsuchbar.",
+                rand=f"<p>Stand {KENNZAHLEN_STAND}, gezählt im Datenbestand des Bürgerportals.</p>"
+                     "<p><strong>Aktuelle Version:</strong> mandari 0.11.0 vom 27. September 2026, "
+                     "<a href=\"/releases/\">Releases</a></p>"
+                     "<p><strong>Quellcode:</strong> <a href=\"https://github.com/mandariOSS/mandari\">GitHub</a></p>",
+                anchor="fakten",
             ),
-            _section(
+            # (hier folgt das Logo-Paket als Download-Leiste: templates/company/_logopaket.html)
+            # Muster 5b: Themen als Begriffe
+            m.begriffe(
                 "Themen, zu denen wir sprechen",
-                "<ul>"
-                "<li>Open Source in der öffentlichen Verwaltung: „Public Money, Public Code“</li>"
-                "<li>Digitale Souveränität und Herstellerabhängigkeit in Kommunen</li>"
-                "<li>Transparenz in der Kommunalpolitik und offene Ratsdaten</li>"
-                "<li>GovTech gründen in Deutschland</li>"
-                "</ul>"
-                '<p>Was gerade neu ist, steht in den <a href="/releases/">Releases</a> und im '
-                '<a href="/transparenz/">Transparenzbericht</a>.</p>',
+                [
+                    m.begriff("Open Source in der öffentlichen Verwaltung",
+                              "„Public Money, Public Code“: warum Software, die mit öffentlichem Geld entsteht, "
+                              "öffentlich sein sollte."),
+                    m.begriff("Digitale Souveränität",
+                              "Herstellerabhängigkeit in Kommunen und wie offene Standards sie auflösen."),
+                    m.begriff("Transparenz in der Kommunalpolitik",
+                              "Offene Ratsdaten, die man findet und versteht."),
+                    m.begriff("GovTech gründen in Deutschland",
+                              "Was es heißt, Software für Verwaltungen zu bauen."),
+                ],
                 anchor="themen",
+                note="<p>Was gerade neu ist, steht in den <a href=\"/releases/\">Releases</a> und im "
+                     "<a href=\"/transparenz/\">Transparenzbericht</a>.</p>",
             ),
-            _invitation(
+            m.einladung(
                 "Sie recherchieren zu offener Verwaltung?",
                 "Nennen Sie uns Ihre Frist: Anfragen mit Redaktionsschluss haben Vorrang. Interviews, "
                 "Hintergrundgespräche und O-Töne gern auch kurzfristig.",
                 "Presseanfrage stellen", f"mailto:{PRESSE}?subject=Presseanfrage",
+                wege=[("E-Mail", PRESSE, ""), ("Formate", "Interview, Hintergrund, O-Ton", ""),
+                      ("Bildmaterial", "Logo-Paket", "/presse/mandari-logopaket.zip"),
+                      ("Hintergrund", "Transparenzbericht", "/transparenz/")],
             ),
         ],
 
@@ -385,55 +400,58 @@ def get_company_page_definitions() -> dict:
                 "Kommunen, die sie prägen, und Förderern, die Gemeinwohl möglich machen. Werden Sie Teil davon.",
                 cta_label="Partnergespräch vereinbaren", cta_url="/kontakt/?subject=Partnerschaft#termin",
             ),
-            _rows(
+            # Muster 8: vier Partnerarten nach denselben Fragen
+            m.vergleich(
                 "Vier Wege, mit uns zu arbeiten",
+                [("IT-Dienstleister", "kommunal oder Systemhaus"), ("Pilotkommunen", "mit mandari Session"),
+                 ("Förderer", "Stiftungen und Programme"), ("Civic Tech", "und Zivilgesellschaft")],
                 [
-                    _row("Kommunale IT-Dienstleister und Systemhäuser",
-                         "Sie betreuen Kommunen und wollen ihnen ein offenes Ratsinformationssystem anbieten. Wir "
-                         "liefern Software, Dokumentation und Unterstützung im Hintergrund – der Kunde bleibt Ihrer. "
-                         "mandari läuft auch in Ihrem Rechenzentrum, Installation und Aktualisierung sind "
-                         "dokumentiert.",
-                         link_label="Betriebsdokumentation lesen", link_url="https://docs.mandari.de/betrieb/"),
-                    _row("Pilotkommunen",
-                         "Sie setzen mandari Session früh ein und bestimmen mit, was als Nächstes gebaut wird. Dafür "
-                         "bekommen Sie kurze Wege in die Entwicklung, die Übernahme Ihrer bestehenden Daten und ein "
-                         "System, das zu Ihren Abläufen passt.",
-                         link_label="mandari Session ansehen", link_url="/kommunen/"),
-                    _row("Förderer und Stiftungen",
-                         "Das Bürgerportal ist kostenlos und soll es bleiben. Förderung fließt in klar umrissene "
-                         "Vorhaben, deren Ergebnis als freie Software allen Kommunen zugutekommt – mit Fortschritt, "
-                         "den jede:r in Roadmap, Code und Releases nachvollziehen kann.",
-                         link_label="Roadmap ansehen", link_url="/roadmap/"),
-                    _row("Civic Tech und Zivilgesellschaft",
-                         "Initiativen, Redaktionen und Forschende arbeiten mit den offenen Ratsdaten. Wir halten die "
-                         "OParl-Schnittstelle stabil und ohne Anmeldung abrufbar – und hören zu, wenn etwas fehlt.",
-                         link_label="Zur Schnittstelle", link_url="https://docs.mandari.de/insight/oparl-api/"),
+                    ("Ausgangslage", [
+                        "Sie betreuen Kommunen und wollen ihnen ein offenes Ratsinformationssystem anbieten.",
+                        "Sie setzen mandari Session früh ein und bestimmen mit, was als Nächstes gebaut wird.",
+                        "Das Bürgerportal ist kostenlos und soll es bleiben.",
+                        "Initiativen, Redaktionen und Forschende arbeiten mit den offenen Ratsdaten.",
+                    ]),
+                    ("Was Sie bekommen", [
+                        "Software, Dokumentation und Unterstützung im Hintergrund – der Kunde bleibt Ihrer. mandari "
+                        "läuft auch in Ihrem Rechenzentrum, Installation und Aktualisierung sind dokumentiert.",
+                        "Kurze Wege in die Entwicklung, die Übernahme Ihrer bestehenden Daten und ein System, das zu "
+                        "Ihren Abläufen passt.",
+                        "Förderung fließt in klar umrissene Vorhaben, deren Ergebnis als freie Software allen Kommunen "
+                        "zugutekommt – mit Fortschritt, den jede:r in Roadmap, Code und Releases nachvollziehen kann.",
+                        "Eine OParl-Schnittstelle, die wir stabil und ohne Anmeldung abrufbar halten – und ein offenes "
+                        "Ohr, wenn etwas fehlt.",
+                    ]),
+                    ("Erster Schritt", [
+                        "<a href=\"https://docs.mandari.de/betrieb/\">Betriebsdokumentation lesen</a>",
+                        "<a href=\"/kommunen/\">mandari Session ansehen</a>",
+                        "<a href=\"/roadmap/\">Roadmap ansehen</a>",
+                        "<a href=\"https://docs.mandari.de/insight/oparl-api/\">Zur Schnittstelle</a>",
+                    ]),
                 ],
                 anchor="wege",
             ),
-            _steps(
+            # Muster 2: vier Schritte in einer Zeile, das Ergebnis am Ende
+            m.schrittfolge(
                 "So entsteht eine Partnerschaft",
-                [
-                    ("Erstgespräch",
-                     "30 Minuten per Video oder Telefon: Sie erzählen, was Sie vorhaben, wir sagen, was wir "
-                     "beitragen können."),
-                    ("Umfang und Konditionen",
-                     "Eine Seite, die Aufgaben, Aufwand und Verantwortung klar festhält."),
-                    ("Vertrag oder Absichtserklärung",
-                     "Pilotkommunen schließen einen Pilotvertrag mit Auftragsverarbeitungsvertrag, für Allianzen "
-                     "genügt oft eine Absichtserklärung."),
-                    ("Loslegen",
-                     "Ein gemeinsamer Kanal, feste Ansprechpartner:innen und der direkte Draht in die Entwicklung."),
-                ],
-                anchor="ablauf", background="gray",
+                [("Erstgespräch", "30 Minuten per Video oder Telefon: Sie erzählen, was Sie vorhaben, wir sagen, was wir "
+                  "beitragen können.", ""),
+                 ("Umfang und Konditionen", "Eine Seite, die Aufgaben, Aufwand und Verantwortung klar festhält.", ""),
+                 ("Vertrag oder Absichtserklärung", "Pilotkommunen schließen einen Pilotvertrag mit "
+                  "Auftragsverarbeitungsvertrag, für Allianzen genügt oft eine Absichtserklärung.", "")],
+                ergebnis={"titel": "Loslegen.", "text": "Ein gemeinsamer Kanal, feste Ansprechpartner:innen und der "
+                          "direkte Draht in die Entwicklung."},
                 note="<p>Für jede Partnerschaft gilt unser Wertekompass: Ratsdaten bleiben vollständig und "
                      "unverändert, wir arbeiten mit allen demokratischen Parteien gleichermaßen, und jede Zeile "
                      'Code bleibt offen. <a href="/unternehmen/#werte">Wertekompass lesen</a></p>',
+                anchor="ablauf",
             ),
-            _invitation(
+            m.einladung(
                 "Finden wir heraus, was wir zusammen bewegen.",
                 "30 Minuten, unverbindlich. Danach wissen beide Seiten, wie eine Partnerschaft aussehen kann.",
                 "Partnergespräch vereinbaren", "/kontakt/?subject=Partnerschaft#termin",
+                wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video oder am Telefon", ""),
+                      ("Für die IT", "Trust Center", "/trust/"), ("Was kommt", "Roadmap", "/roadmap/")],
             ),
         ],
 
@@ -447,86 +465,87 @@ def get_company_page_definitions() -> dict:
                 "AGPL-3.0: jede Zeile, jedes Produkt, ohne Premium-Ausgabe hinter verschlossener Tür.",
                 cta_label="Quellcode ansehen", cta_url="https://github.com/mandariOSS/mandari",
             ),
-            _rows(
+            # Muster 5b: vier Freiheiten als Begriffe
+            m.begriffe(
                 "Was offener Code für Ihre Verwaltung bedeutet",
                 [
-                    _row("Frei in der Wahl des Anbieters",
-                         "Ihre IT, Ihr kommunaler Dienstleister oder ein anderes Unternehmen kann mandari betreiben "
-                         "und weiterentwickeln. Eine stärkere Verhandlungsposition gibt es nicht."),
-                    _row("Prüfbar bis zur letzten Zeile",
-                         "Ihre Informationssicherheit, ein externer Prüfer oder der Rechnungshof sieht sich den Code "
-                         "einfach an – ohne Geheimhaltungsvereinbarung, ohne Termin bei uns."),
-                    _row("Dauerhaft verfügbar",
-                         "Der Quellcode liegt öffentlich und bleibt es. Die übliche Hinterlegung beim Treuhänder "
-                         "können Sie sich sparen – Ihr Investitionsschutz ist eingebaut."),
-                    _row("Gemeinsam stärker",
-                         "Was eine Kommune beauftragt, kommt allen zugute. Erweiterungen fließen ins Hauptprojekt "
-                         "zurück, so wächst mit jedem Auftrag die Software aller."),
+                    m.begriff("Frei in der Wahl des Anbieters",
+                              "Ihre IT, Ihr kommunaler Dienstleister oder ein anderes Unternehmen kann mandari betreiben "
+                              "und weiterentwickeln. Eine stärkere Verhandlungsposition gibt es nicht."),
+                    m.begriff("Prüfbar bis zur letzten Zeile",
+                              "Ihre Informationssicherheit, ein externer Prüfer oder der Rechnungshof sieht sich den Code "
+                              "einfach an – ohne Geheimhaltungsvereinbarung, ohne Termin bei uns."),
+                    m.begriff("Dauerhaft verfügbar",
+                              "Der Quellcode liegt öffentlich und bleibt es. Die übliche Hinterlegung beim Treuhänder "
+                              "können Sie sich sparen – Ihr Investitionsschutz ist eingebaut."),
+                    m.begriff("Gemeinsam stärker",
+                              "Was eine Kommune beauftragt, kommt allen zugute. Erweiterungen fließen ins Hauptprojekt "
+                              "zurück, so wächst mit jedem Auftrag die Software aller."),
                 ],
                 anchor="freiheiten", subline="Vier Freiheiten, die Ihnen keine geschlossene Software geben kann.",
             ),
-            _rows(
+            # Muster 3: was Sie nachprüfen können, und wo
+            m.register(
                 "Wir entwickeln vor aller Augen",
                 [
-                    _row("Eine Ausgabe für alle",
-                         "Was wir betreiben, liegt im Repository. Keine Enterprise-Variante, keine zurückgehaltenen "
-                         "Funktionen."),
-                    _row("Öffentliche Releases",
-                         "Jede Version erscheint mit Änderungsprotokoll auf GitHub und in verständlicher Form auf "
-                         "dieser Website.",
-                         link_label="Releases ansehen", link_url="/releases/"),
-                    _row("Nachvollziehbare Lieferkette",
-                         "Festgeschriebene Abhängigkeiten, eine Schwachstellenprüfung, die den Bau bei Befund "
-                         "stoppt, und eine Stückliste (SBOM) je Release.",
-                         link_label="Lieferkette im Trust Center", link_url="/trust/"),
-                    _row("Geregelte Meldewege",
-                         "Sicherheitslücken nehmen wir vertraulich unter "
-                         '<a href="mailto:security@mandari.de">security@mandari.de</a> entgegen – mit zugesagten '
-                         "Fristen und Schutz für gutgläubige Forschung.",
-                         link_label="Sicherheitslücke melden", link_url="/sicherheit/disclosure/"),
+                    m.gruppe("Nachprüfen statt glauben",
+                             m.zeile("Eine Ausgabe für alle", "Was wir betreiben, liegt im Repository. Keine "
+                                     "Enterprise-Variante, keine zurückgehaltenen Funktionen.",
+                                     zusatz="<a href=\"https://github.com/mandariOSS/mandari\">Repository</a>"),
+                             m.zeile("Öffentliche Releases", "Jede Version erscheint mit Änderungsprotokoll auf GitHub "
+                                     "und in verständlicher Form auf dieser Website.",
+                                     zusatz="<a href=\"/releases/\">Releases ansehen</a>"),
+                             m.zeile("Nachvollziehbare Lieferkette", "Festgeschriebene Abhängigkeiten, eine "
+                                     "Schwachstellenprüfung, die den Bau bei Befund stoppt, und eine Stückliste (SBOM) je "
+                                     "Release.", zusatz="<a href=\"/trust/#audits\">Lieferkette im Trust Center</a>"),
+                             m.zeile("Geregelte Meldewege", "Sicherheitslücken nehmen wir vertraulich unter "
+                                     "security@mandari.de entgegen – mit zugesagten Fristen und Schutz für gutgläubige "
+                                     "Forschung.", zusatz="<a href=\"/sicherheit/disclosure/\">Sicherheitslücke melden</a>")),
+                    m.gruppe("Unsere Repositories",
+                             m.zeile("mandari", "die Plattform: Insight, Work, Session und die OParl-Anbindung",
+                                     url="https://github.com/mandariOSS/mandari", zusatz="AGPL-3.0"),
+                             m.zeile("marketing-website", "diese Website",
+                                     url="https://github.com/mandariOSS/marketing-website", zusatz="AGPL-3.0"),
+                             m.zeile("docs", "die Dokumentation unter docs.mandari.de",
+                                     url="https://github.com/mandariOSS/docs", zusatz="")),
                 ],
-                anchor="entwicklung", background="gray",
-                subline="Sie müssen uns nicht glauben. Sie können nachsehen: Roadmap, Releases, "
-                        "Sicherheitsprozesse und Betriebsstatus sind öffentlich.",
+                spalten=["Was", "Worum es geht", "Wo"],
+                subline="Sie müssen uns nicht glauben. Sie können nachsehen: Roadmap, Releases, Sicherheitsprozesse und "
+                        "Betriebsstatus sind öffentlich.",
+                anchor="entwicklung",
             ),
-            _section(
-                "Schauen Sie uns in den Code",
-                "<p>Alle Repositories liegen unter "
-                '<a href="https://github.com/mandariOSS">github.com/mandariOSS</a>:</p>'
+            # Muster 5a: die freien Projekte, rechts der Weg zum Mitwirken
+            m.randspalte(
+                "Auf wessen Schultern wir stehen",
+                "<p>mandari wäre ohne diese freien Projekte nicht möglich. Sie verdienen Sichtbarkeit – und Beiträge "
+                "zurück.</p>"
                 "<ul>"
-                '<li><a href="https://github.com/mandariOSS/mandari">mandari</a> – die Plattform: Insight, Work, '
-                "Session und die OParl-Anbindung</li>"
-                '<li><a href="https://github.com/mandariOSS/marketing-website">marketing-website</a> – '
-                "diese Website</li>"
-                '<li><a href="https://github.com/mandariOSS/docs">docs</a> – die Dokumentation unter '
-                "docs.mandari.de</li>"
-                "</ul>"
-                "<p>Mitwirken können Sie mit einem Fehlerbericht ebenso wie mit Code. Wie das geht, steht in der Datei "
-                'CONTRIBUTING im jeweiligen Repository und unter <a href="/mitmachen/">Mitmachen</a>.</p>',
-                anchor="repositories",
-                # Randspalte: die freien Projekte, auf denen mandari aufbaut (ein Band statt zwei halbleerer)
-                aside=(
-                    '<h3 id="danke">Auf wessen Schultern wir stehen</h3>'
-                    "<p>mandari wäre ohne diese freien Projekte nicht möglich. Sie verdienen Sichtbarkeit – und "
-                    "Beiträge zurück.</p>"
-                    "<ul>"
-                    '<li><a href="https://www.python.org">Python</a> – Programmiersprache (PSF-Lizenz)</li>'
-                    '<li><a href="https://www.djangoproject.com/">Django</a> – Web-Framework (BSD-3)</li>'
-                    '<li><a href="https://wagtail.org/">Wagtail</a> – Redaktionssystem dieser Website (BSD-3)</li>'
-                    '<li><a href="https://www.postgresql.org/">PostgreSQL</a> – Datenbank (PostgreSQL-Lizenz)</li>'
-                    '<li><a href="https://oparl.org/">OParl</a> – Standard für offene Ratsdaten (CC BY-SA)</li>'
-                    '<li><a href="https://htmx.org/">HTMX</a> – Oberfläche ohne schwere Skripte (BSD-2)</li>'
-                    '<li><a href="https://tailwindcss.com/">Tailwind CSS</a> – Gestaltung (MIT)</li>'
-                    '<li><a href="https://lucide.dev/">Lucide</a> – Symbole (ISC)</li>'
-                    '<li><a href="https://altcha.org/">Altcha</a> – Spamschutz ohne Captcha (MIT)</li>'
-                    '<li><a href="https://www.docker.com/">Docker</a> – Container für den Betrieb (Apache-2.0)</li>'
-                    "</ul>"
-                ),
+                '<li><a href="https://www.python.org">Python</a> – Programmiersprache (PSF-Lizenz)</li>'
+                '<li><a href="https://www.djangoproject.com/">Django</a> – Web-Framework (BSD-3)</li>'
+                '<li><a href="https://wagtail.org/">Wagtail</a> – Redaktionssystem dieser Website (BSD-3)</li>'
+                '<li><a href="https://www.postgresql.org/">PostgreSQL</a> – Datenbank (PostgreSQL-Lizenz)</li>'
+                '<li><a href="https://oparl.org/">OParl</a> – Standard für offene Ratsdaten (CC BY-SA)</li>'
+                '<li><a href="https://htmx.org/">HTMX</a> – Oberfläche ohne schwere Skripte (BSD-2)</li>'
+                '<li><a href="https://tailwindcss.com/">Tailwind CSS</a> – Gestaltung (MIT)</li>'
+                '<li><a href="https://lucide.dev/">Lucide</a> – Symbole (ISC)</li>'
+                '<li><a href="https://altcha.org/">Altcha</a> – Spamschutz ohne Captcha (MIT)</li>'
+                '<li><a href="https://www.docker.com/">Docker</a> – Container für den Betrieb (Apache-2.0)</li>'
+                "</ul>",
+                [
+                    m.rand_text("<p>Mitwirken können Sie mit einem Fehlerbericht ebenso wie mit Code. Wie das geht, "
+                                "steht in der Datei CONTRIBUTING im jeweiligen Repository.</p>"),
+                    m.rand_links("Mitmachen", ("Wege zum ersten Beitrag", "/mitmachen/"),
+                                 ("CONTRIBUTING", "https://github.com/mandariOSS/mandari/blob/main/CONTRIBUTING.md"),
+                                 ("Alle Repositories", "https://github.com/mandariOSS")),
+                ],
+                anchor="danke",
             ),
-            _invitation(
+            m.einladung(
                 "Fragen aus IT und Informationssicherheit?",
                 "Wir beantworten sie direkt und im Detail – gern im gemeinsamen Termin mit Ihrem Team.",
                 "Termin vereinbaren", "/kontakt/#termin",
+                wege=[("E-Mail", "hello@mandari.de", ""), ("Sicherheitslücke", "security@mandari.de", ""),
+                      ("Für die IT", "Trust Center", "/trust/"), ("Lizenz", "AGPL-3.0", "https://github.com/mandariOSS/mandari/blob/main/LICENSE")],
             ),
         ],
     }

@@ -41,7 +41,7 @@ class KopfzeileTests(SimpleTestCase):
         html = kopfzeile("/preise/")
         # Desktop-Menü und Slide-Menü
         self.assertEqual(linktexte(html, "/produkte/#insight"), ["Für Bürger:innen", "Für Bürger:innen"])
-        self.assertEqual(linktexte(html, "/work/"), ["Anmelden", "Anmelden"])
+        self.assertEqual(linktexte(html, "/accounts/login/?next=/work/"), ["Anmelden", "Anmelden"])
 
     def test_produkte_knopf_zeigt_aktuellen_bereich(self):
         knopf = re.compile(r'<button[^>]*aria-controls="produkte-menue"[^>]*>', re.S)

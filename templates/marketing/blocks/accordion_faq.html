@@ -1,8 +1,9 @@
 {% load wagtailcore_tags baender %}
-{# Häufige Fragen: Liste mit Trennlinien zwischen den Fragen (Lesbarkeit), ohne Kästen. #}
+{# Häufige Fragen: Liste mit Trennlinien zwischen den Fragen (Lesbarkeit), ohne Kästen; mit rand rechts eine Randspalte (Kontakt, Links zum Nachlesen). #}
 <section{% if self.anchor_id %} id="{{ self.anchor_id }}"{% endif %} class="{% if self.background == 'gray' %}{% abschnitt band band_anfang band_ende standard='grau' %}{% else %}{% abschnitt band band_anfang band_ende %}{% endif %}">
     <div class="wrap">
         {% if self.header %}{% include_block self.header %}{% endif %}
+        {% if self.rand %}<div class="grid gap-y-12 lg:grid-cols-12 lg:gap-x-10"><div class="lg:col-span-8">{% endif %}
         <div class="max-w-4xl divide-y divide-gray-200 dark:divide-gray-700 border-y border-gray-200 dark:border-gray-700" x-data="{ open: 1 }">
             {% for item in self.items %}
             <div>
@@ -14,5 +15,8 @@
             </div>
             {% endfor %}
         </div>
+        {% if self.rand %}</div>
+        <aside class="lg:col-span-3 lg:col-start-10"><div class="dok-klebt space-y-8">{% include "marketing/muster/_rand.html" with rand=self.rand %}</div></aside>
+        </div>{% endif %}
     </div>
 </section>

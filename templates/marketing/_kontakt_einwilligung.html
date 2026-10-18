@@ -1,9 +1,13 @@
 {# Einwilligung, Honigtopf und Spamschutz (Altcha, selbst gehostet, unsichtbar). Die Prüfung startet, sobald jemand ein Feld des Formulars betritt (auto="onfocus"), nicht schon beim Laden: Wer nur die Anschrift sucht, rechnet nichts. #}
+{# Der Link zur Datenschutzerklärung steht neben dem Label, nicht darin (kein Link in einem Label, das ein Eingabefeld beschriftet); aria-describedby verbindet ihn mit dem Kästchen. #}
 <div>
     <div class="flex items-start gap-3">
-        <input id="{{ id }}" name="{{ field.html_name }}" type="checkbox" value="on" required{% if field.value %} checked{% endif %}{% if field.errors %} aria-invalid="true" aria-describedby="{{ id }}-fehler"{% endif %}
+        <input id="{{ id }}" name="{{ field.html_name }}" type="checkbox" value="on" required{% if field.value %} checked{% endif %}{% if field.errors %} aria-invalid="true"{% endif %} aria-describedby="{{ id }}-hinweis{% if field.errors %} {{ id }}-fehler{% endif %}"
                class="mt-1 h-5 w-5 flex-none rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-600">
-        <label for="{{ id }}" class="text-base text-gray-600 dark:text-gray-300">Ich habe die <a href="/datenschutz/#formular" class="textlink">Datenschutzerklärung</a> gelesen und bin einverstanden, dass Sie meine Angaben zur Bearbeitung der Anfrage verwenden.</label>
+        <div class="text-base text-gray-600 dark:text-gray-300">
+            <label for="{{ id }}">Ich habe die Datenschutzerklärung gelesen und bin einverstanden, dass Sie meine Angaben zur Bearbeitung der Anfrage verwenden.</label>
+            <p id="{{ id }}-hinweis" class="mt-1"><a href="/datenschutz/#formular" class="textlink">Datenschutzerklärung zum Kontaktformular</a></p>
+        </div>
     </div>
     {% if field.errors %}<p id="{{ id }}-fehler" class="mt-1.5 text-sm text-red-700 dark:text-red-400">{{ field.errors.0 }}</p>{% endif %}
 </div>

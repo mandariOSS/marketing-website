@@ -1,27 +1,12 @@
-{% load baender %}
-{# Einladung: ein gefüllter Aufruf, höchstens ein Textlink (wie im Hero), kein Verlauf. Am Seitenende auf dem dunklen Band (Abschnittsabstand), mitten auf der Seite kompakt auf der Markenfläche oder auf Weiß (band aus marketing/templatetags/baender.py; ohne band entscheidet last_block). #}
+{% load baender muster %}
+{# Einladung (Muster 5c): ein gefüllter Aufruf, höchstens ein Textlink, rechts die direkten Wege (ohne eigene Wege: E-Mail und Gesprächsform). Am Seitenende auf dem dunklen Band, mitten auf der Seite kompakt auf der Markenfläche oder auf Weiß (band aus marketing/templatetags/baender.py; ohne band entscheidet last_block). #}
+{% einladung_wege self.wege as wege %}
 {% if band == "tinte" or not band and last_block != False %}
 <section class="on-ink band-tinte text-white abschnitt">
-    <div class="wrap">
-        <div class="max-w-[45rem]">
-            <h2 class="t-h2 text-white">{{ self.title }}</h2>
-            {% if self.subline %}<p class="t-lead text-gray-300 mt-5">{{ self.subline }}</p>{% endif %}
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel=self.title satz=self.subline aufruf=self.ctas.0.label aufruf_url=self.ctas.0.url link=self.ctas.1.label link_url=self.ctas.1.url wege=wege %}
+</section>
 {% else %}
 <section class="{% abschnitt band band_anfang band_ende standard='marke' art='kompakt' %}">
-    <div class="wrap">
-        <div class="max-w-[45rem]">
-            <h2 class="t-h3 text-gray-900 dark:text-white">{{ self.title }}</h2>
-            {% if self.subline %}<p class="t-body text-gray-600 dark:text-gray-300 mt-3">{{ self.subline }}</p>{% endif %}
-{% endif %}
-            <div class="{% if band == 'tinte' or not band and last_block != False %}mt-9{% else %}mt-6{% endif %} flex flex-wrap items-center gap-x-6 gap-y-4">
-                {% for cta in self.ctas %}{% if forloop.counter <= 2 %}
-                {% if forloop.first %}
-                <a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
-                {% else %}
-                <a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
-                {% endif %}
-                {% endif %}{% endfor %}
-            </div>
-        </div>
-    </div>
+    {% include "marketing/muster/_einladung.html" with dunkel=False titel=self.title satz=self.subline aufruf=self.ctas.0.label aufruf_url=self.ctas.0.url link=self.ctas.1.label link_url=self.ctas.1.url wege=wege %}
 </section>
+{% endif %}

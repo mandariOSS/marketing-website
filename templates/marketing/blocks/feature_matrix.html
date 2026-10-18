@@ -1,6 +1,7 @@
 {% load icons wagtailcore_tags baender %}
 {% comment %} Feature-Matrix: Zeilen = Funktionen, Spalten = Module oder Betriebsmodelle.
-   Nur statische Tailwind-Klassen. Mobile: horizontal scrollbar. {% endcomment %}
+   Nur statische Tailwind-Klassen. Mobile: horizontal scrollbar; die erste Spalte bleibt beim Verschieben
+   stehen (wie in der Marktübersicht), damit man am Handy weiß, welche Zeile man liest. {% endcomment %}
 {% produkt_matrix self as matrix %}
 <section class="{% abschnitt band band_anfang band_ende standard='grau' %}">
     <div class="wrap">
@@ -12,7 +13,7 @@
                 <caption class="sr-only">Funktionsübersicht{% if self.header.title %}: {{ self.header.title }}{% endif %}</caption>
                 <thead>
                     <tr class="border-b-2 border-gray-200 dark:border-gray-700">
-                        <th scope="col" class="text-left py-4 px-4 sm:px-6 font-semibold text-gray-600 dark:text-gray-400 w-[34%]">Funktion</th>
+                        <th scope="col" class="sticky left-0 z-10 bg-white dark:bg-gray-800 text-left py-4 pl-4 pr-3 sm:px-6 font-semibold text-gray-600 dark:text-gray-400 w-[11.5rem] sm:w-[34%]">Funktion</th>
                         {% for col in matrix.columns %}
                         {% with p=col|produkt %}<th scope="col" class="text-left py-4 px-4 sm:px-6 font-bold {% if p %}produkt-{{ p }} kenn{% else %}text-gray-900 dark:text-white{% endif %}">{{ col }}</th>{% endwith %}
                         {% endfor %}
@@ -25,7 +26,7 @@
                     </tr>
                     {% for row in group.rows %}
                     <tr class="border-t border-gray-100 dark:border-gray-700/60 align-top">
-                        <th scope="row" class="text-left py-3.5 px-4 sm:px-6 font-medium text-gray-900 dark:text-white align-top">
+                        <th scope="row" class="sticky left-0 z-10 bg-white dark:bg-gray-800 text-left py-3.5 pl-4 pr-3 sm:px-6 font-medium text-gray-900 dark:text-white align-top">
                             {{ row.label }}
                             {% if row.description %}<span class="block text-sm font-normal text-gray-600 dark:text-gray-400 mt-0.5">{{ row.description }}</span>{% endif %}
                         </th>

@@ -52,14 +52,15 @@ def section_header(title, subline="", anchor_id="", align="left"):
 def insert_position(body, anchor_id):
     """Stelle, an der ein fester Abschnitt in den StreamField-Inhalt eingefügt wird.
 
-    Nach dem Block, dessen Überschrift den Anker ``anchor_id`` trägt; gibt es ihn nicht,
+    Nach dem Block, dessen Überschrift (oder der Block selbst) den Anker ``anchor_id`` trägt; gibt es ihn nicht,
     vor der abschließenden Einladung (gradient_cta); sonst ans Ende. Redaktionelle
     Änderungen an der Reihenfolge verschieben den Abschnitt so sinnvoll mit.
     """
     blocks = list(body or [])
     for index, block in enumerate(blocks):
-        header = getattr(block.value, "get", lambda *_: None)("header")
-        if header and header.get("anchor_id") == anchor_id:
+        get = getattr(block.value, "get", lambda *_: None)
+        header = get("header")
+        if header and header.get("anchor_id") == anchor_id or get("anchor_id") == anchor_id:
             return index + 1
     if blocks and blocks[-1].block_type == "gradient_cta":
         return len(blocks) - 1

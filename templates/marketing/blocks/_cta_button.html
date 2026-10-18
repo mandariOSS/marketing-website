@@ -1,6 +1,7 @@
+{% load zugang %}
 {# Ein Aufruf: gefüllt nur für den ersten (primären) Aufruf eines Abschnitts, sonst Textlink. #}
 {% if cta.style == "primary" %}
-<a href="{{ cta.url }}" class="btn-primary">{{ cta.label }}</a>
+<a href="{{ cta.url }}"{% aufruf_name cta.label cta.url %} class="btn-primary">{{ cta.label }}</a>
 {% else %}
-<a href="{{ cta.url }}" class="textlink">{{ cta.label }}</a>
+<a href="{{ cta.url }}"{% aufruf_name cta.label cta.url %} class="textlink">{{ cta.label }}</a>
 {% endif %}

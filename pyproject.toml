@@ -12,6 +12,8 @@ dependencies = [
     "gunicorn>=23.0.0",
     "psycopg[binary]>=3.2.0",
     "whitenoise>=6.8.0",
+    # WhiteNoise legt damit beim collectstatic neben .gz auch .br an und liefert Brotli aus (CSS, JS, SVG)
+    "brotli>=1.1.0",
     "python-dotenv>=1.0.0",
     "Pillow>=11.0.0",
     "pyphen>=0.15",
