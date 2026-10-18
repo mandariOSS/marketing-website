@@ -163,10 +163,10 @@ ABRUF_ADRESSE = "144.76.153.200"
 ABRUF_KONTAKT = "support@mandari.de"
 ABRUF_MAILTO = "mailto:support@mandari.de?subject=Abrufe%20von%20mandari-ingestor"
 ABRUF_REGELN = "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
-#: Alle Einzelheiten für Kommunen (Repository mandariOSS/docs, docs/datenschutz/crawler.md). Erst mit oder nach
-#: mandariOSS/docs#9 live schalten, sonst verweist der Link auf den alten Stand. Der Pfad dort heißt weiter
-#: /datenschutz/crawler/; ihn umzubenennen ist Sache des Repositorys mandariOSS/docs.
-ABRUF_EINZELHEITEN = "https://docs.mandari.de/datenschutz/crawler/"
+#: Alle Einzelheiten für Kommunen (Repository mandariOSS/docs, docs/datenschutz/ingestor.md). Erst mit oder nach
+#: mandariOSS/docs#9 live schalten: Dort heißt die Seite seither /datenschutz/ingestor/ (301 von
+#: /datenschutz/crawler/); ohne docs#9 führt der Link ins Leere.
+ABRUF_EINZELHEITEN = "https://docs.mandari.de/datenschutz/ingestor/"
 
 ABRUF_KENNUNG = [
     {"anker": "user-agent", "begriff": "User-Agent", "wert": ABRUF_USER_AGENT,

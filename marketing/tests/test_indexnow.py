@@ -201,6 +201,9 @@ class BefehlTests(TestCase):
         zeilen = out.getvalue().splitlines()
         self.assertIn("https://mandari.de/", zeilen)
         self.assertIn("https://mandari.de/kontakt/", zeilen)
+        # Feste Django-Seiten der Sitemap (FesteSeitenSitemap) gehören dazu
+        self.assertIn("https://mandari.de/ingestor/", zeilen)
+        self.assertNotIn("https://mandari.de/crawler/", zeilen)
         self.assertTrue(zeilen[-1].startswith("[Probelauf]"))
 
     @mock.patch("marketing.indexnow.melden", side_effect=lambda adressen: len(adressen))

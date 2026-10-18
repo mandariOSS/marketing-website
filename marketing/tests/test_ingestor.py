@@ -9,7 +9,6 @@ from pathlib import Path
 from django.core.management import call_command
 from django.template.loader import get_template
 from django.test import TestCase, override_settings
-from django.utils.html import strip_tags
 
 from marketing import muster_daten
 
@@ -259,7 +258,7 @@ class IngestorSeiteTests(TestCase):
         for intern in ["modified_until", "30 Tage lang nur Änderungen", "nachweislich eine Uhrzeit",
                        "außer wenn wir ihn in Zeitabschnitten ausführen", "in Abschnitten zu einem Tag"]:
             self.assertNotIn(intern, html, intern)
-        self.assertEqual(muster_daten.ABRUF_EINZELHEITEN, "https://docs.mandari.de/datenschutz/crawler/")
+        self.assertEqual(muster_daten.ABRUF_EINZELHEITEN, "https://docs.mandari.de/datenschutz/ingestor/")
         self.assertIn(f'<a class="textlink" href="{muster_daten.ABRUF_EINZELHEITEN}">Alle Einzelheiten auf '
                       "docs.mandari.de</a>", html)
 
@@ -340,7 +339,7 @@ class IngestorSeiteTests(TestCase):
         self.assertIn("höchstens zweimal, frühestens nach einer und nach zwei Sekunden", html)
 
     def test_entfernen_und_antwortzeit_wie_auf_docs(self):
-        # docs.mandari.de/datenschutz/crawler/ („Inhalte entfernen“): Wünsche werden geprüft, Reaktionszeit fünf
+        # docs.mandari.de/datenschutz/ingestor/ („Inhalte entfernen“): Wünsche werden geprüft, Reaktionszeit fünf
         # Werktage. Den Wortlaut gibt Sven frei.
         html = text(self.html())
         self.assertIn("Wünsche, Inhalte bei uns zu entfernen, prüfen wir im Einzelfall.", html)
@@ -445,11 +444,8 @@ class UmbenennungTests(TestCase):
         html = self.client.get("/ingestor/").content.decode("utf-8")
         titel = re.search(r"<title>(.*?)</title>", html, re.S).group(1)
         self.assertEqual(" ".join(titel.split()), "mandari-ingestor: Kennung, Takt und Abruf-Adresse | mandari")
-        # Sichtbarer Text ohne Skripte; Links auf docs.mandari.de/datenschutz/crawler/ stehen nur in Attributen
-        sichtbar = strip_tags(re.sub(r"<script.*?</script>", "", html, flags=re.S))
-        self.assertNotIn("crawler", sichtbar.lower())
-        beschreibung = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
-        self.assertNotIn("crawler", beschreibung.lower())
+        # Auch nicht in Attributen: Der Link auf docs.mandari.de zeigt seit docs#9 auf /datenschutz/ingestor/
+        self.assertNotIn("crawler", html.lower())
 
     def test_quellen_verlinken_die_neue_adresse(self):
         html = self.client.get("/quellen/").content.decode("utf-8")
