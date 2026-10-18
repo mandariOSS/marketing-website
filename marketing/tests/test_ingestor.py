@@ -1,11 +1,15 @@
-"""Crawler-Seite /crawler/ (mandariOSS/mandari#1027): vollständige Kennung, Abruf-Adresse und Kontakt, Takt aus
-marketing/muster_daten.py; frühere Angaben, die nicht mehr stimmten, kehren nicht zurück."""
+"""Ingestor-Seite /ingestor/ (mandariOSS/mandari#1027): vollständige Kennung, Abruf-Adresse und Kontakt, Takt aus
+marketing/muster_daten.py; frühere Angaben, die nicht mehr stimmten, kehren nicht zurück. Bis 18.10.2026 hieß die
+Seite /crawler/; die alte Adresse leitet dauerhaft weiter (UmbenennungTests)."""
 
 import re
+from io import StringIO
 from pathlib import Path
 
+from django.core.management import call_command
 from django.template.loader import get_template
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.utils.html import strip_tags
 
 from marketing import muster_daten
 
@@ -15,31 +19,31 @@ def text(html):
     return " ".join(html.split())
 
 
-class CrawlerSeiteTests(TestCase):
+class IngestorSeiteTests(TestCase):
     def html(self):
-        antwort = self.client.get("/crawler/")
+        antwort = self.client.get("/ingestor/")
         self.assertEqual(antwort.status_code, 200)
         return antwort.content.decode("utf-8")
 
     def test_kennung_adresse_und_kontakt(self):
         html = self.html()
         # Vollständiger User-Agent wie shared/mandari_oparl/crawler.py im mandari-Repository (Version als Platzhalter)
-        self.assertIn("mandari-ingestor/&lt;Version&gt; (+https://mandari.de/crawler/; support@mandari.de)", html)
+        self.assertIn("mandari-ingestor/&lt;Version&gt; (+https://mandari.de/ingestor/; support@mandari.de)", html)
         # Abruf-Adresse mit eigener Sprungmarke, damit man sie direkt verlinken und übernehmen kann
         self.assertIn('id="abruf-adresse"', html)
-        self.assertIn(muster_daten.CRAWLER_ADRESSE, html)
+        self.assertIn(muster_daten.ABRUF_ADRESSE, html)
         self.assertIn("nur über IPv4", html)
         # Die Adresse teilen sich womöglich weitere Dienste; ob wir das nennen, entscheidet Sven. Deshalb nur der Rat:
         self.assertIn("Machen Sie Freigaben deshalb nicht allein an der Adresse fest.", text(html))
         # „unverändert übernehmen“ passt nicht zum Platzhalter <Version>
         self.assertIn("beim User-Agent genügt der Anfang mandari-ingestor", text(html))
-        self.assertIn(f'href="{muster_daten.CRAWLER_MAILTO}"', html)
-        self.assertIn(muster_daten.CRAWLER_ABRUFREGELN, html)
+        self.assertIn(f'href="{muster_daten.ABRUF_MAILTO}"', html)
+        self.assertIn(muster_daten.ABRUF_REGELN, html)
 
     def test_takt_und_haeufigkeit_aus_den_daten(self):
         html = self.html()
         self.assertIn("<b>eine Anfrage pro Sekunde</b>", html)
-        for zeile in muster_daten.CRAWLER_TAKT["zeilen"]:
+        for zeile in muster_daten.ABRUF_TAKT["zeilen"]:
             self.assertIn(zeile["abruf"], html)
             self.assertIn(zeile["wann"], html)
 
@@ -160,8 +164,8 @@ class CrawlerSeiteTests(TestCase):
 
     def test_einladung_ohne_abruf_adresse(self):
         # Eine IP-Adresse ist kein Kontaktweg; sie steht nur in der Kennung
-        self.assertNotIn("Abruf-Adresse", [weg["label"] for weg in muster_daten.WEGE["crawler"]])
-        self.assertEqual(self.html().count(muster_daten.CRAWLER_ADRESSE), 1)
+        self.assertNotIn("Abruf-Adresse", [weg["label"] for weg in muster_daten.WEGE["ingestor"]])
+        self.assertEqual(self.html().count(muster_daten.ABRUF_ADRESSE), 1)
 
     def test_keine_zusage_gegen_einen_adresswechsel(self):
         # Ob die Abruf-Adresse bleibt, ist offen; zugesagt wird nur, Sperren nicht durch einen Wechsel zu umgehen
@@ -171,7 +175,7 @@ class CrawlerSeiteTests(TestCase):
 
     def test_keine_betriebsinterna_im_quelltext(self):
         # Das Repository ist öffentlich: keine internen Hostnamen und keine Nummern aus dem privaten Repository
-        dateien = [Path(muster_daten.__file__), Path(get_template("marketing/crawler.html").origin.name)]
+        dateien = [Path(muster_daten.__file__), Path(get_template("marketing/ingestor.html").origin.name)]
         for datei in dateien:
             inhalt = datei.read_text(encoding="utf-8")
             for intern in ["web01", "intern#"]:
@@ -188,6 +192,8 @@ class CrawlerSeiteTests(TestCase):
         html = self.html()
         for alt in [
             "mandari-ingestor (+https://mandari.de/crawler)",
+            # Seit 18.10.2026 /ingestor/ (Entscheidung Sven): keine Verweise mehr auf die alte Adresse
+            "https://mandari.de/crawler",
             "alle zwei Sekunden je Server",
             "alle zwei Sekunden pro Server",
             "keine parallelen Zugriffe",
@@ -253,13 +259,13 @@ class CrawlerSeiteTests(TestCase):
         for intern in ["modified_until", "30 Tage lang nur Änderungen", "nachweislich eine Uhrzeit",
                        "außer wenn wir ihn in Zeitabschnitten ausführen", "in Abschnitten zu einem Tag"]:
             self.assertNotIn(intern, html, intern)
-        self.assertEqual(muster_daten.CRAWLER_EINZELHEITEN, "https://docs.mandari.de/datenschutz/crawler/")
-        self.assertIn(f'<a class="textlink" href="{muster_daten.CRAWLER_EINZELHEITEN}">Alle Einzelheiten auf '
+        self.assertEqual(muster_daten.ABRUF_EINZELHEITEN, "https://docs.mandari.de/datenschutz/crawler/")
+        self.assertIn(f'<a class="textlink" href="{muster_daten.ABRUF_EINZELHEITEN}">Alle Einzelheiten auf '
                       "docs.mandari.de</a>", html)
 
     def test_kurzfassung_je_zeile(self):
         # „Weniger ist mehr“: je Umfang-Zelle höchstens vier kurze Sätze und 70 Wörter (vorher bis 172 Wörter)
-        for zeile in muster_daten.CRAWLER_TAKT["zeilen"]:
+        for zeile in muster_daten.ABRUF_TAKT["zeilen"]:
             umfang = zeile["umfang"]
             self.assertLessEqual(len(umfang.split()), 70, zeile["abruf"])
             self.assertLessEqual(len(re.findall(r"[.!?](?:\s|$)", umfang)), 4, zeile["abruf"])
@@ -396,6 +402,65 @@ class CrawlerSeiteTests(TestCase):
 
     def test_link_auf_die_abrufregeln_im_zweig_dev(self):
         self.assertEqual(
-            muster_daten.CRAWLER_ABRUFREGELN, "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
+            muster_daten.ABRUF_REGELN, "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
         )
-        self.assertIn(f'href="{muster_daten.CRAWLER_ABRUFREGELN}"', self.html())
+        self.assertIn(f'href="{muster_daten.ABRUF_REGELN}"', self.html())
+
+
+@override_settings(SITE_URL="https://mandari.de", ALLOWED_HOSTS=["mandari.de", "testserver"])
+class UmbenennungTests(TestCase):
+    """Entscheidung Sven (18.10.2026): Die Seite heißt /ingestor/, der Ingestor ist kein Crawler, und Server können
+    User-Agents mit dem Wort „crawler“ ablehnen. /crawler/ steht in älteren User-Agents, Mails und fremden Logs."""
+
+    @classmethod
+    def setUpTestData(cls):
+        call_command("setup_initial_pages", stdout=StringIO())
+        call_command("migrate_pages_to_streamfield", stdout=StringIO())
+
+    def test_ingestor_mit_kennung_und_kontakt(self):
+        antwort = self.client.get("/ingestor/")
+        self.assertEqual(antwort.status_code, 200)
+        html = antwort.content.decode("utf-8")
+        self.assertIn("mandari-ingestor/&lt;Version&gt; (+https://mandari.de/ingestor/; support@mandari.de)", html)
+        self.assertIn(f'href="{muster_daten.ABRUF_MAILTO}"', html)
+        self.assertIn('<link rel="canonical" href="https://mandari.de/ingestor/">', html)
+
+    def test_crawler_leitet_dauerhaft_auf_ingestor(self):
+        antwort = self.client.get("/crawler/")
+        self.assertEqual(antwort.status_code, 301)
+        self.assertEqual(antwort["Location"], "/ingestor/")
+
+    def test_weiterleitung_behaelt_den_query_string(self):
+        antwort = self.client.get("/crawler/?utm_source=log&quelle=ris")
+        self.assertEqual(antwort.status_code, 301)
+        self.assertEqual(antwort["Location"], "/ingestor/?utm_source=log&quelle=ris")
+
+    def test_alte_adresse_ohne_schraegstrich(self):
+        # Frühere User-Agents nannten https://mandari.de/crawler ohne Schrägstrich (APPEND_SLASH, dann 301)
+        antwort = self.client.get("/crawler", follow=True)
+        self.assertEqual(antwort.redirect_chain, [("/crawler/", 301), ("/ingestor/", 301)])
+        self.assertEqual(antwort.status_code, 200)
+
+    def test_seite_nennt_unseren_dienst_nicht_crawler(self):
+        html = self.client.get("/ingestor/").content.decode("utf-8")
+        titel = re.search(r"<title>(.*?)</title>", html, re.S).group(1)
+        self.assertEqual(" ".join(titel.split()), "mandari-ingestor: Kennung, Takt und Abruf-Adresse | mandari")
+        # Sichtbarer Text ohne Skripte; Links auf docs.mandari.de/datenschutz/crawler/ stehen nur in Attributen
+        sichtbar = strip_tags(re.sub(r"<script.*?</script>", "", html, flags=re.S))
+        self.assertNotIn("crawler", sichtbar.lower())
+        beschreibung = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
+        self.assertNotIn("crawler", beschreibung.lower())
+
+    def test_quellen_verlinken_die_neue_adresse(self):
+        html = self.client.get("/quellen/").content.decode("utf-8")
+        self.assertIn('href="/ingestor/"', html)
+        self.assertIn("Über unseren Ingestor", html)
+        self.assertNotIn('href="/crawler/"', html)
+        self.assertNotIn("Crawler", html)
+
+    def test_sitemap_nennt_ingestor(self):
+        body = self.client.get("/sitemap.xml").content.decode("utf-8")
+        self.assertIn("<loc>https://mandari.de/ingestor/</loc>", body)
+        self.assertNotIn("/crawler/", body)
+        # Die Wagtail-Seiten stehen weiter darin
+        self.assertIn("<loc>https://mandari.de/quellen/</loc>", body)

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load muster %}
 
-{% block title %}Unser Crawler: Kennung, Takt und Abruf-Adresse{% endblock %}
+{% block title %}mandari-ingestor: Kennung, Takt und Abruf-Adresse{% endblock %}
 
 {% block meta_description %}Woran Sie die Abrufe von mandari-ingestor erkennen, wie oft wir Ratsinformationssysteme abrufen und wie Sie uns drosseln, ausschließen oder erreichen.{% endblock %}
 
 {% block content %}
 {# Partitur: Kopf (Weiß) → Kennung zum Übernehmen und Selbstbetrieb (Grau) → Takt als Zahl im Satz und Tabelle je Abrufart (Weiß) → Drosseln und Ausschließen mit robots.txt-Beispielen (Grau) → Inhalte und Fehlerverhalten (Weiß) → Einladung (Tinte). Werte: marketing/muster_daten.py, Referenz docs/ABRUFREGELN.md im mandari-Repository (mandariOSS/mandari#1027). #}
-{% muster_daten "crawler" as c %}
+{% muster_daten "ingestor" as c %}
 
 <section class="band-hell hero">
     <div class="wrap">
@@ -161,8 +161,8 @@ Disallow: /*.pdf$</code></pre>
     </div>
 </section>
 
-{# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["crawler"]) #}
-{% einladung_wege None "crawler" as wege %}
+{# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["ingestor"]) #}
+{% einladung_wege None "ingestor" as wege %}
 <section class="on-ink band-tinte text-white abschnitt">
     {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten innerhalb von fünf Werktagen und stimmen unsere Abrufe mit Ihnen ab." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
 </section>

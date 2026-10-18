@@ -1,7 +1,7 @@
 """
 Inhalte der Abschnittsmuster auf festen Seiten (ohne StreamField).
 
-Startseite, Responsible Disclosure, Crawler-Seite und die Rechtstexte haben eigene Templates. Damit
+Startseite, Responsible Disclosure, Ingestor-Seite und die Rechtstexte haben eigene Templates. Damit
 sie dieselben Muster nutzen wie die Redaktionsseiten, stehen ihre Daten hier in derselben Form wie die
 StreamField-Werte (dicts mit denselben Schlüsseln); die Templates lesen sie über
 ``{% muster_daten "<name>" as d %}`` bzw. ``{% dokument_rand page.slug as rand %}``.
@@ -32,7 +32,7 @@ WEGE = {
         {"label": "Vorfälle und Zahlen", "wert": "Transparenzbericht", "url": "/transparenz/"},
         {"label": "Maschinenlesbar", "wert": "security.txt", "url": "/.well-known/security.txt"},
     ],
-    "crawler": [
+    "ingestor": [
         {"label": "E-Mail", "wert": "support@mandari.de", "url": ""},
         {"label": "Datenquellen", "wert": "Quellennachweise", "url": "/quellen/"},
         {"label": "Unsere Schnittstelle", "wert": "oparl.mandari.de", "url": "https://oparl.mandari.de"},
@@ -143,40 +143,43 @@ DISCLOSURE_GELTUNG = {
 }
 
 
-# ── /crawler/ ─────────────────────────────────────────────────────────────────
+# ── /ingestor/ ────────────────────────────────────────────────────────────────
+# Bis 18.10.2026 /crawler/ (leitet dauerhaft hierher, website/urls.py): Der Ingestor ist kein Crawler, und Server
+# können User-Agents mit dem Wort „crawler“ ablehnen.
 # Angaben zu unseren Abrufen bei Ratsinformationssystemen (mandariOSS/mandari#1027). Maßgeblich ist der Code im Zweig
 # dev des mandari-Repositorys; die technische Referenz mit allen Fundstellen ist dort docs/ABRUFREGELN.md (Stand nach
 # mandari#1029, #1031, #1030, #1036, #1037, #1039, #1040 und #1042). Die Fundstelle jeder Angabe steht am Eintrag.
 # Ändert sich der Abruf, werden nur diese Daten angepasst, das Template bleibt.
 
 #: shared/mandari_oparl/crawler.py, user_agent(): Produkt-Token, Version (nur der Ingestor: ingestor/pyproject.toml,
-#: ingestor/src/config.py DEFAULT_USER_AGENT), Infoseite, Kontakt
-CRAWLER_USER_AGENT = "mandari-ingestor/<Version> (+https://mandari.de/crawler/; support@mandari.de)"
+#: ingestor/src/config.py DEFAULT_USER_AGENT), Infoseite (/ingestor/ seit der Umbenennung vom 18.10.2026), Kontakt
+ABRUF_USER_AGENT = "mandari-ingestor/<Version> (+https://mandari.de/ingestor/; support@mandari.de)"
 #: shared/mandari_oparl/crawler.py, PRODUCT_TOKEN; ausgewertet in shared/mandari_oparl/robots.py (RFC 9309)
-CRAWLER_TOKEN = "mandari-ingestor"
+ABRUF_TOKEN = "mandari-ingestor"
 #: Ausgehende Adresse der von uns betriebenen Instanz, nur IPv4 (ABRUFREGELN.md, „Abruf-Adresse“). Sie kann sich
 #: ändern; die Seite nennt deshalb den User-Agent als Erkennungsmerkmal zuerst.
-CRAWLER_ADRESSE = "144.76.153.200"
+ABRUF_ADRESSE = "144.76.153.200"
 #: shared/mandari_oparl/crawler.py, CONTACT
-CRAWLER_KONTAKT = "support@mandari.de"
-CRAWLER_MAILTO = "mailto:support@mandari.de?subject=Abrufe%20von%20mandari-ingestor"
-CRAWLER_ABRUFREGELN = "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
+ABRUF_KONTAKT = "support@mandari.de"
+ABRUF_MAILTO = "mailto:support@mandari.de?subject=Abrufe%20von%20mandari-ingestor"
+ABRUF_REGELN = "https://github.com/mandariOSS/mandari/blob/dev/docs/ABRUFREGELN.md"
 #: Alle Einzelheiten für Kommunen (Repository mandariOSS/docs, docs/datenschutz/crawler.md). Erst mit oder nach
-#: mandariOSS/docs#9 live schalten, sonst verweist der Link auf den alten Stand.
-CRAWLER_EINZELHEITEN = "https://docs.mandari.de/datenschutz/crawler/"
+#: mandariOSS/docs#9 live schalten, sonst verweist der Link auf den alten Stand. Der Pfad dort heißt weiter
+#: /datenschutz/crawler/; ihn umzubenennen ist Sache des Repositorys mandariOSS/docs.
+ABRUF_EINZELHEITEN = "https://docs.mandari.de/datenschutz/crawler/"
 
-CRAWLER_KENNUNG = [
-    {"anker": "user-agent", "begriff": "User-Agent", "wert": CRAWLER_USER_AGENT,
+ABRUF_KENNUNG = [
+    {"anker": "user-agent", "begriff": "User-Agent", "wert": ABRUF_USER_AGENT,
      # Die Anwendung sendet die Kennung ohne Version: mandari/insight_core/services/robots.py USER_AGENT (Dokument-
      # Cache, Vorschau, Löschabgleich, Personenfotos, Texterkennung im Worker, add_oparl_source). Die Version ist die
      # Paketversion des Ingestors, keine Ausgabe-Nummer; sie kann sich ändern. Live-Übertragung und Geodienste
      # (mandari#1036/#1038, insight_core/services/dienste.py USER_AGENT) senden dieselbe Kennung ohne Version und
-     # werten die robots.txt nicht aus; ihren Takt (ABSTAND, gemeinsamer Zeitstempel in Redis) nennt CRAWLER_TAKT
+     # werten die robots.txt nicht aus; ihren Takt (ABSTAND, gemeinsamer Zeitstempel in Redis) nennt ABRUF_TAKT
      # (ABRUFREGELN.md, „Andere Abrufe“).
      "notiz": "Die Version kann sich ändern; einige Abrufe, etwa von Dokumenten und Fotos, senden die Kennung ohne "
               "Version. Dieselbe Kennung tragen auch unsere Abrufe bei Streaming-Anbietern und Geodiensten, etwa dem "
               "Geoportal einer Kommune. Dort gelten die Nutzungsregeln des Dienstes, nicht die robots.txt."},
-    {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": CRAWLER_TOKEN,
+    {"anker": "robots-token", "begriff": "Token für robots.txt", "wert": ABRUF_TOKEN,
      # robots.py _rules_for: eine Gruppe für das Token gilt anstelle von *, nicht zusätzlich; geprüft wird immer
      # mandari-ingestor (ingestor/src/client/robots.py, insight_core/services/robots.py, probe/ris_probe.py).
      # crawler.py LEGACY_TOKENS: frühere Kennungen nur mit eigener Gruppe, und sie können nur sperren.
@@ -184,14 +187,14 @@ CRAWLER_KENNUNG = [
               "Kleinschreibung zählt nicht. "
               "Gruppen für unsere früheren Kennungen mandari-file-cache und mandari beachten wir weiter, soweit sie "
               "etwas sperren."},
-    {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": CRAWLER_ADRESSE,
+    {"anker": "abruf-adresse", "begriff": "Abruf-Adresse", "wert": ABRUF_ADRESSE,
      # Ob die Adresse uns allein gehört, sagt die Seite bewusst nicht (Entscheidung Sven); deshalb der Rat, Freigaben
      # nicht allein an ihr festzumachen. „nur über IPv4“ setzt voraus, dass die Docker-Netze von Ingestor und Worker
      # in Produktion kein IPv6 haben (vor dem Deploy prüfen, siehe PR).
      "notiz": "Von dieser Adresse ruft derzeit die Instanz ab, die wir betreiben, nur über IPv4. Erkennen Sie uns "
               "bitte vor allem am User-Agent: Die Adresse kann sich ändern, etwa bei einem Serverumzug. Machen Sie "
               "Freigaben deshalb nicht allein an der Adresse fest."},
-    {"anker": "kontakt-abrufe", "begriff": "Kontakt", "wert": CRAWLER_KONTAKT, "url": CRAWLER_MAILTO,
+    {"anker": "kontakt-abrufe", "begriff": "Kontakt", "wert": ABRUF_KONTAKT, "url": ABRUF_MAILTO,
      "notiz": "Für Fragen, einen langsameren Takt, ein Zeitfenster für den Vollabgleich oder den Ausschluss Ihres "
               "Systems."},
 ]
@@ -203,7 +206,7 @@ CRAWLER_KENNUNG = [
 # abweichend nur je Quelle über sync_config["download_headers"]; ein Sync aus dem Admin läuft ohne Daemon und für
 # abgeschaltete Quellen im Worker und nutzt dort ohne eigene Umgebungsvariable ebenfalls unsere Kennung. Regeln für
 # mandari-ingestor gelten trotzdem, weil Ingestor und Anwendung dieses Token immer zusätzlich prüfen.
-CRAWLER_SELBSTBETRIEB = (
+ABRUF_SELBSTBETRIEB = (
     "mandari ist Open Source. Wer es selbst betreibt, ruft von der Adresse des eigenen Servers ab und kann für den "
     "Abgleich eine eigene Kennung mit eigener Kontaktadresse setzen. Andere Abrufe, etwa von Dokumenten, senden auch "
     "dort meist unsere Kennung. Abrufe mit unserer Kennung von anderen Adressen als der oben genannten können also "
@@ -311,7 +314,7 @@ CRAWLER_SELBSTBETRIEB = (
 #   lädt ausstehende Dateien auch während einer Pause, im Takt (host_pacer). Die Seite sagt deshalb nicht, dass alle
 #   Dokumentabrufe ruhen.
 # - Wiederholungen der Dokumente: BACKOFF sind frühestmögliche Zeitpunkte, ausgeführt im Dokument-Cache um :40
-CRAWLER_TAKT = {
+ABRUF_TAKT = {
     "satz": "Höchstens <b>eine Anfrage pro Sekunde</b> je Hostname, über alle unsere Dienste zusammen. "
             "Schneller rufen wir nicht ab, auf Ihren Wunsch langsamer.",
     "erlaeuterung": "Das gilt auch, wenn mehrere Kommunen unter demselben Hostnamen liegen; verschiedene Hostnamen "
@@ -324,7 +327,7 @@ CRAWLER_TAKT = {
                     "hält jeder Dienst den Takt für sich, bis sie wieder steht; in dieser Zeit können mehr als eine "
                     "Anfrage pro Sekunde ankommen.",
     # Kurzfassung (Rückmeldung 16.10.2026): je Zeile höchstens drei bis vier kurze Sätze, nur weglassen, nichts so
-    # vereinfachen, dass es falsch wird. Alle Einzelheiten stehen auf docs.mandari.de (CRAWLER_EINZELHEITEN).
+    # vereinfachen, dass es falsch wird. Alle Einzelheiten stehen auf docs.mandari.de (ABRUF_EINZELHEITEN).
     "zeilen": [
         {"abruf": "Änderungsabgleich", "wann": "nach Bedarf, alle 5 Minuten bis alle 2 Stunden",
          "umfang": "Werktags von 7 bis 19 Uhr alle 10 Minuten, sonst stündlich, am Wochenende alle 2 Stunden; an "
@@ -413,7 +416,7 @@ DOKUMENTE = {
     },
     "quellen": {
         "kontakt": "hello@mandari.de",
-        "verweise": [("Über unseren Crawler", "/crawler/"), ("Open Source", "/open-source/"),
+        "verweise": [("Über unseren Ingestor", "/ingestor/"), ("Open Source", "/open-source/"),
                      ("Bürgerportal", "/insight/")],
     },
     "trust": {
@@ -427,7 +430,7 @@ DATEN = {
     "disclosure_zusage": DISCLOSURE_ZUSAGE,
     "disclosure_zeitskala": DISCLOSURE_ZEITSKALA,
     "disclosure_geltung": DISCLOSURE_GELTUNG,
-    "crawler": {"kennung": CRAWLER_KENNUNG, "selbstbetrieb": CRAWLER_SELBSTBETRIEB, "takt": CRAWLER_TAKT,
-                "mailto": CRAWLER_MAILTO, "abrufregeln": CRAWLER_ABRUFREGELN,
-                "einzelheiten": CRAWLER_EINZELHEITEN},
+    "ingestor": {"kennung": ABRUF_KENNUNG, "selbstbetrieb": ABRUF_SELBSTBETRIEB, "takt": ABRUF_TAKT,
+                 "mailto": ABRUF_MAILTO, "abrufregeln": ABRUF_REGELN,
+                 "einzelheiten": ABRUF_EINZELHEITEN},
 }

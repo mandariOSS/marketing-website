@@ -25,7 +25,7 @@ const ersteAnsicht = [
 const mitEigenemSeitenkopf = [
   './templates/marketing/landing.html',
   './templates/marketing/dokument.html',
-  './templates/marketing/crawler.html',
+  './templates/marketing/ingestor.html',
   './templates/marketing/sicherheit_disclosure.html',
   './templates/blog/release.html',
   './templates/blog/release_index.html',
