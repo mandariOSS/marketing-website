@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load muster %}
+
+{% block title %}mandari-ingestor: Kennung, Takt und Abruf-Adresse{% endblock %}
+
+{% block meta_description %}Woran Sie die Abrufe von mandari-ingestor erkennen, wie oft wir Ratsinformationssysteme abrufen und wie Sie uns drosseln, ausschließen oder erreichen.{% endblock %}
+
+{% block content %}
+{# Partitur: Kopf (Weiß) → Kennung zum Übernehmen und Selbstbetrieb (Grau) → Takt als Zahl im Satz und Tabelle je Abrufart (Weiß) → Drosseln und Ausschließen mit robots.txt-Beispielen (Grau) → Inhalte und Fehlerverhalten (Weiß) → Einladung (Tinte). Werte: marketing/muster_daten.py, Referenz docs/ABRUFREGELN.md im mandari-Repository (mandariOSS/mandari#1027). #}
+{% muster_daten "ingestor" as c %}
+
+<section class="band-hell hero">
+    <div class="wrap">
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Wie mandari Ratsinformationen abruft</h1>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
+            Hier steht, woran Sie die Abrufe unseres Dienstes mandari-ingestor erkennen, wie oft sie kommen und wie
+            Sie sie steuern.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <a href="{{ c.mailto }}" class="btn-primary">E-Mail an support@mandari.de</a>
+        </div>
+    </div>
+</section>
+
+{# Kennung: Werte in Festbreitenschrift, ein Klick markiert den ganzen Wert; jede Zeile mit eigener Sprungmarke (z. B. #abruf-adresse) #}
+<section id="kennung" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Woran Sie unsere Abrufe erkennen</h2>
+            <p class="t-lead m-text mt-5">Diese Angaben können Sie unverändert in Freigaben, Filter und Ihre robots.txt übernehmen; beim User-Agent genügt der Anfang mandari-ingestor.</p>
+        </div>
+        <dl class="border-b m-linie">
+            {% for k in c.kennung %}
+            <div id="{{ k.anker }}" class="grid gap-y-2 py-6 border-t m-linie scroll-mt-24 lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">{{ k.begriff }}</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    {% if k.url %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words"><a class="textlink" href="{{ k.url }}">{{ k.wert }}</a></p>{% else %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words select-all">{{ k.wert }}</p>{% endif %}
+                    <p class="mt-2 text-base m-text max-w-[45rem]">{{ k.notiz }}</p>
+                </dd>
+            </div>
+            {% endfor %}
+        </dl>
+        {# Selbst betriebene Installationen: eigene Adresse, eigene Kennung möglich, Regeln für mandari-ingestor gelten #}
+        <div class="mt-8 stichworte t-body m-text max-w-[45rem]">
+            <p><strong>Selbst betriebene Installationen.</strong> {{ c.selbstbetrieb }}</p>
+        </div>
+    </div>
+</section>
+
+{# Takt: die eine Zahl im Satz, darunter jede Abrufart mit Häufigkeit (Daten änderbar ohne Template, mandari#1026) #}
+<section id="takt" class="band-hell abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf kopf-dicht">
+            <h2 class="t-h2 m-tinte">Wann und wie oft wir abrufen</h2>
+        </div>
+        <p class="zahlensatz max-w-5xl">{{ c.takt.satz|safe }}</p>
+        <p class="mt-6 t-body m-text max-w-[45rem]">{{ c.takt.erlaeuterung }}</p>
+        <table class="reg mt-12 lg:mt-14">
+            <caption class="sr-only">Abrufarten und wie oft sie vorkommen</caption>
+            <thead><tr><th scope="col" class="w-56">Abruf</th><th scope="col" class="w-64">Wann</th><th scope="col">Umfang</th></tr></thead>
+            <tbody>
+                {% for z in c.takt.zeilen %}<tr><th scope="row" class="reg-titel t-body">{{ z.abruf }}</th><td class="t-body font-semibold m-tinte" data-spalte="Wann">{{ z.wann }}</td><td class="t-body" data-spalte="Umfang">{{ z.umfang }}</td></tr>{% endfor %}
+            </tbody>
+        </table>
+        {# Die Tabelle ist die Kurzfassung; alle Einzelheiten auf docs.mandari.de (erst mit mandariOSS/docs#9 live) #}
+        <p class="mt-8 t-body"><a class="textlink" href="{{ c.einzelheiten }}">Alle Einzelheiten auf docs.mandari.de</a></p>
+    </div>
+</section>
+
+{# Steuern: Wege links, robots.txt-Beispiele rechts (Codebeispiele nur hier, wo sie erklären) #}
+<section id="steuern" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Drosseln oder ausschließen</h2>
+        </div>
+        <div class="grid gap-y-10 lg:grid-cols-12 lg:gap-x-10">
+            <div class="min-w-0 lg:col-span-7 stichworte t-body m-text max-w-[45rem]">
+                <p><strong>Per robots.txt.</strong> Ein Disallow für mandari-ingestor genügt: Danach stellen wir keine
+                    Anfrage mehr und lesen nur noch Ihre robots.txt, jeder unserer Dienste etwa einmal am Tag. Regeln
+                    für dieses Token gelten für alle unsere Abrufe bei Ratsinformationssystemen, für die Schnittstelle
+                    wie für Dokumente und Fotos. Ohne eigene Gruppe gelten für uns Ihre Regeln für alle
+                    (<span class="font-mono text-[0.95em]">User-agent: *</span>); mit eigener Gruppe gelten nur deren
+                    Regeln. Wiederholen Sie dort also, was auch für uns gelten soll. Wir werten Allow und Disallow mit
+                    den Platzhaltern * und $ nach RFC 9309 aus, Crawl-delay nicht: Für einen langsameren Takt schreiben
+                    Sie uns. Änderungen wirken spätestens nach 24 Stunden.</p>
+                <p><strong>Per E-Mail.</strong> Schreiben Sie an <a class="textlink" href="{{ c.mailto }}">support@mandari.de</a>,
+                    wenn wir langsamer (bis zu einer Anfrage alle 30 Sekunden) oder seltener abrufen sollen, den
+                    Vollabgleich nur in einem bestimmten Zeitfenster oder seltener fahren sollen, keine Dokumente mehr laden sollen
+                    oder wenn wir Ihr System oder Ihr Geoportal nicht mehr abrufen sollen. Ein solches Zeitfenster gilt
+                    nur für den Vollabgleich: Änderungsabgleich und Dokumentabrufe laufen auch dann
+                    rund um die Uhr im Takt. Nennen Sie uns den Hostnamen Ihres Systems; liegen dort mehrere Kommunen,
+                    gilt die Vereinbarung für alle. Wünsche, Inhalte bei uns zu entfernen, prüfen wir im Einzelfall.
+                    Wir antworten innerhalb von fünf Werktagen.</p>
+                <p><strong>Ausnahmen nur mit Freigabe.</strong> Von Ihrer robots.txt weichen wir nur ab, wenn Ihre
+                    Stelle das ausdrücklich freigibt, je nach Freigabe für die Schnittstelle, für Dokumente oder für
+                    beides, und halten die Freigabe fest.</p>
+            </div>
+            <div class="min-w-0 space-y-8 lg:col-span-5 lg:col-start-8">
+                <figure>
+                    <figcaption class="text-base m-leise">Alle Abrufe bei Ihrem Ratsinformationssystem ausschließen</figcaption>
+                    <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
+Disallow: /</code></pre>
+                </figure>
+                <figure>
+                    <figcaption class="text-base m-leise">Adressen ausschließen, die auf .pdf enden; die Schnittstelle bleibt frei</figcaption>
+                    <pre class="mt-2 flaeche rounded-lg px-5 py-4 font-mono text-base m-tinte overflow-x-auto"><code>User-agent: mandari-ingestor
+Disallow: /*.pdf$</code></pre>
+                    <p class="mt-3 text-base m-text">Liegen Ihre Dokumente unter anderen Adressen, etwa
+                        <span class="font-mono text-[0.95em]">getfile.asp?id=…</span>, sperren Sie deren Pfad. Groß- und
+                        Kleinschreibung zählt: <span class="font-mono text-[0.95em]">.pdf</span> erfasst nicht
+                        <span class="font-mono text-[0.95em]">.PDF</span>.</p>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Was wir abrufen und wie wir uns bei Fehlern verhalten: zwei kurze Texte nebeneinander, Stichwort am Absatzanfang #}
+<section class="band-hell abschnitt">
+    <div class="wrap grid gap-y-14 lg:grid-cols-2 lg:gap-x-16">
+        <div id="inhalte" class="min-w-0 scroll-mt-24">
+            <h2 class="t-h2-dok m-tinte">Was wir abrufen</h2>
+            <div class="mt-6 stichworte t-body m-text">
+                <p><strong>Nur Öffentliches.</strong> Wir rufen nur ab, was ohne Anmeldung erreichbar ist: Sitzungen,
+                    Tagesordnungen, Vorlagen, Gremien, Personen und Dokumente, bei einzelnen Systemen auch Fotos von
+                    Ratsmitgliedern. Steht ein Dokument hinter einer Prüfung für Menschen, laden wir es nicht.</p>
+                <p><strong>Bevorzugt OParl.</strong> Bietet Ihr System die OParl-Schnittstelle an, nutzen wir sie.
+                    Sonst lesen wir ersatzweise die öffentlichen Webseiten, und zwar langsamer: standardmäßig eine Seite
+                    alle zwei Sekunden, nacheinander. Viele Ratsinformationssysteme bringen OParl bereits mit.</p>
+                <p><strong>Mit Quellenangabe.</strong> Bei uns können Bürgerinnen und Bürger Ihre Inhalte durchsuchen.
+                    Auf unseren Seiten zu Ihrer Kommune nennen wir Ihr Ratsinformationssystem als Quelle; bei Vorlagen
+                    verlinken wir die Seite in Ihrem System, wenn Ihre Schnittstelle sie angibt. Unsere Daten stehen
+                    ihrerseits offen unter
+                    <a class="textlink" href="https://oparl.mandari.de">oparl.mandari.de</a> bereit.</p>
+            </div>
+        </div>
+        <div id="fehler" class="min-w-0 scroll-mt-24">
+            <h2 class="t-h2-dok m-tinte">Bei Fehlern und Sperren</h2>
+            <div class="mt-6 stichworte t-body m-text">
+                <p><strong>Automatische Pause.</strong> Eine einzelne Anfrage wiederholen wir bei Netz- und
+                    Serverfehlern höchstens zweimal, frühestens nach einer und nach zwei Sekunden. Nach fünf Fehlversuchen an einem
+                    Server im selben Abgleich, auch HTTP 429, fragen wir ihn eine Minute lang nicht an; einen
+                    Retry-After-Header werten wir nicht aus. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir
+                    die Quelle: zuerst 10&nbsp;Minuten, danach jeweils doppelt so lange, bis höchstens 6&nbsp;Stunden. Nach fünf
+                    Serverfehlern in Folge oder wenn Ihre robots.txt nicht erreichbar ist und wir keine frühere Fassung
+                    haben, pausiert unser Abgleich mindestens 30&nbsp;Minuten, lehnt Ihr Server gezielt unsere Kennung ab
+                    (HTTP 403), mindestens eine Stunde, sperrt Ihre robots.txt jede Anfrage, 24&nbsp;Stunden.</p>
+                <p><strong>Dokumente und Fotos.</strong> Das stündliche Nachholen und Prüfen von Dokumenten, das Laden
+                    beim Öffnen und die Personenfotos ruhen erst, wenn drei Abgleiche in Folge Ihr System nicht
+                    erreichen. Neue Dateien, deren Text noch fehlt, lädt unsere Texterkennung auch während einer Pause,
+                    im üblichen Takt. Eine Sperre per robots.txt beachten diese Abrufe immer.</p>
+                <p><strong>Keine Umgehung.</strong> Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.
+                    Eine abweichende Kennung für Ihr System setzen wir nur, wenn Sie sie mit uns vereinbaren, etwa weil
+                    Ihr Server bestimmte Wörter im User-Agent ablehnt. Auf ein HTTP 403 folgt je
+                    Server und Abgleich sowie je Erstprüfung höchstens eine Vergleichsanfrage mit der Standardkennung
+                    unserer HTTP-Bibliothek (<span class="font-mono text-[0.95em]">python-httpx</span>), im Takt und
+                    ohne Weiterleitung, nur um zu erkennen, ob sich die Sperre gegen unsere Kennung richtet. Abgerufen
+                    wird danach weiter nur mit unserer Kennung.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Einladung mit den direkten Wegen (marketing/muster_daten.py, WEGE["ingestor"]) #}
+{% einladung_wege None "ingestor" as wege %}
+<section class="on-ink band-tinte text-white abschnitt">
+    {% include "marketing/muster/_einladung.html" with dunkel=True titel="Fragen zu unseren Abrufen?" satz="Schreiben Sie uns. Wir antworten innerhalb von fünf Werktagen und stimmen unsere Abrufe mit Ihnen ab." aufruf="E-Mail an support@mandari.de" aufruf_url=c.mailto link="Technische Abrufregeln auf GitHub" link_url=c.abrufregeln wege=wege %}
+</section>
+
+{% endblock %}
