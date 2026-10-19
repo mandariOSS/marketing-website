@@ -15,7 +15,10 @@ separat gehostet und entwickelt werden.
 ## ✨ Was enthält dieses Repo?
 
 - **Marketing-Pages** — Startseite, Produkte, Ratsinformationssystem (Sachseite zum Begriff, ohne Preise;
-  Inhalt in `marketing/seeds_ris.py`), Für Fraktionen, Preise, Kommunen, Migration,
+  Inhalt in `marketing/seeds_ris.py`), die Sachseiten Sitzungsmanagement, Bürgerinformationssystem und
+  OParl-Schnittstelle (ebenso ohne Preise; `marketing/seeds_sitzungsmanagement.py`,
+  `seeds_buergerinformationssystem.py`, `seeds_oparl.py`; die Adresse ist `/oparl-schnittstelle/`, weil `/oparl/`
+  in jeder Installation die OParl-API der Anwendung bedient), Für Fraktionen, Preise, Kommunen, Migration,
   Roadmap, Trust Center, Transparenzbericht, Barrierefreiheit, Abuse,
   Open Source, Mitmachen, Partner, Über uns, Presse, Kontakt, Releases
   (der Blog ruht, siehe [Blog reaktivieren](#blog-reaktivieren))

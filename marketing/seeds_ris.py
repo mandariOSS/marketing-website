@@ -11,6 +11,9 @@ Die Seite erklärt den Begriff und zeigt, was mandari davon abdeckt. Vorgaben (S
   mit Quelle belegt,
 * Abschnitte nach dem Musterkatalog, nie zweimal dasselbe Muster hintereinander.
 
+Die Teilbegriffe haben eigene Sachseiten (Issue mandariOSS/mandari#939): /sitzungsmanagement/,
+/buergerinformationssystem/ und /oparl-schnittstelle/; diese Seite verlinkt sie im Text.
+
 Nach Änderungen: ``refresh_seeded_page ratsinformationssystem --force``.
 """
 
@@ -32,7 +35,7 @@ def seite():
             "title": "Ratsinformationssystem für die offene Verwaltung.", "title_highlight": "",
             "subline": (
                 "mandari verbindet Sitzungsdienst, Fraktionsarbeit und Bürgerportal auf einer Plattform: mit offener "
-                "OParl-Schnittstelle, vollständig Open Source und betrieben in Deutschland oder in Ihrem eigenen "
+                "OParl-Schnittstelle, als Open Source und betrieben in Deutschland oder in Ihrem eigenen "
                 "Rechenzentrum."
             ),
             "subline_secondary": "",
@@ -78,7 +81,7 @@ def seite():
                     m.zeile("Sitzungsdienst, Sitzungsmanagement",
                             "Die Arbeit der Verwaltung rund um die Sitzung, vom Sitzungskalender bis zum Sitzungsgeld, "
                             "und die Software dafür.",
-                            stand="mandari Session"),
+                            url="/sitzungsmanagement/", stand="mandari Session"),
                     m.zeile("Gremieninformationssystem",
                             "Geschützter Zugang für Ratsmitglieder zu allen Unterlagen ihrer Gremien, auch den "
                             "nichtöffentlichen. Bei mandari kommen die Unterlagen heute mit der Ladung, Fraktionen "
@@ -87,7 +90,7 @@ def seite():
                     m.zeile("Bürgerinformationssystem",
                             "Der öffentliche Teil: Sitzungstermine, Tagesordnungen, Vorlagen und Beschlüsse für alle, "
                             "ohne Anmeldung.",
-                            stand="mandari Insight"),
+                            url="/buergerinformationssystem/", stand="mandari Insight"),
                 ),
             ],
             spalten=["Begriff", "Was gemeint ist", "Bei mandari"],
@@ -123,28 +126,29 @@ def seite():
             note="<p>Was jedes Produkt im Einzelnen kann und was noch fehlt, zeigt die "
                  "<a href=\"/produkte/#funktionen\">Funktionsübersicht</a>.</p>",
         ),
-        # Muster 5a: OParl, rechts die Eckdaten der Schnittstelle und die Dokumentation
+        # Muster 5a: OParl, rechts die Eckdaten der Schnittstelle und die Dokumentation. Die Frage „Was ist OParl?“
+        # beantwortet /oparl-schnittstelle/; hier steht, was OParl für das RIS bedeutet (#939).
         m.randspalte(
-            "Was ist OParl?",
+            "Offen über OParl",
             "<p><strong>Offen für alle.</strong> Presse, Zivilgesellschaft und andere Anwendungen verwenden Ihre "
             "Ratsdaten direkt weiter: maschinenlesbar statt als PDF-Stapel.</p>"
-            "<p><strong>Ohne Mehraufwand.</strong> mandari veröffentlicht Beschlüsse und Sitzungsunterlagen "
-            "automatisch über OParl. Ihr Sitzungsdienst pflegt nichts doppelt.</p>"
+            "<p><strong>Ohne Mehraufwand.</strong> Nach Ihrer Freigabe veröffentlicht mandari Beschlüsse und "
+            "Sitzungsunterlagen automatisch über die <a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>. Ihr "
+            "Sitzungsdienst pflegt nichts doppelt.</p>"
             "<p><strong>Wechsel.</strong> Spricht Ihr bisheriges System OParl, etwa ALLRIS, SessionNet von Somacos "
-            "oder SD.NET RIM, übernimmt mandari Sitzungen, Vorlagen und Dokumente strukturiert. Ihre Daten bekommen Sie "
-            "jederzeit vollständig heraus.</p>",
+            "oder SD.NET RIM, liest mandari den öffentlichen Bestand ein; er bleibt im Bürgerportal durchsuchbar. "
+            "Gremien, Personen und Besetzungen übernehmen wir aus Listen Ihrer Verwaltung.</p>",
             [
                 m.rand_fakten("Schnittstelle", ("Standard", "OParl 1.1"),
                               ("Je Kommune", "in mandari Session"),
-                              ("Über alle Kommunen", "im Bürgerportal, mit Änderungsfeed"),
+                              ("Über alle Kommunen", "im Bürgerportal"),
                               ("Export", "OParl, CSV, JSON")),
                 m.rand_links("Dokumentation",
                              ("OParl-API des Bürgerportals", "https://docs.mandari.de/insight/oparl-api/"),
                              ("OParl-API von mandari Session", "https://docs.mandari.de/session/oparl-api/")),
             ],
-            subline="OParl ist der offene Standard für die Schnittstelle von Ratsinformationssystemen. Er legt fest, "
-                    "wie Sitzungen, Vorlagen, Beschlüsse und Dokumente maschinenlesbar bereitstehen, unabhängig vom "
-                    "Hersteller.",
+            subline="Mit OParl, dem offenen Standard für die Schnittstelle von Ratsinformationssystemen, stehen "
+                    "Sitzungen, Vorlagen, Beschlüsse und Dokumente maschinenlesbar bereit, unabhängig vom Hersteller.",
             anchor="oparl",
         ),
         # Muster 2: Vergleichen, ausschreiben, umsteigen; Ergebnis mit dem Weg zur Migration
@@ -158,8 +162,8 @@ def seite():
                  "AVV, technische und organisatorische Maßnahmen, Löschkonzept, Funktionsübersicht und "
                  "Software-Stückliste gehen direkt in Ihre Vergabeakte.", ""),
                 ("Umsteigen",
-                 "Wir übernehmen Ihren Bestand über OParl, schulen Ihr Team, und beide Systeme laufen parallel bis "
-                 "zum festen Umstellungstag.", "7 bis 14 Wochen vom ersten Termin bis zur Umstellung"),
+                 "Wir übernehmen Gremien und Personen aus Ihren Listen und schulen Ihr Team; beide Systeme laufen "
+                 "parallel bis zum festen Umstellungstag.", "7 bis 14 Wochen vom ersten Termin bis zur Umstellung"),
             ],
             subline="Drei Schritte vom bisherigen System zu mandari. Für jeden liegen die Grundlagen öffentlich "
                     "bereit.",
@@ -192,23 +196,24 @@ def seite():
                            "Sitzungsdienst, den Zugang der Ratsmitglieder und das Bürgerinformationssystem.</p>"
                            "<p>Im engeren Sinn steht RIS auch nur für den Zugang der Ratsmitglieder, getrennt vom "
                            "Sitzungsdienst der Verwaltung und vom Bürgerinformationssystem.</p>"},
-                {"question": "Was ist OParl?",
+                {"question": "Wie hängen Ratsinformationssystem und OParl zusammen?",
                  "answer": "<p>OParl ist der offene Standard für die Schnittstelle von Ratsinformationssystemen. "
-                           "mandari stellt alle Ratsdaten über OParl 1.1 bereit und übernimmt Daten aus Systemen, die "
-                           "OParl sprechen; was darüber hinaus mitkommen soll, klären wir in der "
-                           "Bestandsaufnahme.</p>"},
+                           "mandari stellt öffentliche Ratsdaten über OParl 1.1 bereit und liest Systeme, die OParl "
+                           "sprechen, ins Bürgerportal ein. Mehr dazu auf der Seite "
+                           "<a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>.</p>"},
                 {"question": "Können wir unser bisheriges RIS ablösen?",
-                 "answer": "<p>Ja. Spricht Ihr System OParl, übernehmen wir Sitzungen, Vorlagen, Gremien, Personen "
-                           "und Dokumente strukturiert; Sonderfelder und Bestände ohne OParl-Export klären wir in der "
-                           "Bestandsaufnahme. Bis zum Umstellungstag laufen beide Systeme parallel; für die ganze "
+                 "answer": "<p>Ja, mit mandari Session (Pilotphase). Gremien, Personen und Besetzungen übernehmen wir "
+                           "aus Listen Ihrer Verwaltung. Ihren öffentlichen Altbestand liest mandari über OParl ein; "
+                           "er bleibt im Bürgerportal durchsuchbar. Die Übernahme dieses Bestands in Session ist für "
+                           "Version 1.0 geplant.</p>"
+                           "<p>Bis zum Umstellungstag laufen beide Systeme parallel; für die ganze "
                            "<a href=\"/migration/\">Migration</a> rechnen wir vom ersten Termin an mit 7 bis 14 "
                            "Wochen.</p>"},
                 {"question": "Läuft mandari in Deutschland, und können wir es selbst betreiben?",
                  "answer": "<p>Ja, beides. Als Dienst betreiben wir mandari in ISO-27001-zertifizierten "
                            "Rechenzentren in Deutschland, ohne US-Cloud-Anbieter; im eigenen Rechenzentrum läuft es "
                            "per Docker Compose, auf Wunsch mit Betreuungsvertrag.</p>"
-                           "<p>Der Funktionsumfang ist in beiden Fällen derselbe, der Quellcode steht unter "
-                           "AGPL-3.0.</p>"},
+                           "<p>Der Quellcode steht unter AGPL-3.0.</p>"},
                 {"question": "Wie unterscheidet sich mandari von ALLRIS, SessionNet, SD.NET und regisafe?",
                  "answer": "<p>mandari ist Open Source mit öffentlicher Roadmap und verbindet Sitzungsdienst, "
                            "Fraktionsarbeit und Bürgerportal auf einer Plattform. Die etablierten Systeme bieten heute "
