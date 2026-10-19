@@ -793,8 +793,8 @@ def get_marketing_definitions() -> dict:
                     m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Zusammenfassungen öffentlicher "
                             "Ratsdokumente, Ortsangaben aus öffentlichen Vorlagen für die Karte und KI-Recherche im "
                             "Bürgerportal, KI-Assistent in mandari Work (nur auf Aufruf der Nutzer:innen, auf Wunsch "
-                            "je Organisation abschaltbar). Einen Verarbeitungsort in der EU sagt Nebius für die heute "
-                            "genutzten Endpunkte nicht zu.",
+                            "je Organisation abschaltbar). Verarbeitungsort: je nach Modell innerhalb und außerhalb "
+                            "der EU, auch in den USA, laut Liste der Unterauftragsverarbeiter von Nebius.",
                             ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
                     m.zeile("Mollie B.V.", "Zahlungsabwicklung für mandari Work (Name, E-Mail, Zahlungs- und "
                             "Mandatsdaten).", ort="Keizersgracht 126, 1015 CW Amsterdam (NL/EU)"),
@@ -802,11 +802,10 @@ def get_marketing_definitions() -> dict:
                             ort="Munzinger Str. 9, 79111 Freiburg (DE)"),
                 )],
                 spalten=["Unternehmen und Sitz", "Wofür"],
-                note="<p><strong>Nur auf Wunsch einer Organisation:</strong> Der KI-Assistent in mandari Work kann "
-                     "statt über Nebius über IONOS AI Model Hub (IONOS SE, Montabaur, Deutschland) oder OVHcloud AI "
-                     "Endpoints (OVH SAS, Roubaix, Frankreich) laufen. Heute nutzt keine Organisation diese "
-                     "Möglichkeit. Die Texterkennung (OCR) läuft auf unseren eigenen Systemen, ohne externen "
-                     "Anbieter.</p>"
+                note="<p><strong>Andere KI-Anbieter:</strong> In unserem Betrieb ist heute nur Nebius freigegeben. "
+                     "Ein anderer OpenAI-kompatibler Anbieter lässt sich erst einrichten, wenn wir ihn als Betreiber "
+                     "freigegeben haben; ohne Freigabe bleiben die KI-Funktionen aus. Die Texterkennung (OCR) läuft "
+                     "auf unseren eigenen Systemen, ohne externen Anbieter.</p>"
                      "<p>Über geplante Änderungen an dieser Liste informieren wir vorab; Sie haben ein "
                      "Widerspruchsrecht gegen neue Subunternehmer (Details im <a href=\"/avv/\">AVV, Ziff. 7</a>).</p>",
             ),
@@ -1593,7 +1592,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="KI-Komponenten"),
                 "background": "gray",
-                "body": "<p>Die KI-Funktionen nutzen Sprachmodelle mit offenen Gewichten (Open-Weight-LLMs) über <strong>Nebius Token Factory</strong> (Nebius B.V., Niederlande):</p><ul><li>Zusammenfassungen öffentlicher Ratsdokumente und KI-Recherche im Bürgerportal, als KI-erstellt gekennzeichnet</li><li>KI-Assistent in mandari Work, nur auf Aufruf der Nutzer:innen</li></ul><p>Die Texterkennung (OCR) läuft auf unseren eigenen Systemen. Ein selbst betriebenes Sprachmodell ist für die geplanten KI-Funktionen im Sitzungsdienst vorgesehen (2027). Alle Unterauftragsverarbeiter mit Zweck und Sitz stehen im <a href=\"/trust/#subprocessors\">Trust Center</a>.</p>",
+                "body": "<p>Die KI-Funktionen nutzen Sprachmodelle mit offenen Gewichten (Open-Weight-LLMs) über <strong>Nebius Token Factory</strong> (Nebius B.V., Niederlande):</p><ul><li>Zusammenfassungen öffentlicher Ratsdokumente und KI-Recherche im Bürgerportal, als KI-erstellt gekennzeichnet</li><li>KI-Assistent in mandari Work, nur auf Aufruf der Nutzer:innen</li></ul><p>Der Verarbeitungsort liegt je nach Modell innerhalb und außerhalb der EU, auch in den USA (Liste der Unterauftragsverarbeiter von Nebius). Die Texterkennung (OCR) läuft auf unseren eigenen Systemen. Ein selbst betriebenes Sprachmodell ist für die geplanten KI-Funktionen im Sitzungsdienst vorgesehen (2027). Alle Unterauftragsverarbeiter mit Zweck und Sitz stehen im <a href=\"/trust/#subprocessors\">Trust Center</a>.</p>",
             }),
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
