@@ -23,6 +23,7 @@ from marketing.views import (
     robots_txt,
     security_disclosure_view,
     security_txt,
+    sla_print_view,
 )
 
 
@@ -69,6 +70,8 @@ urlpatterns = [
     # Bis 18.10.2026 hieß sie /crawler/ (Adresse in älteren User-Agents, Mails und Logs). Der Ingestor ist kein
     # Crawler, und Server können User-Agents mit dem Wort „crawler“ ablehnen. Query-String bleibt erhalten.
     path("crawler/", RedirectView.as_view(url="/ingestor/", permanent=True, query_string=True)),
+    # Druckansicht des SLA (Unterpfad der Wagtail-Seite /sla/, daher Django-View).
+    path("sla/druck/", sla_print_view, name="sla_print"),
     # Unternehmensseiten (Relaunch 2026): Logo-Paket der Presse, /ueber-uns/ → /unternehmen/
     path("", include("company.urls")),
     # Dokumentation lebt auf docs.mandari.de (Repo mandariOSS/docs); alte Pfade leiten dauerhaft weiter

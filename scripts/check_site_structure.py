@@ -77,6 +77,7 @@ FUSSZEILE = {
     "Vertrauen": [
         ("Trust Center", "/trust/"),
         ("Vergabe und Unterlagen", "/vergabe/"),
+        ("Service Level (SLA)", "/sla/"),
         ("Transparenzbericht", "/transparenz/"),
         ("Barrierefreiheit", "/barrierefreiheit/"),
         ("Sicherheitslücke melden", "/sicherheit/disclosure/"),
@@ -123,7 +124,9 @@ OHNE_LAENGENZIEL = {"/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigu
 
 # Pfade, die in Produktion die mandari-Anwendung bedient (nicht diese Website).
 ANWENDUNGS_PFADE = ("/insight/", "/work/", "/session/", "/api/", "/accounts/")
-NICHT_PRUEFEN = ("/wstatic/", "/media/", "/documents/", "/cms-admin/", "/django-admin/", "/admin/")
+# /sla/druck/ ist die Druckfassung von /sla/ (ohne Kopf- und Fußzeile, noindex, Canonical auf /sla/); der Render-Smoke
+# der CI prüft sie.
+NICHT_PRUEFEN = ("/wstatic/", "/media/", "/documents/", "/cms-admin/", "/django-admin/", "/admin/", "/sla/druck/")
 # Django-Seiten außerhalb des Wagtail-Baums, die erreichbar sein müssen.
 PFLICHT_PFADE = ["/sicherheit/disclosure/", "/ingestor/"]
 ALTER_PLATZHALTER = "Kommunalpolitische Transparenz"

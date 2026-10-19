@@ -38,10 +38,10 @@ class RhythmusTests(SimpleTestCase):
                     self.fail(f"/{slug}/: zweimal {links} hintereinander ({typen})")
 
     def test_alte_raster_nur_noch_wo_erlaubt(self):
-        # trust_banner bleibt auf dem Trust Center erlaubt: die Dokumentseite setzt die Eckdaten in die Randspalte
+        # trust_banner bleibt auf den Dokumentseiten Trust Center und SLA erlaubt (Eckdaten in der Randspalte)
         for slug, bloecke in aktive_seiten().items():
             for typ, wert in bloecke:
-                if typ in ALTE_RASTER and not (slug == "trust" and typ == "trust_banner"):
+                if typ in ALTE_RASTER and not (slug in ("trust", "sla") and typ == "trust_banner"):
                     self.fail(f"/{slug}/: altes Raster {typ}")
                 if typ == "split_rows" and wert.get("layout", "raster") == "raster" and slug != "vergleich":
                     self.fail(f"/{slug}/: Raster „fette Zeile + Absatz“ (split_rows)")
@@ -111,9 +111,9 @@ class RegisterTests(SimpleTestCase):
     def test_vergabe_bestand(self):
         wert = dict(get_marketing_definitions()["vergabe"])["register"]
         plan = register_plan(wert)
-        self.assertEqual((plan["da"], plan["offen"], plan["gesamt"]), (9, 5, 14))
-        self.assertEqual(plan["satz"], "9 von 14 liegen vor, 5 sind in Arbeit.")
-        self.assertEqual(plan["segmente"], [True] * 9 + [False] * 5)
+        self.assertEqual((plan["da"], plan["offen"], plan["gesamt"]), (10, 4, 14))
+        self.assertEqual(plan["satz"], "10 von 14 liegen vor, 4 sind in Arbeit.")
+        self.assertEqual(plan["segmente"], [True] * 10 + [False] * 4)
 
     def test_dokument_gliederung_vergibt_sprungmarken(self):
         dok = dokument_gliederung('<h2>1. Gegenstand und Dauer</h2><p>x</p><h2 id="eigen">Zwei</h2><h2>1. Gegenstand und Dauer</h2>')
@@ -142,7 +142,7 @@ class SeitenTests(TestCase):
         self.assertIn('grosse-zahl', transparenz)
         vergabe = self.seite("/vergabe/")
         self.assertIn('class="reg"', vergabe)
-        self.assertIn("9 von 14 liegen vor, 5 sind in Arbeit.", vergabe)
+        self.assertIn("10 von 14 liegen vor, 4 sind in Arbeit.", vergabe)
         self.assertIn('class="ablauf mt-5"', vergabe)
         disclosure = self.seite("/sicherheit/disclosure/")
         self.assertLess(disclosure.find('id="safe-harbor"'), disclosure.find('id="geltungsbereich"'))
@@ -161,7 +161,7 @@ class SeitenTests(TestCase):
             self.assertIn("lg:col-start-7 xl:col-span-5 xl:col-start-8", einladung, url)
 
     def test_dokumentseiten_mit_inhalt_und_randspalte(self):
-        for url in ["/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigung/", "/quellen/", "/trust/"]:
+        for url in ["/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigung/", "/quellen/", "/trust/", "/sla/"]:
             html = self.seite(url)
             self.assertIn('aria-label="Zum Dokument"', html, url)
             self.assertIn('class="dok-klebt dok-inhalt"', html, url)
