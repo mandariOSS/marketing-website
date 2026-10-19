@@ -325,6 +325,13 @@ marketing-website/
   `marketing/fehlerseiten.py`): statisch, ohne Datenbank und ohne Kontextprozessoren, mit Notfalltext, falls
   selbst das Rendern scheitert.
 
+### llms.txt
+
+`/llms.txt` (Format nach https://llmstxt.org/, `marketing/llms.py`) gibt Sprachmodellen und KI-Suchen eine Übersicht
+der Website: Kurzbeschreibung aus der Meta-Description der Startseite, feste Verweise auf Bürgerportal, OParl-API,
+Dokumentation und Quellcode, dann je Abschnitt die veröffentlichten Seiten mit Titel und Meta-Description aus dem CMS.
+Neue Texte im CMS wirken ohne Codeänderung; welche Seiten in welchem Abschnitt stehen, regelt `ABSCHNITTE`.
+
 ### IndexNow
 
 Veröffentlichte und zurückgezogene Seiten meldet die Website sofort an Bing, Yandex, Seznam, Naver und Yep
