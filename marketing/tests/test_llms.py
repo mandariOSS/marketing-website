@@ -71,3 +71,10 @@ class LlmsTxtTests(TestCase):
         self.assertIn("https://mandari.de/oparl/v1/system", text)
         self.assertIn("https://docs.mandari.de/llms.txt", text)
         self.assertIn("https://github.com/mandariOSS", text)
+
+    def test_eckige_klammern_im_titel_brechen_den_link_nicht(self):
+        seite = MarketingPage.objects.get(slug="preise")
+        seite.seo_title = "Preise [Stand 2026]"
+        seite.save_revision().publish()
+
+        self.assertIn(r"- [Preise \[Stand 2026\]](https://mandari.de/preise/)", self._text())

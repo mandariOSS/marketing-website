@@ -76,6 +76,8 @@ def _seiten() -> dict[str, Page]:
 
 def _zeile(seite: Page) -> str:
     titel = (getattr(seite, "seo_title", "") or seite.title).strip()
+    # Eckige Klammern im Titel beenden sonst den Linktext
+    titel = titel.replace("[", r"\[").replace("]", r"\]")
     beschreibung = " ".join((getattr(seite, "search_description", "") or "").split())
     adresse = seo.absolute_url(urlsplit(seite.get_url() or "/").path)
     return f"- [{titel}]({adresse})" + (f": {beschreibung}" if beschreibung else "")
