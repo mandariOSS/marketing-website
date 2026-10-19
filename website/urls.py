@@ -14,7 +14,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
-from marketing import indexnow
+from marketing import indexnow, llms
 from marketing.docs_redirects import docs_redirect
 from marketing.sitemaps import FesteSeitenSitemap, MandariSitemap
 from marketing.views import (
@@ -45,6 +45,8 @@ urlpatterns = [
     # RFC 9309 robots.txt — Crawl-Direktiven für Suchmaschinen und Bots.
     # Plain text, MUSS unter /robots.txt erreichbar sein, referenziert sitemap.xml.
     path("robots.txt", robots_txt, name="robots_txt"),
+    # llms.txt (llmstxt.org): Übersicht für Sprachmodelle und KI-Suchen aus Titeln und Beschreibungen des CMS
+    path("llms.txt", llms.llms_txt, name="llms_txt"),
     # IndexNow (marketing/indexnow.py): Schlüsseldatei /<schlüssel>.txt, nur mit INDEXNOW_KEY, sonst 404
     re_path(r"^(?P<name>[A-Za-z0-9-]{8,128})\.txt$", indexnow.schluesseldatei, name="indexnow_schluessel"),
     # Statusseite: eigene Instanz unter status.mandari.de, /status/ leitet dauerhaft dorthin.
