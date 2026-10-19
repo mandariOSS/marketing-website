@@ -176,8 +176,8 @@ def get_company_page_definitions() -> dict:
                 "Ein Geschäftsmodell, so offen wie unser Code",
                 [("Davon leben wir", "Leistung, die Sie beauftragen"), ("Davon nie", "was es bei uns nicht gibt")],
                 [
-                    ("Software", ["<strong>Betrieb:</strong> Wir betreiben mandari für Fraktionen und Verwaltungen – "
-                                  "sicher, aktuell, aus Deutschland.",
+                    ("Software", ["<strong>Betrieb:</strong> Wir betreiben mandari für Fraktionen und ab dem "
+                                  "Pilotbetrieb auch für Verwaltungen – sicher, aktuell, aus Deutschland.",
                                   "<strong>Lizenzgebühren:</strong> Der Code steht unter AGPL-3.0."]),
                     ("Selbstbetrieb", ["<strong>Betreuung:</strong> Wer mandari selbst betreibt, sichert sich "
                                        "Unterstützung und Wartung vertraglich.",

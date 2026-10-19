@@ -119,7 +119,7 @@ jobs:
               "/buergerinformationssystem/": ["Was ist ein Bürgerinformationssystem?", "Zwei Wege ins Bürgerportal", "Häufige Fragen zum Bürgerinformationssystem", 'href="/insight/"', '"@type":"FAQPage"'],
               "/oparl-schnittstelle/": ["Was ist OParl?", "Was die Schnittstelle liefert", "Häufige Fragen zur OParl-Schnittstelle", "https://docs.mandari.de/session/oparl-api/", '"@type":"FAQPage"'],
               "/migration/": ["Bestandsaufnahme"],
-              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 2. Oktober 2026"],
+              "/roadmap/": ["Verbindlichkeitsstufen", "Pilotbetrieb", "Aus dem Marktvergleich: in Prüfung", "Stand 8. Oktober 2026"],
               "/vergabe/": ["Beschaffung und Prüfung", "Vertragsgrundlagen"],
               "/unternehmen/": ["Unser Wertekompass", "Angaben zum Unternehmen", "Lernen wir uns kennen."],
               "/presse/": ["Kurzprofil", "Fakten und Kennzahlen", "Logo-Paket herunterladen"],
@@ -279,7 +279,7 @@ jobs:
                               ["Migrations-Gespräch", "Pilot-Kommunen bekommen Sonderkonditionen", "ersten 5", "Rollback"]),
               "/barrierefreiheit/": (["teilweise konform mit der BITV 2.0"], ["Letzte Prüfung:", "Wir sind ehrlich"]),
               "/mitmachen/": (["Such dir aus, was zu dir passt"], ["100 % Open Source", "IONOS"]),
-              "/preise/": (["Pilotkommunen starten jetzt", "Rechenzentren in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
+              "/preise/": (["Pilotkommunen erhalten Sonderkonditionen", "Betrieb in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
               "/kommunen/": (["Drei Bausteine", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
               "/quellen/": (["mandari aggregiert", "mandari nutzt", "mandari nimmt"], ["Mandari "]),
           }
