@@ -31,6 +31,10 @@ SITE_URL = os.environ.get("SITE_URL", "http://localhost:8001")
 # die Fußzeile verlinkt sie.
 STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de/").rstrip("/") + "/"
 
+# SEITENHINWEIS: kurzer Hinweis über der Kopfzeile auf allen Seiten, etwa bei Störungen außerhalb von mandari
+# (leer = aus). Ein- und Ausschalten nur über die Umgebung, ohne Deploy: .env ändern, Container neu erstellen.
+SEITENHINWEIS = os.environ.get("SEITENHINWEIS", "").strip()
+
 # Booking URL for "Call buchen" CTAs across the site.
 # Defaults to the internal /kontakt/#termin-buchen anchor (native form on the
 # contact page). Override with an external tool URL (Cal.com, Calendly, …)

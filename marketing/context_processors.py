@@ -12,4 +12,5 @@ def site_context(request):
         "STATUS_PAGE_URL": getattr(settings, "STATUS_PAGE_URL", ""),
         "BOOKING_URL": getattr(settings, "BOOKING_URL", ""),
         "ALTCHA_CHALLENGE_URL": getattr(settings, "ALTCHA_CHALLENGE_URL", ""),
+        "SEITENHINWEIS": getattr(settings, "SEITENHINWEIS", ""),
     }
