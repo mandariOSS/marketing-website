@@ -40,4 +40,45 @@
             {% endif %}
     </div>
 </section>
+
+{# Release- und Support-Politik als Kurzfassung (Muster 5b: Begriff links, Regel rechts); vollständig auf docs.mandari.de #}
+<section id="release-politik" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Release- und Support-Politik</h2>
+            <p class="t-lead m-text mt-5">Kommunen planen Fachverfahren über Jahre. Deshalb legen wir fest, wie mandari versioniert wird, wie oft Releases erscheinen, wie lange eine Version unterstützt wird, in welcher Frist Sicherheitslücken geschlossen werden und wie lange Schnittstellen stabil bleiben. Beschlossen am 17. September 2026; das erste Release nach diesen Regeln ist 0.11.0.</p>
+        </div>
+        <dl class="begriffe">
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Versionierung</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">Semantic Versioning 2.0 (<span class="font-mono">MAJOR.MINOR.PATCH</span>): MAJOR bei Migration mit Handarbeit, Bruch einer Schnittstelle oder Wegfall einer Funktion; MINOR für neue Funktionen ohne Handarbeit; PATCH für Fehler- und Sicherheitskorrekturen. Entwicklungsstände sind keine Releases.</dd>
+            </div>
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Release-Kadenz</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">MINOR alle zwei Monate, jeweils in der ersten Woche. PATCH bei Bedarf innerhalb der Sicherheitsfristen. MAJOR mindestens sechs Monate vorher angekündigt, mit Migrationsleitfaden. Managed Hosting wird spätestens 14 Tage nach einem Release aktualisiert.</dd>
+            </div>
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Support je Version</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">Jüngste MINOR: Funktionen, Fehlerbehebungen, Sicherheitskorrekturen bis zur nächsten MINOR. Vorherige MINOR: Sicherheitskorrekturen sechs Monate ab Erscheinen der Nachfolgerin. LTS ab 1.0: 24 Monate, jährlich eine neue LTS-Linie.</dd>
+            </div>
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Sicherheitsfristen</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">Korrektur in Produktion und als PATCH nach CVSS 3.1: kritisch (≥ 9,0) in 72 Stunden, hoch (7,0–8,9) in 7 Tagen, mittel (4,0–6,9) in 30 Tagen, niedrig im nächsten regulären Release. Frist ab Bestätigung der Meldung; Advisory mit der Korrektur, CVE ab „hoch“.</dd>
+            </div>
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Schnittstellen und Abkündigung</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">OParl-API: brechende Änderungen 12 Monate vorher angekündigt, die alte Version bleibt parallel erreichbar. Session- und Fraktions-API: 6 Monate, alte Pfadversion parallel. Abkündigungen stehen im Changelog und in der API-Antwort als Header <span class="font-mono">Deprecation</span> und <span class="font-mono">Sunset</span>.</dd>
+            </div>
+            <div class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7">
+                <dt class="lg:col-span-4"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">Sicherheitsmeldungen abonnieren</span></dt>
+                <dd class="lg:col-span-7 lg:col-start-6 t-body m-text">GitHub Security Advisories über „Watch → Custom → Security alerts“, der <a class="textlink" href="https://github.com/mandariOSS/mandari/security/advisories">Advisory-Feed</a> und der <a class="textlink" href="https://github.com/mandariOSS/mandari/releases.atom">Release-Feed</a> oder der E-Mail-Verteiler <span class="font-mono">security-announce@mandari.de</span> (nur Ankündigungen). Meldungen an uns: <a class="textlink" href="/sicherheit/disclosure/">security@mandari.de</a>.</dd>
+            </div>
+        </dl>
+        <p class="mt-8 flex flex-wrap gap-x-6 gap-y-3 t-body">
+            <a class="textlink" href="https://docs.mandari.de/entwicklung/release-politik/">Vollständige Release-Politik</a>
+            <a class="textlink" href="https://github.com/mandariOSS/mandari/blob/dev/CHANGELOG.md">Changelog</a>
+            <a class="textlink" href="/sla/">Service Level Agreement</a>
+        </p>
+    </div>
+</section>
 {% endblock %}

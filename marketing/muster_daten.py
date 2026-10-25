@@ -419,6 +419,11 @@ DOKUMENTE = {
         "verweise": [("Über unseren Ingestor", "/ingestor/"), ("Open Source", "/open-source/"),
                      ("Bürgerportal", "/insight/")],
     },
+    "sla": {
+        "kontakt": "hello@mandari.de",
+        "verweise": [("PDF-Fassung", "/wstatic/downloads/mandari-sla-v1.0.pdf"), ("Druckansicht", "/sla/druck/"),
+                     ("AGB", "/agb/"), ("Statusseite", "https://status.mandari.de/")],
+    },
     "trust": {
         "kontakt": "hello@mandari.de",
         "verweise": [("Muster-AVV", "/avv/"), ("Vergabe und Unterlagen", "/vergabe/"),
