@@ -52,7 +52,7 @@
 <p>Der Auftragsverarbeiter</p>
 <ul>
 <li>verarbeitet personenbezogene Daten ausschließlich auf dokumentierte Weisung des Verantwortlichen (Art. 28 Abs. 3 lit. a DSGVO); die Nutzung des Dienstes gemäß Hauptvertrag und die Einstellungen, die der Verantwortliche im Dienst vornimmt (etwa Rollen, Freigaben und Veröffentlichung), gelten als Weisung. Weitere Weisungen erteilt der Verantwortliche in Textform, etwa über das Kundenportal oder an <a href="mailto:hello@mandari.de">hello@mandari.de</a>. Hält der Auftragsverarbeiter eine Weisung für rechtswidrig, informiert er den Verantwortlichen unverzüglich;</li>
-<li>stellt sicher, dass sich alle zur Verarbeitung befugten Personen zur Vertraulichkeit verpflichtet haben (Art. 28 Abs. 3 lit. b DSGVO);</li>
+<li>lässt personenbezogene Daten nur durch befugte Personen verarbeiten (Mitarbeitende, Mitgründer und freie Mitarbeitende), die schriftlich auf Vertraulichkeit und Datenschutz verpflichtet sind und ausschließlich auf seine Weisung handeln (Art. 28 Abs. 3 lit. b, Art. 29 DSGVO);</li>
 <li>trifft alle nach Art. 32 DSGVO erforderlichen technischen und organisatorischen Maßnahmen (Ziffer 6);</li>
 <li>unterstützt den Verantwortlichen mit geeigneten Mitteln bei der Beantwortung von Betroffenenanfragen (Art. 12 bis 23 DSGVO) sowie bei den Pflichten aus Art. 32 bis 36 DSGVO (Sicherheit, Meldung von Verletzungen, Datenschutz-Folgenabschätzung);</li>
 <li>meldet dem Verantwortlichen Verletzungen des Schutzes personenbezogener Daten unverzüglich, spätestens innerhalb von 48 Stunden nach Kenntnis;</li>
@@ -64,12 +64,12 @@
 <p>Der Auftragsverarbeiter trifft mindestens die folgenden Maßnahmen; sie werden dem Stand der Technik entsprechend fortlaufend weiterentwickelt:</p>
 <ul>
 <li><strong>Verschlüsselung:</strong> Sensible Inhalte werden mit AES-256-GCM und organisationsspezifischen Schlüsseln verschlüsselt gespeichert, bei „mandari Work“ etwa interne Notizen, bei „mandari Session“ etwa Bankverbindungen, Telefonnummern und Anschriften von Mitgliedern sowie vertrauliche Vorlagentexte und Niederschriften; sämtliche Datenübertragung erfolgt transportverschlüsselt (TLS).</li>
-<li><strong>Zugriffskontrolle:</strong> Rollenbasiertes Berechtigungssystem (RBAC) mit feingranularen Berechtigungen; Zugriff auf Produktivsysteme nur für den Auftragsverarbeiter über gesicherte Zugänge; Zwei-Faktor-Authentifizierung verfügbar.</li>
+<li><strong>Zugriffskontrolle:</strong> Rollenbasiertes Berechtigungssystem (RBAC) mit feingranularen Berechtigungen. Zugriff auf Produktivsysteme haben nur der Auftragsverarbeiter und die von ihm befugten Personen (Mitarbeitende, Mitgründer und freie Mitarbeitende), die schriftlich auf Vertraulichkeit und Datenschutz verpflichtet sind (Art. 28 Abs. 3 lit. b, Art. 29 DSGVO); der Zugriff folgt dem Need-to-know-Prinzip und erfolgt über gesicherte Zugänge mit persönlichen Konten und Zwei-Faktor-Anmeldung. Für die Nutzerinnen und Nutzer des Dienstes ist die Zwei-Faktor-Authentifizierung verfügbar.</li>
 <li><strong>Zutritts- und Infrastruktursicherheit:</strong> Betrieb in deutschen Rechenzentren (Hetzner Online GmbH) mit zertifizierter physischer Sicherheit; verschlüsselte Sicherungen zusätzlich in einem Rechenzentrum von Hetzner in Helsinki (Finnland, EU). Beim dedizierten Betrieb von „mandari Session“ läuft die Umgebung in einem Rechenzentrum der centron GmbH in Deutschland; Einzelheiten regelt das individuelle Angebot.</li>
 <li><strong>Verfügbarkeitskontrolle:</strong> Tägliche Backups mit 30 Tagen Aufbewahrung, getrennt vom Produktivsystem; Monitoring und öffentliche Statusseite (<a href="https://status.mandari.de">status.mandari.de</a>).</li>
 <li><strong>Trennungskontrolle:</strong> Mandantenfähige Architektur mit strikter Datenisolation pro Organisation; im dedizierten Betrieb eine eigene Umgebung je Kommune.</li>
 <li><strong>Eingabekontrolle:</strong> Protokollierung sicherheitsrelevanter Vorgänge (z. B. Anmeldeversuche).</li>
-<li><strong>Organisatorische Maßnahmen:</strong> Vertraulichkeitsverpflichtung aller befugten Personen, Prinzip der Datenminimierung, kein Einsatz von Tracking- oder Analysediensten Dritter.</li>
+<li><strong>Organisatorische Maßnahmen:</strong> schriftliche Verpflichtung aller befugten Personen auf Vertraulichkeit und Datenschutz, Prinzip der Datenminimierung, kein Einsatz von Tracking- oder Analysediensten Dritter.</li>
 </ul>
 
 <h2>7. Unterauftragsverhältnisse</h2>
