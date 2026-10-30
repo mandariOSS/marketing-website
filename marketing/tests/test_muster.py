@@ -165,4 +165,4 @@ class SeitenTests(TestCase):
             html = self.seite(url)
             self.assertIn('aria-label="Zum Dokument"', html, url)
             self.assertIn('class="dok-klebt dok-inhalt"', html, url)
-        self.assertIn("<dd class=\"font-semibold\">Juli 2026</dd>", self.seite("/kuendigung/"))
+        self.assertIn("<dd class=\"font-semibold\">November 2026</dd>", self.seite("/kuendigung/"))
