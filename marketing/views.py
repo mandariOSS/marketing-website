@@ -162,6 +162,17 @@ Disallow: /documents/
 Disallow: /altcha/
 Disallow: /work/
 
+# Schnittstelle und Dateien: nichts für den Suchindex, die Vorschau ruft Dokumente an der Quelle ab
+Disallow: /oparl/
+Disallow: /insight/dokumente/
+
+# Varianten derselben Seite: Die kanonische Adresse steht ohne diese Parameter in den Sitemaps
+Disallow: /*?download=
+Disallow: /*&download=
+Disallow: /*?subject=
+Disallow: /insight/?body=
+Disallow: /insight/kommunen/?
+
 # Sitemaps (sitemaps.org)
 Sitemap: {site_url}/sitemap.xml
 Sitemap: {site_url}/sitemap-insight-index.xml
