@@ -233,7 +233,7 @@ def get_marketing_definitions() -> dict:
                                   bullet("Antragsdatenbank & Vorlagen"), bullet("Interne Abstimmungen & Termine"),
                                   bullet("KI-gestützte Recherche"), bullet("Unbegrenzte Nutzer:innen pro Fraktion & Gruppe"),
                                   bullet("Prioritäts-Support per E-Mail")],
-                     "is_highlighted": True, "cta_label": "Jetzt buchen", "cta_url": "https://portal.mandari.de/buchen/"},
+                     "is_highlighted": True, "cta_label": "Jetzt buchen", "cta_url": "https://kunden.mandari.de/kunden/buchen"},
                     {"color": "blue", "name": "mandari Session", "subtitle": "Verwaltungs-RIS",
                      "badge": "Pilotphase 2027", "price_main": "Individuell",
                      "price_note": "Staffel nach Einwohnerzahl, Einrichtung einmalig, alle Module und das Bürgerportal inklusive. Öffentliche Preisliste in Vorbereitung.",
@@ -267,13 +267,6 @@ def get_marketing_definitions() -> dict:
                 subline="Erweitern Sie mandari Work bei Bedarf. Alle Preise brutto inklusive Mehrwertsteuer.",
                 anchor="addons",
             ),
-            # Muster 10: eine Datei, ein Button
-            m.downloads(
-                "Tagesaktuelle und vollständige Preisliste", "Vollständige Preisliste öffnen",
-                "https://portal.mandari.de/preise/",
-                subline="Alle Tarife, Addons und Zusatzleistungen mit allen Preisen, immer aktuell im Kundenportal.",
-                hinweis="Webseite im Kundenportal unter portal.mandari.de/preise/", anchor="preisliste",
-            ),
             ("feature_matrix", {
                 "header": hdr(title="Wer macht was?", align="center",
                               subline="Drei Wege, mandari zu betreiben. Die Software ist in allen Fällen dieselbe und kostenlos, der Unterschied liegt in Verantwortung und Aufwand.",
@@ -304,7 +297,7 @@ def get_marketing_definitions() -> dict:
                  ("Managed Service", "Wir betreiben, Sie nutzen")],
                 [
                     ("Kosten", ["keine Lizenzkosten; Server und Betrieb tragen Sie",
-                                "monatlich laut <a href=\"https://portal.mandari.de/preise/\">Preisliste</a>"]),
+                                "monatlich laut Angebot"]),
                     ("Server, Backups, Monitoring", ["Ihre IT; Docker-Compose-Stack für jeden Linux-Server",
                                                      "übernehmen wir, kein Server-Management auf Ihrer Seite"]),
                     ("Updates und Sicherheitspatches", ["spielen Sie ein, sobald wir sie veröffentlichen",
@@ -344,8 +337,7 @@ def get_marketing_definitions() -> dict:
                 "rand": [
                     m.rand_fakten("Direkt fragen", ("E-Mail", "hello@mandari.de"),
                                   ("Antwort", "in der Regel innerhalb eines Werktags")),
-                    m.rand_links("Zum Nachlesen", ("Vollständige Preisliste", "https://portal.mandari.de/preise/"),
-                                 ("AGB", "/agb/"), ("Kündigung und Widerruf", "/kuendigung/")),
+                    m.rand_links("Zum Nachlesen", ("AGB", "/agb/"), ("Kündigung und Widerruf", "/kuendigung/")),
                 ],
                 "items": [
                     {"question": "Warum ist Insight kostenlos?",
@@ -581,7 +573,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Politik machen statt PDFs sortieren.",
                 # Suchbegriff „Fraktionssoftware“ im Lead (#939); die Überschrift bleibt
                 "subline": "mandari Work ist die Fraktionssoftware für Ihre Ratsarbeit: Sitzungen vorbereiten, Anträge schreiben, Positionen abstimmen – in einem Werkzeug, das die Ratsdaten Ihrer Kommune schon kennt.",
-                "ctas": [cta("mandari Work buchen", "https://portal.mandari.de/buchen/"),
+                "ctas": [cta("mandari Work buchen", "https://kunden.mandari.de/kunden/buchen"),
                          cta("Alle Funktionen im Überblick", "/produkte/#funktionen", style="outline")],
             }),
             # Muster 5b: sechs Vorteile als Begriffe (das Bild von Work steht schon im Kopf)
@@ -636,7 +628,7 @@ def get_marketing_definitions() -> dict:
                 "Starten Sie mit Ihrer Fraktion.",
                 "39,90 € im Monat inklusive Mehrwertsteuer, pauschal für die ganze Fraktion – ohne Nutzerlimit, "
                 "Mitarbeitende und sachkundige Bürger:innen eingeschlossen.",
-                "mandari Work buchen", "https://portal.mandari.de/buchen/",
+                "mandari Work buchen", "https://kunden.mandari.de/kunden/buchen",
                 link_label="Preise und Zusatzleistungen ansehen", link_url="/preise/",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
                       ("Ausprobieren", "14 Tage kostenfrei", "/kontakt/?subject=Beta-Zugang-Work"),
