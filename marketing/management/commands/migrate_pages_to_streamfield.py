@@ -248,37 +248,17 @@ def get_marketing_definitions() -> dict:
                      "is_highlighted": False, "cta_label": "Angebot anfragen", "cta_url": "/kontakt/?subject=Session-Angebot"},
                 ],
             }),
-            # Muster 3 als Preisliste: Work-Stufen ab Version 1.0
+            # Muster 3 als Preisliste: ein Register, sonst folgt dasselbe Muster zweimal
             m.register(
-                "mandari Work ab Version 1.0",
+                "mandari Work ab Version 1.0 und Zusatzleistungen",
                 [
-                    m.gruppe("Preis je Fraktion oder Gruppe, gezählt werden die gewählten Mandatsträger:innen",
-                             m.zeile("Kleine Fraktion", "bis einschließlich 9 Mitglieder",
+                    m.gruppe("Ab Version 1.0: Preis je Fraktion oder Gruppe nach gewählten Mandatsträger:innen",
+                             m.zeile("Kleine Fraktion", "bis einschließlich 9 Mitglieder, netto 41,93 € bzw. 419,33 €",
                                      stand="49,90 € im Monat oder 499 € im Jahr", status="zahl"),
-                             m.zeile("Mittlere Fraktion", "10 bis 24 Mitglieder",
+                             m.zeile("Mittlere Fraktion", "10 bis 24 Mitglieder, netto 75,55 € bzw. 755,46 €",
                                      stand="89,90 € im Monat oder 899 € im Jahr", status="zahl"),
-                             m.zeile("Große Fraktion", "ab 25 Mitgliedern",
+                             m.zeile("Große Fraktion", "ab 25 Mitgliedern, netto 109,16 € bzw. 1.091,60 €",
                                      stand="129,90 € im Monat oder 1.299 € im Jahr", status="zahl")),
-                ],
-                spalten=["Stufe", "Mitglieder", "Preis inkl. MwSt."],
-                subline="Mit Version 1.0 endet die Beta-Phase. Dann richtet sich der Preis nach der Zahl der gewählten "
-                        "Mitglieder Ihrer Fraktion. Mitarbeitende, sachkundige Bürger:innen und Gäste zählen nicht mit "
-                        "und nutzen mandari Work weiter ohne Limit. Netto: 41,93 €, 75,55 € und 109,16 € im Monat bzw. "
-                        "419,33 €, 755,46 € und 1.091,60 € im Jahr.",
-                note="<p>Wer in der Beta-Phase bucht, behält seinen Preis, solange das Abonnement ununterbrochen läuft.</p>",
-                anchor="work-ab-1-0",
-            ),
-            # Muster 10: eine Datei, ein Button
-            m.downloads(
-                "Tagesaktuelle und vollständige Preisliste", "Vollständige Preisliste öffnen",
-                "https://portal.mandari.de/preise/",
-                subline="Alle Tarife, Addons und Zusatzleistungen mit allen Preisen, immer aktuell im Kundenportal.",
-                hinweis="Webseite im Kundenportal unter portal.mandari.de/preise/", anchor="preisliste",
-            ),
-            # Muster 3 als Preisliste
-            m.register(
-                "Addons und Zusatzleistungen",
-                [
                     m.gruppe("Addon, monatlich kündbar",
                              m.zeile("Eigene Domain", "Ihr Arbeitsportal unter eigener Adresse, z. B. mandari.fraktion.de – "
                                      "die Einrichtung übernehmen wir. Monatlich kündbar zum Monatsende.",
@@ -292,7 +272,11 @@ def get_marketing_definitions() -> dict:
                                      "Mitglieder, Vorlagen.", stand="ab 99 €", status="zahl")),
                 ],
                 spalten=["Leistung", "Was enthalten ist", "Preis inkl. MwSt."],
-                subline="Erweitern Sie mandari Work bei Bedarf. Alle Preise brutto inklusive Mehrwertsteuer.",
+                subline="Mit Version 1.0 endet die Beta-Phase. Dann richtet sich der Preis nach der Zahl der gewählten "
+                        "Mitglieder Ihrer Fraktion. Mitarbeitende, sachkundige Bürger:innen und Gäste zählen nicht mit "
+                        "und nutzen mandari Work weiter ohne Limit. Addons und Zusatzleistungen erweitern mandari Work "
+                        "bei Bedarf. Alle Preise brutto inklusive Mehrwertsteuer.",
+                note="<p>Wer in der Beta-Phase bucht, behält seinen Preis, solange das Abonnement ununterbrochen läuft.</p>",
                 anchor="addons",
             ),
             ("feature_matrix", {
