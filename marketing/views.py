@@ -162,8 +162,7 @@ Disallow: /documents/
 Disallow: /altcha/
 Disallow: /work/
 
-# Schnittstelle und Dateien: nichts für den Suchindex, die Vorschau ruft Dokumente an der Quelle ab
-Disallow: /oparl/
+# Dateivorschau: nichts für den Suchindex, und sie ruft Dokumente an der Quelle ab
 Disallow: /insight/dokumente/
 
 # Varianten derselben Seite: Die kanonische Adresse steht ohne diese Parameter in den Sitemaps
@@ -172,6 +171,10 @@ Disallow: /*&download=
 Disallow: /*?subject=
 Disallow: /insight/?body=
 Disallow: /insight/kommunen/?
+
+# Unser eigener Abruf: Die Demo-Quelle liegt auf diesem Host, ihre Dateien tragen ?download=1
+User-agent: mandari-ingestor
+Allow: /
 
 # Sitemaps (sitemaps.org)
 Sitemap: {site_url}/sitemap.xml
