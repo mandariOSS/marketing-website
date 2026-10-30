@@ -268,6 +268,13 @@ def get_marketing_definitions() -> dict:
                 note="<p>Wer in der Beta-Phase bucht, behält seinen Preis, solange das Abonnement ununterbrochen läuft.</p>",
                 anchor="work-ab-1-0",
             ),
+            # Muster 10: eine Datei, ein Button
+            m.downloads(
+                "Tagesaktuelle und vollständige Preisliste", "Vollständige Preisliste öffnen",
+                "https://portal.mandari.de/preise/",
+                subline="Alle Tarife, Addons und Zusatzleistungen mit allen Preisen, immer aktuell im Kundenportal.",
+                hinweis="Webseite im Kundenportal unter portal.mandari.de/preise/", anchor="preisliste",
+            ),
             # Muster 3 als Preisliste
             m.register(
                 "Addons und Zusatzleistungen",
