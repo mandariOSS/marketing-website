@@ -873,6 +873,8 @@ def get_marketing_definitions() -> dict:
                     "<a href=\"https://github.com/mandariOSS/mandari/releases\">GitHub-Releases</a></li>"
                     "<li>Lizenzinventar nach REUSE-Standard: jede Datei im Repository trägt eine maschinenlesbare "
                     "Lizenz- und Urheberangabe, geprüft in der CI</li>"
+                    "<li>Versionen, Supportzeiträume und Fristen für Sicherheitskorrekturen sind verbindlich geregelt: "
+                    "<a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- und Support-Politik</a></li>"
                     "<li>Externes Security-Audit ist für die General-Availability-Phase geplant</li>"
                     "</ul>"
                 ),

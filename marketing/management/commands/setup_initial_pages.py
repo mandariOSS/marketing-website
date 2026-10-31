@@ -369,6 +369,9 @@ RELEASE_INDEX_META = {
         "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
         "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
         '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
+        "<p>Alle zwei Monate erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die "
+        "vorherige Version erhält noch sechs Monate lang Sicherheitskorrekturen. Die Regeln stehen in der "
+        '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>'
     ),
 }
 RELEASE_INDEX_LEGACY = {
@@ -378,7 +381,12 @@ RELEASE_INDEX_LEGACY = {
         "Alle Versionen von mandari mit verständlichen Release-Notes: was neu ist für Verwaltung, "
         "Fraktionen und Bürgerportal.",
     },
-    "intro": {"<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>"},
+    "intro": {
+        "<p>Alle Mandari-Releases mit Changelogs und Release-Notes.</p>",
+        "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
+        "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
+        '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>',
+    },
 }
 
 
