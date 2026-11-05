@@ -140,7 +140,7 @@ Disallow: /*.pdf$</code></pre>
                 <p><strong>Automatische Pause.</strong> Eine einzelne Anfrage wiederholen wir bei Netz- und
                     Serverfehlern höchstens zweimal, frühestens nach einer und nach zwei Sekunden. Nach fünf Fehlversuchen an einem
                     Server im selben Abgleich, auch HTTP 429, fragen wir ihn eine Minute lang nicht an; einen
-                    Retry-After-Header werten wir nicht aus. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir
+                    Retry-After-Header wertet der Abgleich nicht aus. Schlägt ein Abgleich dreimal in Folge fehl, pausieren wir
                     die Quelle: zuerst 10&nbsp;Minuten, danach jeweils doppelt so lange, bis höchstens 6&nbsp;Stunden. Nach fünf
                     Serverfehlern in Folge oder wenn Ihre robots.txt nicht erreichbar ist und wir keine frühere Fassung
                     haben, pausiert unser Abgleich mindestens 30&nbsp;Minuten, lehnt Ihr Server gezielt unsere Kennung ab
@@ -148,7 +148,10 @@ Disallow: /*.pdf$</code></pre>
                 <p><strong>Dokumente und Fotos.</strong> Das stündliche Nachholen und Prüfen von Dokumenten, das Laden
                     beim Öffnen und die Personenfotos ruhen erst, wenn drei Abgleiche in Folge Ihr System nicht
                     erreichen. Neue Dateien, deren Text noch fehlt, lädt unsere Texterkennung auch während einer Pause,
-                    im üblichen Takt. Eine Sperre per robots.txt beachten diese Abrufe immer.</p>
+                    im üblichen Takt. Ist Ihr System dabei nicht erreichbar (Verbindungsfehler, Zeitüberschreitung,
+                    HTTP 408, 429 oder 5xx), stellt sie alle Dateien Ihrer Quelle zurück: zuerst 15&nbsp;Minuten,
+                    danach jeweils doppelt so lange, bis höchstens 6&nbsp;Stunden; ein Retry-After-Header gilt dabei als
+                    Mindestwartezeit. Eine Sperre per robots.txt beachten diese Abrufe immer.</p>
                 <p><strong>Keine Umgehung.</strong> Um eine Sperre zu umgehen, wechseln wir weder Kennung noch Adresse.
                     Eine abweichende Kennung für Ihr System setzen wir nur, wenn Sie sie mit uns vereinbaren, etwa weil
                     Ihr Server bestimmte Wörter im User-Agent ablehnt. Auf ein HTTP 403 folgt je

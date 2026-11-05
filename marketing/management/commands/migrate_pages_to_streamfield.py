@@ -219,7 +219,7 @@ def get_marketing_definitions() -> dict:
                      "badge": "Immer kostenlos", "price_main": "0 €", "price_unit": "für immer",
                      "price_note": "Querfinanziert über Work & Session",
                      "description": "Öffentlicher Zugang zu Ratsinformationen — ohne Anmeldung, ohne Tracker, ohne Limit.",
-                     "features": [bullet("Volltextsuche & Kartenansicht"), bullet("KI-Zusammenfassungen & Chat (geplant)"),
+                     "features": [bullet("Volltextsuche & Kartenansicht"), bullet("KI-Zusammenfassungen für ausgewählte Kommunen"),
                                   bullet("Abstimmungsverhalten einsehen"), bullet("Keine Anmeldung nötig"),
                                   bullet("Selbst-Hosting möglich")],
                      "is_highlighted": False, "cta_label": "Insight öffnen", "cta_url": "/insight/"},
@@ -617,7 +617,7 @@ def get_marketing_definitions() -> dict:
                     ("Ratsdaten", ["derselbe Datenbestand wie die Verwaltung, Änderungen kommen sofort an",
                                    "öffentliche Ratsdaten, automatisch übernommen"]),
                     ("Anträge", ["reichen Sie direkt digital bei der Verwaltung ein",
-                                 "schreiben und verwalten Sie in Work, eingereicht wird auf dem Weg Ihrer Kommune"]),
+                                 "schreiben Sie in Work und reichen sie per E-Mail bei der Verwaltung ein, mit PDF und Anhängen"]),
                     ("Nichtöffentliche Vorlagen", ["stehen berechtigten Mitgliedern automatisch bereit",
                                                    "nein, nur öffentliche Ratsdaten"]),
                 ],
@@ -1341,7 +1341,7 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
-                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 8. Oktober 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
+                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 5. November 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
                          cta("Releases", "/releases/", "tag", "secondary")],
@@ -1351,6 +1351,27 @@ def get_marketing_definitions() -> dict:
             m.register(
                 "Neu seit Juli 2026",
                 [m.gruppe("",
+                    m.zeile("Hybride und digitale Sitzungen nach Landesrecht", "Sitzungen finden präsent, hybrid oder "
+                            "digital statt, geprüft gegen das Landesprofil; die Anwesenheit hält fest, wer zugeschaltet "
+                            "ist. Profile für alle 16 Länder.",
+                            url="https://docs.mandari.de/session/landesrecht/", ort="Dokumentation", stand="Session"),
+                    m.zeile("Anträge per E-Mail einreichen", "Fraktionen, deren Kommune nicht mit mandari Session "
+                            "arbeitet, reichen Anträge aus Work per E-Mail ein, mit PDF und Anhängen.",
+                            url="https://docs.mandari.de/work/antraege-einreichen/", ort="Dokumentation",
+                            stand="Work"),
+                    m.zeile("Antragstellende Fraktionen und Bebauungspläne im Bürgerportal", "Anträge und Anfragen "
+                            "nennen die Fraktion, die sie gestellt hat, auch in der OParl-API. Vorlagen zu "
+                            "Bebauungsplänen zeigen den amtlichen Planbereich auf der Karte.",
+                            url="https://docs.mandari.de/insight/oparl-api/", ort="API-Dokumentation",
+                            stand="Insight"),
+                    m.zeile("Geo-Verortung bis zur Hausnummer", "Vorgänge sind bis zur Hausnummer verortet, die "
+                            "Umkreissuche findet sie rund um eine Adresse.", stand="Insight"),
+                    m.zeile("Release- und Support-Politik", "Versionierung, Kadenz, Fristen für Sicherheitsupdates "
+                            "und Stabilität der Schnittstellen sind öffentlich geregelt.",
+                            url="https://docs.mandari.de/entwicklung/release-politik/", ort="Dokumentation",
+                            stand="Betrieb"),
+                    m.zeile("Mehr-Server-Betrieb", "Rollenprofile für getrennte Daten-, Web- und Worker-Server, "
+                            "Grundlage für Wachstum und dedizierte Instanzen.", stand="Betrieb"),
                     m.zeile("Anträge digital einreichen", "Fraktionen reichen Anträge direkt bei der Verwaltung ein und "
                             "erhalten Eingangsnummer, Status und Beratungstermine zurück.",
                             url="https://docs.mandari.de/work/antraege-einreichen/", ort="Dokumentation",
@@ -1401,10 +1422,6 @@ def get_marketing_definitions() -> dict:
                                         "Komponentenbibliothek, Auslagerung von JavaScript und CSS, Typisierung, "
                                         "nachvollziehbare Lieferkette. Erste Schritte sind umgesetzt.",
                                    link_label="Epic ansehen", link_url="https://github.com/mandariOSS/mandari/issues/177"),
-                        m.vorhaben("Release- und Support-Politik", status="Geplant",
-                                   text="Versionierung, Kadenz, Fristen für Sicherheitsupdates, Stabilität der "
-                                        "Schnittstellen, abonnierbare Sicherheitsmeldungen.",
-                                   link_label="Issue #96", link_url="https://github.com/mandariOSS/mandari/issues/96"),
                         m.vorhaben("Adapter für Ratsinformationssysteme ohne OParl", produkt="insight",
                                    status="Geplant, 2026–2027",
                                    text="SessionNet läuft, ALLRIS über Bridge. Weitere Systeme folgen nach Reichweite und "
@@ -1414,21 +1431,14 @@ def get_marketing_definitions() -> dict:
                     m.zeitpunkt(
                         "Version 1.0",
                         m.vorhaben("Import aus Bestandssystemen", produkt="session", status="Geplant",
-                                   text="OParl-Übernahme plus CSV für Personen und Gremienbesetzung, damit der Wechsel "
-                                        "ohne Abtippen gelingt.",
+                                   text="Übernahme aus dem bisherigen System über OParl, damit der Wechsel ohne "
+                                        "Abtippen gelingt. Gremien, Fraktionen und Besetzungen lassen sich schon heute "
+                                        "per Tabelle übernehmen.",
                                    link_label="Issue #42", link_url="https://github.com/mandariOSS/mandari/issues/42"),
-                        m.vorhaben("Geo-Verortung Ausbaustufe", produkt="insight", status="Geplant",
-                                   text="Hausnummern, performante Umkreissuche, Korrektur-Workflow für falsch verortete "
-                                        "Vorgänge.",
-                                   link_label="Issue #54", link_url="https://github.com/mandariOSS/mandari/issues/54"),
                         m.vorhaben("Service-Level-Vereinbarung", status="Geplant",
                                    text="Verfügbarkeitszusage, Wartungsfenster, Störungsklassen, Reaktions- und "
                                         "Wiederherstellungszeiten, Gutschriften.",
                                    link_label="Issue #93", link_url="https://github.com/mandariOSS/mandari/issues/93"),
-                        m.vorhaben("Mehr-Server-Betrieb", status="Geplant",
-                                   text="Compose-Rollenprofile für getrennte Daten-, Web- und Worker-Server, Grundlage "
-                                        "für Wachstum und dedizierte Instanzen.",
-                                   link_label="Issue #55", link_url="https://github.com/mandariOSS/mandari/issues/55"),
                     ),
                     m.zeitpunkt(
                         "2027",
@@ -1581,7 +1591,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="Karten & Geokodierung"),
                 "background": "white",
-                "body": "<ul><li><strong>OpenStreetMap</strong> (ODbL) — Karten-Tiles und Geometrien (<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">openstreetmap.org/copyright</a>)</li><li><strong>Nominatim</strong> (BSD-2) — Geocoding-Service basierend auf OSM-Daten</li></ul>",
+                "body": "<ul><li><strong>OpenStreetMap</strong> (ODbL) — Karten-Tiles und Geometrien (<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">openstreetmap.org/copyright</a>)</li><li><strong>Nominatim</strong> (BSD-2) — Geocoding-Service basierend auf OSM-Daten</li><li><strong>Land NRW, Bauleitplanung</strong> (Datenlizenz Deutschland – Namensnennung – 2.0, <a href=\"https://www.govdata.de/dl-de/by-2-0\" target=\"_blank\" rel=\"noopener\">govdata.de/dl-de/by-2-0</a>) — amtliche Umringe rechtskräftiger Bebauungspläne; die Quelle steht an jeder Karte</li></ul>",
             }),
             ("richtext_section", {
                 "header": hdr(title="KI-Komponenten"),
@@ -1595,7 +1605,7 @@ def get_legal_definitions() -> dict:
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
-                "body": "<p>Stand: <strong>8. Oktober 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hello@mandari.de\">hello@mandari.de</a>.</p>",
+                "body": "<p>Stand: <strong>5. November 2026</strong>. Bei Fehlern oder fehlenden Nachweisen: <a href=\"mailto:hello@mandari.de\">hello@mandari.de</a>.</p>",
             }),
         ],
     }
