@@ -314,7 +314,10 @@ class IngestorSeiteTests(TestCase):
         self.assertIn("frühestens nach 15 Minuten, 1, 6, 24 und 72 Stunden erneut, danach alle sieben Tage.", html)
         self.assertNotIn("danach frühestens nach sieben Tagen", html)
         self.assertIn("höchstens 30 je Kommune und Lauf", html)
-        self.assertIn("Retry-After-Header werten wir nicht aus", html)
+        self.assertIn("Retry-After-Header wertet der Abgleich nicht aus", html)
+        # OCR-Worker (#1121): Quelle beim Dateiabruf nicht erreichbar -> ganze Quelle zurückstellen, Retry-After als Minimum
+        self.assertIn("stellt sie alle Dateien Ihrer Quelle zurück: zuerst 15&nbsp;Minuten", html)
+        self.assertIn("ein Retry-After-Header gilt dabei als Mindestwartezeit", html)
 
     def test_loeschungen_sofort_gesperrt_und_ohne_frist_bei_stichproben(self):
         # file_reconcile.py: gesperrt, sobald OParl deleted oder ein per GET bestätigtes 404/410 bemerkt ist; Kopie und
