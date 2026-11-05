@@ -194,6 +194,18 @@ class BlogPostPage(Page):
 # ── Releases ──────────────────────────────────────────────────────────────
 
 
+def _release_reihenfolge(release) -> tuple:
+    """Sortierschlüssel: Datum, dann Versionsnummer (0.12.0 nach 0.11.1 am selben Tag, Beta vor Final)."""
+    kern, _, zusatz = release.version.partition("-")
+    nummern = tuple(int(teil) if teil.isdigit() else 0 for teil in kern.split("."))
+    return (release.release_date, nummern, 0 if zusatz else 1)
+
+
+def releases_chronologisch(releases) -> list:
+    """Releases von alt nach neu; gleiche Tage nach Versionsnummer (Patch einer älteren Linie vor dem neuen Minor)."""
+    return sorted(releases, key=_release_reihenfolge)
+
+
 class ReleaseIndexPage(Page):
     """Release-Übersichtsseite."""
 
@@ -210,8 +222,8 @@ class ReleaseIndexPage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        releases = ReleasePage.objects.live().descendant_of(self).order_by("-release_date")
-        context["releases"] = releases
+        releases = ReleasePage.objects.live().descendant_of(self)
+        context["releases"] = list(reversed(releases_chronologisch(releases)))
         return context
 
     class Meta:
@@ -253,10 +265,11 @@ class ReleasePage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
-        siblings = ReleasePage.objects.live().sibling_of(self, inclusive=False)
-        # Nachbar-Releases: die nächstjüngere und die nächstältere Version
-        context["newer_release"] = siblings.filter(release_date__gt=self.release_date).order_by("release_date").first()
-        context["older_release"] = siblings.filter(release_date__lt=self.release_date).order_by("-release_date").first()
+        # Nachbar-Releases: die nächstältere und die nächstjüngere Version in derselben Reihenfolge wie die Übersicht
+        reihe = releases_chronologisch(ReleasePage.objects.live().sibling_of(self, inclusive=True))
+        stelle = next((i for i, release in enumerate(reihe) if release.pk == self.pk), None)
+        context["older_release"] = reihe[stelle - 1] if stelle else None
+        context["newer_release"] = reihe[stelle + 1] if stelle is not None and stelle + 1 < len(reihe) else None
         return context
 
     class Meta:

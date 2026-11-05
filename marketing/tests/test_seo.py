@@ -122,16 +122,37 @@ class ReleaseUndSitemapTests(TestCase):
 
     def test_neueste_version_zuerst(self):
         body = self.client.get("/releases/").content.decode()
-        self.assertLess(body.index("mandari 0.11"), body.index("mandari 0.9 (Beta)"))
+        # 0.12.0 und 0.11.1 erschienen am selben Tag: die höhere Version steht oben
+        stellen = [body.index(f">{titel}</a>") for titel in
+                   ("mandari 0.12", "mandari 0.11.1", "mandari 0.11", "mandari 0.9 (Beta)")]
+        self.assertEqual(stellen, sorted(stellen))
 
     def test_release_seite_mit_nachbarversion(self):
+        body = self.client.get("/releases/mandari-0-12/").content.decode()
+        self.assertIn("v0.12.0", body)
+        self.assertIn("Vorherige Version", body)
+        self.assertIn("mandari 0.11.1", body)
+        self.assertNotIn("Neuere Version", body)
         body = self.client.get("/releases/mandari-0-11/").content.decode()
         self.assertIn("Vorherige Version", body)
         self.assertIn("mandari 0.9 (Beta)", body)
-        self.assertNotIn("Neuere Version", body)
+        self.assertIn("Neuere Version", body)
+        self.assertIn("mandari 0.11.1", body)
         body = self.client.get("/releases/mandari-0-9-beta/").content.decode()
         self.assertIn("Neuere Version", body)
         self.assertIn("v0.9.0-beta", body)
+
+    def test_reihenfolge_nach_datum_und_version(self):
+        from datetime import date
+        from types import SimpleNamespace
+
+        from blog.models import releases_chronologisch
+
+        def r(version, tag):
+            return SimpleNamespace(version=version, release_date=date(2026, 11, tag))
+
+        reihe = releases_chronologisch([r("0.12.0", 3), r("0.11.1", 3), r("0.10.0-beta", 1), r("0.10.0", 1)])
+        self.assertEqual([x.version for x in reihe], ["0.10.0-beta", "0.10.0", "0.11.1", "0.12.0"])
 
     def test_blog_index_wird_nicht_mehr_angelegt(self):
         from blog.models import BlogIndexPage

@@ -1621,6 +1621,119 @@ def get_release_definitions() -> dict:
 
     return {
         # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-12/ — mandari 0.12, 03.11.2026
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-12": {
+            "meta": {
+                "title": "mandari 0.12",
+                "version": "0.12.0",
+                "release_type": "minor",
+                "release_date": "2026-11-03",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.12.0",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.12 – Release-Notes",
+                "search_description": (
+                    "mandari 0.12 vom 3. November 2026: Tagesordnung in der laufenden Fraktionssitzung, "
+                    "hybride Sitzungen nach Landesrecht, antragstellende Fraktionen im Bürgerportal und "
+                    "Sicherheitskorrekturen."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.12 bündelt die Arbeit seit September. Fraktionen ergänzen die Tagesordnung "
+                    "jetzt auch während der Sitzung, die Verwaltung führt präsente, hybride und digitale "
+                    "Sitzungen nach den Regeln ihres Landes, und das Bürgerportal zeigt, welche Fraktion einen "
+                    "Antrag gestellt hat.</p>"
+                    "<p>Das Release schließt außerdem Sicherheitslücken, die wir bei einer internen Prüfung "
+                    "gefunden haben. Alle Neuerungen liefen vor der Veröffentlichung bereits im Betrieb.</p>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<ul>"
+                    "<li>In der laufenden Fraktionssitzung lassen sich Tagesordnungspunkte ergänzen, etwa wenn "
+                    "zu Beginn eine geänderte Tagesordnung beschlossen wird.</li>"
+                    "<li>Tagesordnungspunkte lassen sich in der Planung per Ziehen zwischen öffentlichem und "
+                    "nichtöffentlichem Teil verschieben. In den nichtöffentlichen Teil dürfen das nur "
+                    "Vereidigte.</li>"
+                    "<li>Anträge gehen per E-Mail an die Verwaltung, wenn Ihre Fraktion nicht mit mandari "
+                    "Session verbunden ist – als PDF und mit Anhängen.</li>"
+                    "<li>Anhänge an Dokumenten laden Sie selbst hoch, benennen sie um oder entfernen sie.</li>"
+                    "<li>Verlässt ein Mitglied die Fraktion, bleiben die gemeinsam genutzten Inhalte erhalten.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Verwaltungen: mandari Session", (
+                    "<ul>"
+                    "<li>Sitzungen finden präsent, hybrid oder digital statt. mandari prüft das Format gegen "
+                    "das Landesrecht, Profile gibt es für alle 16 Länder.</li>"
+                    "<li>Die Anwesenheit hält fest, wer vor Ort und wer zugeschaltet ist. Die "
+                    "Beschlussfähigkeit berücksichtigt Verbindungsstörungen, die Niederschrift nennt die "
+                    "Teilnahmeart.</li>"
+                    "<li>Ein aus mandari Work eingereichter Antrag kommt automatisch als PDF an.</li>"
+                    "<li>Die Veröffentlichung im Bürgerportal lässt sich vorübergehend abschalten, als Archiv "
+                    "behalten oder zurücknehmen – jederzeit umkehrbar.</li>"
+                    "<li>Die OParl-Schnittstelle schalten Sie je Mandant frei. E-Mail-Adressen von Personen "
+                    "erscheinen dort nur mit Einwilligung.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<p>Im <a href=\"/insight/\">Bürgerportal</a> sehen Sie bei Anträgen und Anfragen, welche "
+                    "Fraktion sie gestellt hat – auch über die OParl-Schnittstelle. Vorlagen zu "
+                    "Bebauungsplänen zeigen den amtlichen Planbereich aus dem Geodienst der Kommune oder des "
+                    "Landes NRW.</p>"
+                )),
+                _release_section("Sicherheit und Betrieb", (
+                    "<p>Bei einer internen Sicherheitsprüfung haben wir mehrere Lücken gefunden, darunter eine "
+                    "kritische. mandari 0.12 schließt sie, in unserem Betrieb waren die Korrekturen schon vor "
+                    "der Veröffentlichung aktiv. Eine Ausnutzung ist uns nicht bekannt. Wenn Sie mandari selbst "
+                    "betreiben, aktualisieren Sie bitte zügig. Für die Linie 0.11 gibt es dieselben "
+                    "Korrekturen als <a href=\"/releases/mandari-0-11-1/\">mandari 0.11.1</a>.</p>"
+                    "<p>Ändern sich Passwort, zweiter Faktor oder Sicherheitsschlüssel Ihres Zugangs, "
+                    "informiert mandari Sie per E-Mail.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update und die "
+                    "Einzelheiten zu den Sicherheitskorrekturen in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.12.0\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-11-1/ — mandari 0.11.1, 03.11.2026 (Patch der Linie 0.11)
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-11-1": {
+            "meta": {
+                "title": "mandari 0.11.1",
+                "version": "0.11.1",
+                "release_type": "patch",
+                "release_date": "2026-11-03",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.11.1",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.11.1 – Release-Notes",
+                "search_description": (
+                    "mandari 0.11.1 vom 3. November 2026: die Sicherheitskorrekturen aus 0.12 für "
+                    "Installationen, die noch bei 0.11 bleiben, ohne neue Funktionen."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.11.1 bringt die Sicherheitskorrekturen aus "
+                    "<a href=\"/releases/mandari-0-12/\">mandari 0.12</a> in die Linie 0.11 – ohne neue "
+                    "Funktionen und ohne Änderungen an der Datenbank. Es richtet sich an alle, die mandari "
+                    "selbst betreiben und noch nicht auf 0.12 wechseln. Bitte aktualisieren Sie in diesem "
+                    "Fall zügig.</p>"
+                    "<p>Wenn Sie mandari bei uns nutzen, müssen Sie nichts tun: Unser Betrieb hat die "
+                    "Korrekturen bereits.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die Hinweise für das Update und die Einzelheiten zu den Korrekturen finden Sie in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.11.1\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-11/ — mandari 0.11, 27.09.2026
         # ════════════════════════════════════════════════════════════
         "mandari-0-11": {

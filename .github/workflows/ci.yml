@@ -130,7 +130,9 @@ jobs:
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
               "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
               "/vergleich/mandari-vs-regisafe/": ["barrierefrei zertifiziert", "Funktion / Kriterium", "Noch nicht verfügbar", "[RS1]"],
-              "/releases/": ["mandari 0.11", "mandari 0.9 (Beta)"],
+              "/releases/": ["mandari 0.12", "mandari 0.11.1", "mandari 0.11", "mandari 0.9 (Beta)"],
+              "/releases/mandari-0-12/": ["Landesrecht", "v0.12.0", "Vorherige Version"],
+              "/releases/mandari-0-11-1/": ["Sicherheitskorrekturen", "v0.11.1", "Neuere Version"],
               "/releases/mandari-0-11/": ["Sitzungsdienst", "v0.11.0", "Vorherige Version"],
               "/releases/mandari-0-9-beta/": ["Tombstones", "v0.9.0-beta"],
               "/trust/": ["Subprocessoren"],
@@ -165,7 +167,8 @@ jobs:
               if r.status_code != 301 or r.get("Location") != target:
                   errors.append(f"{url}: HTTP {r.status_code} -> {r.get('Location')} (erwartet 301 -> {target})")
           releases = c.get("/releases/").content.decode("utf-8")
-          if releases.find("mandari 0.11") > releases.find("mandari 0.9 (Beta)"):
+          stellen = [releases.find(f">{t}</a>") for t in ("mandari 0.12", "mandari 0.11.1", "mandari 0.11", "mandari 0.9 (Beta)")]
+          if -1 in stellen or stellen != sorted(stellen):
               errors.append("/releases/: neueste Version steht nicht zuerst")
           # Kopfzeile: „Für Bürger:innen“ im Produkte-Menü, „Bürgerportal“ genau einmal als direkter Link,
           # mobil ein Slide-Menü als modaler Dialog
