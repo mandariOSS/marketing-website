@@ -355,7 +355,7 @@ def get_company_page_definitions() -> dict:
                 f"<b>{KENNZAHLEN[1][0]}</b> Vorgänge und Vorlagen und <b>{KENNZAHLEN[2][0]}</b> Sitzungen aus "
                 f"<b>{KENNZAHLEN[3][0]}</b> Kommunen und Körperschaften im Volltext durchsuchbar.",
                 rand=f"<p>Stand {KENNZAHLEN_STAND}, gezählt im Datenbestand des Bürgerportals.</p>"
-                     "<p><strong>Aktuelle Version:</strong> mandari 0.11.0 vom 27. September 2026, "
+                     "<p><strong>Aktuelle Version:</strong> mandari 0.12.0 vom 3. November 2026, "
                      "<a href=\"/releases/\">Releases</a></p>"
                      "<p><strong>Quellcode:</strong> <a href=\"https://github.com/mandariOSS/mandari\">GitHub</a></p>",
                 anchor="fakten",
