@@ -11,8 +11,10 @@ Gegenüber der Wagtail-Standard-Sitemap:
   Startseite auf dem Tag ihrer ersten Veröffentlichung stehen, obwohl sich
   ihr Inhalt mit jeder neuen Seite ändert.
 * Feste Django-Seiten außerhalb des Wagtail-Baums stehen in einem eigenen
-  Abschnitt (``FesteSeitenSitemap``), heute nur /ingestor/, damit die Seite
-  auch über eine Suche nach unserem User-Agent zu finden ist. Ohne ``lastmod``:
+  Abschnitt (``FesteSeitenSitemap``): /ingestor/, damit die Seite auch über
+  eine Suche nach unserem User-Agent zu finden ist, und die Seite „Offene
+  Daten“ der Anwendung (/insight/offene-daten/, mandariOSS/mandari#1282), die
+  das Bürgerportal unter derselben Adresse ausliefert. Ohne ``lastmod``:
   Diese Seiten haben kein Veröffentlichungsdatum, die Antwort trägt deshalb
   keinen Last-Modified-Header.
 """
@@ -65,12 +67,14 @@ class FesteSeitenSitemap(DjangoSitemap):
     """Feste Django-Seiten (URL-Namen aus ``website/urls.py``) mit Adressen aus ``SITE_URL``."""
 
     namen = ["ingestor_info"]
+    #: Seiten der mandari-Anwendung auf demselben Host (der Proxy leitet /insight/ an sie)
+    pfade_der_anwendung = ["/insight/offene-daten/"]
 
     def items(self):
-        return self.namen
+        return [*self.namen, *self.pfade_der_anwendung]
 
     def location(self, item):
-        return reverse(item)
+        return item if item.startswith("/") else reverse(item)
 
     def get_urls(self, page=1, site=None, protocol=None):
         urls = super().get_urls(page=page, site=site, protocol=protocol)

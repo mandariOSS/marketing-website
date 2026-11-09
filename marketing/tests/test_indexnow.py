@@ -203,6 +203,7 @@ class BefehlTests(TestCase):
         self.assertIn("https://mandari.de/kontakt/", zeilen)
         # Feste Django-Seiten der Sitemap (FesteSeitenSitemap) gehören dazu
         self.assertIn("https://mandari.de/ingestor/", zeilen)
+        self.assertIn("https://mandari.de/insight/offene-daten/", zeilen)
         self.assertNotIn("https://mandari.de/crawler/", zeilen)
         self.assertTrue(zeilen[-1].startswith("[Probelauf]"))
 

@@ -68,7 +68,9 @@ class LlmsTxtTests(TestCase):
         text = self._text()
 
         self.assertIn("https://mandari.de/insight/", text)
-        self.assertIn("https://mandari.de/oparl/v1/system", text)
+        self.assertIn("https://oparl.mandari.de/oparl/v1/system", text)
+        self.assertIn("https://oparl.mandari.de/oparl/ (JSON, Feld bodyIndex)", text)
+        self.assertIn("https://mandari.de/insight/offene-daten/", text)
         self.assertIn("https://docs.mandari.de/llms.txt", text)
         self.assertIn("https://github.com/mandariOSS", text)
 

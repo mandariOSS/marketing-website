@@ -54,7 +54,10 @@ ABSCHNITTE: tuple[tuple[str, tuple[str, ...]], ...] = (
 #: Feste Angaben über die Website hinaus (Anwendung, Dokumentation, Code); nur, was dort öffentlich beschrieben ist
 GRUNDDATEN = (
     "Bürgerportal mandari Insight mit den öffentlichen Ratsinformationen angebundener Kommunen: {basis}/insight/",
-    "Offene Schnittstelle nach OParl 1.1 (lesend, ohne Anmeldung, JSON): {basis}/oparl/v1/system",
+    # Kennungen der Schnittstelle beginnen mit oparl.mandari.de (OPARL_BASE_URL der Anwendung, mandariOSS/mandari#1282)
+    "Offene Schnittstelle nach OParl 1.1 (lesend, ohne Anmeldung, JSON), Einstieg: https://oparl.mandari.de/oparl/v1/system",
+    "Alle Kommunen mit den Adressen ihrer Vorlagen, Sitzungen, Gremien und Personen: "
+    "https://oparl.mandari.de/oparl/ (JSON, Feld bodyIndex) und als Seite {basis}/insight/offene-daten/",
     "Dokumentation: https://docs.mandari.de, eigene Übersicht für Sprachmodelle: https://docs.mandari.de/llms.txt",
     "Quellcode: https://github.com/mandariOSS",
     "Wie mandari öffentliche Ratsinformationen abruft (Kennung, Takt, Kontakt): {basis}/ingestor/",
