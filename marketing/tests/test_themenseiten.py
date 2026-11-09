@@ -103,6 +103,13 @@ class SeedTests(SimpleTestCase):
             self.assertEqual(hero["ctas"][0]["label"], "Erstgespräch vereinbaren", slug)
             self.assertIn(SEITEN[slug][0], hero["title"], slug)
 
+    def test_oparl_seite_nennt_den_endpunkt(self):
+        # mandariOSS/mandari#1282: Wer nach dem Endpunkt sucht, findet ihn auf der Seite, nicht erst in der Doku
+        text = definitions_text(get_marketing_definitions()["oparl-schnittstelle"])
+        self.assertIn("https://oparl.mandari.de/oparl/v1/system", text)
+        self.assertIn("https://oparl.mandari.de/oparl/", text)
+        self.assertIn('href="/insight/offene-daten/"', text)
+
     def test_adressen_nicht_im_bereich_der_anwendung(self):
         for slug in SEITEN:
             self.assertFalse(f"/{slug}/".startswith(ANWENDUNG), slug)
@@ -218,6 +225,14 @@ class SeitenTests(TestCase):
         sitemap = self.client.get("/sitemap.xml").content.decode("utf-8")
         for slug in SEITEN:
             self.assertIn(f"<loc>https://mandari.de/{slug}/</loc>", sitemap)
+        # Seite der Anwendung mit den Adressen je Kommune (mandariOSS/mandari#1282)
+        self.assertIn("<loc>https://mandari.de/insight/offene-daten/</loc>", sitemap)
+
+    def test_oparl_seite_zeigt_den_endpunkt(self):
+        haupt = hauptteil(self.seite("/oparl-schnittstelle/"))
+        self.assertIn("https://oparl.mandari.de/oparl/v1/system", sichtbarer_text(haupt))
+        self.assertTrue(links(haupt, "/insight/offene-daten/"))
+        self.assertTrue(links(haupt, "https://oparl.mandari.de/oparl/v1/system"))
 
     def test_strukturdaten_wie_auf_der_ris_seite(self):
         for slug in SEITEN:

@@ -31,6 +31,12 @@ from marketing import seeds_muster as m
 KONTAKT = "/kontakt/?subject=OParl-Schnittstelle#termin"
 DOKU_AGGREGATOR = "https://docs.mandari.de/insight/oparl-api/"
 DOKU_SESSION = "https://docs.mandari.de/session/oparl-api/"
+#: Einstieg und Übersicht der öffentlichen Schnittstelle; die Kennungen aller Objekte beginnen mit dieser Adresse
+#: (OPARL_BASE_URL der Produktion, mandariOSS/mandari docs/OPARL_API.md). Die Seite „Offene Daten“ im Bürgerportal
+#: nennt je Kommune die Adressen von Body, Vorlagen, Sitzungen, Gremien und Personen (mandariOSS/mandari#1282).
+EINSTIEG = "https://oparl.mandari.de/oparl/v1/system"
+UEBERSICHT = "https://oparl.mandari.de/oparl/"
+OFFENE_DATEN = "/insight/offene-daten/"
 
 
 def seite():
@@ -65,6 +71,8 @@ def seite():
                 m.rand_fakten("Die Schnittstelle von mandari", ("Standard", "OParl 1.1"),
                               ("Zugang", "lesend, ohne Anmeldung"), ("Format", "JSON"),
                               ("Einlesen", "aus OParl 1.0 und 1.1")),
+                m.rand_links("Adressen", ("Einstieg: oparl.mandari.de/oparl/v1/system", EINSTIEG),
+                             ("Adressen je Kommune", OFFENE_DATEN), ("API-Dokumentation", DOKU_AGGREGATOR)),
                 m.rand_links("Zum Nachlesen", ("OParl-Spezifikation", "https://oparl.org/spezifikation/"),
                              ("Was ein Ratsinformationssystem ist", "/ratsinformationssystem/")),
             ],
@@ -82,7 +90,8 @@ def seite():
                     m.zeile("Über alle Kommunen",
                             "Ein Endpunkt für die öffentlichen Ratsdaten aller Kommunen im "
                             "<a href=\"/buergerinformationssystem/\">Bürgerportal</a>, statt jede Kommune einzeln "
-                            "abzufragen.",
+                            f"abzufragen: <a href=\"{EINSTIEG}\">{EINSTIEG}</a>. Die Adressen je Kommune stehen "
+                            f"auf der Seite <a href=\"{OFFENE_DATEN}\">Offene Daten</a>.",
                             url=DOKU_AGGREGATOR, ort="Dokumentation", stand="Verfügbar", status="da"),
                     m.zeile("Je Kommune in mandari Session",
                             "Jede Kommune, die ihr <a href=\"/sitzungsmanagement/\">Sitzungsmanagement</a> in "
@@ -169,6 +178,17 @@ def seite():
                  "answer": "<p>OParl ist der offene Standard für die Schnittstelle von Ratsinformationssystemen. Er "
                            "beschreibt, wie Sitzungen, Vorlagen, Beschlüsse, Gremien, Personen und Dokumente "
                            "maschinenlesbar bereitstehen, unabhängig vom Hersteller.</p>"},
+                {"question": "Unter welcher Adresse finde ich die Schnittstelle und die Anträge einer Kommune?",
+                 "answer": f"<p>Der Einstieg ist das System-Objekt unter <a href=\"{EINSTIEG}\">{EINSTIEG}</a>. "
+                           "Von dort führen Links zu allen Kommunen und ihren Sitzungen, Vorlagen, Gremien und "
+                           f"Personen. Die Übersicht <a href=\"{UEBERSICHT}\">{UEBERSICHT}</a> nennt im Feld "
+                           "bodyIndex je Kommune alle Adressen in einem Abruf, die Seite "
+                           f"<a href=\"{OFFENE_DATEN}\">Offene Daten</a> im Bürgerportal zeigt sie als Tabelle.</p>"
+                           "<p>Die Anträge einer Kommune stehen in der Liste ihrer Vorlagen (Feld paper im Body), "
+                           "zusammen mit Vorlagen und Anfragen; die Art nennt das Feld paperType. Mit dem Filter "
+                           "modified_since, etwa modified_since=2026-11-01T00:00:00Z, kommt nur, was sich seither "
+                           "geändert hat. Jede Seite enthält höchstens 100 Einträge, die nächste steht unter "
+                           "links.next.</p>"},
                 {"question": "Welche OParl-Versionen unterstützt mandari?",
                  "answer": "<p>mandari gibt alle Daten nach OParl 1.1 aus. Einlesen kann mandari Systeme mit OParl "
                            "1.0 und 1.1.</p>"},
