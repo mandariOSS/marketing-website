@@ -5,7 +5,7 @@
 {% block meta_description %}Die Ratsinformationen aller Kommunen bei mandari als offene Daten nach OParl 1.1: Einstieg, Beispiel und die Adressen je Kommune, lesend und ohne Anmeldung.{% endblock %}
 
 {% block content %}
-{# Partitur: Kopf (Weiß) → Einstieg und Beispiel (Grau) → Adressen je Kommune als Tabelle (Weiß). Jede Adresse steht als sichtbarer Text und als Link. #}
+{# Partitur: Kopf (Weiß) → Einstieg und Beispiel (Grau) → Adressen je Kommune als Tabelle (Weiß). Jede Adresse steht als sichtbarer Text und als Link. Jeder Abschnitt füllt die Rasterbreite (scripts/check_fuellung.py). #}
 <section class="band-hell hero">
     <div class="wrap">
         <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Offene Daten</h1>
@@ -79,7 +79,7 @@
                             {% if kommune.slug %}<a class="textlink" href="{% url 'offene_daten_kommune' slug=kommune.slug %}">{{ kommune.anzeige }}</a>{% else %}{{ kommune.anzeige }}{% endif %}
                             {% if kommune.ags %}<span class="block font-normal text-sm m-leise">AGS {{ kommune.ags }}</span>{% endif %}
                         </th>
-                        <td><a class="textlink font-mono text-[0.9375rem] break-all" href="{{ kommune.adresse }}">{{ kommune.adresse }}</a></td>
+                        <td><a class="textlink font-mono text-sm break-all" href="{{ kommune.adresse }}">{{ kommune.adresse }}</a></td>
                         <td>{% for liste in kommune.listen %}<a class="textlink" href="{{ liste.adresse }}">{% if liste.feld == "paper" %}Vorlagen{% elif liste.feld == "meeting" %}Sitzungen{% elif liste.feld == "organization" %}Gremien{% else %}Personen{% endif %}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
                     </tr>
                     {% endfor %}
@@ -87,7 +87,15 @@
             </table>
         </div>
         {% else %}
-        <p class="t-body m-text max-w-[45rem]">Die Liste der Kommunen ist gerade nicht abrufbar. Sie steht auch in der Schnittstelle selbst: <a class="textlink font-mono break-all" href="{{ bodies_url }}">{{ bodies_url }}</a></p>
+        <dl class="border-b m-linie">
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Liste der Kommunen</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ bodies_url }}">{{ bodies_url }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Die Liste der Kommunen ist gerade nicht abrufbar. Sie steht auch in der Schnittstelle selbst.</p>
+                </dd>
+            </div>
+        </dl>
         {% endif %}
     </div>
 </section>

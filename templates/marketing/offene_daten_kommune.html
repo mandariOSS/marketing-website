@@ -5,7 +5,7 @@
 {% block meta_description %}Ratsinformationen von {{ kommune.anzeige }} als offene Daten nach OParl 1.1 bei mandari: die Adressen für Vorlagen, Sitzungen, Gremien und Personen, mit Beispiel.{% endblock %}
 
 {% block content %}
-{# Partitur: Kopf (Weiß) → Adressen dieser Kommune (Grau) → Beispiel und weitere Wege (Weiß). Jede Adresse steht als sichtbarer Text und als Link. #}
+{# Partitur: Kopf (Weiß) → Adressen dieser Kommune (Grau) → Beispiel und weitere Wege (Weiß). Jede Adresse steht als sichtbarer Text und als Link. Jeder Abschnitt füllt die Rasterbreite (scripts/check_fuellung.py). #}
 <section class="band-hell hero">
     <div class="wrap">
         <p class="text-base m-leise"><a class="textlink" href="{% url 'offene_daten' %}">Offene Daten</a></p>
@@ -58,13 +58,23 @@
         <div class="kopf kopf-dicht">
             <h2 class="t-h2 m-tinte">Was hat sich in {{ kommune.anzeige }} zuletzt geändert?</h2>
         </div>
-        {% if vorlagen %}
-        <p class="t-body m-text max-w-[45rem]">Die Vorlagen seit einem Zeitpunkt liefert der Filter <code class="font-mono">modified_since</code> (Zeitzone angeben, etwa <code class="font-mono">Z</code> für UTC):</p>
-        <p class="mt-4 font-mono text-base m-tinte break-all"><a class="textlink" href="{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}">{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}</a></p>
-        {% endif %}
-        <p class="mt-6 t-body m-text max-w-[45rem]">
-            Kommende und vergangene Sitzungen mit ihren Tagesordnungspunkten stehen in der Liste der Sitzungen; das Ergebnis einer Beratung steht am Tagesordnungspunkt im Feld <code class="font-mono">result</code>.
-        </p>
+        <dl class="border-b m-linie">
+            {% if vorlagen %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Vorlagen seit einem Zeitpunkt</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}">{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Der Filter <code class="font-mono">modified_since</code> liefert, was sich seit dem Zeitpunkt geändert hat (Zeitzone angeben, etwa <code class="font-mono">Z</code> für UTC).</p>
+                </dd>
+            </div>
+            {% endif %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Sitzungen und Ergebnisse</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="text-base m-text max-w-[45rem]">Kommende und vergangene Sitzungen mit ihren Tagesordnungspunkten stehen in der Liste der Sitzungen; das Ergebnis einer Beratung steht am Tagesordnungspunkt im Feld <code class="font-mono">result</code>.</p>
+                </dd>
+            </div>
+        </dl>
         <p class="mt-8 flex flex-wrap gap-x-8 gap-y-2 t-body">
             {% if kommune.web %}<a class="textlink" href="{{ kommune.web }}">{{ kommune.anzeige }} im Bürgerportal ansehen</a>{% endif %}
             <a class="textlink" href="{% url 'offene_daten' %}">Alle Kommunen</a>
