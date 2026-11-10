@@ -134,7 +134,7 @@ class KopfUndFussTests(SimpleTestCase):
         self.assertNotIn(-1, stellen)
         self.assertEqual(stellen, sorted(stellen))
         laengen = [html[a:b].count("<li>") for a, b in zip(stellen, stellen[1:])]
-        self.assertEqual(laengen, [5, 5, 5, 6, 5])
+        self.assertEqual(laengen, [5, 5, 6, 6, 5])
         self.assertEqual(html[stellen[-1]:].count("<li>"), 6)
         self.assertIn('id="fuss-rechtliches" class="sr-only"', html)
 

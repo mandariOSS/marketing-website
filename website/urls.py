@@ -20,6 +20,8 @@ from marketing.sitemaps import FesteSeitenSitemap, MandariSitemap
 from marketing.views import (
     altcha_challenge,
     ingestor_info_view,
+    offene_daten_kommune_view,
+    offene_daten_view,
     robots_txt,
     security_disclosure_view,
     security_txt,
@@ -66,6 +68,9 @@ urlpatterns = [
     path("sicherheit/disclosure/", security_disclosure_view, name="security_disclosure"),
     # Infoseite zum mandari-ingestor — sein User-Agent verweist hierauf.
     path("ingestor/", ingestor_info_view, name="ingestor_info"),
+    # Offene Daten: OParl-Schnittstelle mit den Adressen je Kommune, aus der Übersicht der Anwendung (mandari#1309)
+    path("offene-daten/", offene_daten_view, name="offene_daten"),
+    path("offene-daten/<slug:slug>/", offene_daten_kommune_view, name="offene_daten_kommune"),
     # Bis 18.10.2026 hieß sie /crawler/ (Adresse in älteren User-Agents, Mails und Logs). Der Ingestor ist kein
     # Crawler, und Server können User-Agents mit dem Wort „crawler“ ablehnen. Query-String bleibt erhalten.
     path("crawler/", RedirectView.as_view(url="/ingestor/", permanent=True, query_string=True)),

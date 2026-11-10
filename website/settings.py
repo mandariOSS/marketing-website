@@ -30,6 +30,11 @@ SITE_URL = os.environ.get("SITE_URL", "http://localhost:8001")
 # Öffentliche Statusseite. /status/ leitet dauerhaft dorthin weiter,
 # die Fußzeile verlinkt sie.
 STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de/").rstrip("/") + "/"
+# Übersicht der OParl-Schnittstelle der Anwendung (Feld bodyIndex): Daraus entstehen /offene-daten/ und die Seiten je
+# Kommune (marketing/offene_daten.py). Leer schaltet den Abruf ab; in der Entwicklung und in der CI (DEBUG) ist er
+# aus, damit Tests und Prüfskripte nicht die Produktion abfragen.
+OPARL_UEBERSICHT_URL = os.environ.get("OPARL_UEBERSICHT_URL", "" if DEBUG else "https://oparl.mandari.de/oparl/")
+OPARL_DOKU_URL = os.environ.get("OPARL_DOKU_URL", "https://docs.mandari.de/insight/oparl-api/")
 
 # SEITENHINWEIS: kurzer Hinweis über der Kopfzeile auf allen Seiten, etwa bei Störungen außerhalb von mandari
 # (leer = aus). Ein- und Ausschalten nur über die Umgebung, ohne Deploy: .env ändern, Container neu erstellen.

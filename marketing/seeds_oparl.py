@@ -36,7 +36,7 @@ DOKU_SESSION = "https://docs.mandari.de/session/oparl-api/"
 #: nennt je Kommune die Adressen von Body, Vorlagen, Sitzungen, Gremien und Personen (mandariOSS/mandari#1282).
 EINSTIEG = "https://oparl.mandari.de/oparl/v1/system"
 UEBERSICHT = "https://oparl.mandari.de/oparl/"
-OFFENE_DATEN = "/insight/offene-daten/"
+OFFENE_DATEN = "/offene-daten/"
 
 
 def seite():
