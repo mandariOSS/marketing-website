@@ -146,9 +146,9 @@ class SeedTests(SimpleTestCase):
 
     def test_fusszeile_nennt_die_sachseiten_unter_dem_ratsinformationssystem(self):
         html = render_to_string("components/footer.html", {})
-        produkte = html[html.find('id="fuss-produkte"'):html.find('id="fuss-vertrauen"')]
+        produkte = html[html.find('id="fuss-produkte"'):html.find('id="fuss-loesungen"')]
         ziele = ["/ratsinformationssystem/", "/sitzungsmanagement/", "/buergerinformationssystem/",
-                 "/oparl-schnittstelle/", "/kommunen/"]
+                 "/oparl-schnittstelle/"]
         stellen = [produkte.find(f'href="{ziel}"') for ziel in ziele]
         self.assertNotIn(-1, stellen)
         self.assertEqual(stellen, sorted(stellen))

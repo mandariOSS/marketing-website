@@ -116,12 +116,27 @@ class KopfUndFussTests(SimpleTestCase):
 
     def test_fusszeile_spalte_produkte(self):
         html = render_to_string("components/footer.html", {})
-        produkte = html[html.find('id="fuss-produkte"'):html.find('id="fuss-vertrauen"')]
+        produkte = html[html.find('id="fuss-produkte"'):html.find('id="fuss-loesungen"')]
         self.assertEqual(links(produkte, "/ratsinformationssystem/"), ["Ratsinformationssystem"])
         # In der schmalen Spalte trennt das Wort an der Wortfuge, nicht mitten in einer Silbe
         self.assertIn(">Rats&shy;informations&shy;system</a>", produkte)
         self.assertLess(produkte.find('"/produkte/"'), produkte.find('"/ratsinformationssystem/"'))
-        self.assertLess(produkte.find('"/ratsinformationssystem/"'), produkte.find('"/kommunen/"'))
+        # Die Zielgruppen stehen in der eigenen Spalte „Lösungen“ direkt danach
+        self.assertNotIn('"/kommunen/"', produkte)
+        self.assertLess(html.find('id="fuss-loesungen"'), html.find('"/kommunen/"'))
+
+    def test_fusszeile_spalten_gleich_lang(self):
+        """Fünf Spalten mit fünf bis sechs Einträgen, Rechtliches als Zeile darunter."""
+        html = render_to_string("components/footer.html", {})
+        marken = ["fuss-produkte", "fuss-loesungen", "fuss-ressourcen", "fuss-vertrauen", "fuss-unternehmen",
+                  "fuss-rechtliches"]
+        stellen = [html.find(f'id="{marke}"') for marke in marken]
+        self.assertNotIn(-1, stellen)
+        self.assertEqual(stellen, sorted(stellen))
+        laengen = [html[a:b].count("<li>") for a, b in zip(stellen, stellen[1:])]
+        self.assertEqual(laengen, [5, 5, 5, 6, 5])
+        self.assertEqual(html[stellen[-1]:].count("<li>"), 6)
+        self.assertIn('id="fuss-rechtliches" class="sr-only"', html)
 
 
 class HeroTests(SimpleTestCase):

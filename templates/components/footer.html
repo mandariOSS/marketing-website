@@ -1,86 +1,100 @@
 {% load navigation %}{% aktuelle_seite %}{% comment %}
-Fußzeile nach der Zielstruktur der Website: Produkte · Vertrauen · Unternehmen · Hilfe · Rechtliches, darunter die
-Urheber- und Lizenzzeile (die CI prüft sie wörtlich). Eigenes dunkles Band, eine Stufe dunkler als die Einladung davor;
-Gliederung über Abstand und klare Gruppenüberschriften. Mobil zweispaltig: Produkte und Vertrauen, Unternehmen und
-Rechtliches, darunter Hilfe. Lange Wörter tragen weiche Trennstellen (&shy;) an den Wortfugen, etwa Ratsinformationssystem,
-damit sie in schmalen Spalten dort trennen und nicht mitten in einer Silbe. Unter dem Ratsinformationssystem stehen seine
-Teilbegriffe als Sachseiten (Sitzungsmanagement, Bürgerinformationssystem, OParl-Schnittstelle, Issue mandari#939).
+Fußzeile nach der Zielstruktur der Website: fünf etwa gleich lange Spalten (Produkte · Lösungen · Ressourcen ·
+Vertrauen · Unternehmen, je fünf bis sechs Einträge), darunter eine Zeile mit der Urheber- und Lizenzangabe (die CI
+prüft sie wörtlich) und den rechtlichen Seiten. Vorher standen zwölf Einträge unter „Produkte“ neben zwei unter
+„Hilfe“; die Spalten liefen deshalb sehr ungleich aus.
+
+Eigenes dunkles Band, eine Stufe dunkler als die Einladung davor; Gliederung über Abstand und klare
+Gruppenüberschriften, ohne Trennlinien. Mobil zweispaltig, ab md dreispaltig, ab lg fünf Spalten unter der Wortmarke, ab xl die
+Wortmarke daneben. Raster, Überschriften, Listen und die Linkfarbe beim Überfahren stehen im Stylesheet
+(static/css/input.css: .fuss-raster, .fuss-marke, .fuss-zeile, .band-fuss a:hover), nicht als Klassenketten hier: Das
+HTML jeder Seite soll in die ersten TCP-Pakete passen (scripts/check_kritisches_css.py). Die rechtlichen Seiten stehen als umbrechende Zeile; ihre Überschrift ist nur für Vorleseprogramme da.
+Lange Wörter tragen weiche Trennstellen (&shy;) an den Wortfugen, etwa Ratsinformationssystem, damit sie in schmalen
+Spalten dort trennen und nicht mitten in einer Silbe. Unter dem Ratsinformationssystem stehen seine Teilbegriffe als
+Sachseiten (Sitzungsmanagement, Bürgerinformationssystem, OParl-Schnittstelle, Issue mandari#939).
 scripts/check_site_structure.py prüft die Einträge.
 {% endcomment %}
 <div class="band-fuss text-gray-400">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10 lg:pt-20 lg:pb-12">
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 sm:gap-x-8 gap-y-10 lg:gap-y-12 text-[0.9375rem]">
-            <div class="col-span-2 md:col-span-3 lg:col-span-1">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8 lg:pt-16 lg:pb-10">
+        <div class="fuss-raster">
+            <div class="fuss-marke">
                 <a href="/" class="text-[1.4rem] font-bold tracking-tight leading-none text-white" aria-label="mandari Startseite">mandari<span class="text-primary-400" aria-hidden="true">.</span></a>
-                <p class="mt-4 max-w-[18rem]">Offene Software für Verwaltung, Politik und Bürger:innen. Entwickelt in Münster.</p>
+                <p class="mt-4 max-w-[19rem]">Offene Software für Verwaltung, Politik und Bürger:innen. Entwickelt in Münster.</p>
             </div>
 
             <nav aria-labelledby="fuss-produkte">
-                <h2 id="fuss-produkte" class="text-base font-semibold text-white">Produkte</h2>
-                <ul class="mt-3 space-y-2.5">
-                    <li><a href="/produkte/" class="hover:text-white transition-colors">Übersicht</a></li>
-                    <li><a href="/ratsinformationssystem/" class="break-words hover:text-white transition-colors">Rats&shy;informations&shy;system</a></li>
-                    <li><a href="/sitzungsmanagement/" class="break-words hover:text-white transition-colors">Sitzungs&shy;management</a></li>
-                    <li><a href="/buergerinformationssystem/" class="break-words hover:text-white transition-colors">Bürger&shy;informations&shy;system</a></li>
-                    <li><a href="/oparl-schnittstelle/" class="break-words hover:text-white transition-colors">OParl-Schnitt&shy;stelle</a></li>
-                    <li><a href="/kommunen/" class="hover:text-white transition-colors">Für Verwaltungen</a></li>
-                    <li><a href="/fraktionen/" class="hover:text-white transition-colors">Für Fraktionen</a></li>
-                    <li><a href="/produkte/#insight" class="hover:text-white transition-colors">Für Bürger:innen</a></li>
-                    <li><a href="/migration/" class="hover:text-white transition-colors">Umstieg</a></li>
-                    <li><a href="/vergleich/" class="hover:text-white transition-colors">Vergleich</a></li>
-                    <li><a href="/roadmap/" class="hover:text-white transition-colors">Roadmap</a></li>
-                    <li><a href="/releases/" class="hover:text-white transition-colors">Releases</a></li>
+                <h2 id="fuss-produkte">Produkte</h2>
+                <ul>
+                    <li><a href="/produkte/">Übersicht</a></li>
+                    <li><a href="/ratsinformationssystem/" class="break-words">Rats&shy;informations&shy;system</a></li>
+                    <li><a href="/sitzungsmanagement/" class="break-words">Sitzungs&shy;management</a></li>
+                    <li><a href="/buergerinformationssystem/" class="break-words">Bürger&shy;informations&shy;system</a></li>
+                    <li><a href="/oparl-schnittstelle/" class="break-words">OParl-Schnitt&shy;stelle</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-labelledby="fuss-loesungen">
+                <h2 id="fuss-loesungen">Lösungen</h2>
+                <ul>
+                    <li><a href="/kommunen/">Für Verwaltungen</a></li>
+                    <li><a href="/fraktionen/">Für Fraktionen</a></li>
+                    <li><a href="/produkte/#insight">Für Bürger:innen</a></li>
+                    <li><a href="/migration/">Umstieg</a></li>
+                    <li><a href="/vergleich/">Vergleich</a></li>
+                </ul>
+            </nav>
+
+            <nav aria-labelledby="fuss-ressourcen">
+                <h2 id="fuss-ressourcen">Ressourcen</h2>
+                <ul>
+                    <li><a href="https://docs.mandari.de/">Dokumentation</a></li>
+                    <li><a href="/roadmap/">Roadmap</a></li>
+                    <li><a href="/releases/">Releases</a></li>
+                    <li><a href="/open-source/">Open Source</a></li>
+                    <li><a href="{{ STATUS_PAGE_URL }}">Status</a></li>
                 </ul>
             </nav>
 
             <nav aria-labelledby="fuss-vertrauen">
-                <h2 id="fuss-vertrauen" class="text-base font-semibold text-white">Vertrauen</h2>
-                <ul class="mt-3 space-y-2.5">
-                    <li><a href="/trust/" class="hover:text-white transition-colors">Trust Center</a></li>
-                    <li><a href="/vergabe/" class="hover:text-white transition-colors">Vergabe und Unterlagen</a></li>
-                    <li><a href="/transparenz/" class="hover:text-white transition-colors">Transparenzbericht</a></li>
-                    <li><a href="/barrierefreiheit/" class="hover:text-white transition-colors">Barrierefreiheit</a></li>
-                    <li><a href="/sicherheit/disclosure/" class="hover:text-white transition-colors">Sicherheitslücke melden</a></li>
-                    <li><a href="/abuse/" class="hover:text-white transition-colors">Missbrauch melden</a></li>
-                    <li><a href="{{ STATUS_PAGE_URL }}" class="hover:text-white transition-colors">Status</a></li>
+                <h2 id="fuss-vertrauen">Vertrauen</h2>
+                <ul>
+                    <li><a href="/trust/">Trust Center</a></li>
+                    <li><a href="/vergabe/">Vergabe und Unterlagen</a></li>
+                    <li><a href="/transparenz/">Transparenzbericht</a></li>
+                    <li><a href="/barrierefreiheit/">Barrierefreiheit</a></li>
+                    <li><a href="/sicherheit/disclosure/">Sicherheitslücke melden</a></li>
+                    <li><a href="/abuse/">Missbrauch melden</a></li>
                 </ul>
             </nav>
 
             <nav aria-labelledby="fuss-unternehmen">
-                <h2 id="fuss-unternehmen" class="text-base font-semibold text-white">Unternehmen</h2>
-                <ul class="mt-3 space-y-2.5">
-                    <li><a href="/unternehmen/" class="hover:text-white transition-colors">Über mandari</a></li>
-                    <li><a href="/partner/" class="hover:text-white transition-colors">Partner</a></li>
-                    <li><a href="/presse/" class="hover:text-white transition-colors">Presse</a></li>
-                    <li><a href="/open-source/" class="hover:text-white transition-colors">Open Source</a></li>
-                    <li><a href="/mitmachen/" class="hover:text-white transition-colors">Mitmachen</a></li>
-                </ul>
-            </nav>
-
-            <nav aria-labelledby="fuss-hilfe" class="order-last lg:order-none">
-                <h2 id="fuss-hilfe" class="text-base font-semibold text-white">Hilfe</h2>
-                <ul class="mt-3 space-y-2.5">
-                    <li><a href="https://docs.mandari.de/" class="hover:text-white transition-colors">Dokumentation</a></li>
-                    <li><a href="/kontakt/" class="hover:text-white transition-colors">Kontakt</a></li>
-                </ul>
-            </nav>
-
-            <nav aria-labelledby="fuss-rechtliches">
-                <h2 id="fuss-rechtliches" class="text-base font-semibold text-white">Rechtliches</h2>
-                <ul class="mt-3 space-y-2.5">
-                    <li><a href="/impressum/" class="hover:text-white transition-colors">Impressum</a></li>
-                    <li><a href="/datenschutz/" class="hover:text-white transition-colors">Datenschutz</a></li>
-                    <li><a href="/agb/" class="hover:text-white transition-colors">AGB</a></li>
-                    <li><a href="/avv/" class="hover:text-white transition-colors">AVV</a></li>
-                    <li><a href="/quellen/" class="hover:text-white transition-colors">Quellennachweise</a></li>
-                    <li><a href="/kuendigung/" class="hover:text-white transition-colors">Verträge hier kündigen</a></li>
+                <h2 id="fuss-unternehmen">Unternehmen</h2>
+                <ul>
+                    <li><a href="/unternehmen/">Über mandari</a></li>
+                    <li><a href="/partner/">Partner</a></li>
+                    <li><a href="/presse/">Presse</a></li>
+                    <li><a href="/mitmachen/">Mitmachen</a></li>
+                    <li><a href="/kontakt/">Kontakt</a></li>
                 </ul>
             </nav>
         </div>
 
-        <p class="mt-16 text-sm">
-            &copy; 2025–{% now "Y" %} Sven Konopka. mandari ist Open Source unter der Lizenz AGPL-3.0-or-later.
-        </p>
+        <div class="fuss-zeile">
+            <nav aria-labelledby="fuss-rechtliches">
+                <h2 id="fuss-rechtliches" class="sr-only">Rechtliches</h2>
+                <ul>
+                    <li><a href="/impressum/">Impressum</a></li>
+                    <li><a href="/datenschutz/">Datenschutz</a></li>
+                    <li><a href="/agb/">AGB</a></li>
+                    <li><a href="/avv/">AVV</a></li>
+                    <li><a href="/quellen/">Quellennachweise</a></li>
+                    <li><a href="/kuendigung/">Verträge hier kündigen</a></li>
+                </ul>
+            </nav>
+            <p>
+                &copy; 2025–{% now "Y" %} Sven Konopka. mandari ist Open Source unter der Lizenz AGPL-3.0-or-later.
+            </p>
+        </div>
     </div>
 </div>
 {% endaktuelle_seite %}
