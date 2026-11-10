@@ -132,8 +132,34 @@
 .band-marke { background-color: var(--band-marke); }
 .band-tinte { background-color: var(--band-tinte); color: #fff; }
 .band-fuss { background-color: var(--band-fuss); }
-/* Fußzeile: Link auf die aktuelle Seite (aria-current, {% aktuelle_seite %} in templates/components/footer.html) */
+/* Fußzeile: Links beim Überfahren und der Link auf die aktuelle Seite (aria-current, {% aktuelle_seite %} in
+   templates/components/footer.html) in Weiß; als Regel hier statt als Klasse an jedem Link (Größe des HTML) */
+.band-fuss a:hover,
 .band-fuss a[aria-current="page"] { color: #fff; }
+/* Fußzeile: Raster und Schlusszeile als eigene Regeln statt als Klassenketten im HTML jeder Seite (Größe des HTML,
+   scripts/check_kritisches_css.py). Zweispaltig, ab md drei, ab lg fünf Spalten unter der Wortmarke, ab xl die
+   Wortmarke daneben; die rechtlichen Seiten als umbrechende Zeile neben der Lizenzangabe. */
+.fuss-raster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem 1.5rem; font-size: 0.9375rem; }
+.fuss-marke { grid-column: 1 / -1; }
+.fuss-raster h2 { font-size: 1rem; line-height: 1.5rem; font-weight: 600; color: #fff; }
+.fuss-raster ul { margin-top: 0.75rem; }
+.fuss-raster li + li { margin-top: 0.625rem; }
+.fuss-zeile { display: flex; flex-direction: column; gap: 1.25rem 2.5rem; margin-top: 3rem; font-size: 0.875rem; line-height: 1.25rem; }
+.fuss-zeile ul { display: flex; flex-wrap: wrap; gap: 0.625rem 1.5rem; }
+@media (min-width: 40rem) {
+  .fuss-raster { column-gap: 2rem; }
+}
+@media (min-width: 48rem) {
+  .fuss-raster { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 64rem) {
+  .fuss-raster { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .fuss-zeile { flex-direction: row-reverse; align-items: baseline; justify-content: space-between; margin-top: 3.5rem; }
+}
+@media (min-width: 80rem) {
+  .fuss-raster { grid-template-columns: 1.5fr repeat(5, minmax(0, 1fr)); }
+  .fuss-marke { grid-column: auto; padding-right: 1.5rem; }
+}
 
 /* Neutrale Fläche, die sich vom Band abhebt (eine Ebene, kein Rahmen) */
 .band-grau .flaeche { background-color: var(--band-hell); }
