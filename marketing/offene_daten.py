@@ -16,6 +16,7 @@ und eine Seite je Kommune (Titel mit „OParl“, Kommune und „mandari“).
 
 from __future__ import annotations
 
+import http.client
 import json
 import logging
 import re
@@ -37,6 +38,10 @@ ZEITGRENZE_SEKUNDEN = 4
 HOECHSTENS_BYTES = 2_000_000
 _CACHE_FRISCH = "offene-daten:frisch"
 _CACHE_RUECKFALL = "offene-daten:rueckfall"
+#: So lange gilt ein gescheiterter Abruf (Sekunden): Währenddessen fragt keine Seite die Schnittstelle erneut
+PAUSE_NACH_FEHLER_SEKUNDEN = 120
+#: Platzhalter im Zwischenspeicher für „gerade kein Stand“ (wird beim Lesen mit Gleichheit verglichen)
+_KEIN_STAND = "kein-stand"
 
 #: Listen je Kommune: Feld in ``bodyIndex`` → (Segment der Adresse, Beschriftung)
 LISTEN = {
@@ -143,7 +148,8 @@ def _abrufen(adresse: str) -> Verzeichnis | None:
     try:
         with urllib.request.urlopen(anfrage, timeout=ZEITGRENZE_SEKUNDEN) as antwort:  # noqa: S310 - feste Adresse
             daten = json.loads(antwort.read(HOECHSTENS_BYTES + 1)[:HOECHSTENS_BYTES])
-    except (OSError, ValueError) as fehler:
+    except (OSError, ValueError, http.client.HTTPException) as fehler:
+        # HTTPException (abgeschnittene oder kaputte Antwort) ist kein OSError
         logger.warning("Übersicht der OParl-Schnittstelle nicht abrufbar (%s)", type(fehler).__name__)
         return None
     verzeichnis = auswerten(daten, adresse)
@@ -162,16 +168,16 @@ def verzeichnis() -> Verzeichnis | None:
         return None
     frisch = cache.get(_CACHE_FRISCH)
     if frisch is not None:
-        return frisch
+        return None if frisch == _KEIN_STAND else frisch
     neu = _abrufen(adresse)
     if neu is not None:
         cache.set(_CACHE_FRISCH, neu, FRISCH_SEKUNDEN)
         cache.set(_CACHE_RUECKFALL, neu, RUECKFALL_SEKUNDEN)
         return neu
     alt = cache.get(_CACHE_RUECKFALL)
-    if alt is not None:
-        # Nicht bei jedem Aufruf erneut gegen die Zeitgrenze laufen
-        cache.set(_CACHE_FRISCH, alt, 120)
+    # Nicht bei jedem Aufruf erneut gegen die Zeitgrenze laufen, auch ohne letzten Stand: Sonst bindet jede Anfrage
+    # an eine der Seiten oder die Sitemap einen Prozess, solange die Schnittstelle nicht antwortet
+    cache.set(_CACHE_FRISCH, alt if alt is not None else _KEIN_STAND, PAUSE_NACH_FEHLER_SEKUNDEN)
     return alt
 
 

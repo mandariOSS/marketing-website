@@ -121,6 +121,22 @@ class AbrufTests(SimpleTestCase):
         with mock.patch("marketing.offene_daten.urllib.request.urlopen", side_effect=OSError("weg")):
             self.assertIsNone(offene_daten.verzeichnis())
 
+    def test_gescheiterter_abruf_wird_nicht_bei_jeder_anfrage_wiederholt(self):
+        """Auch ohne letzten Stand: Sonst hängt jede Anfrage bis zur Zeitgrenze an der Schnittstelle."""
+        with mock.patch("marketing.offene_daten.urllib.request.urlopen", side_effect=OSError("weg")) as urlopen:
+            self.assertIsNone(offene_daten.verzeichnis())
+            self.assertIsNone(offene_daten.verzeichnis())
+            self.assertIsNone(offene_daten.verzeichnis())
+        self.assertEqual(urlopen.call_count, 1)
+
+    def test_abgeschnittene_antwort_zaehlt_als_ausfall(self):
+        import http.client
+
+        with mock.patch(
+            "marketing.offene_daten.urllib.request.urlopen", side_effect=http.client.IncompleteRead(b"{")
+        ):
+            self.assertIsNone(offene_daten.verzeichnis())
+
     @override_settings(OPARL_UEBERSICHT_URL="")
     def test_abgeschaltet_ruft_nichts_ab(self):
         with _abruf() as urlopen:
