@@ -78,6 +78,7 @@ FUSSZEILE = {
         ("Dokumentation", "https://docs.mandari.de/"),
         ("Roadmap", "/roadmap/"),
         ("Releases", "/releases/"),
+        ("Offene Daten", "/offene-daten/"),
         ("Open Source", "/open-source/"),
         ("Status", "https://status.mandari.de/"),
     ],
@@ -128,7 +129,7 @@ OHNE_LAENGENZIEL = {"/impressum/", "/datenschutz/", "/agb/", "/avv/", "/kuendigu
 ANWENDUNGS_PFADE = ("/insight/", "/work/", "/session/", "/api/", "/accounts/")
 NICHT_PRUEFEN = ("/wstatic/", "/media/", "/documents/", "/cms-admin/", "/django-admin/", "/admin/")
 # Django-Seiten außerhalb des Wagtail-Baums, die erreichbar sein müssen.
-PFLICHT_PFADE = ["/sicherheit/disclosure/", "/ingestor/"]
+PFLICHT_PFADE = ["/sicherheit/disclosure/", "/ingestor/", "/offene-daten/"]
 ALTER_PLATZHALTER = "Kommunalpolitische Transparenz"
 
 

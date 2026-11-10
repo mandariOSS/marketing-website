@@ -50,7 +50,8 @@ def strukturdaten(context):
     """
     from marketing.strukturdaten import json_ld
 
-    return format_html('<script type="application/ld+json">{}</script>', mark_safe(json_ld(context.get("page"))))
+    daten = json_ld(context.get("page"), context.get("strukturdaten_zusatz"))
+    return format_html('<script type="application/ld+json">{}</script>', mark_safe(daten))
 
 
 @register.filter(is_safe=True)

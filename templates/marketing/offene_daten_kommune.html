@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}OParl-Schnittstelle {{ kommune.anzeige }}: offene Ratsdaten | mandari{% endblock %}
+
+{% block meta_description %}Ratsinformationen von {{ kommune.anzeige }} als offene Daten nach OParl 1.1 bei mandari: die Adressen für Vorlagen, Sitzungen, Gremien und Personen, mit Beispiel.{% endblock %}
+
+{% block content %}
+{# Partitur: Kopf (Weiß) → Adressen dieser Kommune (Grau) → Beispiel und weitere Wege (Weiß). Jede Adresse steht als sichtbarer Text und als Link. #}
+<section class="band-hell hero">
+    <div class="wrap">
+        <p class="text-base m-leise"><a class="textlink" href="{% url 'offene_daten' %}">Offene Daten</a></p>
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl mt-3">Offene Daten {{ kommune.anzeige }}</h1>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
+            Die Ratsinformationen von {{ kommune.anzeige }} stehen bei mandari nach dem Standard OParl 1.1 als offene
+            Daten bereit: Sitzungen, Vorlagen, Gremien und Personen, lesend, ohne Anmeldung, im Format JSON.
+        </p>
+    </div>
+</section>
+
+<section id="adressen" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Adressen der OParl-Schnittstelle</h2>
+        </div>
+        <dl class="border-b m-linie">
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">{{ kommune.anzeige }} (OParl-Body)</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ kommune.adresse }}">{{ kommune.adresse }}</a></p>
+                    {% if kommune.adresse != kommune.kennung %}<p class="mt-2 text-base m-text max-w-[45rem]">Kennung der Kommune, auf die diese Adresse weiterleitet: <span class="font-mono break-all">{{ kommune.kennung }}</span></p>{% endif %}
+                </dd>
+            </div>
+            {% for liste in kommune.listen %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">{{ liste.name }}</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ liste.adresse }}">{{ liste.adresse }}</a></p>
+                </dd>
+            </div>
+            {% endfor %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">OParl-System von mandari (alle Kommunen)</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ system_url }}">{{ system_url }}</a></p>
+                </dd>
+            </div>
+        </dl>
+        <p class="mt-8 t-body m-text max-w-[45rem]">
+            In den Adressen steht der Name der Kommune. Sie leiten auf die Adressen mit ihrer Kennung weiter; die Kennung ändert sich nie, der Name kann sich ändern.
+            {% if kommune.lizenz %}Lizenz der Daten: <a class="textlink break-all" href="{{ kommune.lizenz }}">{{ kommune.lizenz }}</a>.{% else %}Die Lizenz der Daten legt die Kommune fest.{% endif %}
+            {% if kommune.ags %}Amtlicher Gemeindeschlüssel: {{ kommune.ags }}.{% endif %}
+        </p>
+    </div>
+</section>
+
+<section id="beispiel" class="band-hell abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf kopf-dicht">
+            <h2 class="t-h2 m-tinte">Was hat sich in {{ kommune.anzeige }} zuletzt geändert?</h2>
+        </div>
+        {% if vorlagen %}
+        <p class="t-body m-text max-w-[45rem]">Die Vorlagen seit einem Zeitpunkt liefert der Filter <code class="font-mono">modified_since</code> (Zeitzone angeben, etwa <code class="font-mono">Z</code> für UTC):</p>
+        <p class="mt-4 font-mono text-base m-tinte break-all"><a class="textlink" href="{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}">{{ vorlagen.adresse }}?modified_since={{ beispiel_seit }}</a></p>
+        {% endif %}
+        <p class="mt-6 t-body m-text max-w-[45rem]">
+            Kommende und vergangene Sitzungen mit ihren Tagesordnungspunkten stehen in der Liste der Sitzungen; das Ergebnis einer Beratung steht am Tagesordnungspunkt im Feld <code class="font-mono">result</code>.
+        </p>
+        <p class="mt-8 flex flex-wrap gap-x-8 gap-y-2 t-body">
+            {% if kommune.web %}<a class="textlink" href="{{ kommune.web }}">{{ kommune.anzeige }} im Bürgerportal ansehen</a>{% endif %}
+            <a class="textlink" href="{% url 'offene_daten' %}">Alle Kommunen</a>
+            <a class="textlink" href="{{ doku_url }}">Dokumentation der Schnittstelle</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

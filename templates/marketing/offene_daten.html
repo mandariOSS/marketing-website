@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Offene Daten: OParl-Schnittstelle und Adressen je Kommune | mandari{% endblock %}
+
+{% block meta_description %}Die Ratsinformationen aller Kommunen bei mandari als offene Daten nach OParl 1.1: Einstieg, Beispiel und die Adressen je Kommune, lesend und ohne Anmeldung.{% endblock %}
+
+{% block content %}
+{# Partitur: Kopf (Weiß) → Einstieg und Beispiel (Grau) → Adressen je Kommune als Tabelle (Weiß). Jede Adresse steht als sichtbarer Text und als Link. #}
+<section class="band-hell hero">
+    <div class="wrap">
+        <h1 class="t-h1 text-gray-900 dark:text-white max-w-4xl">Offene Daten</h1>
+        <p class="t-lead text-gray-600 dark:text-gray-300 mt-6 max-w-[45rem]">
+            Die Ratsinformationen der Kommunen bei mandari stehen nach dem Standard OParl 1.1 als offene Daten bereit:
+            lesend, ohne Anmeldung, im Format JSON.
+        </p>
+    </div>
+</section>
+
+<section id="einstieg" class="band-grau abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf">
+            <h2 class="t-h2 m-tinte">Einstieg</h2>
+        </div>
+        <dl class="border-b m-linie">
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">OParl-System</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ system_url }}">{{ system_url }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Vom System-Objekt führen Links zur Liste der Kommunen und von jeder Kommune zu ihren Sitzungen, Vorlagen, Gremien und Personen.</p>
+                </dd>
+            </div>
+            {% if verzeichnis %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Alle Kommunen in einem Abruf</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ verzeichnis.uebersicht }}">{{ verzeichnis.uebersicht }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Das Feld <code class="font-mono">bodyIndex</code> nennt dieselben Adressen wie die Tabelle unten, für Programme.</p>
+                </dd>
+            </div>
+            {% endif %}
+            {% if beispiel %}
+            <div class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Beispiel: Vorlagen von {{ beispiel.anzeige }}</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all"><a class="textlink" href="{{ beispiel_vorlagen.adresse }}">{{ beispiel_vorlagen.adresse }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">In der Adresse steht der Name der Kommune. Sie leitet auf die Adresse mit der Kennung der Kommune weiter; die Kennung ändert sich nie, der Name kann sich ändern.</p>
+                    <p class="mt-4 font-mono text-base m-tinte break-all"><a class="textlink" href="{{ beispiel_vorlagen.adresse }}?modified_since={{ beispiel_seit }}">{{ beispiel_vorlagen.adresse }}?modified_since={{ beispiel_seit }}</a></p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Nur, was sich seit einem Zeitpunkt geändert hat (Zeitzone angeben, etwa <code class="font-mono">Z</code> für UTC).</p>
+                </dd>
+            </div>
+            {% endif %}
+        </dl>
+        <p class="mt-8 t-body m-text max-w-[45rem]">
+            Die Listen sind nach dem Zeitpunkt der letzten Änderung sortiert und in Seiten geteilt; den Link zur nächsten Seite nennt <code class="font-mono">links.next</code>.
+            Die Lizenz der Daten legt die jeweilige Kommune fest.
+        </p>
+        <p class="mt-6 flex flex-wrap gap-x-8 gap-y-2 t-body">
+            <a class="textlink" href="{{ doku_url }}">Dokumentation der Schnittstelle</a>
+            <a class="textlink" href="/oparl-schnittstelle/">Was die OParl-Schnittstelle ist</a>
+        </p>
+    </div>
+</section>
+
+<section id="kommunen" class="band-hell abschnitt scroll-mt-24">
+    <div class="wrap">
+        <div class="kopf kopf-dicht">
+            <h2 class="t-h2 m-tinte">Adressen je Kommune</h2>
+        </div>
+        {% if verzeichnis and verzeichnis.kommunen %}
+        <p class="t-body m-text max-w-[45rem]">{{ verzeichnis.kommunen|length }} Kommune{{ verzeichnis.kommunen|length|pluralize:"n" }}, alphabetisch. Jede Kommune hat eine eigene Seite mit allen Adressen.</p>
+        <div class="overflow-x-auto">
+            <table class="reg mt-10">
+                <caption class="sr-only">Kommunen mit der Adresse ihrer OParl-Daten</caption>
+                <thead><tr><th scope="col" class="w-64">Kommune</th><th scope="col">Adresse der Kommune (OParl-Body)</th><th scope="col" class="w-72">Listen</th></tr></thead>
+                <tbody>
+                    {% for kommune in verzeichnis.kommunen %}
+                    <tr id="kommune-{% firstof kommune.slug forloop.counter %}" class="scroll-mt-24">
+                        <th scope="row" class="font-semibold m-tinte">
+                            {% if kommune.slug %}<a class="textlink" href="{% url 'offene_daten_kommune' slug=kommune.slug %}">{{ kommune.anzeige }}</a>{% else %}{{ kommune.anzeige }}{% endif %}
+                            {% if kommune.ags %}<span class="block font-normal text-sm m-leise">AGS {{ kommune.ags }}</span>{% endif %}
+                        </th>
+                        <td><a class="textlink font-mono text-[0.9375rem] break-all" href="{{ kommune.adresse }}">{{ kommune.adresse }}</a></td>
+                        <td>{% for liste in kommune.listen %}<a class="textlink" href="{{ liste.adresse }}">{% if liste.feld == "paper" %}Vorlagen{% elif liste.feld == "meeting" %}Sitzungen{% elif liste.feld == "organization" %}Gremien{% else %}Personen{% endif %}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="t-body m-text max-w-[45rem]">Die Liste der Kommunen ist gerade nicht abrufbar. Sie steht auch in der Schnittstelle selbst: <a class="textlink font-mono break-all" href="{{ bodies_url }}">{{ bodies_url }}</a></p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

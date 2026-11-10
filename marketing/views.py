@@ -22,6 +22,7 @@ from urllib.parse import parse_qs
 from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.http import require_GET, require_http_methods
 
 logger = logging.getLogger(__name__)
@@ -204,6 +205,89 @@ def ingestor_info_view(request):
     Bis 18.10.2026 hieß sie /crawler/, die alte Adresse leitet dauerhaft hierher.
     """
     return render(request, "marketing/ingestor.html")
+
+
+def _beispiel_seit() -> str:
+    """Beginn des Vormonats (UTC): Das Beispiel liefert etwas, und die Seite ändert sich höchstens monatlich."""
+    from datetime import timedelta
+
+    from django.utils import timezone
+
+    erster = timezone.localdate().replace(day=1)
+    return (erster - timedelta(days=1)).replace(day=1).isoformat() + "T00:00:00Z"
+
+
+def _system_url() -> str:
+    """Einstieg der Schnittstelle, auch ohne abrufbare Übersicht."""
+    from marketing import offene_daten
+
+    return (offene_daten.quelle() or "https://oparl.mandari.de/oparl/").rstrip("/") + "/v1/system"
+
+
+@require_http_methods(["GET", "HEAD"])
+def offene_daten_view(request):
+    """/offene-daten/: Einstieg in die OParl-Schnittstelle und die Adressen je Kommune (mandari#1309)."""
+    from marketing import offene_daten, seo
+
+    verzeichnis = offene_daten.verzeichnis()
+    system_url = verzeichnis.system if verzeichnis else _system_url()
+    beispiel = None
+    if verzeichnis and verzeichnis.kommunen:
+        beispiel = verzeichnis.kommune("muenster") or verzeichnis.kommunen[0]
+    seite = seo.absolute_url(reverse("offene_daten"))
+    katalog = {
+        "@type": "DataCatalog",
+        "name": "mandari: Ratsinformationen als offene Daten (OParl 1.1)",
+        "url": seite,
+        "inLanguage": "de",
+        "sameAs": system_url,
+        "dataset": [
+            offene_daten.datensatz(
+                k, seo.absolute_url(reverse("offene_daten_kommune", kwargs={"slug": k.slug})) if k.slug else seite
+            )
+            for k in (verzeichnis.kommunen if verzeichnis else ())
+        ],
+    }
+    return render(
+        request,
+        "marketing/offene_daten.html",
+        {
+            "verzeichnis": verzeichnis,
+            "system_url": system_url,
+            "bodies_url": system_url.rsplit("/", 1)[0] + "/bodies",
+            "beispiel": beispiel,
+            "beispiel_vorlagen": beispiel.liste("paper") if beispiel else None,
+            "beispiel_seit": _beispiel_seit(),
+            "doku_url": settings.OPARL_DOKU_URL,
+            "strukturdaten_zusatz": [katalog],
+        },
+    )
+
+
+@require_http_methods(["GET", "HEAD"])
+def offene_daten_kommune_view(request, slug):
+    """/offene-daten/<slug>/: die OParl-Adressen einer Kommune auf eigener Seite (mandari#1309)."""
+    from django.http import Http404
+
+    from marketing import offene_daten, seo
+
+    verzeichnis = offene_daten.verzeichnis()
+    kommune = verzeichnis.kommune(slug) if verzeichnis else None
+    if kommune is None:
+        raise Http404("Keine offenen Daten unter diesem Namen")
+    seite = seo.absolute_url(reverse("offene_daten_kommune", kwargs={"slug": kommune.slug}))
+    return render(
+        request,
+        "marketing/offene_daten_kommune.html",
+        {
+            "kommune": kommune,
+            "vorlagen": kommune.liste("paper"),
+            "system_url": verzeichnis.system,
+            "beispiel_seit": _beispiel_seit(),
+            "doku_url": settings.OPARL_DOKU_URL,
+            "strukturdaten_zusatz": [offene_daten.datensatz(kommune, seite)],
+        },
+    )
 
 
 @require_http_methods(["GET", "HEAD"])

@@ -140,7 +140,10 @@ def graph(page=None) -> list[dict]:
     return knoten
 
 
-def json_ld(page=None) -> str:
-    """JSON-LD für ``<script type="application/ld+json">``, sicher für den Einbau in HTML."""
-    daten = {"@context": "https://schema.org", "@graph": graph(page)}
+def json_ld(page=None, zusatz=None) -> str:
+    """
+    JSON-LD für ``<script type="application/ld+json">``, sicher für den Einbau in HTML. ``zusatz``: weitere Knoten
+    einer Django-Seite (``strukturdaten_zusatz`` im Kontext, etwa der Datenkatalog von /offene-daten/).
+    """
+    daten = {"@context": "https://schema.org", "@graph": [*graph(page), *(zusatz or [])]}
     return json.dumps(daten, ensure_ascii=False, separators=(",", ":")).translate(_ESCAPES)

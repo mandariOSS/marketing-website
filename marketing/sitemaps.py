@@ -66,12 +66,19 @@ class MandariSitemap(Sitemap):
 class FesteSeitenSitemap(DjangoSitemap):
     """Feste Django-Seiten (URL-Namen aus ``website/urls.py``) mit Adressen aus ``SITE_URL``."""
 
-    namen = ["ingestor_info"]
-    #: Seiten der mandari-Anwendung auf demselben Host (der Proxy leitet /insight/ an sie)
-    pfade_der_anwendung = ["/insight/offene-daten/"]
+    namen = ["ingestor_info", "offene_daten"]
 
     def items(self):
-        return [*self.namen, *self.pfade_der_anwendung]
+        # Offene Daten je Kommune (mandariOSS/mandari#1309): eine Seite je Kommune der Schnittstelle
+        from marketing import offene_daten
+
+        verzeichnis = offene_daten.verzeichnis()
+        kommunen = [
+            reverse("offene_daten_kommune", kwargs={"slug": k.slug})
+            for k in (verzeichnis.kommunen if verzeichnis else ())
+            if k.slug
+        ]
+        return [*self.namen, *kommunen]
 
     def location(self, item):
         return item if item.startswith("/") else reverse(item)
