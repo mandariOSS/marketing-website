@@ -768,10 +768,10 @@ def get_marketing_definitions() -> dict:
                 "number": "2", "anchor": "subprocessors",
                 "title": "Subprocessoren — wer sonst noch Daten sieht",
                 "body": (
-                    "<p>Vollständige Liste der Unterauftragsverarbeiter, die wir heute einsetzen. Es gibt keine "
-                    "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU. "
-                    "Betrieb und Sicherungen bleiben in der EU; den Verarbeitungsort der KI-Funktionen nennen wir in "
-                    "der Zeile zu Nebius.</p>"
+                    "<p>Vollständige Liste der Unterauftragsverarbeiter und Empfänger, die wir heute einsetzen. Es "
+                    "gibt keine weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Betrieb und "
+                    "Sicherungen bleiben in der EU. Die beiden KI-Dienste verarbeiten auch außerhalb der EU; den Ort "
+                    "nennen wir in ihren Zeilen.</p>"
                 ),
             }),
             m.register(
@@ -782,19 +782,24 @@ def get_marketing_definitions() -> dict:
                             "Sicherungen auf Hetzner Storage Boxen in Falkenstein (Deutschland) und Helsinki "
                             "(Finnland, EU). AVV nach Art. 28 DSGVO besteht.",
                             ort="Industriestr. 25, 91710 Gunzenhausen (DE)"),
-                    m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Zusammenfassungen öffentlicher "
-                            "Ratsdokumente, Ortsangaben aus öffentlichen Vorlagen für die Karte und KI-Recherche im "
-                            "Bürgerportal, KI-Assistent in mandari Work (nur auf Aufruf der Nutzer:innen, auf Wunsch "
+                    m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Ortsangaben aus öffentlichen "
+                            "Vorlagen für die Karte und KI-Recherche im Bürgerportal, KI-Assistent in mandari Work (nur auf Aufruf der Nutzer:innen, auf Wunsch "
                             "je Organisation abschaltbar). Verarbeitungsort: je nach Modell innerhalb und außerhalb "
                             "der EU, auch in den USA, laut Liste der Unterauftragsverarbeiter von Nebius.",
                             ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
+                    m.zeile("Anthropic, PBC", "Zusammenfassungen öffentlicher Ratsdokumente im Bürgerportal und "
+                            "Prüfung ihrer Ortsangaben über die Claude API. Übermittelt werden nur Texte öffentlicher "
+                            "Dokumente der Kommunen, keine Angaben über Besucher:innen und keine Daten aus mandari Work "
+                            "oder Session. Verarbeitungsort: weltweit, auch in den USA (außerhalb der EU).",
+                            ort="548 Market Street, PMB 90375, San Francisco, CA 94104 (USA)"),
                     m.zeile("Mollie B.V.", "Zahlungsabwicklung für mandari Work (Name, E-Mail, Zahlungs- und "
                             "Mandatsdaten).", ort="Keizersgracht 126, 1015 CW Amsterdam (NL/EU)"),
                     m.zeile("Haufe-Lexware GmbH & Co. KG", "Rechnungsstellung und Buchhaltung (lexware office).",
                             ort="Munzinger Str. 9, 79111 Freiburg (DE)"),
                 )],
                 spalten=["Unternehmen und Sitz", "Wofür"],
-                note="<p><strong>Andere KI-Anbieter:</strong> In unserem Betrieb ist heute nur Nebius freigegeben. "
+                note="<p><strong>Andere KI-Anbieter:</strong> In unserem Betrieb sind heute Nebius und, nur für die "
+                     "Zusammenfassungen öffentlicher Ratsdokumente, Anthropic freigegeben. "
                      "Ein anderer OpenAI-kompatibler Anbieter lässt sich erst einrichten, wenn wir ihn als Betreiber "
                      "freigegeben haben; ohne Freigabe bleiben die KI-Funktionen aus. Die Texterkennung (OCR) läuft "
                      "auf unseren eigenen Systemen, ohne externen Anbieter.</p>"
