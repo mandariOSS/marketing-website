@@ -66,13 +66,20 @@ FUSSZEILE = {
         ("Sitzungsmanagement", "/sitzungsmanagement/"),
         ("Bürgerinformationssystem", "/buergerinformationssystem/"),
         ("OParl-Schnittstelle", "/oparl-schnittstelle/"),
+    ],
+    "Lösungen": [
         ("Für Verwaltungen", "/kommunen/"),
         ("Für Fraktionen", "/fraktionen/"),
         ("Für Bürger:innen", "/produkte/#insight"),
         ("Umstieg", "/migration/"),
         ("Vergleich", "/vergleich/"),
+    ],
+    "Ressourcen": [
+        ("Dokumentation", "https://docs.mandari.de/"),
         ("Roadmap", "/roadmap/"),
         ("Releases", "/releases/"),
+        ("Open Source", "/open-source/"),
+        ("Status", "https://status.mandari.de/"),
     ],
     "Vertrauen": [
         ("Trust Center", "/trust/"),
@@ -81,19 +88,15 @@ FUSSZEILE = {
         ("Barrierefreiheit", "/barrierefreiheit/"),
         ("Sicherheitslücke melden", "/sicherheit/disclosure/"),
         ("Missbrauch melden", "/abuse/"),
-        ("Status", "https://status.mandari.de/"),
     ],
     "Unternehmen": [
         ("Über mandari", "/unternehmen/"),
         ("Partner", "/partner/"),
         ("Presse", "/presse/"),
-        ("Open Source", "/open-source/"),
         ("Mitmachen", "/mitmachen/"),
-    ],
-    "Hilfe": [
-        ("Dokumentation", "https://docs.mandari.de/"),
         ("Kontakt", "/kontakt/"),
     ],
+    # Zeile unter den Spalten; die Überschrift ist nur für Vorleseprogramme da
     "Rechtliches": [
         ("Impressum", "/impressum/"),
         ("Datenschutz", "/datenschutz/"),
