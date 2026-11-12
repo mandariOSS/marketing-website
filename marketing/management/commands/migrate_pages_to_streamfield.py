@@ -788,8 +788,9 @@ def get_marketing_definitions() -> dict:
                             "je Organisation abschaltbar). Verarbeitungsort: je nach Modell innerhalb und außerhalb "
                             "der EU, auch in den USA, laut Liste der Unterauftragsverarbeiter von Nebius.",
                             ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
-                    m.zeile("Mollie B.V.", "Zahlungsabwicklung für mandari Work (Name, E-Mail, Zahlungs- und "
-                            "Mandatsdaten).", ort="Keizersgracht 126, 1015 CW Amsterdam (NL/EU)"),
+                    m.zeile("GoCardless SAS", "Einzug per SEPA-Lastschrift für mandari Work, nur wenn Sie diese "
+                            "Zahlart wählen (Name, E-Mail, Anschrift, Kontoinhaber, IBAN).",
+                            ort="7 rue de Madrid, 75008 Paris (FR/EU)"),
                     m.zeile("Haufe-Lexware GmbH & Co. KG", "Rechnungsstellung und Buchhaltung (lexware office).",
                             ort="Munzinger Str. 9, 79111 Freiburg (DE)"),
                 )],
