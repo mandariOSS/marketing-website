@@ -10,7 +10,7 @@ Sitzungsdienst und zeigt, was mandari Session davon abdeckt. Vorgaben wie bei /r
 * Faktentreue vor Glanz: nur, was in Produktion heute verfügbar ist, steht ohne Etikett da; mandari Session trägt
   überall das Etikett „Pilotphase“ (wie auf /ratsinformationssystem/ und /produkte/), Geplantes seinen Zeitpunkt,
 * keine Übernahme des Altbestands in Session versprechen: Stammdaten kommen aus Listen der Verwaltung, der öffentliche
-  Altbestand bleibt im Bürgerportal (docs/SESSION_UMSTIEG_SESSIONNET.md im Repository mandariOSS/mandari; die
+  Altbestand bleibt im Bürgerportal (docs/SESSION_STAMMDATEN_IMPORT.md im Repository mandariOSS/mandari; die
   Übernahme über OParl steht auf der Roadmap für Version 1.0),
 * Open Source ohne Absolutheit (keine „gesamter Quellcode“- oder „derselbe Funktionsumfang“-Aussagen),
 * Abschnitte nach dem Musterkatalog, nie zweimal dasselbe Muster hintereinander.

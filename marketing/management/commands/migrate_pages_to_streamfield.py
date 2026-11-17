@@ -1341,7 +1341,7 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
-                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 5. November 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
+                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 17. November 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
                          cta("Releases", "/releases/", "tag", "secondary")],
@@ -1351,6 +1351,10 @@ def get_marketing_definitions() -> dict:
             m.register(
                 "Neu seit Juli 2026",
                 [m.gruppe("",
+                    m.zeile("Vorlagen in einfacher Sprache", "Das Bürgerportal fasst Vorgänge oben in zwei "
+                            "bis vier Sätzen zusammen und bietet die Zusammenfassung auch in Einfacher Sprache "
+                            "an, klar als KI-erstellt gekennzeichnet. Seit mandari 0.13.",
+                            url="/releases/mandari-0-13/", ort="Release-Notes", stand="Insight"),
                     m.zeile("Hybride und digitale Sitzungen nach Landesrecht", "Sitzungen finden präsent, hybrid oder "
                             "digital statt, geprüft gegen das Landesprofil; die Anwesenheit hält fest, wer zugeschaltet "
                             "ist. Profile für alle 16 Länder.",
@@ -1488,13 +1492,6 @@ def get_marketing_definitions() -> dict:
                                         "Center, SBOM automatisiert je Release.",
                                    link_label="Issue #97", link_url="https://github.com/mandariOSS/mandari/issues/97"),
                     ),
-                    m.zeitpunkt(
-                        "Nach 1.0",
-                        m.vorhaben("Vorlagen in einfacher Sprache", produkt="insight", status="In Prüfung",
-                                   text="KI-Kurzfassung in einfacher Sprache, klar als solche gekennzeichnet.",
-                                   link_label="Issue #51", link_url="https://github.com/mandariOSS/mandari/issues/51"),
-                        satz="ohne Termin",
-                    ),
                 ],
                 subline="Session ist unser Kerngeschäft: Hier liegt der Fokus bis zur Version 1.0. Die Farbe zeigt das "
                         "Modul, der Zusatz die Verbindlichkeit.",
@@ -1505,6 +1502,11 @@ def get_marketing_definitions() -> dict:
             m.begriffe_aus_html(
                 "Was sich an der Roadmap geändert hat",
                 (
+                    "<h3>November 2026</h3>"
+                    "<ul>"
+                    "<li><strong>Vorlagen in einfacher Sprache:</strong> geliefert statt „In Prüfung, nach 1.0“. Seit mandari 0.13 zeigt das Bürgerportal oben auf dem Vorgang eine KI-Kurzfassung und auf Wunsch eine Fassung in Einfacher Sprache.</li>"
+                    "<li><strong>Release-Takt:</strong> Ab mandari 0.13 erscheint alle zwei Wochen eine neue Version; die erste Version jedes Quartals ist eine Pflegeversion mit sechs Monaten Sicherheitskorrekturen.</li>"
+                    "</ul>"
                     "<h3>Oktober 2026</h3>"
                     "<ul>"
                     "<li><strong>Pilotbetrieb:</strong> präzisiert. mandari Work und das Bürgerportal laufen 2026 mit ersten Kommunen und Fraktionen; die Piloten des Sitzungsdienstes beginnen 2027 statt Q3–Q4/2026.</li>"
@@ -1601,7 +1603,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
                 "background": "white",
-                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source · Schultern, auf denen wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im GitHub-Repo: <a href=\"https://github.com/mandariOSS/mandari/blob/dev/docs/SBOM.md\" target=\"_blank\" rel=\"noopener\">docs/SBOM.md</a>.</p>",
+                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source · Schultern, auf denen wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im Format CycloneDX an jedem <a href=\"https://github.com/mandariOSS/mandari/releases\" target=\"_blank\" rel=\"noopener\">GitHub-Release</a>, beschrieben in <a href=\"https://github.com/mandariOSS/mandari/blob/main/DEPENDENCIES.md#st%C3%BCckliste-sbom-je-release\" target=\"_blank\" rel=\"noopener\">DEPENDENCIES.md</a>.</p>",
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",
@@ -1630,6 +1632,166 @@ def get_release_definitions() -> dict:
     """
 
     return {
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-13/ — mandari 0.13, 17.11.2026 (erste Version im Zwei-Wochen-Takt)
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-13": {
+            "meta": {
+                "title": "mandari 0.13",
+                "version": "0.13.0",
+                "release_type": "minor",
+                "release_date": "2026-11-17",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.13.0",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.13 – Release-Notes",
+                "search_description": (
+                    "mandari 0.13 vom 17. November 2026: Unterpunkte und Verschieben in der Fraktionssitzung, "
+                    "Aufgaben für mehrere Personen, Beschlüsse und Abos ohne Konto im Bürgerportal, offene "
+                    "Daten leichter zu finden."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.13 ist die erste Version im neuen Takt: Ab jetzt erscheint alle zwei Wochen "
+                    "eine neue Version. Fraktionen planen und leiten ihre Sitzungen flexibler und verteilen "
+                    "Aufgaben auf mehrere Personen. Das Bürgerportal zeigt, was entschieden wurde, und lässt "
+                    "sich ohne Konto abonnieren.</p>"
+                    "<p>Alle Neuerungen liefen vor der Veröffentlichung bereits in unserem Betrieb.</p>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<ul>"
+                    "<li>Tagesordnungspunkte werden per Ziehen zu Unterpunkten: aus TOP 4 wird 3.1, und "
+                    "zurück.</li>"
+                    "<li>In der laufenden Sitzung lassen sich Tagesordnungspunkte verschieben, auch in den "
+                    "anderen Teil der Tagesordnung. Notizen, Beschluss und Unterlagen wandern mit.</li>"
+                    "<li>Die Anwesenheit ist schneller aufgenommen, das Protokoll bekommt mehr Platz, und "
+                    "offene TOP-Vorschläge stehen auch während der Sitzung bereit.</li>"
+                    "<li>Kleine Änderungen der Tagesordnung nach dem Versand brauchen keine neue "
+                    "Einladung.</li>"
+                    "<li>Aufgaben lassen sich mehreren Personen zuordnen; Änderungen im Panel einer Aufgabe "
+                    "speichern sofort.</li>"
+                    "<li>Mitgliedschaften können mit 30 Tagen Frist auslaufen. Bis zur Löschung sieht die "
+                    "Person nur noch das Löschdatum und den Export ihrer eigenen Daten.</li>"
+                    "<li>Was neu ist, steht jetzt direkt in Work: unten in der Seitenleiste bei der "
+                    "Versionsnummer.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<ul>"
+                    "<li>„Beschlüsse“ zeigt auf einen Blick, was in den Sitzungen entschieden wurde. Jeder "
+                    "Tagesordnungspunkt nennt sein Ergebnis, etwa beschlossen, abgelehnt oder vertagt.</li>"
+                    "<li>Jeder Vorgang zeigt seinen Weg als Zeitleiste, von der Vorlage über Stellungnahmen "
+                    "und Änderungsanträge bis zum Beschluss.</li>"
+                    "<li>Neues lässt sich ohne Konto und ohne E-Mail-Adresse abonnieren, für jede gefilterte "
+                    "Liste und jede Suche. Sitzungstermine speichern Sie mit einem Klick im eigenen "
+                    "Kalender.</li>"
+                    "<li>Zusammenfassungen kommen schneller zum Punkt, gibt es auch in Einfacher Sprache und "
+                    "lassen sich mit einem Klick bewerten.</li>"
+                    "<li>Gefilterte Listen lassen sich teilen. Vorgänge und Sitzungen verlinken auf ihre Seite "
+                    "im Ratsinformationssystem der Kommune, wo die Quelle sie nennt.</li>"
+                    "<li>Privatanschriften aus Eingaben der Einwohnerschaft erscheinen nicht mehr als Punkt "
+                    "auf der Karte.</li>"
+                    "<li>Alle Neuigkeiten des Bürgerportals stehen auf einer eigenen Seite, erreichbar über "
+                    "die Versionsnummer im Fuß.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Verwaltungen und Datenportale: Schnittstellen", (
+                    "<p>Die OParl-Schnittstelle ist leichter zu finden: Die Seite "
+                    "<a href=\"/offene-daten/\">Offene Daten</a> nennt den Einstieg und kurze Adressen mit dem "
+                    "Namen der Kommune. Eine Beschreibung aller Schnittstellen im Format OpenAPI 3.1 liegt "
+                    "unter <code>/api/openapi.json</code>.</p>"
+                    "<p>Für Installationen, die mandari mit anderen Anwendungen verbinden, sind drei "
+                    "Bausteine neu und zunächst ausgeschaltet: Anmeldung mit dem mandari-Konto in anderen "
+                    "Anwendungen (OpenID Connect), Einreichen von Anträgen und Anfragen über die "
+                    "Schnittstelle und eine geschützte Ausgabe nichtöffentlicher Inhalte.</p>"
+                )),
+                _release_section("Sicherheit und Betrieb", (
+                    "<p>mandari 0.13 enthält die Sicherheitskorrekturen, die am 12. November auch als "
+                    "<a href=\"/releases/mandari-0-12-1/\">mandari 0.12.1</a> und "
+                    "<a href=\"/releases/mandari-0-11-2/\">mandari 0.11.2</a> erschienen sind, und weitere "
+                    "aus derselben internen Prüfung. Eine Ausnutzung ist uns nicht bekannt. Wenn Sie mandari "
+                    "selbst betreiben, aktualisieren Sie bitte zügig.</p>"
+                    "<p>Ab jetzt erscheint alle zwei Wochen eine neue Version. Die erste Version jedes "
+                    "Quartals ist eine Pflegeversion mit sechs Monaten Sicherheitskorrekturen. Die Regeln "
+                    "stehen in der <a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- "
+                    "und Support-Politik</a>.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.13.0\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-12-1/ — mandari 0.12.1, 12.11.2026 (Patch der Linie 0.12)
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-12-1": {
+            "meta": {
+                "title": "mandari 0.12.1",
+                "version": "0.12.1",
+                "release_type": "patch",
+                "release_date": "2026-11-12",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.12.1",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.12.1 – Release-Notes",
+                "search_description": (
+                    "mandari 0.12.1 vom 12. November 2026: Sicherheitskorrekturen für die Linie 0.12, ohne "
+                    "neue Funktionen."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.12.1 bringt Sicherheitskorrekturen in die Linie 0.12, ohne neue Funktionen "
+                    "und ohne Änderungen an der Datenbank. Wir haben die Lücken bei einer internen Prüfung "
+                    "gefunden; eine Ausnutzung ist uns nicht bekannt. Wenn Sie mandari selbst betreiben, "
+                    "aktualisieren Sie bitte zügig.</p>"
+                    "<p>Wenn Sie mandari bei uns nutzen, müssen Sie nichts tun: Unser Betrieb hat die "
+                    "Korrekturen bereits.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die Hinweise für das Update finden Sie in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.12.1\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-11-2/ — mandari 0.11.2, 12.11.2026 (Patch der Linie 0.11)
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-11-2": {
+            "meta": {
+                "title": "mandari 0.11.2",
+                "version": "0.11.2",
+                "release_type": "patch",
+                "release_date": "2026-11-12",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.11.2",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.11.2 – Release-Notes",
+                "search_description": (
+                    "mandari 0.11.2 vom 12. November 2026: die Sicherheitskorrekturen aus 0.12.1 für "
+                    "Installationen, die noch bei 0.11 bleiben."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.11.2 bringt die Sicherheitskorrekturen aus "
+                    "<a href=\"/releases/mandari-0-12-1/\">mandari 0.12.1</a> in die Linie 0.11, ohne neue "
+                    "Funktionen und ohne Änderungen an der Datenbank. Es richtet sich an alle, die mandari "
+                    "selbst betreiben und noch nicht auf 0.12 wechseln. Bitte aktualisieren Sie in diesem "
+                    "Fall zügig.</p>"
+                    "<p>Wenn Sie mandari bei uns nutzen, müssen Sie nichts tun: Unser Betrieb hat die "
+                    "Korrekturen bereits.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die Hinweise für das Update finden Sie in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.11.2\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
         # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-12/ — mandari 0.12, 03.11.2026
         # ════════════════════════════════════════════════════════════

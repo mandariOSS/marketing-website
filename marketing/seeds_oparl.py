@@ -14,7 +14,7 @@ Vorgaben wie bei /ratsinformationssystem/ (``marketing/seeds_ris.py``):
 * keine Preise und keine Kostenaussagen; der einzige Verweis auf Kosten ist der Weg „Preise“ im Schlussband,
 * keine Aussagen zu KI (mandariOSS/mandari#950), deshalb ohne die Zusammenfassungen der Aggregations-API,
 * Faktentreue vor Glanz: Fakten nur aus der Dokumentation im Repository mandariOSS/mandari (docs/OPARL_API.md,
-  docs/SESSION_OPARL_API.md, docs/DCAT_KATALOG.md, docs/SESSION_UMSTIEG_SESSIONNET.md) und aus mandari.de; was in
+  docs/SESSION_OPARL_API.md, docs/DCAT_KATALOG.md, docs/SESSION_STAMMDATEN_IMPORT.md) und aus mandari.de; was in
   Produktion ausgeschaltet ist (Änderungsfeed, Datenkatalog), steht nicht als verfügbar da. Einlesen ins Bürgerportal
   ist keine Übernahme in mandari Session (die steht für Version 1.0 auf der Roadmap); Session trägt das Etikett
   „Pilotphase“,

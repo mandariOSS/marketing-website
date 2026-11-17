@@ -369,8 +369,9 @@ RELEASE_INDEX_META = {
         "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
         "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
         '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
-        "<p>Alle zwei Monate erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die "
-        "vorherige Version erhält noch sechs Monate lang Sicherheitskorrekturen. Die Regeln stehen in der "
+        "<p>Alle zwei Wochen erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die erste "
+        "Version jedes Quartals ist eine Pflegeversion und erhält sechs Monate lang Sicherheitskorrekturen; "
+        "so können Verwaltungen seltener aktualisieren. Die Regeln stehen in der "
         '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>'
     ),
 }
@@ -386,6 +387,13 @@ RELEASE_INDEX_LEGACY = {
         "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
         "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
         '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>',
+        # bis 11.11.2026: Release alle zwei Monate (mandari#1341)
+        "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
+        "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
+        '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
+        "<p>Alle zwei Monate erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die "
+        "vorherige Version erhält noch sechs Monate lang Sicherheitskorrekturen. Die Regeln stehen in der "
+        '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>',
     },
 }
 
