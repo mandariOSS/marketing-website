@@ -16,7 +16,7 @@ from marketing.management.commands.setup_initial_pages import HOME_PAGE_META, MA
 from marketing.seeds_unternehmen import KENNZAHLEN_STAND
 from marketing.tests.test_ris_seo import DU, hauptteil, head, links, sichtbarer_text
 
-STARTSEITE_TITEL = "mandari – Ratsinformationssystem und Software für die offene Verwaltung"
+STARTSEITE_TITEL = "mandari: Ratsinformationssystem und Software für die offene Verwaltung"
 
 # Slug → Begriff in der Überschrift und Suchbegriffe, die im sichtbaren Text stehen
 SEITEN = {

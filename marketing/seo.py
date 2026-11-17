@@ -133,10 +133,21 @@ def _stream_text(stream) -> str:
 
 
 def page_title(page) -> str:
-    """Titel einer Wagtail-Seite ohne Markenzusatz (SEO-Titel vor Seitentitel)."""
+    """Titel einer Wagtail-Seite ohne Markenzusatz: SEO-Titel, sonst der Suchtitel der Seite, sonst ihr Titel.
+
+    Der Suchtitel (``seo_texte.SUCHTITEL``) gilt für Rechtstexte ohne SEO-Titel im Seed, damit „AGB“ in der
+    Trefferliste nicht allein steht. Ein im CMS gepflegter SEO-Titel geht vor.
+    """
     if page is None:
         return ""
-    return getattr(page, "seo_title", "") or getattr(page, "title", "") or ""
+    from marketing.seo_texte import SUCHTITEL
+
+    return (
+        getattr(page, "seo_title", "")
+        or SUCHTITEL.get(getattr(page, "slug", "") or "", "")
+        or getattr(page, "title", "")
+        or ""
+    )
 
 
 def page_description(page) -> str:

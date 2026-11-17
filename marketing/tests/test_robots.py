@@ -20,6 +20,7 @@ class RobotsTests(SimpleTestCase):
             "/*?subject=",
             "/insight/?body=",
             "/insight/kommunen/?",
+            "/insight/kommune/",
         ):
             self.assertIn(f"Disallow: {regel}", zeilen)
 

@@ -58,12 +58,37 @@ class SeitenkopfTests(TestCase):
 
     def test_titel_ein_suffix_marke_klein(self):
         response = self.client.get("/kontakt/")
-        self.assertEqual(head(response, r"<title>([^<]+)</title>"), "Kontakt | mandari")
+        self.assertEqual(
+            head(response, r"<title>([^<]+)</title>"), "Kontakt aufnehmen und Erstgespräch vereinbaren | mandari"
+        )
         response = self.client.get("/trust/")
         title = head(response, r"<title>([^<]+)</title>")
         self.assertTrue(title.endswith(" | mandari"))
         self.assertEqual(title.count("mandari"), 1)
         self.assertIn('<meta property="og:site_name" content="mandari">', response.content.decode())
+
+    def test_rechtstexte_mit_suchtitel_die_ueberschrift_bleibt(self):
+        # „AGB | mandari“ und „Impressum | mandari“ meldete Bing als zu kurz; die Überschrift der Seite bleibt kurz
+        erwartet = {
+            "/impressum/": ("Impressum und Anbieterkennzeichnung | mandari", "Impressum"),
+            "/agb/": ("Allgemeine Geschäftsbedingungen (AGB) | mandari", "AGB"),
+            "/datenschutz/": ("Datenschutzerklärung für Website und Dienste | mandari", "Datenschutz"),
+        }
+        for url, (titel, ueberschrift) in erwartet.items():
+            response = self.client.get(url)
+            self.assertEqual(head(response, r"<title>([^<]+)</title>"), titel, url)
+            self.assertEqual(head(response, r'<meta property="og:title" content="([^"]+)"'), titel, url)
+            self.assertRegex(response.content.decode(), rf"<h1[^>]*>\s*{ueberschrift}\s*</h1>", url)
+
+    def test_seo_titel_aus_dem_cms_geht_vor_dem_suchtitel(self):
+        from marketing.models import LegalPage
+
+        seite = LegalPage.objects.get(slug="agb")
+        seite.seo_title = "AGB für mandari Work und mandari Session"
+        seite.save()
+        seite.save_revision().publish()
+        response = self.client.get("/agb/")
+        self.assertEqual(head(response, r"<title>([^<]+)</title>"), "AGB für mandari Work und mandari Session | mandari")
 
     def test_meta_description_aus_search_description(self):
         page = MarketingPage.objects.get(slug="roadmap")

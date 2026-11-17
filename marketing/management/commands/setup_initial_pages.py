@@ -20,7 +20,8 @@ from marketing import seo_texte
 CONTACT_PAGE_META = {
     "title": "Kontakt",
     "slug": "kontakt",
-    "seo_title": "Kontakt",
+    # Mit „ | mandari“ 56 Zeichen; „Kontakt | mandari“ meldeten die Bing Webmaster Tools als zu kurz (17.11.2026)
+    "seo_title": "Kontakt aufnehmen und Erstgespräch vereinbaren",
     "search_description": (
         "Erstgespräch mit mandari vereinbaren oder eine Nachricht schreiben – für Verwaltungen, Fraktionen, "
         "Partner und Presse. Antwort innerhalb eines Werktags."
@@ -44,12 +45,13 @@ def seeded_custom_template(slug: str) -> str:
 # SEO-Felder hier, damit `refresh_seeded_page startseite --nur-meta` sie auf
 # bestehenden Datenbanken nachzieht.
 # Seitentitel mit dem Suchbegriff „Ratsinformationssystem“ (Entscheidung Sven, Issue mandariOSS/mandari#939). Er ist
-# länger als die 60 Zeichen der Unterseiten; für die Startseite gilt kein Längenziel (scripts/check_site_structure.py).
-# H1, Text und Blöcke der Startseite bleiben unverändert.
+# länger als die 60 Zeichen der Unterseiten, aber höchstens 70 Zeichen lang: Ab 71 melden die Bing Webmaster Tools
+# „Title too long“ (17.11.2026), deshalb der Doppelpunkt statt des Gedankenstrichs. scripts/check_site_structure.py
+# prüft die Grenze. H1, Text und Blöcke der Startseite bleiben unverändert.
 HOME_PAGE_META = {
     "title": "mandari",
     "subtitle": "Software für die offene Verwaltung",
-    "seo_title": "mandari – Ratsinformationssystem und Software für die offene Verwaltung",
+    "seo_title": "mandari: Ratsinformationssystem und Software für die offene Verwaltung",
     "search_description": (
         "mandari ist das offene Ratsinformationssystem: Sitzungsdienst, Fraktionsarbeit und "
         "Bürgerportal auf einer Plattform. Open Source, Betrieb in Deutschland."
