@@ -174,7 +174,7 @@ MANDARI = {
     "portal": ("yes", "mandari Insight, kostenlos und ohne Tracking"),
     "suche": ("yes", "Mit Texterkennung, Synonymen und Fehlertoleranz"),
     "uebergreifend": ("yes", "Über alle angebundenen Kommunen, mit Karte und Umkreissuche"),
-    "abo": ("yes", "Themen, Orte und Beschlüsse, mit Bestätigung per E-Mail"),
+    "abo": ("yes", "Themen, Orte und Beschlüsse per E-Mail mit Bestätigung, dazu Feeds ohne Konto"),
     "website": ("partial", "Kalender-Feed und OParl; einbettbare Bausteine in Prüfung"),
     "buergerapp": ("open", "Geplant 2027"),
     "schwaerzung": ("open", "Geplant 2027"),
