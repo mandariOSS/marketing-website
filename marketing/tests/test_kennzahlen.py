@@ -32,6 +32,10 @@ class KennzahlenTests(SimpleTestCase):
     def setUp(self):
         cache.clear()
         self.addCleanup(cache.clear)
+        # Der Abruf läuft im Betrieb im Hintergrund; im Test sofort, damit das Ergebnis feststeht
+        ersatz = mock.patch.object(kz, "_starten", lambda funktion, *argumente: funktion(*argumente))
+        ersatz.start()
+        self.addCleanup(ersatz.stop)
 
     def test_ohne_adresse_gilt_der_stand_im_code(self):
         with override_settings(KENNZAHLEN_URL=""), mock.patch("urllib.request.urlopen") as abruf:
@@ -53,11 +57,23 @@ class KennzahlenTests(SimpleTestCase):
         self.assertEqual(werte["kennzahlen-stand"], "1. Dezember 2026")
 
     @override_settings(KENNZAHLEN_URL="https://beispiel.invalid/api/stats/")
-    def test_abruf_wird_zwischengespeichert(self):
+    def test_erster_aufruf_wartet_nicht_und_erneuert_im_hintergrund(self):
         with mock.patch("urllib.request.urlopen", return_value=_Antwort(ANTWORT)) as abruf:
+            # Der erste Aufruf liefert sofort den Stand aus dem Code und stößt den Abruf an
+            self.assertEqual(kz.kennzahlen(), kz.RUECKFALL)
             self.assertEqual(kz.kennzahlen().kommunen, 41)
             self.assertEqual(kz.kennzahlen().kommunen, 41)
             self.assertEqual(abruf.call_count, 1)
+
+    @override_settings(KENNZAHLEN_URL="https://beispiel.invalid/api/stats/")
+    def test_seite_wartet_nie_auf_die_statistik(self):
+        gestartet = []
+        with mock.patch.object(kz, "_starten", lambda funktion, *argumente: gestartet.append(funktion)),                 mock.patch("urllib.request.urlopen") as abruf:
+            self.assertEqual(kz.kennzahlen(), kz.RUECKFALL)
+            # Solange der Hintergrundlauf aussteht, startet kein zweiter
+            self.assertEqual(kz.kennzahlen(), kz.RUECKFALL)
+            abruf.assert_not_called()
+        self.assertEqual(gestartet, [kz._erneuern])
 
     @override_settings(KENNZAHLEN_URL="https://beispiel.invalid/api/stats/")
     def test_ausfall_zeigt_letzten_stand_sonst_den_rueckfall(self):
@@ -68,9 +84,11 @@ class KennzahlenTests(SimpleTestCase):
             self.assertEqual(abruf.call_count, 1)
         cache.clear()
         with mock.patch("urllib.request.urlopen", return_value=_Antwort(ANTWORT)):
+            kz.kennzahlen()
             self.assertEqual(kz.kennzahlen().kommunen, 41)
         cache.delete(kz._CACHE_FRISCH)
         with mock.patch("urllib.request.urlopen", side_effect=OSError("aus")):
+            self.assertEqual(kz.kennzahlen().kommunen, 41)
             self.assertEqual(kz.kennzahlen().kommunen, 41)
 
     @override_settings(KENNZAHLEN_URL="")

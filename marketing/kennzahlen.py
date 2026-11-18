@@ -17,6 +17,7 @@ from __future__ import annotations
 import http.client
 import json
 import logging
+import threading
 import urllib.request
 from dataclasses import dataclass
 from datetime import date
@@ -30,8 +31,8 @@ logger = logging.getLogger(__name__)
 FRISCH_SEKUNDEN = 6 * 3600
 #: So lange bleibt der letzte gelungene Abruf als Rückfall liegen (Sekunden)
 RUECKFALL_SEKUNDEN = 14 * 24 * 3600
-#: Zeitgrenze des Abrufs (Sekunden): Die Seite soll nie an der Statistik hängen
-ZEITGRENZE_SEKUNDEN = 4
+#: Zeitgrenze des Abrufs (Sekunden); er läuft im Hintergrund, keine Seite wartet darauf
+ZEITGRENZE_SEKUNDEN = 15
 #: Größte Antwort, die gelesen wird (Bytes)
 HOECHSTENS_BYTES = 10_000
 #: So lange gilt ein gescheiterter Abruf (Sekunden): Währenddessen fragt keine Seite erneut
@@ -116,10 +117,26 @@ def _abrufen(adresse: str) -> Kennzahlen | None:
     return kennzahlen_neu
 
 
+def _erneuern(adresse: str) -> None:
+    """Statistik abrufen und bei Erfolg im Zwischenspeicher ablegen (läuft im Hintergrund)."""
+    neu = _abrufen(adresse)
+    if neu is not None:
+        cache.set(_CACHE_FRISCH, neu, FRISCH_SEKUNDEN)
+        cache.set(_CACHE_RUECKFALL, neu, RUECKFALL_SEKUNDEN)
+
+
+def _starten(funktion, *argumente) -> None:
+    """Im Hintergrund ausführen; die Tests ersetzen das durch einen direkten Aufruf."""
+    threading.Thread(target=funktion, args=argumente, daemon=True).start()
+
+
 def kennzahlen() -> Kennzahlen:
     """
-    Die Kennzahlen: frisch aus dem Zwischenspeicher, sonst neu abgerufen, sonst der letzte bekannte Stand, sonst
-    der Rückfall aus dem Code. Liefert immer einen Stand.
+    Die Kennzahlen: frisch aus dem Zwischenspeicher, sonst der letzte bekannte Stand, sonst der Rückfall aus dem
+    Code. Liefert immer sofort einen Stand.
+
+    Ist der Zwischenspeicher abgelaufen, erneuert ein Hintergrundlauf die Zahlen; die Seite wartet nie auf die
+    Statistik. Deren Zählung über große Tabellen dauert bei kaltem Zwischenspeicher der Anwendung mehrere Sekunden.
     """
     adresse = quelle()
     if not adresse:
@@ -127,14 +144,11 @@ def kennzahlen() -> Kennzahlen:
     frisch = cache.get(_CACHE_FRISCH)
     if frisch is not None:
         return RUECKFALL if frisch == _KEIN_STAND else frisch
-    neu = _abrufen(adresse)
-    if neu is not None:
-        cache.set(_CACHE_FRISCH, neu, FRISCH_SEKUNDEN)
-        cache.set(_CACHE_RUECKFALL, neu, RUECKFALL_SEKUNDEN)
-        return neu
     alt = cache.get(_CACHE_RUECKFALL)
-    # Nicht bei jedem Seitenaufruf erneut gegen die Zeitgrenze laufen
+    # Bis der Hintergrundlauf fertig ist (oder nach einem Fehler) gilt der letzte Stand; in dieser Zeit startet
+    # kein weiterer Abruf
     cache.set(_CACHE_FRISCH, alt if alt is not None else _KEIN_STAND, PAUSE_NACH_FEHLER_SEKUNDEN)
+    _starten(_erneuern, adresse)
     return alt if alt is not None else RUECKFALL
 
 
