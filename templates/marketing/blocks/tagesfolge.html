@@ -1,5 +1,6 @@
 {% load wagtailcore_tags baender muster %}
 {# M11b Tagesfolge: Bildschirme entlang einer Zeitachse. Unter 1024 px stehen die Tage untereinander, darüber wählt die Achse einen Tag (Auswahlfelder in den Beschriftungen, ohne Skript; static/css/input.css). #}
+{% laufnummer as nr %}
 <section class="{% abschnitt band band_anfang band_ende %} produkt-{{ self.produkt }}">
     <div class="wrap">
         {% if self.header.title %}
@@ -11,7 +12,7 @@
         <div class="tf">
             <div class="tf-achse" role="radiogroup" aria-label="{{ self.header.title|default:'Tag wählen' }}" style="--anzahl:{{ self.tage|length }}">
                 {% for t in self.tage %}
-                <label><input type="radio" name="tf-{{ self.header.anchor_id|default:'tag' }}"{% if forloop.first %} checked{% endif %}><span class="wann">{{ t.wann }}</span><span class="tf-was">{{ t.kurz }}</span></label>
+                <label><input type="radio" name="tf-{{ nr }}"{% if forloop.first %} checked{% endif %}><span class="wann">{{ t.wann }}</span><span class="tf-was">{{ t.kurz }}</span></label>
                 {% endfor %}
             </div>
             <div>

@@ -717,14 +717,16 @@
     .tf-achse label { display: block; position: relative; padding: 1.1rem 1.5rem 0.25rem 0; cursor: pointer; }
     .tf-achse input { position: absolute; opacity: 0; pointer-events: none; }
     .tf-achse label::before { content: ""; position: absolute; left: 0; top: -8px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid var(--m-akzent-hell); }
-    .tf-achse label:has(:checked)::before { background: var(--kenn); border-color: var(--kenn); }
-    .tf-achse label:has(:checked)::after { content: ""; position: absolute; left: 0; right: 1.5rem; top: -2px; height: 2px; background: var(--kenn); }
+    /* Der gewählte Tag ist auch ohne Farbe erkennbar (erzwungene Farben): gefüllter Punkt über die Randstärke,
+       Linie als Rand, Beschriftung fetter */
+    .tf-achse label:has(:checked)::before { border: 7px solid var(--kenn); }
+    .tf-achse label:has(:checked)::after { content: ""; position: absolute; left: 0; right: 1.5rem; top: -3px; border-top: 4px solid var(--kenn); }
     .tf-achse label:has(:focus-visible) { outline: 2px solid var(--kenn); outline-offset: 4px; }
     .tf-achse .wann { color: var(--m-leise); }
-    .tf-was { display: block; margin-top: 0.15rem; font-weight: 600; color: var(--m-text); }
+    .tf-was { display: block; margin-top: 0.15rem; font-weight: 500; color: var(--m-text); }
     .tf-achse label:hover .tf-was { text-decoration: underline; text-underline-offset: 0.2em; }
     .tf-achse label:has(:checked) .wann { color: var(--kenn); }
-    .tf-achse label:has(:checked) .tf-was { color: var(--m-tinte); }
+    .tf-achse label:has(:checked) .tf-was { font-weight: 650; color: var(--m-tinte); }
     .tf-tag { display: none; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 2.5rem; align-items: start; padding-bottom: 0; }
     .tf-tag > div { padding-top: 1.5rem; }
     .tf-tag .wann { display: none; }

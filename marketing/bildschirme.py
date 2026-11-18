@@ -10,6 +10,7 @@ Neue Bilder: Vorlage als PNG aufnehmen, hier eintragen, dann ``python scripts/bi
 Die Dateien liegen je Breite als AVIF und als WebP vor (README, „Bildschirme“).
 """
 
+from django.core.exceptions import ValidationError
 from django.templatetags.static import static
 
 ORDNER = "images/bildschirme"
@@ -54,6 +55,12 @@ BILDSCHIRME = {
         "alt": "Beschlüsse der Stadt Münster im Bürgerportal, nach Sitzung geordnet, mit Ergebnis je Vorgang",
     },
 }
+
+def bekannter_bildschirm(name):
+    """Prüfung für die Bausteine: Ein Tippfehler im Schlüssel ergäbe einen Abschnitt ohne Bild."""
+    if name not in BILDSCHIRME:
+        raise ValidationError(f"Unbekannter Bildschirm „{name}“. Vorhanden: {', '.join(sorted(BILDSCHIRME))}.")
+
 
 def breiten(name):
     """Breiten, in denen ein Bild vorliegt: die Stufen aus ``BREITEN`` bis zur Breite der Vorlage."""

@@ -10,12 +10,15 @@ import re
 from io import StringIO
 
 from django.contrib.staticfiles import finders
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
-from django.test import SimpleTestCase, TestCase
+from django.test import RequestFactory, SimpleTestCase, TestCase
 from PIL import Image
 
-from marketing.bildschirme import BILDSCHIRME, BREITEN, ORDNER, bildschirm, breiten
-from marketing.management.commands.migrate_pages_to_streamfield import get_marketing_definitions
+from marketing.bildschirme import BILDSCHIRME, BREITEN, ORDNER, bekannter_bildschirm, bildschirm, breiten
+from marketing.blocks import KetteBlock, TagesfolgeBlock, sichere_adresse
+from marketing.management.commands.migrate_pages_to_streamfield import get_legal_definitions, get_marketing_definitions
+from marketing.templatetags.muster import laufnummer
 
 
 class BildlisteTests(SimpleTestCase):
@@ -62,6 +65,60 @@ class BildlisteTests(SimpleTestCase):
             self.assertIn(name, BILDSCHIRME, f"/{slug}/")
 
 
+def linkziele(wert, schluessel=""):
+    """Alle Werte aus Feldern namens url oder *_url in einem Seed, beliebig tief geschachtelt."""
+    if isinstance(wert, dict):
+        for name, inhalt in wert.items():
+            yield from linkziele(inhalt, name)
+    elif isinstance(wert, (list, tuple)):
+        for inhalt in wert:
+            yield from linkziele(inhalt, schluessel)
+    elif isinstance(wert, str) and (schluessel == "url" or schluessel.endswith("_url")) and wert:
+        yield wert
+
+
+class PruefungenTests(SimpleTestCase):
+    def test_unbekannter_bildschirm_wird_beim_speichern_abgelehnt(self):
+        bekannter_bildschirm("work-start")
+        with self.assertRaises(ValidationError):
+            bekannter_bildschirm("work-strat")
+        # Das Feld der beiden Bausteine trägt die Prüfung
+        for feld in (TagesfolgeBlock().child_blocks["tage"].child_block.child_blocks["bild"],
+                     KetteBlock().child_blocks["bild"]):
+            with self.assertRaises(ValidationError):
+                feld.clean("work-strat")
+            self.assertEqual(feld.clean("work-start"), "work-start")
+
+    def test_linkziele_ohne_ausfuehrbares_schema(self):
+        for ziel in ("/kommunen/", "/kontakt/?subject=Session-Angebot#termin", "#anbindung", "https://demo.mandari.de/",
+                     "http://beispiel.de/a:b", "mailto:hello@mandari.de", "tel:+4925112345", "seite/unterseite:1", ""):
+            sichere_adresse(ziel)
+        for ziel in ("javascript:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)",
+                     "vbscript:msgbox(1)", "data:text/html,<script>alert(1)</script>", "file:///etc/passwd"):
+            with self.assertRaises(ValidationError, msg=ziel):
+                sichere_adresse(ziel)
+        for block in (TagesfolgeBlock(), KetteBlock()):
+            with self.assertRaises(ValidationError):
+                block.child_blocks["link_url"].clean("javascript:alert(1)")
+
+    def test_alle_linkziele_der_seeds_bestehen_die_pruefung(self):
+        # Die Prüfung gilt für jedes Linkfeld der Bausteine; kein vorhandener Inhalt darf daran scheitern
+        ziele = []
+        for bloecke in (*get_marketing_definitions().values(), *get_legal_definitions().values()):
+            for _, wert in bloecke:
+                ziele += list(linkziele(wert))
+        self.assertGreater(len(ziele), 100)
+        for ziel in ziele:
+            sichere_adresse(ziel)
+
+    def test_laufnummer_zaehlt_je_seitenaufruf(self):
+        # Zwei Tagesfolgen auf einer Seite brauchen getrennte Gruppen von Auswahlfeldern
+        anfrage = RequestFactory().get("/")
+        self.assertEqual([laufnummer({"request": anfrage}), laufnummer({"request": anfrage})], [1, 2])
+        self.assertEqual(laufnummer({"request": RequestFactory().get("/")}), 1)
+        self.assertTrue(laufnummer({}))
+
+
 class SeitenTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -104,6 +161,7 @@ class SeitenTests(TestCase):
         felder = re.findall(r'<input type="radio" name="([^"]+)"( checked)?>', achse)
         self.assertEqual(len(felder), 4)
         self.assertEqual(len({name for name, _ in felder}), 1, "eine Gruppe, damit die Pfeiltasten wechseln")
+        self.assertRegex(felder[0][0], r"^tf-\d+$")
         self.assertEqual([bool(gewaehlt) for _, gewaehlt in felder], [True, False, False, False])
         # Jeder Tag steht auch ohne Achse vollständig da (Handy, Browser ohne :has): Zeitpunkt, Titel, Text, Bild
         tage = re.findall(r'<article class="tf-tag">.*?</article>', html, re.S)

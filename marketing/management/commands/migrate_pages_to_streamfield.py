@@ -557,9 +557,9 @@ def get_marketing_definitions() -> dict:
                 "Eine Sitzungswoche mit mandari Work.",
                 [
                     m.tag("Mittwoch", "Die Ladung ist da", "Die Tagesordnung liegt schon in Work.",
-                          "Sobald die Verwaltung die Sitzung veröffentlicht, stehen Tagesordnung und Vorlagen bei "
-                          "Ihrer Fraktion. Die Startseite zeigt, welche Sitzungen anstehen und wie weit die "
-                          "Vorbereitung ist.", "work-start"),
+                          "Work übernimmt Tagesordnung und Vorlagen automatisch aus dem Ratsinformationssystem Ihrer "
+                          "Kommune. Die Startseite zeigt, welche Sitzungen anstehen und wie weit die Vorbereitung "
+                          "ist.", "work-start"),
                     m.tag("Bis Montag", "Alle bereiten sich vor", "Jeder Punkt bekommt eine Position.",
                           "Links die Vorlage, rechts Begründung, Notizen und die Diskussion Ihrer Fraktion. Die "
                           "Position legen Sie mit einem Klick fest: Zustimmung, Ablehnung, Enthaltung oder noch "
@@ -580,9 +580,9 @@ def get_marketing_definitions() -> dict:
             m.register(
                 "Anträge, Aufgaben und Recherche gehören dazu.",
                 [m.gruppe("",
-                    m.zeile("Anträge und Anfragen", "Sie schreiben gemeinsam, mit Versionen und Vorlagen. Der Ablauf "
-                            "führt vom Entwurf über Abstimmung und Freigabe bis zur Einreichung, die Frist steht "
-                            "daneben.", ort="mit Fristen und Freigaben"),
+                    m.zeile("Anträge und Anfragen", "Sie schreiben gemeinsam und in Echtzeit, mit Versionen und "
+                            "Vorlagen. Der Ablauf führt vom Entwurf über Abstimmung und Freigabe bis zur Einreichung, "
+                            "die Frist steht daneben.", ort="mit Fristen und Freigaben"),
                     m.zeile("Aufgaben", "Wer bis wann was erledigt, hält die Fraktion direkt am Tagesordnungspunkt "
                             "fest."),
                     m.zeile("Recherche", "Volltextsuche über alle öffentlichen Ratsdokumente Ihrer Kommune, auch in "
@@ -1139,9 +1139,10 @@ def get_marketing_definitions() -> dict:
                                     "nichtöffentlichen Teil trennen und die Reihenfolge ändern.",
                                     "Tagesordnung als PDF, Sitzungsmappe mit allen Unterlagen"),
                     m.kettenschritt("Ladung", "Der Empfängerkreis ergibt sich aus der Besetzung des Gremiums. Session "
-                                    "zeigt, bis wann die Ladung versandt sein muss.",
-                                    "E-Mail mit Tagesordnung, Kalendertermin und Empfangsbestätigung",
-                                    ort="mit der Frist des Gremiums"),
+                                    "zeigt, bis wann die Ladung versandt sein muss, und versendet sie per E-Mail oder "
+                                    "als Serienbrief.",
+                                    "E-Mail mit Tagesordnung, Kalendertermin und Empfangsbestätigung, Serienbrief für "
+                                    "den Postweg", ort="mit der Frist des Gremiums"),
                     m.kettenschritt("Sitzung", "Im Cockpit Tagesordnungspunkte aufrufen, Anwesenheit festhalten und "
                                     "Abstimmungen erfassen.", "Beschlüsse mit Abstimmungsergebnis, Anwesenheitsliste"),
                     m.kettenschritt("Niederschrift", "Niederschrift schreiben und freigeben. Die Beschlusskontrolle "

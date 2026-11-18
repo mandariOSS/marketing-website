@@ -10,6 +10,7 @@ Dauerbalken ist, wie viele Unterlagen eines Registers vorliegen.
 from __future__ import annotations
 
 import re
+import secrets
 
 from django import template
 from django.templatetags.static import static
@@ -282,6 +283,17 @@ def bildschirm(name):
     from marketing.bildschirme import bildschirm as daten
 
     return daten(name)
+
+
+@register.simple_tag(takes_context=True)
+def laufnummer(context):
+    """Fortlaufende Nummer je Seitenaufruf (1, 2, …), z. B. für den Namen einer Gruppe von Auswahlfeldern: Zwei
+    Tagesfolgen auf einer Seite teilten sich sonst eine Gruppe, und die Wahl in der einen löschte die der anderen."""
+    request = context.get("request")
+    if request is None:
+        return secrets.token_hex(4)
+    request._laufnummer = getattr(request, "_laufnummer", 0) + 1
+    return request._laufnummer
 
 
 # ── Kleinkram ────────────────────────────────────────────────────────────────
