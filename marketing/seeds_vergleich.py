@@ -781,22 +781,23 @@ def staerken_block(slug=None, *, anchor="staerken"):
         return []
     if slug:
         name = ANBIETER[slug]["kurzname"]
-        titel = f"Was mandari von {ANBIETER[slug]['kartenname']} unterscheidet"
+        titel = "Was mandari auszeichnet"
         sub = (f"Funktionen, die mandari heute bietet und zu denen wir bei {name} keine oder nur eine eingeschränkte "
                f"öffentliche Angabe gefunden haben. Stand {STAND}.")
         spalte = f"Bei {ANBIETER[slug]['kartenname']}"
         zeilen = [m.zeile(label, MANDARI[key][1], zusatz=_angabe(slug, key)) for key, label in funktionen]
+        beleg = "Alle Funktionen mit Beleg stehen in der Tabelle darunter."
     else:
         titel = "Was mandari auszeichnet"
         sub = ("Funktionen, die mandari heute bietet und zu denen wir bei keinem der vier Anbieter eine vollständige "
                f"öffentliche Angabe gefunden haben. Stand {STAND}.")
         spalte = "Bei den vier Anbietern"
         zeilen = [m.zeile(label, MANDARI[key][1], zusatz=_angabe_alle(key)) for key, label in funktionen]
+        beleg = "Erläuterungen und Belege stehen in den Einzelvergleichen."
     return [m.register(
         titel, [m.gruppe("", *zeilen)],
         spalten=["Funktion", "Bei mandari", spalte], kopfart="ueber", subline=sub, anchor=anchor,
-        note="<p>„Keine öffentliche Angabe“ heißt: in den genannten Quellen nicht gefunden, nicht „fehlt“. "
-             "Alle Funktionen mit Beleg stehen in der Tabelle darunter.</p>",
+        note=f"<p>„Keine öffentliche Angabe“ heißt: in den genannten Quellen nicht gefunden, nicht „fehlt“. {beleg}</p>",
     )]
 
 
@@ -940,8 +941,8 @@ def roadmap_luecken():
                 f"(Stand {STAND}). Wir nennen einen Zeitraum, sobald er belastbar ist.",
         anchor="marktvergleich",
         note=(
-            "<p>Die zugesagten und geplanten Funktionen aus dem Vergleich stehen oben in der Zeitachse; den Stand je "
-            "Funktion zeigt der <a href=\"/vergleich/#uebersicht\">RIS-Vergleich</a>. Die Kürzel in eckigen "
+            "<p>Die zugesagten und geplanten Funktionen aus dem Vergleich stehen oben in der Zeitachse; alle "
+            "Funktionen im Überblick zeigt der <a href=\"/vergleich/#uebersicht\">RIS-Vergleich</a>. Die Kürzel in eckigen "
             "Klammern verweisen auf die <a href=\"/vergleich/#quellen\">Quellen im RIS-Vergleich</a>.</p>"
         ),
     )]

@@ -271,7 +271,7 @@ def get_marketing_definitions() -> dict:
                     fgroup("Verantwortung",
                         frow("Server, Betriebssystem, Netzwerk", cell("info", "Kommune"), cell("info", "mandari, Rechenzentrum in Deutschland"), cell("info", "Kommune oder ihr Rechenzentrum")),
                         frow("Installation und Updates", cell("info", "Kommune"), cell("info", "mandari, automatisch"), cell("info", "Kommune, von mandari begleitet")),
-                        frow("Backups", cell("info", "Kommune"), cell("info", "mandari, täglich, 30 Tage"), cell("info", "Kommune")),
+                        frow("Sicherungen", cell("info", "Kommune"), cell("info", "mandari, täglich, 30 Tage"), cell("info", "Kommune")),
                         frow("Monitoring und Störungsbehebung", cell("info", "Kommune"), cell("info", "mandari, Statusseite öffentlich"), cell("info", "Kommune, Unterstützung laut Vertrag")),
                         frow("Sicherheitsupdates", cell("info", "Kommune, Hinweise über GitHub"), cell("info", "mandari"), cell("info", "Kommune, Advisories von mandari")),
                         frow("Datenschutzrolle", cell("info", "Kommune ist allein verantwortlich"), cell("info", "mandari ist Auftragsverarbeiter mit AVV"), cell("info", "Kommune ist allein verantwortlich")),
@@ -847,7 +847,7 @@ def get_marketing_definitions() -> dict:
                     "entsteht eine maschinenlesbare Stückliste (SBOM, CycloneDX) als Download bei den "
                     "<a href=\"https://github.com/mandariOSS/mandari/releases\">GitHub-Releases</a></li>"
                     "<li>Lizenzinventar nach REUSE-Standard: Jede Datei im Repository trägt eine maschinenlesbare "
-                    "Lizenz- und Urheberangabe, geprüft bei jedem Build</li>"
+                    "Lizenz- und Urheberangabe, automatisch geprüft</li>"
                     "<li>Versionen, Supportzeiträume und Fristen für Sicherheitskorrekturen sind öffentlich geregelt: "
                     "<a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- und Support-Politik</a></li>"
                     "<li>Ein externer Penetrationstest ist für 2027 geplant</li>"
@@ -1224,7 +1224,7 @@ def get_marketing_definitions() -> dict:
                                      "Vertraulichkeit, Integrität, Verfügbarkeit, Löschung",
                                      url="https://docs.mandari.de/datenschutz/tom/", ort="auf docs.mandari.de", status="da"),
                              m.zeile("Löschkonzept und Aufbewahrungsfristen", "Fristen je Mandant, auditierter Löschlauf, "
-                                     "Betroffenenauskunft, Vernichtung des Schlüssels bei Vertragsende",
+                                     "Betroffenenauskunft, Vernichtung des Schlüssels nach Vertragsende",
                                      url="https://docs.mandari.de/datenschutz/loeschkonzept/", ort="auf docs.mandari.de",
                                      status="da"),
                              m.zeile("Unterauftragsverarbeiter und Infrastruktur", "Unterauftragsverarbeiter mit Standort und Zweck, "

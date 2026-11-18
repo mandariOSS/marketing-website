@@ -104,11 +104,17 @@ def auswerten(daten: object, heute: date) -> Kennzahlen | None:
 
 
 def _abrufen(adresse: str) -> Kennzahlen | None:
-    anfrage = urllib.request.Request(adresse, headers={"Accept": "application/json", "User-Agent": "mandari-website"})
     try:
+        # Auch eine Adresse ohne Schema (Tippfehler in der Umgebung) führt nur zum Rückfall
+        anfrage = urllib.request.Request(adresse, headers={"Accept": "application/json",
+                                                           "User-Agent": "mandari-website"})
         with urllib.request.urlopen(anfrage, timeout=ZEITGRENZE_SEKUNDEN) as antwort:  # noqa: S310 - feste Adresse
-            daten = json.loads(antwort.read(HOECHSTENS_BYTES + 1)[:HOECHSTENS_BYTES])
-    except (OSError, ValueError, http.client.HTTPException) as fehler:
+            roh = antwort.read(HOECHSTENS_BYTES + 1)
+        if len(roh) > HOECHSTENS_BYTES:
+            logger.warning("Statistik des Bürgerportals größer als erwartet")
+            return None
+        daten = json.loads(roh)
+    except (OSError, ValueError, RecursionError, http.client.HTTPException) as fehler:
         logger.warning("Statistik des Bürgerportals nicht abrufbar (%s)", type(fehler).__name__)
         return None
     kennzahlen_neu = auswerten(daten, date.today())

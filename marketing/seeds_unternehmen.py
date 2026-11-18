@@ -272,7 +272,7 @@ def get_company_page_definitions() -> dict:
                          "machen, dass man auch findet, was man nicht exakt benennen kann."),
                     _row("Betrieb und Sicherheit",
                          "Eigene Infrastruktur in deutschen Rechenzentren, eine nachvollziehbare Lieferkette, "
-                         "Monitoring und Backups, auf die sich Verwaltungen verlassen."),
+                         "Monitoring und Sicherungen, auf die sich Verwaltungen verlassen."),
                     _row("Einführung und Kundenerfolg",
                          "Kommunen beim Umstieg begleiten: Daten übernehmen, Abläufe verstehen, schulen – und ins "
                          "Produkt zurückspielen, was fehlt."),

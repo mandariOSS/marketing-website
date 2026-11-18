@@ -129,7 +129,7 @@ jobs:
               "/vergleich/mandari-vs-sternberg/": ["Stand Oktober 2026", "AGPL-3.0", "keine öffentliche Angabe", "Funktion / Kriterium", "Noch nicht verfügbar", "[ST1]"],
               "/vergleich/mandari-vs-allris/": ["ALLRIS", "Funktion / Kriterium", "Noch nicht verfügbar", "[AL2]"],
               "/vergleich/mandari-vs-somacos/": ["SessionNet", "Funktion / Kriterium", "Noch nicht verfügbar", "[SO6]"],
-              "/vergleich/mandari-vs-regisafe/": ["Zertifiziert barrierefrei seit 7. Oktober 2024", "Was mandari von regisafe unterscheidet", "Funktion / Kriterium", "Noch nicht verfügbar", "[RS1]"],
+              "/vergleich/mandari-vs-regisafe/": ["Zertifiziert barrierefrei seit 7. Oktober 2024", "Was mandari auszeichnet", "Funktion / Kriterium", "Noch nicht verfügbar", "[RS1]"],
               "/releases/": ["mandari 0.13", "mandari 0.12.1", "mandari 0.11.2", "mandari 0.12", "mandari 0.11.1", "mandari 0.11", "mandari 0.9 (Beta)"],
               "/releases/mandari-0-13/": ["Unterpunkten", "v0.13.0", "Vorherige Version"],
               "/releases/mandari-0-12-1/": ["Sicherheitskorrekturen", "v0.12.1", "Neuere Version"],
@@ -468,6 +468,8 @@ jobs:
           ALLOWED_HOSTS: "127.0.0.1,localhost,testserver"
           SITE_URL: "http://127.0.0.1:8192"
           CONTACT_SMTP_HOST: "127.0.0.1"
+          # Ohne DEBUG gälte die Adresse der Produktion: Die CI fragt die Statistik nicht ab
+          KENNZAHLEN_URL: ""
         run: |
           python manage.py collectstatic --noinput > /dev/null
           python manage.py runserver 127.0.0.1:8192 --noreload > csp-server.log 2>&1 &

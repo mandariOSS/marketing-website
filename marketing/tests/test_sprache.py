@@ -12,7 +12,8 @@ from marketing.management.commands import migrate_pages_to_streamfield as seeds
 VERBOTEN = [
     "Subprocessor", "Subprozessor", "Subunternehmer", "Unterauftragnehmer",
     "Self-Hosting", "Selbst-Hosting", "Eigenbetrieb", "On-Premises", "Managed Hosting", "Managed Service",
-    "Lock-in", "Alt-RIS", "Beta-Phase", "Pilot-Phase", "General-Availability", "Userlimit", "Workspace",
+    "Lock-in", "Alt-RIS", "Beta-Phase", "Pilot-Phase", "General-Availability", "General Availability", "Userlimit",
+    "Workspace", "Backup",
     "Compliance-Call", "Hosting-Stack", "Bürger:innen-Portal", "Verwaltungs-RIS", "Bürgerinnen und Bürger",
     "Prospektsprache", "Andere SaaS", "Marketing-Übertreibung",
 ]
@@ -24,7 +25,7 @@ _KLEIN = re.compile(r"mandari (work|session|insight)\b")
 #: Feste Schreibweisen, die ein „&“ enthalten dürfen (Firmennamen, Zitat aus einer Anbieterquelle)
 _AUSNAHMEN = re.compile(r"GmbH & Co\. KG|Drag & Drop")
 #: Felder mit Adressen und Ankern: keine Texte, die jemand liest
-_KEIN_TEXT = (".anchor", ".anchor_id", ".url", "_url")
+_KEIN_TEXT = (".anchor", ".anchor_id", ".url", "_url", ".icon")
 
 
 def texte(wert, pfad="", *, alles=False):
