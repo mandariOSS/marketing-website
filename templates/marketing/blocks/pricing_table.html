@@ -14,7 +14,7 @@
                 <h3 class="mt-2 t-h3 {% if p %}kenn{% else %}text-gray-900 dark:text-white{% endif %} break-words hyphens-auto" lang="de">{{ tier.name|shy }}</h3>
                 {% if tier.subtitle %}<p class="mt-1 text-base text-gray-600 dark:text-gray-400">{{ tier.subtitle }}</p>{% endif %}
                 <div class="mt-6">
-                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1"><span class="text-4xl xl:text-5xl font-semibold tracking-tight text-gray-900 dark:text-white tabular-nums whitespace-nowrap">{{ tier.price_main }}</span>{% if tier.price_unit %}<span class="text-gray-600 dark:text-gray-400">{{ tier.price_unit }}</span>{% endif %}</div>
+                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1"><span class="text-3xl xl:text-4xl font-semibold tracking-tight text-gray-900 dark:text-white tabular-nums whitespace-nowrap">{{ tier.price_main }}</span>{% if tier.price_unit %}<span class="text-gray-600 dark:text-gray-400">{{ tier.price_unit }}</span>{% endif %}</div>
                     {% if tier.price_net %}<p class="text-sm text-gray-600 dark:text-gray-300 mt-1.5 tabular-nums">{{ tier.price_net }}</p>{% endif %}
                     {% if tier.price_alt %}<p class="text-sm text-gray-900 dark:text-gray-100 font-medium mt-1">{{ tier.price_alt }}</p>{% endif %}
                     {% if tier.price_note %}<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ tier.price_note }}</p>{% endif %}

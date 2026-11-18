@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th scope="col"><span class="sr-only">Kriterium</span></th>
-                    {% for o in self.optionen %}<th scope="col"><span class="block text-xl {% if self.optionen|length > 2 %}xl:text-2xl{% else %}lg:text-2xl{% endif %} font-semibold tracking-tight m-tinte">{{ o.name }}</span>{% if o.satz %}<span class="block mt-1 text-base m-text">{{ o.satz }}</span>{% endif %}</th>{% endfor %}
+                    {% for o in self.optionen %}<th scope="col"><span class="block t-h3 m-tinte">{{ o.name }}</span>{% if o.satz %}<span class="block mt-1 text-base m-text">{{ o.satz }}</span>{% endif %}</th>{% endfor %}
                 </tr>
             </thead>
             <tbody>

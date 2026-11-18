@@ -39,7 +39,7 @@
         </div>
         <table class="vgl">
             <caption class="sr-only">{{ geltung.header.title }}</caption>
-            <thead><tr><th scope="col"><span class="sr-only">Bereich</span></th>{% for o in geltung.optionen %}<th scope="col"><span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">{{ o.name }}</span><span class="block mt-1 text-base m-text">{{ o.satz }}</span></th>{% endfor %}</tr></thead>
+            <thead><tr><th scope="col"><span class="sr-only">Bereich</span></th>{% for o in geltung.optionen %}<th scope="col"><span class="block t-h3 m-tinte">{{ o.name }}</span><span class="block mt-1 text-base m-text">{{ o.satz }}</span></th>{% endfor %}</tr></thead>
             <tbody>
                 {% for k in geltung.kriterien %}<tr><th scope="row" class="text-base">{{ k.kriterium }}</th><td class="t-body richtext" data-spalte="Im Geltungsbereich">{{ k.werte.0|safe }}</td><td class="t-body richtext" data-spalte="Außerhalb">{{ k.werte.1|safe }}</td></tr>{% endfor %}
             </tbody>
@@ -75,7 +75,7 @@
         </div>
         <dl class="mt-10 pt-8 border-t m-linie grid gap-y-3 lg:grid-cols-12 lg:gap-x-10">
             <dt class="lg:col-span-3 text-base m-leise lg:pt-1">Fingerabdruck zur Prüfung</dt>
-            <dd class="lg:col-span-9 font-mono text-xl lg:text-2xl tracking-wide m-tinte break-all">5D06 A2BC B71C 6095 7A23&nbsp;&nbsp;0BD8 7E96 93FD 0505 3234</dd>
+            <dd class="lg:col-span-9 font-mono text-lg lg:text-xl tracking-wide m-tinte break-all">5D06 A2BC B71C 6095 7A23&nbsp;&nbsp;0BD8 7E96 93FD 0505 3234</dd>
         </dl>
         <div id="hall-of-fame" class="mt-14 lg:mt-16 grid gap-y-4 lg:grid-cols-12 lg:gap-x-10 scroll-mt-24">
             <h2 class="lg:col-span-3 t-h2-dok m-tinte">Hall of Fame</h2>

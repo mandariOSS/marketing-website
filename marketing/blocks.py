@@ -221,9 +221,9 @@ def hero_title(title, highlight=""):
     return f"{title} {highlight}" if title else highlight
 
 
-# Neben einem Produktbild ist die Überschrift höchstens 15 Zeichen breit. Längere Wörter
-# (Ratsinformationssystem) passen bei 56 px nicht einmal in die halbe Rasterbreite: Dann bekommt der Text
-# sieben, das Bild fünf Spalten (hero.html).
+# Neben einem Produktbild ist die Spalte der Überschrift schmal. Lange Wörter (Ratsinformationssystem) brächen
+# dort mitten im Wort um: Dann bekommt der Text sieben, das Bild fünf Spalten (hero.html). Die Schwelle stammt
+# aus der Zeit mit 56 px großer H1; bei 44 px ist sie vorsichtig gewählt.
 LANGES_WORT = 16
 
 

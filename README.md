@@ -384,8 +384,8 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
 
 | | Stufen |
 |---|---|
-| **Schrift** | Inter, linksbündig: `t-h1` 56 px · `t-h2` 40 px (Dokumente `t-h2-dok` 28 px) · `t-h3` 22 px · `t-lead` 20 px · `t-body` 18 px · Sekundär 16 px · Klein 14 px. Am Handy `t-h1` 32 px, `t-h2` und große Aussage 28 px, Zahl im Satz 22 px. Unter 1280 px trennen Überschriften, Begriffe und Tabellenköpfe lange Wörter nach Silben (`hyphens: auto`, ab 12 Zeichen) und brechen sie notfalls am Rand, statt überzulaufen |
-| **Abstand** | Abschnitt 96 px (Handy 64) · kompakt 64 px (48) für Hinweise · Unterabschnitt 48 px · Abschnittskopf → Inhalt 48 px, vor Fließtext 24 px |
+| **Schrift** | Inter, linksbündig: `t-h1` 44 px · `t-h2` 32 px (Dokumente `t-h2-dok` 24 px) · `t-h3` 20 px · `t-lead` 19 px · `t-body` und Fließtext (`prose-lg`) 17 px · Sekundär 16 px · Klein 14 px. Größer ist nur der Leitsatz (60 px). Am Handy `t-h1` 30 px, `t-h2` 25 px, große Aussage 26 px, Zahl im Satz 20 px. Begriffe, Spaltenköpfe und Schritttitel nutzen `t-h3`, keine freie Tailwind-Größe. Unter 1280 px trennen Überschriften, Begriffe und Tabellenköpfe lange Wörter nach Silben (`hyphens: auto`, ab 12 Zeichen) und brechen sie notfalls am Rand, statt überzulaufen |
+| **Abstand** | Abschnitt 64 px (Handy 48) · kompakt 48 px (40) für Hinweise · Unterabschnitt 48 px · Abschnittskopf → Inhalt 32 px (Handy 28), vor Fließtext 24 px |
 | **Raster** | Inhalt 1216 px, 12 Spalten; Textspalte höchstens 45 rem (ca. 70 Zeichen); Einträge in zwei Spalten, bei genau drei Einträgen in drei |
 | **Farbe** | Tinte `#111827`, Text `#4B5563`, Weiß, Hellgrau `#EEF0F4`; Indigo `#4F46E5` nur für den gefüllten Button, Textlinks und den Punkt der Wortmarke |
 
