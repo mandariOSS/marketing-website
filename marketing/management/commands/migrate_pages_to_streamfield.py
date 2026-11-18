@@ -24,6 +24,16 @@ from wagtail.blocks import StreamValue
 # ════════════════════════════════════════════════════════════════════════
 
 
+# Ein Weg zu mandari Work auf allen Seiten (mandariOSS/mandari#1481): Beschriftung und Ziel stehen nur hier.
+# Solange die Buchung im Kundenportal nicht freigeschaltet ist, führt der Aufruf zum Kontaktformular (Thema
+# „Fraktion“ ist vorgewählt). Sobald sie offen ist: "mandari Work buchen" und
+# "https://kunden.mandari.de/kunden/buchen" eintragen, dann /fraktionen/ und /preise/ neu seeden.
+WORK_AUFRUF = "mandari Work anfragen"
+WORK_AUFRUF_URL = "/kontakt/?subject=mandari-Work#nachricht"
+# Ausprobieren: die öffentliche Demo. Eine Testphase gibt es nur nach Absprache (höchstens 14 Tage).
+DEMO_URL = "https://demo.mandari.de/"
+
+
 def cta(label, url, icon="", style="primary"):
     return {"label": label, "url": url, "icon": icon, "style": style}
 
@@ -123,16 +133,16 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "Transparenzbericht", "title_highlight": "2026",
-                "subline": "Was andere SaaS gerne verstecken, legen wir offen: Behördenanfragen, Sicherheitsvorfälle, Finanzlage, Hosting-Realität, Open-Source-Beiträge.",
-                "subline_secondary": "Berichtszeitraum: 1. Januar bis 31. Dezember 2026 · Veröffentlicht: 26. April 2026 · Aktualisiert: 20. Juli 2026 · Nächste Aktualisierung: Oktober 2026",
+                "subline": "Behördenanfragen, Sicherheitsvorfälle und die Reichweite des Bürgerportals: Was Sie über unseren Betrieb wissen sollten, legen wir offen.",
+                "subline_secondary": "Berichtszeitraum 1. Januar bis 31. Dezember 2026. Veröffentlicht am 26. April 2026, zuletzt aktualisiert am 18. November 2026, nächste Aktualisierung im Januar 2027.",
                 "ctas": [], "background_color": "primary",
             }),
             # Muster 6a: die eine Aussage der Seite, direkt unter dem Kopf
             m.zusage(
-                "Bis zum 20. Juli 2026 wurden wir nicht verpflichtet, Auskünfte unter Geheimhaltung zu erteilen.",
+                "Bis zum 18. November 2026 wurden wir nicht verpflichtet, Auskünfte unter Geheimhaltung zu erteilen.",
                 grundlage="Warrant Canary: keine Geheimhalteanordnung, etwa nach § 95 GWB oder § 100b StPO.",
                 bedingungen_titel="So lesen Sie diese Erklärung",
-                bedingungen=["Wir erneuern sie vierteljährlich, die nächste Fassung folgt im Oktober 2026.",
+                bedingungen=["Wir erneuern sie vierteljährlich, die nächste Fassung folgt im Januar 2027.",
                              "Verschwindet sie oder veraltet sie, interpretieren Sie das entsprechend."],
                 anchor="warrant-canary",
             ),
@@ -153,45 +163,27 @@ def get_marketing_definitions() -> dict:
                         ("Gemeldete CVEs", "veröffentlichte Schwachstellen mit CVE-Kennung", "0"),
                     ]),
                 ],
-                text="Stand 20. Juli 2026, Berichtszeitraum seit 1. Januar 2026. Wir aktualisieren vierteljährlich; "
+                text="Stand 18. November 2026, Berichtszeitraum seit 1. Januar 2026. Wir aktualisieren vierteljährlich; "
                      "jede Zahl über null erläutern wir an dieser Stelle.",
                 spalten=("Art", "Was dazu zählt", "2026"), anchor="anfragen",
             ),
-            # Muster 3 als Kontenblatt
-            m.register(
-                "Finanztransparenz",
-                [
-                    m.gruppe("Einnahmen 2026",
-                             m.zeile("Work-Tarife", "Beta-Phase, noch keine Einnahmen aus Tarifen", stand="0 €", status="zahl"),
-                             m.zeile("Fördermittel", "in Beantragung", stand="–", status="zahl"),
-                             summe_label="Einnahmen 2026", summe="~ 0 €"),
-                    m.gruppe("Ausgaben 2026, laufende Kosten",
-                             m.zeile("Hosting", "Hetzner, Rechenzentren in Deutschland", stand="~ 60 € im Monat", status="zahl"),
-                             m.zeile("Domain und DNS", "", stand="~ 30 € im Jahr", status="zahl"),
-                             m.zeile("Werkzeuge und Buchhaltung", "", stand="~ 40 € im Monat", status="zahl"),
-                             m.zeile("KI-Inferenz", "Tests", stand="~ 20 € im Monat", status="zahl"),
-                             summe_label="Hochgerechnet auf das Jahr", summe="~ 1.200 €"),
-                ],
-                spalten=["Posten", "Anmerkung", "Betrag"],
-                subline="Wir legen offen, wie das Geld fließt: Einnahmen wie Ausgaben.",
-                anchor="finanzen",
-            ),
-            # Muster 9a. Dieselben Kennzahlen mit Stand wie auf /presse/ (KENNZAHLEN in
-            # marketing/seeds_unternehmen.py) – bei jeder Aktualisierung beide Stellen nachziehen.
+            # Muster 9a. Die Zahlen setzt der Filter „kennzahlen“ beim Rendern ein (marketing/kennzahlen.py), dieselben
+            # wie auf /presse/ und /buergerinformationssystem/.
             m.zahlensatz(
                 "Reichweite des Bürgerportals",
-                "Am 2. Oktober 2026 machte das Bürgerportal <b>204.819</b> Dokumente, <b>91.662</b> Vorgänge und "
-                "Vorlagen und <b>13.903</b> Sitzungen aus <b>5</b> Kommunen und Körperschaften frei durchsuchbar.",
-                rand="<p><strong>So zählen wir:</strong> den Bestand im Bürgerportal am Stichtag, nicht Besuche. "
-                     "Ohne Tracker und ohne individuelle Profile.</p><p><a href=\"/quellen/\">Quellennachweise</a></p>",
+                "Das Bürgerportal macht <b>[vorgaenge]</b> Vorgänge und Vorlagen und <b>[sitzungen]</b> Sitzungen aus "
+                "<b>[kommunen]</b> Kommunen und Körperschaften frei durchsuchbar.",
+                rand="<p><strong>So zählen wir:</strong> den Bestand im Bürgerportal, Stand [kennzahlen-stand], nicht "
+                     "Besuche. Ohne Tracking und ohne individuelle Profile.</p>"
+                     "<p><a href=\"/quellen/\">Quellennachweise</a></p>",
                 anchor="reichweite",
             ),
             m.einladung(
                 "Fehlt Ihnen eine Zahl?",
                 "Sagen Sie uns, welche Angabe Sie hier sehen möchten. Wir nehmen sie auf.",
                 "Vorschlag einreichen", "/kontakt/?subject=Transparenz",
-                wege=[("E-Mail", "hello@mandari.de", ""), ("Nächste Aktualisierung", "Oktober 2026", ""),
-                      ("Sicherheit", "Responsible Disclosure", "/sicherheit/disclosure/"),
+                wege=[("E-Mail", "hello@mandari.de", ""), ("Für die IT", "Trust Center", "/trust/"),
+                      ("Sicherheit", "Sicherheitslücke melden", "/sicherheit/disclosure/"),
                       ("Was neu ist", "Releases", "/releases/")],
             ),
         ],
@@ -204,9 +196,9 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "Faire Preise für", "title_highlight": "faire Demokratie.",
                 "subline": "Das Bürgerportal ist kostenlos, mandari Work hat einen festen Preis je Fraktion, "
-                            "mandari Session kalkulieren wir je Kommune – ohne versteckte Kosten und ohne Lock-in.",
+                            "mandari Session kalkulieren wir je Kommune. Ohne versteckte Kosten, ohne Anbieterbindung.",
                 "subline_secondary": "",
-                "ctas": [cta("Beta-Zugang anfragen", "/kontakt/?subject=Beta-Zugang-Work", "zap", "primary"),
+                "ctas": [cta(WORK_AUFRUF, WORK_AUFRUF_URL, "zap", "primary"),
                          cta("Erstgespräch vereinbaren", "/kontakt/#termin", "calendar", "secondary")],
                 "background_color": "primary",
             }),
@@ -215,43 +207,45 @@ def get_marketing_definitions() -> dict:
                 "header": hdr(title="Was mandari kostet", align="center",
                               subline="Alle Preise inkl. 19 % MwSt."),
                 "tiers": [
-                    {"color": "green", "name": "mandari Insight", "subtitle": "Bürger:innen-Portal",
+                    {"color": "green", "name": "mandari Insight", "subtitle": "Bürgerportal",
                      "badge": "Immer kostenlos", "price_main": "0 €", "price_unit": "für immer",
-                     "price_note": "Querfinanziert über Work & Session",
-                     "description": "Öffentlicher Zugang zu Ratsinformationen — ohne Anmeldung, ohne Tracker, ohne Limit.",
-                     "features": [bullet("Volltextsuche & Kartenansicht"), bullet("KI-Zusammenfassungen für ausgewählte Kommunen"),
+                     "price_note": "Finanziert über mandari Work und mandari Session",
+                     "description": "Öffentlicher Zugang zu Ratsinformationen: ohne Anmeldung, ohne Tracking, ohne Limit.",
+                     "features": [bullet("Volltextsuche und Karte"), bullet("KI-Zusammenfassungen für ausgewählte Kommunen"),
                                   bullet("Abstimmungsverhalten einsehen"), bullet("Keine Anmeldung nötig"),
-                                  bullet("Selbst-Hosting möglich")],
-                     "is_highlighted": False, "cta_label": "Insight öffnen", "cta_url": "/insight/"},
-                    {"color": "primary", "name": "mandari Work", "subtitle": "Für Fraktionen · Pauschale ohne Userlimit",
-                     "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
+                                  bullet("Selbstbetrieb möglich")],
+                     "is_highlighted": False, "cta_label": "Bürgerportal öffnen", "cta_url": "/insight/"},
+                    {"color": "primary", "name": "mandari Work", "subtitle": "Für Fraktionen und Gruppen, ein Preis je Organisation",
+                     "badge": "Offene Beta", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
                      "price_net": "33,53 € netto zzgl. 19 % USt",
                      "price_alt": "oder 399 € pro Jahr (335,29 € netto) – zwei Monate gespart",
-                     "price_note": "Beta-Kunden erhalten dauerhaft vergünstigte Konditionen",
-                     "description": "Professionelle Sitzungsvorbereitung mit Team, KI und Antragsdatenbank.",
-                     "features": [bullet("Alles aus Insight"), bullet("Team-Workspaces & Notizen"),
-                                  bullet("Antragsdatenbank & Vorlagen"), bullet("Interne Abstimmungen & Termine"),
-                                  bullet("KI-gestützte Recherche"), bullet("Unbegrenzte Nutzer:innen pro Fraktion & Gruppe"),
-                                  bullet("Prioritäts-Support per E-Mail")],
-                     "is_highlighted": True, "cta_label": "Jetzt buchen", "cta_url": "https://kunden.mandari.de/kunden/buchen"},
-                    {"color": "blue", "name": "mandari Session", "subtitle": "Verwaltungs-RIS",
-                     "badge": "Pilotphase 2027", "price_main": "Individuell",
+                     "price_note": "",
+                     "description": "Sitzungen im Team vorbereiten, Anträge führen, im ganzen Bestand recherchieren.",
+                     "features": [bullet("Alle Ratsdaten aus dem Bürgerportal"), bullet("Arbeitsbereiche und Notizen im Team"),
+                                  bullet("Anträge mit Vorlagen, Fristen und Freigaben"),
+                                  bullet("Fraktionssitzungen, interne Abstimmungen und Termine"),
+                                  bullet("KI-gestützte Recherche"), bullet("Unbegrenzt viele Mitglieder"),
+                                  bullet("25 Gäste inklusive, etwa für Koalitionspartner"),
+                                  bullet("Support per E-Mail mit Vorrang")],
+                     "is_highlighted": True, "cta_label": WORK_AUFRUF, "cta_url": WORK_AUFRUF_URL},
+                    {"color": "blue", "name": "mandari Session", "subtitle": "Für Verwaltungen",
+                     "badge": "Pilotphase", "price_main": "Individuell",
                      "price_note": "Staffel nach Einwohnerzahl, Einrichtung einmalig, alle Module und das Bürgerportal inklusive. Öffentliche Preisliste in Vorbereitung.",
-                     "description": "Vollständiges Sitzungsmanagement für Verwaltungen — die moderne Alternative zu proprietären RIS.",
-                     "features": [bullet("Sitzungsplanung & Tagesordnung", "calendar-clock"),
-                                  bullet("Einladungen (digital & print)", "mail"),
-                                  bullet("Vorlagenpflege & Protokollierung", "file-text"),
-                                  bullet("Sitzungsgeld & Aufwandsentschädigung", "banknote"),
-                                  bullet("OParl-Export (maschinenlesbar)", "file-json"),
-                                  bullet("Migration vom Alt-RIS", "users")],
+                     "description": "Der Sitzungsdienst Ihrer Verwaltung in einem System, von der Tagesordnung bis zur Niederschrift.",
+                     "features": [bullet("Sitzungsplanung und Tagesordnung", "calendar-clock"),
+                                  bullet("Einladungen digital und auf Papier", "mail"),
+                                  bullet("Vorlagen und Niederschrift", "file-text"),
+                                  bullet("Sitzungsgeld und Aufwandsentschädigung", "banknote"),
+                                  bullet("Veröffentlichung nach OParl", "file-json"),
+                                  bullet("Übernahme aus dem bisherigen System", "users")],
                      "is_highlighted": False, "cta_label": "Angebot anfragen", "cta_url": "/kontakt/?subject=Session-Angebot"},
                 ],
             }),
             # Muster 3 als Preisliste
             m.register(
-                "Addons und Zusatzleistungen",
+                "Zusatzleistungen",
                 [
-                    m.gruppe("Addon, monatlich kündbar",
+                    m.gruppe("Monatlich kündbar",
                              m.zeile("Eigene Domain", "Ihr Arbeitsportal unter eigener Adresse, z. B. mandari.fraktion.de – "
                                      "die Einrichtung übernehmen wir. Monatlich kündbar zum Monatsende.",
                                      stand="5,00 € im Monat", status="zahl")),
@@ -269,65 +263,44 @@ def get_marketing_definitions() -> dict:
             ),
             ("feature_matrix", {
                 "header": hdr(title="Wer macht was?", align="center",
-                              subline="Drei Wege, mandari zu betreiben. Die Software ist in allen Fällen dieselbe und kostenlos, der Unterschied liegt in Verantwortung und Aufwand.",
+                              subline="Drei Wege, mandari zu betreiben. Die Software ist in allen Fällen dieselbe und steht unter AGPL-3.0, der Unterschied liegt in Verantwortung und Aufwand.",
                               anchor_id="betriebsmodelle"),
-                "columns": ["Selbst-Hosting", "Managed Hosting", "On-Premises mit Support"],
+                "columns": ["Selbstbetrieb", "Betrieb durch mandari", "Selbstbetrieb mit Betreuungsvertrag"],
                 "show_legend": False,
                 "groups": [
                     fgroup("Verantwortung",
                         frow("Server, Betriebssystem, Netzwerk", cell("info", "Kommune"), cell("info", "mandari, Rechenzentrum in Deutschland"), cell("info", "Kommune oder ihr Rechenzentrum")),
                         frow("Installation und Updates", cell("info", "Kommune"), cell("info", "mandari, automatisch"), cell("info", "Kommune, von mandari begleitet")),
-                        frow("Backups", cell("info", "Kommune"), cell("info", "mandari, täglich, 30 Tage"), cell("info", "Kommune")),
+                        frow("Sicherungen", cell("info", "Kommune"), cell("info", "mandari, täglich, 30 Tage"), cell("info", "Kommune")),
                         frow("Monitoring und Störungsbehebung", cell("info", "Kommune"), cell("info", "mandari, Statusseite öffentlich"), cell("info", "Kommune, Unterstützung laut Vertrag")),
                         frow("Sicherheitsupdates", cell("info", "Kommune, Hinweise über GitHub"), cell("info", "mandari"), cell("info", "Kommune, Advisories von mandari")),
                         frow("Datenschutzrolle", cell("info", "Kommune ist allein verantwortlich"), cell("info", "mandari ist Auftragsverarbeiter mit AVV"), cell("info", "Kommune ist allein verantwortlich")),
+                        frow("Daten", cell("info", "bleiben vollständig bei der Kommune"), cell("info", "Betrieb in Deutschland, Sicherungen in der EU, Export jederzeit"), cell("info", "bleiben vollständig bei der Kommune")),
                     ),
                     fgroup("Leistung und Kosten",
-                        frow("Support", cell("info", "Community über GitHub"), cell("info", "inklusive, Premium-SLA optional"), cell("info", "Support- und Wartungsvertrag mit Reaktionszeiten")),
+                        frow("Support", cell("info", "Community über GitHub"), cell("info", "inklusive"), cell("info", "Betreuungsvertrag mit Reaktionszeiten")),
                         frow("Kosten", cell("info", "0 € Software, eigene Infrastruktur"), cell("info", "Monatspreis, Einrichtung einmalig"), cell("info", "Jahresvertrag nach Einwohnerzahl, Installation einmalig")),
-                        frow("Für wen", cell("info", "IT-affine Kommunen, Rechenzentren, Community"), cell("info", "Kommunen ohne eigenen Betrieb, Fraktionen"), cell("info", "Kommunen mit Vorgaben zum Eigenbetrieb")),
+                        frow("Für wen", cell("info", "IT-affine Kommunen, Rechenzentren, Community"), cell("info", "Kommunen ohne eigenen Betrieb, Fraktionen"), cell("info", "Kommunen mit Vorgaben zum Selbstbetrieb")),
                     ),
                 ],
-                "footnote": "<p>Betriebsdokumentation für Self-Hosting und On-Premises: <a href=\"https://docs.mandari.de/betrieb/\">docs.mandari.de/betrieb</a>. Unterlagen für Beschaffung und Prüfung: <a href=\"/vergabe/\">Vergabe und Unterlagen</a>.</p>",
+                "footnote": "<p>Betriebsdokumentation für den Selbstbetrieb: <a href=\"https://docs.mandari.de/betrieb/\">docs.mandari.de/betrieb</a>. Unterlagen für Beschaffung und Prüfung: <a href=\"/vergabe/\">Vergabe und Unterlagen</a>.</p>",
             }),
-            # Muster 8: zwei Optionen nach denselben Kriterien statt zwei Karten mit Aufzählungen
-            m.vergleich(
-                "Selbst hosten oder uns lassen",
-                [("Selbst-Hosting", "Sie betreiben, wir liefern die Software"),
-                 ("Managed Service", "Wir betreiben, Sie nutzen")],
-                [
-                    ("Kosten", ["keine Lizenzkosten; Server und Betrieb tragen Sie",
-                                "monatlich laut Angebot"]),
-                    ("Server, Backups, Monitoring", ["Ihre IT; Docker-Compose-Stack für jeden Linux-Server",
-                                                     "übernehmen wir, kein Server-Management auf Ihrer Seite"]),
-                    ("Updates und Sicherheitspatches", ["spielen Sie ein, sobald wir sie veröffentlichen",
-                                                        "automatisch"]),
-                    ("Daten", ["volle Kontrolle über Daten und Infrastruktur",
-                               "Betrieb in Deutschland, Sicherungen in der EU, Datenexport jederzeit, kein Lock-in"]),
-                    ("Hilfe", ["Community-Support über GitHub, Support-Vertrag optional, Dokumentation auf docs.mandari.de",
-                               "Support inklusive, Premium-SLA optional"]),
-                    ("Erster Schritt", ["<a href=\"https://docs.mandari.de/betrieb/\">Self-Hosting-Anleitung</a>",
-                                        "<a href=\"/kontakt/?subject=Managed-Service\">Managed Service anfragen</a>"]),
-                ],
-                subline="Open Source heißt: Sie haben die Wahl. Dieselbe Software, zwei Arten, sie zu betreiben.",
-                anchor="selbst-hosten",
-            ),
-            # Muster 5b: Begründungen als Begriffe statt drittem Raster
+            # Muster 5b: wofür der Beitrag steht (Geschäftsmodell nach den Grundsatzentscheidungen, #1481)
             m.begriffe(
-                "Warum genau diese Preise?",
+                "Wofür Ihr Beitrag sorgt",
                 [
-                    m.begriff("Unabhängig finanziert",
-                              "mandari wird ohne Investoren und ohne große Vertriebsorganisation entwickelt — kein "
-                              "VC-Geld, keine Sales-Abteilung. Damit das nachhaltig bleibt, müssen die Tarife die "
-                              "Entwicklungszeit decken."),
-                    m.begriff("Infrastruktur kostet",
-                              "Server, Backups, Monitoring, TLS, Datenbank-Cluster, KI-Inferenz: ein paar 100 €/Monat "
-                              "allein für die Infrastruktur. Davon fließt jeder Cent an Anbieter in Deutschland und der EU."),
-                    m.begriff("Demokratie-Bonus",
-                              "Schulen, Universitäten, NGOs, Studierende — wer Demokratie stärkt, soll keine "
-                              "kommerziellen Preise zahlen. Vergünstigungen auf Anfrage."),
+                    m.begriff("Unabhängig, und so bleibt es",
+                              "mandari finanziert sich aus Betrieb, Betreuung und Einführung. Über Lizenz, Datenschutz "
+                              "und Kurs entscheidet niemand von außen."),
+                    m.begriff("Verlässlicher Betrieb",
+                              "Ihr Beitrag trägt, was Software verlässlich macht: Sicherheitsprüfungen, Barrierefreiheit, "
+                              "Sicherungen und einen Support, der antwortet."),
+                    m.begriff("Nachlass für Bildung und Gemeinwohl",
+                              "Schulen, Hochschulen, Forschung und gemeinnützige Initiativen erhalten vergünstigte "
+                              "Konditionen auf Anfrage. Für Fraktionen und Parteien gelten die öffentlichen Preise, für "
+                              "alle gleich."),
                 ],
-                subline="Andere SaaS verstecken ihre Kalkulation. Wir nicht. Hier ist, woraus sich 39,90 € zusammensetzen.",
+                subline="Der Code ist frei. Bezahlt wird, was Software verlässlich macht.",
                 anchor="kalkulation",
             ),
             ("accordion_faq", {
@@ -340,31 +313,34 @@ def get_marketing_definitions() -> dict:
                     m.rand_links("Zum Nachlesen", ("AGB", "/agb/"), ("Kündigung und Widerruf", "/kuendigung/")),
                 ],
                 "items": [
-                    {"question": "Warum ist Insight kostenlos?",
-                     "answer": "<p>Zugang zu kommunalpolitischen Informationen ist ein Grundrecht — nicht ein Premium-Feature. Insight finanziert sich quer über Work und Session. So bleibt der Bürger:innen-Zugang dauerhaft frei.</p>"},
-                    {"question": "Wie viele Nutzer:innen sind in einem Tarif enthalten?",
-                     "answer": "<p><strong>Unbegrenzt viele.</strong> Ein mandari-Work-Tarif gilt pauschal pro Organisation und hat kein Nutzer-Limit.</p><p>Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Büromitarbeitende und sachkundige Bürger:innen: Der Pauschalpreis bleibt gleich.</p>"},
+                    {"question": "Warum ist das Bürgerportal kostenlos?",
+                     "answer": "<p>Der Zugang zu kommunalpolitischen Informationen gehört allen. Das Bürgerportal finanziert sich über mandari Work und mandari Session, so bleibt es für Bürger:innen dauerhaft kostenlos.</p>"},
+                    {"question": "Wie viele Personen können mit mandari Work arbeiten?",
+                     "answer": "<p><strong>Alle Mitglieder Ihrer Organisation, ohne Obergrenze.</strong> Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Mitarbeitende und sachkundige Bürger:innen: Der Preis bleibt gleich.</p><p>Dazu kommen <strong>25 Gäste inklusive</strong>. Gäste sind Personen außerhalb Ihrer Organisation, etwa aus einer Koalitionsfraktion oder Fachleute für ein Thema. Sie sehen nur, was Sie für sie freigeben. Brauchen Sie mehr, sprechen Sie uns an.</p>"},
+                    {"question": "Können wir mandari Work vorab ausprobieren?",
+                     "answer": "<p>Ja. In der <a href=\"https://demo.mandari.de/\">Demo</a> arbeiten Sie sofort mit den Daten einer erfundenen Stadt, mit einem Klick und ohne Registrierung. Möchten Sie mandari Work mit Ihrer eigenen Fraktion kennenlernen, vereinbaren wir auf Wunsch eine Testphase von bis zu 14 Tagen.</p>"},
                     {"question": "Sind die Preise inkl. MwSt.?",
                      "answer": "<p>Ja, alle hier genannten Preise verstehen sich inkl. 19 % deutscher Mehrwertsteuer. Für Angebotsvergleiche in Vergabeverfahren weisen wir den Nettopreis zusätzlich aus, zum Beispiel 39,90 € brutto entsprechen 33,53 € netto.</p>"},
-                    {"question": "Was kostet mandari, wenn wir selbst hosten?",
-                     "answer": "<p>Die Software kostet nichts, sie steht unter AGPL-3.0. Community-Support gibt es über GitHub. Für Verwaltungen, die verbindliche Reaktionszeiten, begleitete Updates und Sicherheitshinweise brauchen, bieten wir Support- und Wartungsverträge mit jährlicher Laufzeit an; die Konditionen richten sich nach der Einwohnerzahl. Sprechen Sie uns an.</p>"},
-                    {"question": "Gibt es Rabatte für Studierende, Schulen oder NGOs?",
-                     "answer": "<p>Ja. Studierende, Schulen, Universitäten, gemeinnützige Vereine und NGOs bekommen vergünstigte Konditionen, bis hin zur kostenfreien Nutzung für die Lehre. Schicken Sie uns kurz Ihr Anliegen mit Nachweis.</p>"},
+                    {"question": "Wie verdient mandari Geld?",
+                     "answer": "<p>Mit dem Betrieb in unseren Rechenzentren, mit Betreuungsverträgen für Kommunen, die mandari selbst betreiben, und mit Einführung und Schulung. Der Code bleibt in jedem Fall frei.</p>"},
+                    {"question": "Was kostet mandari, wenn wir es selbst betreiben?",
+                     "answer": "<p>Die Software kostet nichts, sie steht unter AGPL-3.0. Den Code finden Sie auf GitHub, die Anleitung für den Betrieb mit Docker Compose in der Dokumentation. Für Verwaltungen, die verbindliche Reaktionszeiten, begleitete Updates und Sicherheitshinweise brauchen, bieten wir Betreuungsverträge mit jährlicher Laufzeit an; die Konditionen richten sich nach der Einwohnerzahl.</p>"},
+                    {"question": "Gibt es Nachlass für Schulen, Hochschulen oder gemeinnützige Initiativen?",
+                     "answer": "<p>Ja. Schulen, Hochschulen, Forschung und gemeinnützige Initiativen erhalten vergünstigte Konditionen, bis hin zur kostenfreien Nutzung für die Lehre. Für Fraktionen und Parteien gelten die öffentlichen Preise, für alle gleich. Schicken Sie uns kurz Ihr Anliegen mit Nachweis.</p>"},
                     {"question": "Was passiert mit meinen Daten bei Kündigung?",
-                     "answer": "<p>Sie bekommen vor der Kündigung einen vollständigen Export Ihrer Daten — JSON oder CSV, wahlweise auch im OParl-Format.</p><p>Nach Vertragsende behalten wir die Daten 30 Tage als Backup, danach werden sie unwiderruflich gelöscht. Auf Wunsch sofort.</p>"},
-                    {"question": "Kann ich mandari komplett selbst hosten?",
-                     "answer": "<p>Ja. mandari ist AGPL-3.0 lizenziert. Laden Sie den Code von GitHub und starten Sie den Docker-Compose-Stack auf Ihrem Server.</p>"},
+                     "answer": "<p>Sie bekommen vor der Kündigung einen vollständigen Export Ihrer Daten als JSON oder CSV, wahlweise auch im OParl-Format.</p><p>Nach Vertragsende halten wir die Daten 30 Tage als Sicherung vor, danach werden sie unwiderruflich gelöscht. Auf Wunsch sofort.</p>"},
                     {"question": "Was kostet mandari Session und wann ist es verfügbar?",
-                     "answer": "<p>Session richtet sich an Verwaltungen und wird pro Kommune individuell kalkuliert. Die Piloten mit ersten Kommunen beginnen 2027; Pilotkommunen erhalten Sonderkonditionen. Sprechen Sie uns früh an.</p>"},
+                     "answer": "<p>mandari Session richtet sich an Verwaltungen und wird je Kommune kalkuliert. Der Pilotbetrieb mit ersten Kommunen beginnt 2027; Pilotkommunen erhalten Sonderkonditionen. Sprechen Sie uns früh an.</p>"},
                 ],
             }),
             m.einladung(
                 "Probieren Sie es aus.",
-                "Die ersten 14 Tage mit mandari Work sind kostenfrei – ohne Kreditkarte.",
-                "Beta-Zugang anfragen", "/kontakt/?subject=Beta-Zugang-Work",
-                link_label="Erstgespräch vereinbaren", link_url="/kontakt/#termin",
+                "In der Demo arbeiten Sie mit mandari Work und mandari Session in einer erfundenen Stadt: ein Klick, "
+                "keine Registrierung. Eine Testphase mit Ihrer eigenen Fraktion vereinbaren wir auf Wunsch.",
+                "Demo öffnen", DEMO_URL,
+                link_label=WORK_AUFRUF, link_url=WORK_AUFRUF_URL,
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
-                      ("Selbst hosten", "Quellcode auf GitHub", "https://github.com/mandariOSS/mandari"),
+                      ("Selbst betreiben", "Quellcode auf GitHub", "https://github.com/mandariOSS/mandari"),
                       ("Für Vergabestellen", "Unterlagen für die Vergabeakte", "/vergabe/")],
             ),
         ],
@@ -437,7 +413,7 @@ def get_marketing_definitions() -> dict:
             ),
             ("feature_matrix", {
                 "header": hdr(title="Welches Modul kann was?", anchor_id="funktionen",
-                              subline="Eine Tabelle statt Prospektsprache, Stand Oktober 2026. Auch was noch fehlt, steht hier: geplante Funktionen mit Zeitraum aus der Roadmap, offene Punkte als „in Prüfung“."),
+                              subline="Alle Funktionen der drei Produkte, Stand November 2026. Geplantes steht mit Zeitraum aus der Roadmap dabei, offene Punkte als „in Prüfung“."),
                 "columns": ["Insight (Bürgerportal)", "Work (Fraktionen)", "Session (Verwaltung)"],
                 "show_legend": True,
                 "groups": [
@@ -495,7 +471,7 @@ def get_marketing_definitions() -> dict:
                         frow("Ratsfragen an Mandatsträger:innen", cell("info", "pausiert bis zum Neuaufbau"), cell("no"), cell("no")),
                         frow("Einwohnerfragestunde und Eingaben", cell("planned", "2027"), cell("no"), cell("planned", "2027")),
                         frow("KI-Zusammenfassungen", cell("partial", "für ausgewählte Quellen"), cell("yes", "Recherche"), cell("planned", "Sitzungsassistent")),
-                        frow("Vorlagen in einfacher Sprache", cell("review"), cell("no"), cell("no")),
+                        frow("Vorlagen in einfacher Sprache", cell("yes", "KI-Kurzfassung, als KI-erstellt gekennzeichnet"), cell("no"), cell("no")),
                     ),
                     fgroup("Betrieb und Sicherheit",
                         frow("Rollen und Rechte", cell("no", "ohne Anmeldung"), cell("yes", "über 50 Berechtigungen"), cell("yes")),
@@ -506,7 +482,7 @@ def get_marketing_definitions() -> dict:
                         frow("Übergabe an DMS und E-Akte", cell("no"), cell("no"), cell("planned", "2027")),
                         frow("Aufbewahrungsfristen und Löschlauf", cell("no"), cell("info", "Löschung bei Vertragsende"), cell("yes", "je Mandant konfigurierbar")),
                         frow("Datenexport (OParl, CSV, JSON)", cell("yes"), cell("yes"), cell("yes")),
-                        frow("Self-Hosting mit Docker", cell("yes"), cell("yes"), cell("yes")),
+                        frow("Selbstbetrieb mit Docker Compose", cell("yes"), cell("yes"), cell("yes")),
                         frow("Barrierefreiheit nach BITV 2.0", cell("planned", "Prüfung 2026/27"), cell("planned", "Prüfung 2026/27"), cell("planned", "Selbstbewertung mit Prüfbericht Q4/2026")),
                         frow("Externer Penetrationstest", cell("planned", "2027"), cell("planned", "2027"), cell("planned", "2027")),
                     ),
@@ -573,7 +549,7 @@ def get_marketing_definitions() -> dict:
                 "title": "Politik machen statt PDFs sortieren.",
                 # Suchbegriff „Fraktionssoftware“ im Lead (#939); die Überschrift bleibt
                 "subline": "mandari Work ist die Fraktionssoftware für Ihre Ratsarbeit: Sitzungen vorbereiten, Anträge schreiben, Positionen abstimmen – in einem Werkzeug, das die Ratsdaten Ihrer Kommune schon kennt.",
-                "ctas": [cta("mandari Work buchen", "https://kunden.mandari.de/kunden/buchen"),
+                "ctas": [cta(WORK_AUFRUF, WORK_AUFRUF_URL),
                          cta("Alle Funktionen im Überblick", "/produkte/#funktionen", style="outline")],
             }),
             # Muster 5b: sechs Vorteile als Begriffe (das Bild von Work steht schon im Kopf)
@@ -626,12 +602,12 @@ def get_marketing_definitions() -> dict:
             ),
             m.einladung(
                 "Starten Sie mit Ihrer Fraktion.",
-                "39,90 € im Monat inklusive Mehrwertsteuer, pauschal für die ganze Fraktion – ohne Nutzerlimit, "
-                "Mitarbeitende und sachkundige Bürger:innen eingeschlossen.",
-                "mandari Work buchen", "https://kunden.mandari.de/kunden/buchen",
+                "39,90 € im Monat inklusive Mehrwertsteuer, pauschal für die ganze Fraktion. Alle Mitglieder, "
+                "Mitarbeitende und sachkundige Bürger:innen sind eingeschlossen, dazu 25 Gäste.",
+                WORK_AUFRUF, WORK_AUFRUF_URL,
                 link_label="Preise und Zusatzleistungen ansehen", link_url="/preise/",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
-                      ("Ausprobieren", "14 Tage kostenfrei", "/kontakt/?subject=Beta-Zugang-Work"),
+                      ("Ausprobieren", "Demo öffnen", DEMO_URL),
                       ("Alle Funktionen", "Funktionsübersicht", "/produkte/#funktionen")],
             ),
         ],
@@ -643,7 +619,7 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari ist offen.", "title_highlight": "Bau mit.",
-                "subline": "Du musst kein Profi sein, kein Vertrag, kein Geld. Eine Stunde reicht, manchmal sogar fünf Minuten.",
+                "subline": "Du musst kein Profi sein und brauchst kein Geld. Eine Stunde reicht, manchmal sogar fünf Minuten.",
                 "subline_secondary": "",
                 "ctas": [cta("Auf GitHub ansehen", "https://github.com/mandariOSS", "github", "primary"),
                          cta("Good first issues", "https://github.com/mandariOSS/mandari/labels/good%20first%20issue", "sparkles", "secondary")],
@@ -653,24 +629,24 @@ def get_marketing_definitions() -> dict:
             m.register(
                 "Such dir aus, was zu dir passt",
                 [m.gruppe("",
-                    m.zeile("Code beitragen", "Pull Requests jeder Größe sind willkommen — vom Tippfehler bis zum neuen "
+                    m.zeile("Code beitragen", "Pull Requests jeder Größe sind willkommen, vom Tippfehler bis zum neuen "
                             "OParl-Adapter. Klon das Repo, starte es mit docker compose up und such dir ein Issue mit dem "
                             "Label „good first issue“.", ort="Django, HTMX, PostgreSQL",
                             zusatz="<a href=\"https://github.com/mandariOSS/mandari/labels/good%20first%20issue\">Erstes Issue finden</a>"),
                     m.zeile("Testen und Fehler melden", "Du klickst dich durch mandari, findest etwas Komisches und "
-                            "schreibst zwei Sätze auf — fertig. Ein Screenshot hilft, die Vorlage für Fehlerberichte "
+                            "schreibst zwei Sätze auf. Fertig. Ein Screenshot hilft, die Vorlage für Fehlerberichte "
                             "führt dich durch.", ort="Der niederschwelligste Beitrag",
                             zusatz="<a href=\"https://github.com/mandariOSS/mandari/issues/new?template=bug_report.md\">Fehler melden</a>"),
                     m.zeile("Übersetzen", "mandari soll europaweit zugänglich werden. Deutsch ist vollständig, Englisch "
                             "in Arbeit. Wenn du Französisch, Niederländisch, Polnisch oder eine andere EU-Sprache als "
                             "Muttersprache sprichst, brauchen wir dich.", ort="Aktuell nur Deutsch, EU-Sprachen folgen",
                             zusatz="<a href=\"/kontakt/?subject=Übersetzung-Sprache\">Sprache anbieten</a>"),
-                    m.zeile("Doku schreiben", "Wenn du mandari verstanden hast, schreib's auf — die nächste Person spart "
+                    m.zeile("Doku schreiben", "Wenn du mandari verstanden hast, schreib es auf: Die nächste Person spart "
                             "Stunden. Besonders gefragt: Anleitungen zum Selbstbetrieb, OParl-Adapter für eure Kommune und "
                             "Beispiele für die API.", ort="Markdown reicht, kein Setup nötig",
                             zusatz="<a href=\"https://github.com/mandariOSS/mandari/tree/main/docs\">Doku-Verzeichnis öffnen</a>"),
                     m.zeile("Design beitragen", "Du hast ein Auge für Oberflächen, die Bürger:innen verstehen? Wir suchen "
-                            "Skizzen für komplexe Abläufe — in Figma, Penpot oder als markierter Screenshot. Auch eine "
+                            "Skizzen für komplexe Abläufe, in Figma, Penpot oder als markierter Screenshot. Auch eine "
                             "grobe Idee hilft.", ort="UI-Skizzen, Karten-Konzepte, Symbole",
                             zusatz="<a href=\"/kontakt/?subject=Design-Beitrag\">Konzept zeigen</a>"),
                     m.zeile("Verbreiten", "mandari braucht Reichweite. Halte einen Kurzvortrag in deinem OK Lab, schreib "
@@ -690,9 +666,9 @@ def get_marketing_definitions() -> dict:
                   "Wir antworten zeitnah."),
                  ("Issue wählen", "Aus den offenen Issues oder ein neues. Wir kommentieren mit Kontext.",
                   "Mentoring inklusive."),
-                 ("Beitrag einreichen", "Pull Request, Übersetzung, Doku-Patch oder Markdown im Issue — alles passt. "
+                 ("Beitrag einreichen", "Pull Request, Übersetzung, Doku-Patch oder Markdown im Issue: alles passt. "
                   "Die CI läuft, wir reviewen.", "")],
-                subline="Kein bürokratisches CLA, keine 50-seitige Contributor-Doku.",
+                subline="Für Code-Beiträge bitten wir um eine kurze Beitragsvereinbarung. Alles andere geht ohne Formalitäten.",
                 ergebnis={"titel": "Gemergt.", "text": "Dein Beitrag steht in den Release-Notes.",
                           "link_label": "Offene Issues ansehen",
                           "link_url": "https://github.com/mandariOSS/mandari/labels/good%20first%20issue"},
@@ -700,7 +676,7 @@ def get_marketing_definitions() -> dict:
             ),
             m.einladung(
                 "Schreib einfach Hallo.",
-                "Egal ob du eine Stunde oder einen Nachmittag hast, ob Profi oder blutige Anfänger:in — wir freuen "
+                "Egal ob du eine Stunde oder einen Nachmittag hast, ob Profi oder Anfänger:in: Wir freuen "
                 "uns auf deine Nachricht.",
                 "Auf GitHub starten", "https://github.com/mandariOSS",
                 link_label="Nachricht schreiben", link_url="/kontakt/?subject=Hallo-aus-der-Community#nachricht",
@@ -716,18 +692,18 @@ def get_marketing_definitions() -> dict:
         "trust": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
-                "title": "Trust Center:", "title_highlight": "alle Antworten an einem Ort.",
-                "subline": "Bevor Sie mit einem Anbieter sprechen, möchten Sie AVV, Subprozessorenliste, Hosting-Stack und Backup-Strategie sehen. Hier sind sie, vorbereitet und unterschriftsreif.",
-                "subline_secondary": "Diese Seite richtet sich an Datenschutzbeauftragte, IT-Leiter:innen und Verwaltungs-Compliance.",
+                "title": "Trust Center", "title_highlight": "",
+                "subline": "Auftragsverarbeitung, Unterauftragsverarbeiter, Betrieb und Sicherung: alles, was Datenschutz und IT vor einer Entscheidung prüfen, an einem Ort.",
+                "subline_secondary": "Für Datenschutzbeauftragte, IT-Leitungen und Vergabestellen.",
                 "ctas": [cta("Muster-AVV ansehen", "/avv/", "file-signature", "primary"),
-                         cta("Konkrete Frage stellen", "/kontakt/?subject=Trust-Center-Frage", "message-square", "outline")],
+                         cta("Nachricht schreiben", "/kontakt/?subject=Trust-Center-Frage#nachricht", "message-square", "outline")],
                 "background_color": "primary",
             }),
             # Eckdaten: stehen auf der Dokumentseite (marketing/dokument.html) in der Randspalte
             ("trust_banner", {"color": "primary", "items": [
                 trust_item("map-pin", "Hosting", "Betrieb in Deutschland"),
-                trust_item("lock", "TLS 1.3", "AES-256 at rest"),
-                trust_item("database-backup", "Backup", "täglich, 30 Tage, in Deutschland und Finnland (EU)"),
+                trust_item("lock", "Verschlüsselung", "TLS 1.3, gespeicherte Arbeitsinhalte mit AES-256"),
+                trust_item("database-backup", "Sicherung", "täglich, 30 Tage, in Deutschland und Finnland (EU)"),
                 trust_item("file-signature", "AVV", "nach Art. 28 DSGVO"),
             ]}),
             # ── 01 · AVV ─────────────────────────────────────────────
@@ -748,8 +724,8 @@ def get_marketing_definitions() -> dict:
                     "<ul>"
                     "<li>Verschlüsselung sensibler Inhalte mit AES-256-GCM, organisationsspezifische Schlüssel</li>"
                     "<li>Transportverschlüsselung (TLS) für alle Verbindungen</li>"
-                    "<li>Tägliche Backups mit definierter Aufbewahrung</li>"
-                    "<li>Zugriffskontrolle über rollenbasiertes Berechtigungssystem (RBAC)</li>"
+                    "<li>Tägliche Sicherungen, 30 Tage aufbewahrt</li>"
+                    "<li>Zugriff nur über Rollen und Rechte</li>"
                     "<li>Betrieb in Rechenzentren in Deutschland, Sicherungen in Deutschland und Finnland (EU)</li>"
                     "</ul>"
                 ),
@@ -759,14 +735,14 @@ def get_marketing_definitions() -> dict:
                 "body": (
                     "<p><strong>AVV anfordern:</strong> Schreiben Sie uns eine kurze Mail an "
                     "<a href=\"mailto:hello@mandari.de?subject=AVV-Anfrage\">hello@mandari.de</a> "
-                    "mit dem Namen Ihrer Organisation — Sie erhalten den unterschriftsreifen AVV "
+                    "mit dem Namen Ihrer Organisation. Sie erhalten den unterschriftsreifen AVV "
                     "als Dokument zurück. Den Mustertext gibt es unter <a href=\"/avv/\">mandari.de/avv</a>.</p>"
                 ),
             }),
-            # ── 02 · Subprocessoren: Muster 3 innerhalb der Dokumentseite ─
+            # ── 02 · Unterauftragsverarbeiter: Muster 3 innerhalb der Dokumentseite ─
             ("numbered_article", {
                 "number": "2", "anchor": "subprocessors",
-                "title": "Subprocessoren — wer sonst noch Daten sieht",
+                "title": "Unterauftragsverarbeiter",
                 "body": (
                     "<p>Vollständige Liste der Unterauftragsverarbeiter, die wir heute einsetzen. Es gibt keine "
                     "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU. "
@@ -799,12 +775,12 @@ def get_marketing_definitions() -> dict:
                      "freigegeben haben; ohne Freigabe bleiben die KI-Funktionen aus. Die Texterkennung (OCR) läuft "
                      "auf unseren eigenen Systemen, ohne externen Anbieter.</p>"
                      "<p>Über geplante Änderungen an dieser Liste informieren wir vorab; Sie haben ein "
-                     "Widerspruchsrecht gegen neue Subunternehmer (Details im <a href=\"/avv/\">AVV, Ziff. 7</a>).</p>",
+                     "Widerspruchsrecht gegen neue Unterauftragsverarbeiter (Details im <a href=\"/avv/\">AVV, Ziff. 7</a>).</p>",
             ),
             # ── 03 · Hosting ─────────────────────────────────────────
             ("numbered_article", {
                 "number": "3", "anchor": "hosting",
-                "title": "Hosting-Stack",
+                "title": "Betrieb und Infrastruktur",
                 "body": (
                     "<p>Alle Systeme laufen bei der Hetzner Online GmbH in deutschen Rechenzentren "
                     "(kein US-Cloud-Anbieter, kein CDN mit Drittland-Transfer). Hetzner ist nach ISO/IEC 27001:2022 "
@@ -813,20 +789,20 @@ def get_marketing_definitions() -> dict:
                     "unseres eigenen Betriebs.</p>"
                     "<ul>"
                     "<li>TLS-Verschlüsselung für alle Verbindungen (Caddy, automatische Zertifikate)</li>"
-                    "<li>Verschlüsselung sensibler Arbeitsinhalte at rest: AES-256-GCM mit organisationsspezifischen Schlüsseln</li>"
-                    "<li>PostgreSQL 16, Redis und Elasticsearch — alles self-hosted im selben Stack</li>"
-                    "<li>Kompletter Stack Open Source (AGPL-3.0) und damit auditierbar</li>"
+                    "<li>Verschlüsselung gespeicherter Arbeitsinhalte: AES-256-GCM mit organisationsspezifischen Schlüsseln</li>"
+                    "<li>PostgreSQL, Redis und Elasticsearch betreiben wir selbst, auf denselben Systemen</li>"
+                    "<li>Die Anwendung ist Open Source (AGPL-3.0) und damit prüfbar</li>"
                     "<li>Eingesetzte Komponenten mit Lizenzen: <a href=\"https://docs.mandari.de/entwicklung/sbom/\">Software Bill of Materials</a></li>"
-                    "<li>Betriebsmodelle und Self-Hosting: <a href=\"https://docs.mandari.de/betrieb/\">Betriebsdokumentation</a></li>"
+                    "<li>Betriebsmodelle und Selbstbetrieb: <a href=\"https://docs.mandari.de/betrieb/\">Betriebsdokumentation</a></li>"
                     "</ul>"
                 ),
             }),
-            # ── 04 · Backup: Muster 9a (Zahl im Satz) vor dem Text ─────
+            # ── 04 · Sicherung: Muster 9a (Zahl im Satz) vor dem Text ─────
             ("numbered_article", {
                 "number": "4", "anchor": "backup",
-                "title": "Backup & Recovery",
+                "title": "Sicherung und Wiederherstellung",
                 "body": (
-                    "<p>Backups liegen verschlüsselt und getrennt vom Produktivsystem auf Hetzner Storage Boxen an "
+                    "<p>Die Sicherungen liegen verschlüsselt und getrennt vom Produktivsystem auf Hetzner Storage Boxen an "
                     "zwei Standorten: Falkenstein (Deutschland) und Helsinki (Finnland, EU). Betreiben wir für Ihre "
                     "Verwaltung eine eigene Instanz, sichern wir auf Wunsch ausschließlich in Deutschland. "
                     "Wiederherstellungen werden regelmäßig getestet.</p>"
@@ -842,40 +818,39 @@ def get_marketing_definitions() -> dict:
             # ── 05 · Verfügbarkeit ───────────────────────────────────
             ("numbered_article", {
                 "number": "5", "anchor": "availability",
-                "title": "Verfügbarkeit & Status",
+                "title": "Verfügbarkeit und Status",
                 "body": (
-                    "<p>Wir befinden uns in der Pilot-Phase und schulden vertraglich noch keine feste "
-                    "Verfügbarkeitsquote (siehe <a href=\"/agb/\">AGB</a>). Ein SLA-Dokument mit Verfügbarkeitszusage, "
-                    "Störungsklassen und Reaktionszeiten ist für die Version 1.0 in Vorbereitung "
-                    "(<a href=\"https://github.com/mandariOSS/mandari/issues/93\">öffentlich nachverfolgbar</a>). "
-                    "Was wir heute bieten:</p>"
+                    "<p>Den Betriebszustand sehen Sie jederzeit selbst. Eine Service-Level-Vereinbarung mit "
+                    "Verfügbarkeitszusage, Störungsklassen und Reaktionszeiten kommt mit Version 1.0 "
+                    "(<a href=\"https://github.com/mandariOSS/mandari/issues/93\">Stand im Issue</a>); bis dahin gelten "
+                    "die <a href=\"/agb/\">AGB</a>.</p>"
                     "<ul>"
-                    "<li>Öffentliche Live-Statusseite: <a href=\"https://status.mandari.de/\">status.mandari.de</a></li>"
-                    "<li>Wartungsfenster werden vorab angekündigt</li>"
-                    "<li>Vorfälle werden transparent dokumentiert — siehe <a href=\"/transparenz/\">Transparenzbericht</a></li>"
+                    "<li>Öffentliche Statusseite: <a href=\"https://status.mandari.de/\">status.mandari.de</a></li>"
+                    "<li>Wartungsfenster kündigen wir vorab an</li>"
+                    "<li>Vorfälle dokumentieren wir im <a href=\"/transparenz/\">Transparenzbericht</a></li>"
                     "</ul>"
                 ),
             }),
             # ── 06 · Audits ──────────────────────────────────────────
             ("numbered_article", {
                 "number": "6", "anchor": "audits",
-                "title": "Audits & Zertifikate",
+                "title": "Prüfungen und Nachweise",
                 "body": (
-                    "<p>Auch hier keine Marketing-Übertreibung: Eine ISO-27001- oder BSI-Grundschutz-"
-                    "Zertifizierung ist in der Beta-Phase nicht realistisch — "
-                    "und wir behaupten keine.</p>"
+                    "<p>Unsere Sicherheit können Sie heute schon selbst prüfen, externe Nachweise folgen nach dem "
+                    "Fahrplan unten. Die Rechenzentren sind nach ISO/IEC 27001 zertifiziert; eine eigene "
+                    "Zertifizierung unseres Betriebs gibt es noch nicht.</p>"
                     "<ul>"
-                    "<li>Der gesamte Code ist Open Source (AGPL-3.0) und öffentlich auditierbar</li>"
-                    "<li>Responsible-Disclosure-Programm nach RFC 9116: <a href=\"/sicherheit/disclosure/\">/sicherheit/disclosure/</a></li>"
-                    "<li>Softwarelieferkette: alle Abhängigkeiten sind in Lockfiles festgeschrieben, jeder Build wird "
-                    "automatisch gegen bekannte Schwachstellen geprüft (blockierend), und zu jedem Release entsteht eine "
-                    "maschinenlesbare Stückliste (SBOM, CycloneDX) als Download bei den "
+                    "<li>Der Code der Anwendung ist Open Source (AGPL-3.0) und öffentlich prüfbar</li>"
+                    "<li>Meldeweg für Sicherheitslücken nach RFC 9116: <a href=\"/sicherheit/disclosure/\">Sicherheitslücke melden</a></li>"
+                    "<li>Softwarelieferkette: Alle Abhängigkeiten sind festgeschrieben, jeder Build wird "
+                    "automatisch gegen bekannte Schwachstellen geprüft und bei Befund gestoppt, und zu jedem Release "
+                    "entsteht eine maschinenlesbare Stückliste (SBOM, CycloneDX) als Download bei den "
                     "<a href=\"https://github.com/mandariOSS/mandari/releases\">GitHub-Releases</a></li>"
-                    "<li>Lizenzinventar nach REUSE-Standard: jede Datei im Repository trägt eine maschinenlesbare "
-                    "Lizenz- und Urheberangabe, geprüft in der CI</li>"
+                    "<li>Lizenzinventar nach REUSE-Standard: Jede Datei im Repository trägt eine maschinenlesbare "
+                    "Lizenz- und Urheberangabe, automatisch geprüft</li>"
                     "<li>Versionen, Supportzeiträume und Fristen für Sicherheitskorrekturen sind öffentlich geregelt: "
                     "<a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- und Support-Politik</a></li>"
-                    "<li>Externes Security-Audit ist für die General-Availability-Phase geplant</li>"
+                    "<li>Ein externer Penetrationstest ist für 2027 geplant</li>"
                     "</ul>"
                 ),
             }),
@@ -894,11 +869,11 @@ def get_marketing_definitions() -> dict:
                      "Sicherheitsnachweise</a></p>",
             ),
             m.einladung(
-                "Frage übrig?",
-                "Wenn Ihre Datenschutz- oder IT-Compliance hier keine Antwort findet, schreiben Sie uns. Wir "
-                "antworten direkt und ohne Umwege.",
-                "Frage stellen", "/kontakt/?subject=Trust-Center-Frage",
-                link_label="Compliance-Call buchen", link_url="/kontakt/#termin-buchen",
+                "Noch eine Frage offen?",
+                "Wenn Datenschutz oder IT hier keine Antwort finden, schreiben Sie uns. Wir antworten direkt, "
+                "in der Regel innerhalb eines Werktags.",
+                "Nachricht schreiben", "/kontakt/?subject=Trust-Center-Frage#nachricht",
+                link_label="Erstgespräch vereinbaren", link_url="/kontakt/#termin",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Datenschutz", "datenschutz@mandari.de", ""),
                       ("Sicherheitslücke", "security@mandari.de", ""), ("Status", "status.mandari.de", "https://status.mandari.de/")],
             ),
@@ -910,8 +885,8 @@ def get_marketing_definitions() -> dict:
         "abuse": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "rose",
-                "title": "Missbrauch melden,", "title_highlight": "wir kümmern uns",
-                "subline": "Spam, illegaler Content, Datenschutz-Verletzungen, Urheberrechtsverstöße, Belästigung — wir bestätigen den Eingang innerhalb von 5 Werktagen.",
+                "title": "Missbrauch melden", "title_highlight": "",
+                "subline": "Spam, rechtswidrige Inhalte, Datenschutzverletzungen, Urheberrechtsverstöße oder Belästigung: Wir bestätigen den Eingang innerhalb von 5 Werktagen.",
                 "subline_secondary": "",
                 "ctas": [cta("Missbrauch melden", "mailto:abuse@mandari.de?subject=Missbrauch-Meldung", "mail", "primary"),
                          cta("Kontaktformular", "/kontakt/?subject=Missbrauch-Meldung#nachricht", "message-square", "secondary")],
@@ -924,10 +899,10 @@ def get_marketing_definitions() -> dict:
                     m.zeile("Spam und unerwünschte Mails", "Die vollständige Mail mit Header, wann sie ankam und die "
                             "Absenderadresse.", ort="Sie bekommen Mails von @mandari.de, die Sie nicht erwartet haben",
                             zusatz="<a href=\"mailto:abuse@mandari.de?subject=Spam-Meldung\">abuse@mandari.de</a>"),
-                    m.zeile("Illegaler Inhalt", "Die Adresse des Inhalts, eine Beschreibung des Verstoßes und, wenn "
+                    m.zeile("Rechtswidriger Inhalt", "Die Adresse des Inhalts, eine Beschreibung des Verstoßes und, wenn "
                             "möglich, einen Screenshot.", ort="Strafbar, hetzerisch oder jugendgefährdend, auf Insight oder Work",
                             zusatz="<a href=\"mailto:abuse@mandari.de?subject=Illegaler-Content\">abuse@mandari.de</a>"),
-                    m.zeile("Datenschutz-Verletzung", "Welche Daten betroffen sind, wo sie erschienen sind und einen "
+                    m.zeile("Datenschutzverletzung", "Welche Daten betroffen sind, wo sie erschienen sind und einen "
                             "Identitätsnachweis.", ort="Auskunft, Löschung oder Beschwerde nach DSGVO",
                             zusatz="<a href=\"mailto:datenschutz@mandari.de?subject=DSGVO-Anfrage\">datenschutz@mandari.de</a>"),
                     m.zeile("Urheberrecht", "Welches Werk betroffen ist, die Adresse der Verletzung und warum Sie "
@@ -1050,9 +1025,9 @@ def get_marketing_definitions() -> dict:
         "migration": [
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
-                "title": "Wechsel von ALLRIS, regisafe oder Somacos?", "title_highlight": "Wir machen's planbar.",
-                "subline": "Eine RIS-Ablösung ist kein Sprint, aber auch kein Drama: vier klare Schritte, eine ehrliche "
-                            "Aufwandsschätzung und Parallelbetrieb, bis der Wechsel sitzt.",
+                "title": "Von ALLRIS, regisafe oder Somacos", "title_highlight": "zu mandari wechseln.",
+                "subline": "Vier klare Schritte, eine belastbare Aufwandsschätzung und Parallelbetrieb, bis der "
+                            "Wechsel sitzt: in 7 bis 14 Wochen vom ersten Termin bis zur Umstellung.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Migration-Beratung#termin", "calendar", "primary"),
                          cta("Was kommt mit?", "#scope", "list-checks", "secondary")],
@@ -1060,25 +1035,24 @@ def get_marketing_definitions() -> dict:
             }),
             # Muster 1b: Dauern aufeinanderfolgender Schritte, frühestens und spätestens
             m.dauerbalken(
-                "So läuft eine Migration zu mandari",
+                "So läuft der Wechsel zu mandari",
                 [
                     m.dauer("Bestandsaufnahme", "1–2 Wochen",
-                            "Wir schauen uns Ihr Alt-RIS an: OParl-Verfügbarkeit, Datenmenge, Sonderfelder.", von=1, bis=2),
-                    m.dauer("Mapping und Test", "2–4 Wochen",
-                            "Wir bauen den Mapping-Layer und importieren in eine Test-Instanz.", von=2, bis=4),
+                            "Wir sehen uns Ihr bisheriges System an: OParl-Schnittstelle, Datenmenge, Sonderfelder.", von=1, bis=2),
+                    m.dauer("Zuordnung und Test", "2–4 Wochen",
+                            "Wir ordnen Ihre Daten den Feldern in mandari zu und importieren in eine Testumgebung.", von=2, bis=4),
                     m.dauer("Schulung und Parallelbetrieb", "4–8 Wochen",
                             "Ihr Team wird geschult, beide Systeme laufen parallel.", von=4, bis=8),
                     m.dauer("Umstellung", "an einem festen Tag",
-                            "Definierter Termin für den Wechsel; das Alt-RIS bleibt danach lesbar.", meilenstein=True),
+                            "Fester Termin für den Wechsel; das bisherige System bleibt danach lesbar.", meilenstein=True),
                 ],
-                subline="Für IT-Leiter:innen, Hauptamtsleiter:innen und Fraktionsgeschäftsführer:innen: realistische "
-                        "Zeiten, klare Verantwortlichkeiten und kein Wechsel über Nacht – zwischen 7 und 14 Wochen "
-                        "vom ersten Termin bis zur Umstellung.",
+                subline="Für IT-Leitungen, Hauptämter und Fraktionsgeschäftsführungen: realistische Zeiten, klare "
+                        "Verantwortlichkeiten und kein Wechsel über Nacht.",
                 anchor="ablauf",
             ),
             # Muster 8: Datenart × Weg der Übernahme
             m.vergleich(
-                "Was kommt mit — und was prüfen wir individuell?",
+                "Was mitkommt und was wir einzeln prüfen",
                 [("Über den OParl-Standard", "strukturiert und verlustfrei übernommen"),
                  ("In der Bestandsaufnahme", "gemeinsam vor der Umstellung geklärt")],
                 [
@@ -1087,17 +1061,17 @@ def get_marketing_definitions() -> dict:
                     ("Gremien, Personen und Mitgliedschaften", ["kommt mit", "–"]),
                     ("Dokumente und PDFs", ["kommt mit, inklusive Volltext-Indexierung", "–"]),
                     ("Wahlperioden und Orte", ["kommt mit", "–"]),
-                    ("Anbieterspezifische Sonderfelder und Vermerke", ["–", "prüfen wir individuell"]),
-                    ("Historische Daten ohne OParl-Export", ["–", "prüfen wir individuell"]),
-                    ("Interne, nichtöffentliche Vorlagen und Protokolle", ["–", "prüfen wir individuell"]),
-                    ("Sitzungsgeld-Konfiguration und Abrechnungshistorie", ["–", "prüfen wir individuell"]),
+                    ("Anbieterspezifische Sonderfelder und Vermerke", ["–", "prüfen wir einzeln"]),
+                    ("Historische Daten ohne OParl-Export", ["–", "prüfen wir einzeln"]),
+                    ("Interne, nichtöffentliche Vorlagen und Protokolle", ["–", "prüfen wir einzeln"]),
+                    ("Sitzungsgeld-Konfiguration und Abrechnungshistorie", ["–", "prüfen wir einzeln"]),
                 ],
-                subline="Ehrliche Antwort statt „alles, kein Problem“: Der OParl-Standard trägt das meiste, der Rest ist Handarbeit.",
+                subline="Der OParl-Standard trägt das meiste. Den Rest klären wir mit Ihnen in der Bestandsaufnahme.",
                 anchor="scope",
             ),
             m.einladung(
                 "Bereit für ein Erstgespräch?",
-                "Pilotkommunen erhalten Sonderkonditionen für den Umstieg. In 30 Minuten klären wir, welches Alt-RIS, "
+                "Pilotkommunen erhalten Sonderkonditionen für den Wechsel. In 30 Minuten klären wir, welches System, "
                 "welche Datenmenge und welcher Zeitplan zu Ihrer Verwaltung passen.",
                 "Erstgespräch vereinbaren", "/kontakt/?subject=Migration-Beratung#termin",
                 link_label="Preise ansehen", link_url="/preise/",
@@ -1133,17 +1107,17 @@ def get_marketing_definitions() -> dict:
                 "subline": "mandari Session führt Ihren Sitzungsdienst von der Tagesordnung bis zur freigegebenen Niederschrift und veröffentlicht im Bürgerportal, sobald Sie es in den Einstellungen freigeben – auf deutschen Servern und als Open Source.",
                 "subline_secondary": "",
                 "ctas": [cta("Erstgespräch vereinbaren", "/kontakt/?subject=Kommune-anbinden#termin", "calendar", "primary"),
-                         cta("Migration vom Alt-RIS", "/migration/", "move-right", "secondary")],
+                         cta("Wechsel vom bisherigen RIS", "/migration/", "move-right", "secondary")],
                 "background_color": "primary",
             }),
             # Muster 5b: drei Bausteine als Begriffe (das Bild von Session steht schon im Kopf)
             m.begriffe(
                 "Drei Bausteine, ein Ziel: weniger Aufwand, mehr Transparenz",
                 [
-                    m.begriff("Sitzungsmanagement ohne Medienbrüche",
+                    m.begriff("Die ganze Sitzung in einem System",
                               "Von der Sitzungsplanung bis zum Protokoll in einem System: Tagesordnungen, Einladungen "
                               "digital und auf Papier, Vorlagen und die Abrechnung des Sitzungsgelds. Was einmal erfasst "
-                              "ist, wird nicht noch einmal abgetippt — das spart Zeit im Ratsbüro und vermeidet Fehler.",
+                              "ist, wird nicht noch einmal abgetippt. Das spart Zeit im Ratsbüro und vermeidet Fehler.",
                               marke="mandari Session (Pilotphase)", link_label="Angebot anfragen",
                               link_url="/kontakt/?subject=Session-Angebot"),
                     m.begriff("Veröffentlichung ohne Zusatzaufwand",
@@ -1153,10 +1127,10 @@ def get_marketing_definitions() -> dict:
                               marke="OParl 1.1", link_label="Zur OParl-Schnittstelle",
                               link_url="/oparl-schnittstelle/"),
                     m.begriff("Bürgernähe, die keine Arbeit macht",
-                              "Bürgerinnen und Bürger finden Beschlüsse, Vorlagen und Abstimmungen selbst — mit "
+                              "Bürger:innen finden Beschlüsse, Vorlagen und Abstimmungen selbst: mit "
                               "Volltextsuche über die Dokumente, ohne Anmeldung und ohne Tracking. Das entlastet "
                               "Verwaltung und Rat von Einzelanfragen, und für Ihre Kommune ist das Portal inklusive.",
-                              marke="Bürgerportal mandari Insight", link_label="Insight ansehen", link_url="/insight/"),
+                              marke="Bürgerportal mandari Insight", link_label="Bürgerportal öffnen", link_url="/insight/"),
                 ],
                 subline="Was im Verwaltungsalltag zählt – vom Ratsbüro bis zur Frage aus der Bürgerschaft.",
                 anchor="bausteine",
@@ -1172,12 +1146,12 @@ def get_marketing_definitions() -> dict:
                 "<p><strong>Deutsches Hosting, DSGVO-konform.</strong> Alle Systeme laufen in deutschen Rechenzentren, "
                 "ohne US-Cloud-Anbieter; Hosting und Sicherungen kommen ohne Übermittlung in Drittländer aus. Für Ihre "
                 "Prüfung liegen der Mustervertrag zur Auftragsverarbeitung und die vollständige Liste der "
-                "Unterauftragnehmer mit ihren Verarbeitungsorten offen; gesichert wird täglich und verschlüsselt in "
+                "Unterauftragsverarbeiter mit ihren Verarbeitungsorten offen; gesichert wird täglich und verschlüsselt in "
                 "Falkenstein (Deutschland) und Helsinki (Finnland, EU), mit eigener Instanz auf Wunsch ausschließlich "
                 "in Deutschland.</p>"
-                "<p><strong>Open Source heißt: kein Vendor-Lock-in.</strong> Der Quellcode steht unter AGPL-3.0, Ihre "
+                "<p><strong>Open Source heißt: keine Anbieterbindung.</strong> Der Quellcode steht unter AGPL-3.0, Ihre "
                 "IT kann ihn prüfen. Öffentliches geben Sie über OParl heraus, Beschlüsse, Berichte und Sitzungsgeld "
-                "als CSV und JSON, und Sie entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen — "
+                "als CSV und JSON, und Sie entscheiden selbst, ob Sie mandari betreiben oder betreiben lassen, "
                 "unabhängig vom Anbieter und seinen Preisen.</p>",
                 [
                     m.rand_fakten("Für Ihre Prüfung",
@@ -1213,7 +1187,7 @@ def get_marketing_definitions() -> dict:
                 "Sonderkonditionen, kurze Wege in die Entwicklung und die Übernahme Ihrer Gremien und Personen. Im "
                 "Erstgespräch klären wir Anbindbarkeit, Zeitplan und Konditionen.",
                 "Erstgespräch vereinbaren", "/kontakt/?subject=Pilot-Kommune#termin",
-                link_label="Migration ansehen", link_url="/migration/",
+                link_label="So läuft der Wechsel", link_url="/migration/",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
                       ("Für Vergabestellen", "Unterlagen für die Vergabeakte", "/vergabe/"),
                       ("Im Vergleich", "RIS-Vergleich", "/vergleich/")],
@@ -1250,11 +1224,11 @@ def get_marketing_definitions() -> dict:
                                      "Vertraulichkeit, Integrität, Verfügbarkeit, Löschung",
                                      url="https://docs.mandari.de/datenschutz/tom/", ort="auf docs.mandari.de", status="da"),
                              m.zeile("Löschkonzept und Aufbewahrungsfristen", "Fristen je Mandant, auditierter Löschlauf, "
-                                     "Betroffenenauskunft, Crypto-Shredding bei Vertragsende",
+                                     "Betroffenenauskunft, Vernichtung des Schlüssels nach Vertragsende",
                                      url="https://docs.mandari.de/datenschutz/loeschkonzept/", ort="auf docs.mandari.de",
                                      status="da"),
-                             m.zeile("Subprozessoren und Hosting-Stack", "Unterauftragsverarbeiter mit Standort und Zweck, "
-                                     "Infrastruktur, Backup und Wiederherstellung", url="/trust/#subprocessors",
+                             m.zeile("Unterauftragsverarbeiter und Infrastruktur", "Unterauftragsverarbeiter mit Standort und Zweck, "
+                                     "Infrastruktur, Sicherung und Wiederherstellung", url="/trust/#subprocessors",
                                      ort="im Trust Center", status="da"),
                              m.zeile("Eigenerklärungen und Referenzblatt", "Ausschlussgründe und Eignung; Referenzen "
                                      "getrennt nach angebundenen Datenquellen und Kunden",
@@ -1267,7 +1241,7 @@ def get_marketing_definitions() -> dict:
                                      "Ihre Vergabeunterlagen", url="https://github.com/mandariOSS/mandari/issues/94",
                                      ort="Fortschritt im Issue", status="offen"),
                              m.zeile("Preisblatt brutto und netto", "alle laufenden, einmaligen und optionalen Positionen, "
-                                     "inklusive Session-Staffel und Support-Verträgen für On-Premises",
+                                     "inklusive Session-Staffel und Betreuungsverträgen für den Selbstbetrieb",
                                      url="https://github.com/mandariOSS/mandari/issues/100", ort="Fortschritt im Issue",
                                      status="offen"),
                              m.zeile("Service-Level-Vereinbarung", "Verfügbarkeit, Wartungsfenster, Störungsklassen, "
@@ -1280,8 +1254,8 @@ def get_marketing_definitions() -> dict:
                                      ort="auf docs.mandari.de", status="da"),
                              m.zeile("Responsible Disclosure und security.txt", "Meldeweg für Sicherheitslücken nach RFC 9116 "
                                      "mit Reaktionsfristen", url="/sicherheit/disclosure/", status="da"),
-                             m.zeile("Betriebs- und Self-Hosting-Dokumentation", "Installation, Konfiguration, Updates, "
-                                     "Backups, Monitoring, Quellenanbindung", url="https://docs.mandari.de/betrieb/",
+                             m.zeile("Betriebsdokumentation, auch für den Selbstbetrieb", "Installation, Konfiguration, Updates, "
+                                     "Sicherungen, Monitoring, Quellenanbindung", url="https://docs.mandari.de/betrieb/",
                                      ort="auf docs.mandari.de", status="da"),
                              m.zeile("Erklärung zur Barrierefreiheit", "Konformitätsstand und Feedbackweg; Prüfung nach "
                                      "BITV 2.0 für Session geplant für Q4/2026", url="/barrierefreiheit/", status="da"),
@@ -1290,12 +1264,12 @@ def get_marketing_definitions() -> dict:
                                      stand="Fahrplan", status="offen")),
                 ],
                 spalten=["Dokument", "Wofür Sie es brauchen", "Stand"],
-                subline="Öffentlich, versioniert und ohne Registrierung. Was noch fehlt, steht mit seinem Stand in "
+                subline="Öffentlich, versioniert und ohne Registrierung. Was in Arbeit ist, steht mit seinem Stand in "
                         "derselben Liste.",
                 bestand="{da} von {gesamt} liegen vor, {offen} sind in Arbeit.",
                 stand="Stand 4. Oktober 2026",
                 note="<p>Brauchen Sie ein Dokument früher, liefern wir eine Arbeitsfassung: "
-                     "<a href=\"/kontakt/?subject=Vergabe\">Kontakt aufnehmen</a></p>",
+                     "<a href=\"/kontakt/?subject=Vergabe#nachricht\">Nachricht schreiben</a></p>",
                 anchor="unterlagen",
             ),
             # Muster 5a: Stichworte im Text, rechts der Ausstieg als kleiner Ablauf
@@ -1304,18 +1278,18 @@ def get_marketing_definitions() -> dict:
                 "<p><strong>Software.</strong> mandari steht vollständig unter der AGPL-3.0. Die Nutzung der Software "
                 "ist lizenzkostenfrei, der Quellcode ist öffentlich. Das ist zugleich Ihre Absicherung gegen "
                 "Anbieterausfall: Es braucht kein Software-Escrow, der Code liegt offen auf GitHub.</p>"
-                "<p><strong>Betrieb.</strong> Für Managed Hosting gelten unsere <a href=\"/agb/\">AGB</a> und der "
+                "<p><strong>Betrieb.</strong> Für den Betrieb durch mandari gelten unsere <a href=\"/agb/\">AGB</a> und der "
                 "<a href=\"/avv/\">AVV</a>. Vertragsschluss auf Basis Ihrer Vertragsmuster, etwa EVB-IT Cloud, "
                 "prüfen wir gern im Einzelfall.</p>"
                 "<p><strong>Ausstieg.</strong> Sie erhalten jederzeit einen vollständigen Export Ihrer Daten über OParl, "
-                "CSV und JSON. Nach Vertragsende halten wir die Daten 30 Tage als Backup vor und löschen sie danach "
+                "CSV und JSON. Nach Vertragsende halten wir die Daten 30 Tage als Sicherung vor und löschen sie danach "
                 "unwiderruflich, einschließlich des mandantenspezifischen Verschlüsselungsschlüssels.</p>"
                 "<p><strong>Rechnungen.</strong> Rechnungen erhalten Sie elektronisch; die Angabe einer Leitweg-ID für "
                 "XRechnung ist möglich.</p>",
                 [
                     m.rand_ablauf("Ihr Ausstieg, Schritt für Schritt",
                                   ("bis Vertragsende", "vollständiger Export jederzeit: OParl, CSV, JSON"),
-                                  ("Vertragsende", "die Daten liegen nur noch im Backup"),
+                                  ("Vertragsende", "die Daten liegen nur noch in der Sicherung"),
                                   ("+30 Tage", "unwiderrufliche Löschung, auch des Schlüssels Ihres Mandanten")),
                     m.rand_links("Zum Nachlesen", ("AGB", "/agb/"), ("Muster-AVV", "/avv/"),
                                  ("Kündigung und Widerruf", "/kuendigung/")),
@@ -1328,7 +1302,7 @@ def get_marketing_definitions() -> dict:
                 "Fragen zur Beschaffung?",
                 "Wir beantworten Fragebögen, füllen Ihre Formulare aus und stellen Arbeitsfassungen fehlender "
                 "Dokumente bereit. Antwort in der Regel innerhalb eines Werktags.",
-                "Kontakt aufnehmen", "/kontakt/?subject=Vergabe",
+                "Nachricht schreiben", "/kontakt/?subject=Vergabe#nachricht",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
                       ("Für die IT", "Trust Center", "/trust/"), ("Für Verwaltungen", "mandari Session", "/kommunen/")],
             ),
@@ -1395,9 +1369,9 @@ def get_marketing_definitions() -> dict:
                     m.zeile("Betriebsmonitor", "Zustand aller Quellen und Dienste im Admin, E-Mail-Alarme, "
                             "Datenstand-Hinweis im Bürgerportal.",
                             url="https://docs.mandari.de/betrieb/monitoring/", ort="Dokumentation", stand="Betrieb"),
-                    m.zeile("Dokumentation auf docs.mandari.de", "Eigene Doku-Plattform mit Self-Hosting-Anleitung, "
-                            "Konfigurationsreferenz, API-Referenzen, Datenschutzdokumenten. Ersetzt den geplanten "
-                            "Self-Hosting-Guide.", url="https://docs.mandari.de/", ort="docs.mandari.de",
+                    m.zeile("Dokumentation auf docs.mandari.de", "Eigene Doku-Plattform mit Anleitung für den Selbstbetrieb, "
+                            "Konfigurationsreferenz, API-Referenzen, Datenschutzdokumenten. Ersetzt die geplante "
+                            "Einzelanleitung.", url="https://docs.mandari.de/", ort="docs.mandari.de",
                             stand="Dokumentation"),
                 )],
                 spalten=["Geliefert", "Was sich ändert", "Modul"],
@@ -1518,7 +1492,7 @@ def get_marketing_definitions() -> dict:
                     "</ul>"
                     "<h3>September 2026, gegenüber Juli 2026</h3>"
                     "<ul>"
-                    "<li><strong>Self-Hosting-Guide (Q3/2026):</strong> geliefert, in erweiterter Form als eigene Dokumentationsplattform docs.mandari.de.</li>"
+                    "<li><strong>Anleitung für den Selbstbetrieb (Q3/2026):</strong> geliefert, in erweiterter Form als eigene Dokumentationsplattform docs.mandari.de.</li>"
                     "<li><strong>OParl-Adapter erweitern:</strong> läuft weiter und wird zum Programm „Adapter für Ratsinformationssysteme ohne OParl“ mit eigenem Epic ausgebaut.</li>"
                     "<li><strong>WCAG-AA-Audit (Q4/2026):</strong> unverändert, jetzt als Zusage für Session; Insight und Work folgen 2026/27.</li>"
                     "<li><strong>i18n Englisch:</strong> zurückgestellt auf „In Prüfung“. Deutsche Kommunen sind unser Markt, Englisch bringt aktuell keinen Kundennutzen.</li>"
@@ -1529,10 +1503,10 @@ def get_marketing_definitions() -> dict:
                     "</ul>"
                     "<h3>Was wir bewusst nicht bauen</h3>"
                     "<ul>"
-                    "<li>Kein Windows-Installer für den Eigenbetrieb; unterstützt wird Docker Compose auf Linux.</li>"
+                    "<li>Kein Windows-Installer für den Selbstbetrieb; unterstützt wird Docker Compose auf Linux.</li>"
                     "<li>Keine Bezahlschranken für Sicherheitsfunktionen wie Zwei-Faktor-Authentifizierung, Verschlüsselung oder Audit-Log.</li>"
                     "<li>Kein Tracking und keine Werbung im Bürgerportal, auch nicht in der App.</li>"
-                    "<li>Keine proprietären Erweiterungen: alles, was wir bauen, erscheint unter AGPL-3.0.</li>"
+                    "<li>Keine geschlossene Ausgabe der Plattform: mandari Session, Work und Insight bleiben unter AGPL-3.0.</li>"
                     "</ul>"
                 ),
                 anchor="aenderungen",
@@ -1591,9 +1565,9 @@ def get_legal_definitions() -> dict:
                 "body": "<p>Die meisten Kommunen stellen ihre OParl-Daten unter einer der folgenden Lizenzen bereit:</p><ul><li><strong>Datenlizenz Deutschland – Zero – Version 2.0</strong> (<a href=\"https://www.govdata.de/dl-de/zero-2-0\" target=\"_blank\" rel=\"noopener\">DL-DE-Zero-2.0</a>)</li><li><strong>CC0 1.0 Universell</strong> (Public Domain)</li><li><strong>CC-BY 4.0</strong></li></ul><p>Falls eine Kommune ihre Daten unter einer einschränkenden Lizenz bereitstellt, indizieren wir nur Metadaten, keinen Volltext.</p>",
             }),
             ("richtext_section", {
-                "header": hdr(title="Karten & Geokodierung"),
+                "header": hdr(title="Karten und Geokodierung"),
                 "background": "white",
-                "body": "<ul><li><strong>OpenStreetMap</strong> (ODbL) — Karten-Tiles und Geometrien (<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">openstreetmap.org/copyright</a>)</li><li><strong>Nominatim</strong> (BSD-2) — Geocoding-Service basierend auf OSM-Daten</li><li><strong>Land NRW, Bauleitplanung</strong> (Datenlizenz Deutschland – Namensnennung – 2.0, <a href=\"https://www.govdata.de/dl-de/by-2-0\" target=\"_blank\" rel=\"noopener\">govdata.de/dl-de/by-2-0</a>) — amtliche Umringe rechtskräftiger Bebauungspläne; die Quelle steht an jeder Karte</li></ul>",
+                "body": "<ul><li><strong>OpenStreetMap</strong> (ODbL): Kartenkacheln und Geometrien (<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">openstreetmap.org/copyright</a>)</li><li><strong>Nominatim</strong> (BSD-2): Geokodierung auf Grundlage der OpenStreetMap-Daten</li><li><strong>Land NRW, Bauleitplanung</strong> (Datenlizenz Deutschland – Namensnennung – 2.0, <a href=\"https://www.govdata.de/dl-de/by-2-0\" target=\"_blank\" rel=\"noopener\">govdata.de/dl-de/by-2-0</a>): amtliche Umringe rechtskräftiger Bebauungspläne; die Quelle steht an jeder Karte</li></ul>",
             }),
             ("richtext_section", {
                 "header": hdr(title="KI-Komponenten"),
@@ -1603,7 +1577,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
                 "background": "white",
-                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source · Schultern, auf denen wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im Format CycloneDX an jedem <a href=\"https://github.com/mandariOSS/mandari/releases\" target=\"_blank\" rel=\"noopener\">GitHub-Release</a>, beschrieben in <a href=\"https://github.com/mandariOSS/mandari/blob/main/DEPENDENCIES.md#st%C3%BCckliste-sbom-je-release\" target=\"_blank\" rel=\"noopener\">DEPENDENCIES.md</a>.</p>",
+                "body": "<p>Vollständige Liste aller Tech-Partner und Open-Source-Abhängigkeiten siehe <a href=\"/open-source/#danke\">Open Source: Auf wessen Schultern wir stehen</a>.</p><p>Software Bill of Materials (SBOM) im Format CycloneDX an jedem <a href=\"https://github.com/mandariOSS/mandari/releases\" target=\"_blank\" rel=\"noopener\">GitHub-Release</a>, beschrieben in <a href=\"https://github.com/mandariOSS/mandari/blob/main/DEPENDENCIES.md#st%C3%BCckliste-sbom-je-release\" target=\"_blank\" rel=\"noopener\">DEPENDENCIES.md</a>.</p>",
             }),
             ("disclaimer_box", {
                 "icon": "info", "color": "gray",

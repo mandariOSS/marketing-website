@@ -4,12 +4,14 @@ Seed-Inhalte des RIS-Vergleichs: /vergleich/ und /vergleich/mandari-vs-<anbieter
 Rechtlicher Rahmen (vergleichende Werbung, § 6 UWG): nur objektiv nachprüfbare, öffentlich belegte
 Aussagen, sachlicher Ton, keine Herabsetzung. Jede Angabe zu einem Anbieter trägt ein Quellenkürzel
 ([SO1], [ST2] …), die Quellen stehen mit Abrufdatum am Ende jeder Seite. Wo wir keine öffentliche Angabe
-gefunden haben, steht genau das – nie eine Behauptung, dass etwas fehlt. Was mandari noch fehlt, steht
-ausdrücklich dabei, mit der Stufe aus der Roadmap (zugesagt, geplant, in Prüfung).
+gefunden haben, steht genau das – nie eine Behauptung, dass etwas fehlt. Die Seiten beginnen mit dem, was
+mandari auszeichnet (aus denselben Daten abgeleitet, siehe ``staerken``). Wo mandari eine Funktion noch nicht
+bietet, steht in der Tabelle die Stufe aus der Roadmap (zugesagt, geplant, in Prüfung); gesammelt stehen diese
+Funktionen auf /roadmap/ (mandariOSS/mandari#1481).
 
 Grundlage ist die interne Funktionsanalyse vom 2. Oktober 2026. Ändert sich ein Stand, hier anpassen und
 die Seiten mit `refresh_seeded_page vergleich --force` und `refresh_seeded_page mandari-vs-<anbieter>
---force` neu seeden; die Lücken erscheinen zusätzlich auf /roadmap/ (`refresh_seeded_page roadmap --force`).
+--force` neu seeden; die offenen Funktionen stehen auf /roadmap/ (`refresh_seeded_page roadmap --force`).
 
 Zellen: (Status, Zusatz). Status für Anbieter: yes, partial, unknown; für mandari zusätzlich open
 (noch nicht verfügbar, der Zusatz nennt die Roadmap-Stufe).
@@ -354,11 +356,6 @@ ANBIETER = {
         "produkt": "Fachverfahren Sitzungsdienst (KommunalPLUS Sitzung) mit Ratsinformationssystem, Bürgerinfoportal und Mandatsträger-App",
         "kunden": "Mehr als 500 Verwaltungen mit dem Ratsinformationssystem (Eigenangabe) [RS1]",
         "website": "https://www.regisafe.de/",
-        "fairness_extra": (
-            " Ausdrücklich hervorzuheben: Das regisafe-Ratsinformationssystem ist seit dem 7. Oktober 2024 "
-            "als barrierefrei zertifiziert (Eigenangabe) – einen solchen geprüften Nachweis hat mandari "
-            "derzeit noch nicht."
-        ),
         "cells": {
             "preise": ("unknown", "Angebot auf Anfrage"),
             "eigenbetrieb": ("yes", "Lokaler Betrieb, Wechsel in die Cloud möglich [RS5]"),
@@ -658,7 +655,7 @@ def quellen_block(prefixe, *, anchor="quellen"):
         "zweispaltig": True,
         "body": _quellen_html(prefixe) + (
             "<p>Die Angaben in der Spalte mandari beruhen auf dem Stand der Software vom "
-            f"{ABRUF}. mandari ist in der Beta-Phase; was neu ist, zeigen die "
+            f"{ABRUF}. Was seitdem neu ist, zeigen die "
             "<a href=\"/releases/\">Release-Notes</a>, was kommt, die <a href=\"/roadmap/\">Roadmap</a>.</p>"
         ),
     })
@@ -680,7 +677,7 @@ def vergleichstabelle(slug):
     return ("comparison_table", {
         "header": _hdr("Der Vergleich im Detail",
                        f"{ANZAHL_FUNKTIONEN} Funktionen in {len(GRUPPEN)} Bereichen, Stand {STAND}. "
-                       "Was mandari noch fehlt, steht als „Noch nicht verfügbar“ mit der Stufe aus der Roadmap dabei.",
+                       "Wo mandari eine Funktion noch nicht bietet, steht die Stufe aus der Roadmap dabei.",
                        "tabelle"),
         "competitor_label": v["kurzname"],
         "groups": gruppen,
@@ -747,53 +744,68 @@ def _luecken_zeilen(art, slug=None):
     return zeilen
 
 
-def luecken_bloecke(slug=None, *, anchor="fehlt"):
-    """Ein Register mit zwei Gruppen: zugesagt/geplant und in Prüfung (je höchstens acht Zeilen)."""
+def staerken(slug=None):
+    """Funktionen, die mandari heute bietet („Ja“) und die der Anbieter laut öffentlicher Angabe nicht vollständig
+    nennt; ohne ``slug``: die keiner der vier vollständig nennt. Je Funktion (Schlüssel, Bezeichnung).
+
+    Abgeleitet aus ``GRUPPEN``, ``MANDARI`` und den Zellen der Anbieter, damit die Aussage so belegt ist wie die
+    Tabelle selbst und mit ihr Schritt hält.
+    """
+    anbieter = [slug] if slug else list(ANBIETER)
+    return [(key, label) for _, rows in GRUPPEN for key, label in rows
+            if MANDARI[key][0] == "yes" and all(zelle(s, key)[0] != "yes" for s in anbieter)]
+
+
+def _angabe(slug, key):
+    """Zelle eines Anbieters in Worten: „Teilweise: …“ mit Quelle oder „keine öffentliche Angabe“."""
+    status, zusatz = zelle(slug, key)
+    if status == "partial":
+        return f"Teilweise: {zusatz}" if zusatz else "Teilweise"
+    return "keine öffentliche Angabe"
+
+
+def _angabe_alle(key):
+    """Zellen aller vier Anbieter in einem Satz."""
+    teilweise = [ANBIETER[s]["spalte"] for s in ANBIETER if zelle(s, key)[0] == "partial"]
+    if not teilweise:
+        return "keine öffentliche Angabe"
+    return f"Teilweise bei {_aufzaehlung(teilweise)}, sonst keine öffentliche Angabe"
+
+
+def staerken_block(slug=None, *, anchor="staerken"):
+    """Register am Anfang jeder Vergleichsseite: was mandari auszeichnet (höchstens zwölf Zeilen)."""
     from marketing import seeds_muster as m
 
-    name = ANBIETER[slug]["kurzname"] if slug else ""
-    geplant = _luecken_zeilen("geplant", slug)[:8]
-    pruefung = _luecken_zeilen("pruefung", slug)[:8]
-    gruppen = []
-    if geplant:
-        gruppen.append(m.gruppe("Zugesagt und geplant, mit Zeitraum in der Roadmap", *geplant))
-    if pruefung:
-        gruppen.append(m.gruppe("In Prüfung, ohne Termin", *pruefung))
-    if not gruppen:
+    funktionen = staerken(slug)[:12]
+    if not funktionen:
         return []
     if slug:
-        sub = (f"Was {name} laut öffentlicher Angabe bietet und mandari noch nicht. Einen Termin nennen wir erst, "
-               "wenn er belastbar ist.")
-        spalte = f"Bei {ANBIETER[slug]['spalte']}"
+        name = ANBIETER[slug]["kurzname"]
+        titel = "Was mandari auszeichnet"
+        sub = (f"Funktionen, die mandari heute bietet und zu denen wir bei {name} keine oder nur eine eingeschränkte "
+               f"öffentliche Angabe gefunden haben. Stand {STAND}.")
+        spalte = f"Bei {ANBIETER[slug]['kartenname']}"
+        zeilen = [m.zeile(label, MANDARI[key][1], zusatz=_angabe(slug, key)) for key, label in funktionen]
+        beleg = "Alle Funktionen mit Beleg stehen in der Tabelle darunter."
     else:
-        sub = ("Funktionen, die etablierte Systeme bieten und mandari noch nicht – mit der Stufe aus der Roadmap. "
-               "Einen Termin nennen wir erst, wenn er belastbar ist.")
-        spalte = "Wo es das gibt"
+        titel = "Was mandari auszeichnet"
+        sub = ("Funktionen, die mandari heute bietet und zu denen wir bei keinem der vier Anbieter eine vollständige "
+               f"öffentliche Angabe gefunden haben. Stand {STAND}.")
+        spalte = "Bei den vier Anbietern"
+        zeilen = [m.zeile(label, MANDARI[key][1], zusatz=_angabe_alle(key)) for key, label in funktionen]
+        beleg = "Erläuterungen und Belege stehen in den Einzelvergleichen."
     return [m.register(
-        "Was mandari noch fehlt", gruppen,
-        spalten=["Funktion", "Worum es geht", spalte, "Stand"], kopfart="ueber", subline=sub, anchor=anchor,
-        note="<p>Fehlt Ihnen etwas, das hier nicht steht? <a href=\"/kontakt/?subject=Roadmap-Idee\">Schreiben Sie uns.</a></p>",
+        titel, [m.gruppe("", *zeilen)],
+        spalten=["Funktion", "Bei mandari", spalte], kopfart="ueber", subline=sub, anchor=anchor,
+        note=f"<p>„Keine öffentliche Angabe“ heißt: in den genannten Quellen nicht gefunden, nicht „fehlt“. {beleg}</p>",
     )]
-
-
-def fairerweise(slug):
-    v = ANBIETER[slug]
-    return ("disclaimer_box", {
-        "icon": "flask-conical", "color": "amber",
-        "body": (
-            f"<p><strong>Fairerweise:</strong> {v['kurzname']} ist ein etabliertes Produkt mit langjähriger Praxis im "
-            "Verwaltungsalltag und bietet heute Funktionen, die mandari erst entwickelt – die Liste unten "
-            "nennt sie. mandari ist jung und in der Beta-Phase. Dafür ist mandari offen: Quellcode, Preise "
-            "und Roadmap sind öffentlich, das Bürgerportal ist kostenlos."
-            + v.get("fairness_extra", "") + "</p>"
-        ),
-    })
 
 
 def anbieterseite(slug):
     """Blockliste einer mandari-vs-X-Seite.
 
-    Hinweis und „Fairerweise“ folgen direkt dem Kopf und stehen dort in der Randspalte (baender.py).
+    Der Hinweis folgt direkt dem Kopf und steht dort in der Randspalte (baender.py). Danach zuerst, was mandari
+    auszeichnet, dann die Eckdaten und die vollständige Tabelle.
     """
     from marketing import seeds_muster as m
 
@@ -804,22 +816,22 @@ def anbieterseite(slug):
             "badge_text": "", "badge_icon": "", "badge_color": "primary",
             "title": "mandari vs.", "title_highlight": name,
             "subline": (
-                f"{ANZAHL_FUNKTIONEN} Funktionen nebeneinander, Stand {STAND}, jede Angabe zu {name} mit Quelle. "
-                "Was mandari noch fehlt, steht ausdrücklich dabei."
+                f"{ANZAHL_FUNKTIONEN} Funktionen nebeneinander, Stand {STAND}, jede Angabe zu {name} mit Quelle."
             ),
-            "ctas": [_cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich"),
+            "ctas": [_cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich#termin"),
                      _cta("Alle Vergleiche", "/vergleich/", "secondary")],
             "background_color": "primary",
         }),
         hinweis(name),
-        fairerweise(slug),
+        *staerken_block(slug),
         m.vergleich(
             f"mandari und {name} im Überblick",
-            [("mandari", "Open-Source-Plattform (AGPL-3.0) in der Beta-Phase"), (v["kartenname"], v["anbieter"])],
+            [("mandari", "Offene Plattform unter AGPL-3.0"), (v["kartenname"], v["anbieter"])],
             [
                 ("Produkt", ["Drei Produkte auf einer offenen Plattform: Session für die Verwaltung, Work für "
                              "Fraktionen, Insight als Bürgerportal, immer inklusive.", v["produkt"] + "."]),
-                ("Praxis", ["Jung und aktiv entwickelt, Quellcode und Roadmap öffentlich",
+                ("Praxis", ["Seit 2026 im Betrieb, alle zwei Wochen eine neue Version, Quellcode und Roadmap "
+                            "öffentlich",
                             "Etabliertes Produkt mit langjähriger Praxis in Verwaltungen; " + v["kunden"]]),
                 ("Mehr erfahren", ['<a href="/produkte/">Produkte ansehen</a>',
                                    f'<a href="{v["website"]}">Website des Anbieters</a>']),
@@ -828,14 +840,13 @@ def anbieterseite(slug):
             anchor="ueberblick",
         ),
         vergleichstabelle(slug),
-        *luecken_bloecke(slug),
         quellen_block([QUELLEN_JE_ANBIETER[slug]]),
         m.einladung(
-            "Selbst vergleichen ist besser.",
-            "Sehen Sie sich mandari im Bürgerportal an oder vereinbaren Sie eine Vorführung – "
-            "unverbindlich und ohne Vertriebsdruck.",
-            "Vorführung anfragen", "/kontakt/?subject=Demo-RIS-Vergleich",
-            link_label="Bürgerportal ansehen", link_url="/insight/",
+            "Sehen Sie selbst.",
+            "Öffnen Sie das Bürgerportal oder vereinbaren Sie ein Erstgespräch: 30 Minuten, in denen wir Ihnen "
+            "mandari an Ihren eigenen Fragen zeigen.",
+            "Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich#termin",
+            link_label="Bürgerportal öffnen", link_url="/insight/",
             wege=[("E-Mail", "hello@mandari.de", ""), ("Korrekturen", "umgehend, per E-Mail", ""),
                   ("Alle Vergleiche", "Übersicht", "/vergleich/"), ("Was kommt", "Roadmap", "/roadmap/")],
         ),
@@ -851,22 +862,22 @@ def uebersichtsseite():
             "badge_text": "", "badge_icon": "", "badge_color": "primary",
             "title": "mandari im Vergleich", "title_highlight": "mit etablierten RIS-Anbietern",
             "subline": (
-                f"Was etablierte Ratsinformationssysteme können, was mandari kann und was mandari noch fehlt: "
-                f"{ANZAHL_FUNKTIONEN} Funktionen, Stand {STAND}, jede Angabe mit Quelle."
+                f"{ANZAHL_FUNKTIONEN} Funktionen bei mandari, Somacos, Sternberg, CC e-gov und regisafe: "
+                f"Stand {STAND}, jede Angabe mit Quelle."
             ),
-            "ctas": [_cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich"),
-                     _cta("Was mandari noch fehlt", "#fehlt", "secondary")],
+            "ctas": [_cta("Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich#termin"),
+                     _cta("Alle Funktionen im Vergleich", "#uebersicht", "secondary")],
             "background_color": "primary",
         }),
         hinweis("die verglichenen Anbieter"),
+        *staerken_block(),
         marktuebersicht(),
-        *luecken_bloecke(),
         m.begriffe(
             "Die Einzelvergleiche",
             [m.begriff(f"mandari vs. {v['kartenname']}", v["produkt"] + ".", marke=v["anbieter"],
                        link_label="Zum Einzelvergleich", link_url=f"/vergleich/{slug}/")
              for slug, v in ANBIETER.items()],
-            subline="Jede Funktion mit Erläuterung und Quelle, dazu die Lücken gegenüber dem jeweiligen Anbieter.",
+            subline="Jede Funktion mit Erläuterung und Quelle, Anbieter für Anbieter.",
             anchor="anbieter",
             note="<p>Was ein <a href=\"/ratsinformationssystem/\">Ratsinformationssystem</a> ausmacht und wie es sich "
                  "von Sitzungsdienst und Bürgerinformationssystem abgrenzt, erklären wir auf einer eigenen Seite.</p>",
@@ -881,11 +892,11 @@ def uebersichtsseite():
                 "was die Anbieter selbst als Leistung nennen.</p>"
                 "<p>Grundlage sind ausschließlich öffentliche Quellen: Produktseiten, Produktbeschreibungen und "
                 f"Broschüren, abgerufen am {ABRUF}. Kundenzahlen und Leistungsmerkmale sind Eigenangaben der "
-                "Anbieter. Wo wir nichts gefunden haben, schreiben wir „keine öffentliche Angabe“. Die Lücken "
-                "von mandari nennen wir ausdrücklich, mit der Stufe aus der Roadmap: zugesagt, geplant mit "
-                "Zeitraum oder in Prüfung. Bei einzelnen Lücken nennen wir zusätzlich more! software und "
-                "OpenSlides, ebenfalls mit Quelle. „Teilweise“ heißt dort: Der Anbieter nennt einen Teil der "
-                "Funktionen oder sie nur eingeschränkt.</p>"
+                "Anbieter. Wo wir nichts gefunden haben, schreiben wir „keine öffentliche Angabe“. Wo mandari "
+                "eine Funktion noch nicht bietet, steht in der Tabelle die Stufe aus der Roadmap: zugesagt, "
+                "geplant mit Zeitraum oder in Prüfung. Die Roadmap nennt bei einzelnen dieser Funktionen "
+                "zusätzlich more! software und OpenSlides, ebenfalls mit Quelle. „Teilweise“ heißt: Der "
+                "Anbieter nennt einen Teil der Funktion oder sie nur eingeschränkt.</p>"
                 "<p>Bei den Preisen gilt: Keiner der vier Anbieter veröffentlicht eine Preisliste; die Angebote "
                 "kommen auf Anfrage. mandari nennt die Preise für Work und das kostenlose Bürgerportal öffentlich, "
                 "die Preisliste für Session ist in Vorbereitung.</p>"
@@ -902,10 +913,10 @@ def uebersichtsseite():
         quellen_block(PRAEFIXE_VERGLEICH + PRAEFIXE_WEITERE),
         m.einladung(
             "Die beste Entscheidung ist eine informierte.",
-            "Sprechen Sie mit uns über Ihre Anforderungen – wir sagen Ihnen auch offen, wenn mandari "
-            "(noch) nicht passt.",
-            "Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich",
-            link_label="Bürgerportal ansehen", link_url="/insight/",
+            "Sprechen Sie mit uns über Ihre Anforderungen. Wir zeigen Ihnen mandari an Ihren eigenen Fragen und "
+            "sagen Ihnen, was heute geht und was kommt.",
+            "Erstgespräch vereinbaren", "/kontakt/?subject=RIS-Vergleich#termin",
+            link_label="Bürgerportal öffnen", link_url="/insight/",
             wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
                   ("Für Vergabestellen", "Unterlagen", "/vergabe/"), ("Was kommt", "Roadmap", "/roadmap/")],
         ),
@@ -913,7 +924,7 @@ def uebersichtsseite():
 
 
 def roadmap_luecken():
-    """Abschnitt für /roadmap/: die Lücken aus dem Vergleich, die noch in Prüfung sind (Register).
+    """Abschnitt für /roadmap/: die Funktionen aus dem Vergleich, die noch in Prüfung sind (Register).
 
     Die zugesagten und geplanten Lücken stehen auf der Roadmap bereits in der Quartalsachse (BITV, Single
     Sign-on, KI-Entwurf, hybride Sitzungen, Vollständige Ratsarbeit, App, Livestream, Penetrationstest); hier
@@ -926,12 +937,12 @@ def roadmap_luecken():
         [m.gruppe("", *_luecken_zeilen("pruefung")[:8])],
         spalten=["Vorhaben", "Worum es geht", "Wo es das gibt", "Stand"],
         kopfart="ueber",
-        subline=f"Funktionen, die etablierte Ratsinformationssysteme bieten und mandari noch nicht (Stand {STAND}), "
-                "ohne Termin. Wir nennen einen Zeitraum, sobald er belastbar ist.",
+        subline=f"Funktionen, die etablierte Ratsinformationssysteme nennen und die wir für mandari prüfen "
+                f"(Stand {STAND}). Wir nennen einen Zeitraum, sobald er belastbar ist.",
         anchor="marktvergleich",
         note=(
-            "<p>Die zugesagten und geplanten Lücken aus dem Vergleich stehen oben in der Zeitachse, gesammelt unter "
-            "<a href=\"/vergleich/#fehlt\">Was mandari noch fehlt</a>. Die Kürzel in eckigen Klammern verweisen auf "
-            "die <a href=\"/vergleich/#quellen\">Quellen im RIS-Vergleich</a>.</p>"
+            "<p>Die zugesagten und geplanten Funktionen aus dem Vergleich stehen oben in der Zeitachse; alle "
+            "Funktionen im Überblick zeigt der <a href=\"/vergleich/#uebersicht\">RIS-Vergleich</a>. Die Kürzel in eckigen "
+            "Klammern verweisen auf die <a href=\"/vergleich/#quellen\">Quellen im RIS-Vergleich</a>.</p>"
         ),
     )]

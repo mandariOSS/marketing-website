@@ -83,6 +83,18 @@ Zum Reaktivieren:
    (`scripts/check_site_structure.py`, Liste `FUSSZEILE`) aufnehmen; optional
    `<link rel="alternate" type="application/rss+xml" href="/blog/feed/">` in `templates/base.html`.
 
+### Sprache und Kennzahlen
+
+- **Sprachregel und Glossar** stehen in [`SPRACHE.md`](SPRACHE.md): Ton, Schreibweise, ein Begriff je Sache,
+  Statusbezeichnungen der Produkte, Aufrufe. `marketing/tests/test_sprache.py` prüft Seeds und Vorlagen dagegen.
+- **Kennzahlen des Bürgerportals** (Kommunen, Vorgänge, Sitzungen) stehen in den Seeds als Platzhalter
+  (`[kommunen]`, `[vorgaenge]`, `[sitzungen]`, `[kennzahlen-stand]`). Der Filter `kennzahlen` setzt sie beim Rendern
+  aus der öffentlichen Statistik der Anwendung ein (`KENNZAHLEN_URL`, `marketing/kennzahlen.py`). Der Abruf läuft
+  im Hintergrund; fällt er aus, gilt der letzte gelungene Abruf. Gibt es keinen (nach dem Start des Containers,
+  leere `KENNZAHLEN_URL`, Entwicklung), zeigt die Seite den Stand aus dem Code (`RUECKFALL`).
+- **Ein Weg zu mandari Work:** Beschriftung und Ziel stehen in `WORK_AUFRUF` und `WORK_AUFRUF_URL`
+  (`marketing/management/commands/migrate_pages_to_streamfield.py`).
+
 ### Struktur-Test
 
 `scripts/check_site_structure.py` verfolgt ausgehend von `/` alle internen Links

@@ -68,7 +68,7 @@ def zeitskala_plan(value):
 
     Marken, deren Beschriftung über die nächste Leitlinie reichen würde, stehen treppenförmig tiefer
     (frühere Marke höher, höchstens vier Höhen), damit keine Leitlinie durch einen Text läuft. Eine Marke
-    am rechten Ende steht links von ihrer Linie.
+    am rechten Ende steht links von ihrer Linie und immer höher als die Marken, über die ihre Beschriftung reicht.
     """
     t1 = _zahl(_get(value, "strecke1_tage"), 30.0) or 30.0
     zweite = bool(_get(value, "strecke2_label"))
@@ -96,8 +96,12 @@ def zeitskala_plan(value):
         if marke["rechts"]:
             # Beschriftung links der Linie: frühere Linien darunter müssen kürzer sein, die Marke steht höher
             links = marke["pos"] - marke["breite"] - 0.4
-            treffer = [m["stufe"] for m in frueher if m["pos"] >= links or _ende(m) > links]
-            marke["stufe"] = max(1, min(treffer) - 1) if treffer else 1
+            getroffen = [m for m in frueher if m["pos"] >= links or _ende(m) > links]
+            if getroffen and min(m["stufe"] for m in getroffen) == 1:
+                # Darüber ist kein Platz mehr: Die getroffenen Marken rücken eine Stufe tiefer, diese bleibt oben
+                for m in getroffen:
+                    m["stufe"] = min(m["stufe"] + 1, 4)
+            marke["stufe"] = max(1, min(m["stufe"] for m in getroffen) - 1) if getroffen else 1
         else:
             # Beschriftung rechts der Linie: reicht eine frühere Beschriftung bis hierher, steht diese Marke tiefer
             treffer = [m["stufe"] for m in frueher if _ende(m) > marke["pos"] - 0.4]

@@ -16,14 +16,8 @@ werden von templates/company/*.html eingefügt.
 
 from __future__ import annotations
 
-# Kennzahlen aus dem Bürgerportal mandari Insight – Stand und Werte gehören zusammen.
-KENNZAHLEN_STAND = "2. Oktober 2026"
-KENNZAHLEN = [
-    ("204.819", "Dokumente im Volltext durchsuchbar"),
-    ("91.662", "Vorgänge und Vorlagen"),
-    ("13.903", "Sitzungen"),
-    ("5", "Kommunen und Körperschaften im Bürgerportal"),
-]
+# Die Kennzahlen des Bürgerportals stehen als Platzhalter im Text ([vorgaenge], [sitzungen], [kommunen],
+# [kennzahlen-stand]); eingesetzt werden sie beim Rendern aus der öffentlichen Statistik (marketing/kennzahlen.py).
 
 BEWERBUNG = "bewerbung@mandari.de"
 PRESSE = "presse@mandari.de"
@@ -154,7 +148,7 @@ def get_company_page_definitions() -> dict:
                               "Ratsdaten vollständig und unverändert und arbeiten mit allen demokratischen Parteien "
                               "gleichermaßen."),
                     m.begriff("Offen aus Überzeugung",
-                              "Unser gesamter Code steht unter AGPL-3.0. Öffentliches Geld verdient öffentlichen Code: "
+                              "mandari Session, Work und Insight stehen unter AGPL-3.0. Öffentliches Geld verdient öffentlichen Code: "
                               "prüfbar, wiederverwendbar, unabhängig von uns."),
                     m.begriff("Souverän und sicher",
                               "Betrieb in deutschen Rechenzentren, Daten in der Hand der Kommune, Export jederzeit. "
@@ -178,17 +172,20 @@ def get_company_page_definitions() -> dict:
                 [
                     ("Software", ["<strong>Betrieb:</strong> Wir betreiben mandari für Fraktionen und ab dem "
                                   "Pilotbetrieb auch für Verwaltungen – sicher, aktuell, aus Deutschland.",
-                                  "<strong>Lizenzgebühren:</strong> Der Code steht unter AGPL-3.0."]),
+                                  "<strong>Lizenzgebühren für Kommunen, Fraktionen und Parteien:</strong> Wer mandari "
+                                  "unter der AGPL-3.0 einsetzt, bei uns oder im eigenen Rechenzentrum, zahlt keine."]),
                     ("Selbstbetrieb", ["<strong>Betreuung:</strong> Wer mandari selbst betreibt, sichert sich "
                                        "Unterstützung und Wartung vertraglich.",
                                        "<strong>Datenhandel:</strong> Ihre Daten sind nicht unser Geschäft."]),
                     ("Umstieg", ["<strong>Einführung:</strong> Datenübernahme aus dem Altsystem, Einrichtung und "
                                  "Schulung – damit der Umstieg gelingt.",
                                  "<strong>Werbung:</strong> keine, auch nicht im Bürgerportal."]),
-                    ("Finanzierung", ["Einnahmen aus diesen Leistungen",
-                                      "<strong>Investoren,</strong> die morgen den Kurs ändern"]),
+                    ("Finanzierung", ["Aus dem, was Kund:innen beauftragen. Fördermittel nehmen wir nur für Vorhaben, "
+                                      "deren Ergebnis frei bleibt.",
+                                      "<strong>Geldgeber,</strong> die über Lizenz, Datenschutz oder Kurs mitbestimmen"]),
                 ],
-                subline="Wir verdienen unser Geld mit Leistung, nicht mit Lizenzen.",
+                subline="Der Code gehört allen. Wir verdienen an dem, was Software verlässlich macht: Betrieb, Betreuung und "
+                        "Einführung.",
                 anchor="geschaeftsmodell",
                 note='<p><a href="/preise/">Preise ansehen</a></p>',
             ),
@@ -202,7 +199,7 @@ def get_company_page_definitions() -> dict:
                     m.marke(0, "Januar", "Der erste öffentliche Commit"),
                     m.marke(185, "Juli", "mandari 0.9 geht online"),
                     m.marke(269, "September", "mandari 0.11"),
-                    m.marke(280, "Herbst", "Transparenz wird Standard"),
+                    m.marke(305, "November", "mandari 0.13"),
                     m.marke(365, "2027", "Version 1.0", offen=True),
                 ],
                 skala=[m.skalenpunkt(0, "Januar 2026"), m.skalenpunkt(90, "April"), m.skalenpunkt(181, "Juli"),
@@ -217,9 +214,9 @@ def get_company_page_definitions() -> dict:
                     m.schritt("September 2026", "mandari 0.11",
                               "Session führt Niederschriften mit Freigabe und Berichtigung, Fraktionen sehen in Work, "
                               "was aus ihren Anträgen wird."),
-                    m.schritt("Herbst 2026", "Transparenz wird Standard",
-                              "Dokumentation, Live-Status, Trust Center und Roadmap sind öffentlich – für alle, ohne "
-                              "Anmeldung."),
+                    m.schritt("November 2026", "mandari 0.13",
+                              "Seitdem erscheint alle zwei Wochen eine neue Version. Dokumentation, Statusseite, Trust "
+                              "Center und Roadmap sind öffentlich, für alle und ohne Anmeldung."),
                     m.schritt("2027, geplant", "Version 1.0",
                               "Übernahme aus Bestandssystemen, vereinbarte Service-Level, externer Penetrationstest."),
                 ],
@@ -275,7 +272,7 @@ def get_company_page_definitions() -> dict:
                          "machen, dass man auch findet, was man nicht exakt benennen kann."),
                     _row("Betrieb und Sicherheit",
                          "Eigene Infrastruktur in deutschen Rechenzentren, eine nachvollziehbare Lieferkette, "
-                         "Monitoring und Backups, auf die sich Verwaltungen verlassen."),
+                         "Monitoring und Sicherungen, auf die sich Verwaltungen verlassen."),
                     _row("Einführung und Kundenerfolg",
                          "Kommunen beim Umstieg begleiten: Daten übernehmen, Abläufe verstehen, schulen – und ins "
                          "Produkt zurückspielen, was fehlt."),
@@ -335,9 +332,9 @@ def get_company_page_definitions() -> dict:
                 "und Bürger:innen. Die Plattform startet dort, wo kommunale Demokratie entschieden wird: im Rat. Das "
                 "Bürgerportal mandari Insight macht Sitzungen, Vorlagen und Beschlüsse im Volltext durchsuchbar – "
                 "kostenlos und ohne Anmeldung. mandari Work ist der digitale Arbeitsplatz für Fraktionen, mandari "
-                "Session das Ratsinformationssystem für Verwaltungen. Der gesamte Code steht unter der freien Lizenz "
-                "AGPL-3.0, betrieben wird mandari in Rechenzentren in Deutschland. Das Unternehmen ist unabhängig "
-                "finanziert.</p>"
+                "Session das Ratsinformationssystem für Verwaltungen. Die Plattform steht unter der freien Lizenz "
+                "AGPL-3.0, betrieben wird mandari in Rechenzentren in Deutschland. Das Unternehmen finanziert sich "
+                "aus Betrieb, Betreuung und Einführung.</p>"
                 "<p>Zur Übernahme freigegeben, auch gekürzt.</p>",
                 [
                     m.rand_fakten("", ("Sitz", "Münster (Westfalen)"),
@@ -351,10 +348,9 @@ def get_company_page_definitions() -> dict:
             # Muster 9a: Kennzahlen in einem Satz, mit Stand
             m.zahlensatz(
                 "Fakten und Kennzahlen",
-                f"Das Bürgerportal mandari Insight macht <b>{KENNZAHLEN[0][0]}</b> Dokumente, "
-                f"<b>{KENNZAHLEN[1][0]}</b> Vorgänge und Vorlagen und <b>{KENNZAHLEN[2][0]}</b> Sitzungen aus "
-                f"<b>{KENNZAHLEN[3][0]}</b> Kommunen und Körperschaften im Volltext durchsuchbar.",
-                rand=f"<p>Stand {KENNZAHLEN_STAND}, gezählt im Datenbestand des Bürgerportals.</p>"
+                "Das Bürgerportal mandari Insight macht <b>[vorgaenge]</b> Vorgänge und Vorlagen und "
+                "<b>[sitzungen]</b> Sitzungen aus <b>[kommunen]</b> Kommunen und Körperschaften durchsuchbar.",
+                rand="<p>Stand [kennzahlen-stand], gezählt im Datenbestand des Bürgerportals.</p>"
                      "<p><strong>Aktuelle Version:</strong> mandari 0.13.0 vom 17. November 2026, "
                      "<a href=\"/releases/\">Releases</a></p>"
                      "<p><strong>Quellcode:</strong> <a href=\"https://github.com/mandariOSS/mandari\">GitHub</a></p>",
@@ -442,8 +438,8 @@ def get_company_page_definitions() -> dict:
                 ergebnis={"titel": "Loslegen.", "text": "Ein gemeinsamer Kanal, feste Ansprechpartner:innen und der "
                           "direkte Draht in die Entwicklung."},
                 note="<p>Für jede Partnerschaft gilt unser Wertekompass: Ratsdaten bleiben vollständig und "
-                     "unverändert, wir arbeiten mit allen demokratischen Parteien gleichermaßen, und jede Zeile "
-                     'Code bleibt offen. <a href="/unternehmen/#werte">Wertekompass lesen</a></p>',
+                     "unverändert, wir arbeiten mit allen demokratischen Parteien gleichermaßen, und der Code der "
+                     'Plattform bleibt offen. <a href="/unternehmen/#werte">Wertekompass lesen</a></p>',
                 anchor="ablauf",
             ),
             m.einladung(
@@ -461,8 +457,8 @@ def get_company_page_definitions() -> dict:
         "open-source": [
             _hero(
                 "Öffentliches Geld. Öffentlicher Code.",
-                "Software, die das Gemeinwesen trägt, gehört offengelegt. Deshalb steht mandari vollständig unter "
-                "AGPL-3.0: jede Zeile, jedes Produkt, ohne Premium-Ausgabe hinter verschlossener Tür.",
+                "Software, die das Gemeinwesen trägt, gehört offengelegt. Deshalb stehen mandari Session, Work und "
+                "Insight vollständig unter AGPL-3.0: Was wir betreiben, können Sie lesen, prüfen und selbst betreiben.",
                 cta_label="Quellcode ansehen", cta_url="https://github.com/mandariOSS/mandari",
             ),
             # Muster 5b: vier Freiheiten als Begriffe
@@ -489,8 +485,8 @@ def get_company_page_definitions() -> dict:
                 "Wir entwickeln vor aller Augen",
                 [
                     m.gruppe("Nachprüfen statt glauben",
-                             m.zeile("Eine Ausgabe für alle", "Was wir betreiben, liegt im Repository. Keine "
-                                     "Enterprise-Variante, keine zurückgehaltenen Funktionen.",
+                             m.zeile("Derselbe Code für alle", "Was wir für Session, Work und Insight betreiben, liegt im "
+                                     "Repository. Ein Betreuungsvertrag bringt zusätzliche Leistung, keinen anderen Code.",
                                      zusatz="<a href=\"https://github.com/mandariOSS/mandari\">Repository</a>"),
                              m.zeile("Öffentliche Releases", "Jede Version erscheint mit Änderungsprotokoll auf GitHub "
                                      "und in verständlicher Form auf dieser Website.",
@@ -543,7 +539,7 @@ def get_company_page_definitions() -> dict:
             m.einladung(
                 "Fragen aus IT und Informationssicherheit?",
                 "Wir beantworten sie direkt und im Detail – gern im gemeinsamen Termin mit Ihrem Team.",
-                "Termin vereinbaren", "/kontakt/#termin",
+                "Erstgespräch vereinbaren", "/kontakt/#termin",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Sicherheitslücke", "security@mandari.de", ""),
                       ("Für die IT", "Trust Center", "/trust/"), ("Lizenz", "AGPL-3.0", "https://github.com/mandariOSS/mandari/blob/main/LICENSE")],
             ),

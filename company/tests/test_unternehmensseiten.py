@@ -64,7 +64,7 @@ class UnternehmensseitenTests(TestCase):
                               "Robert-Koch-Straße 44, 48149 Münster"],
             "/karriere/": ["Bau mit an der Software", "Initiativ bewerben", 'id="stellen"', 'id="ablauf"',
                            "bewerbung@mandari.de"],
-            "/presse/": ["Kurzprofil", "Stand 2. Oktober 2026", "204.819", 'id="material"',
+            "/presse/": ["Kurzprofil", "Stand 18. November 2026", "383.983", 'id="material"',
                          "/presse/mandari-logopaket.zip"],
             "/partner/": ["Vier Wege, mit uns zu arbeiten", "So entsteht eine Partnerschaft", "/unternehmen/#werte"],
             "/open-source/": ["Öffentliches Geld. Öffentlicher Code.", 'id="danke"', "AGPL-3.0"],
