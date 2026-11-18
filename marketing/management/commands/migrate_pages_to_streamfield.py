@@ -227,7 +227,6 @@ def get_marketing_definitions() -> dict:
                      "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
                      "price_net": "33,53 € netto zzgl. 19 % USt",
                      "price_alt": "oder 399 € pro Jahr (335,29 € netto) – zwei Monate gespart",
-                     "price_note": "Beta-Kunden erhalten dauerhaft vergünstigte Konditionen",
                      "description": "Professionelle Sitzungsvorbereitung mit Team, KI und Antragsdatenbank.",
                      "features": [bullet("Alles aus Insight"), bullet("Team-Workspaces & Notizen"),
                                   bullet("Antragsdatenbank & Vorlagen"), bullet("Interne Abstimmungen & Termine"),
