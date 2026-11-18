@@ -1,0 +1,12 @@
+{% load muster %}
+{# M11 Bildschirm im Raster: echter Bildschirm in der Kennfläche des Produkts, rechts und unten angeschnitten, darunter die Herkunft der Daten. Erwartet name (Schlüssel aus marketing/bildschirme.py); AVIF, sonst WebP. #}
+{% bildschirm name as b %}
+{% if b %}
+<figure class="schirm"{% if b.anzeige %} style="--bildbreite:{{ b.anzeige }}"{% endif %}>
+    <div class="bildfeld"><div class="ausschnitt"><picture>
+        <source type="image/avif" srcset="{{ b.srcset_avif }}" sizes="{{ b.sizes }}">
+        <img src="{{ b.url }}" srcset="{{ b.srcset }}" sizes="{{ b.sizes }}" width="{{ b.breite }}" height="{{ b.hoehe }}" alt="{{ b.alt }}" loading="lazy" decoding="async">
+    </picture></div></div>
+    <figcaption>{{ b.herkunft }}</figcaption>
+</figure>
+{% endif %}

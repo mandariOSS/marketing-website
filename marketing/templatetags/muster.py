@@ -272,6 +272,18 @@ def produkt_ausschnitt(key):
             "alt": bild["alt"]}
 
 
+# ── M11 Bildschirm im Raster ─────────────────────────────────────────────────
+
+
+@register.simple_tag
+def bildschirm(name):
+    """Bildschirm für ``marketing/muster/_bildschirm.html`` (Dateien, Größe, Alternativtext, Herkunft) oder
+    ``None``; die Bilder stehen in ``marketing/bildschirme.py``."""
+    from marketing.bildschirme import bildschirm as daten
+
+    return daten(name)
+
+
 # ── Kleinkram ────────────────────────────────────────────────────────────────
 
 

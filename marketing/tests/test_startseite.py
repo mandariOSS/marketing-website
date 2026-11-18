@@ -54,9 +54,11 @@ class StartseitenHeroTests(TestCase):
         self.assertIn('fetchpriority="high"', work)
 
     def test_kein_zweiter_grosser_screenshot(self):
-        # Der frühere Screenshot über volle Breite entfällt; Insight steht nur noch in der Figur.
+        # Der frühere Screenshot über volle Breite entfällt; im Seitenkopf steht nur die eine Figur. Die Bildschirme
+        # weiter unten (Weg einer Ratssitzung) sind Ausschnitte im Raster, je Halt einer.
         self.assertNotIn("insight-muenster-1280.webp", self.html)
-        self.assertEqual(self.html.count("<figure"), 1)
+        self.assertEqual(self.hero.count("<figure"), 1)
+        self.assertEqual(self.html.count("<figure"), 1 + self.html.count('<figure class="schirm"'))
 
     def test_bilddateien_vorhanden(self):
         # Alle Breiten aus srcset und Preload (marketing/templatetags/baender.py) liegen als Datei vor:

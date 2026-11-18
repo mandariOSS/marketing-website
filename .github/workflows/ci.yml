@@ -65,8 +65,9 @@ jobs:
           assert not missing, f"Klassen fehlen im kompilierten CSS: {missing}"
           groesse = len(css.encode("utf-8"))
           # Grenze: 65,6 KB vor dem Musterkatalog, die Abschnittsmuster (Zeitskala, Register, Dokumentseite …)
-          # bringen rund 15 KB (gzip 3 KB); darüber deutet ein Sprung auf ungenutzte Klassen in der Safelist.
-          assert groesse < 84_000, f"styles.css hat {groesse} Bytes (Grenze 84.000) – ungenutzte Klassen in der Safelist?"
+          # bringen rund 15 KB (gzip 3 KB), die Abschnitte mit Bildschirmen (Weg, Tagesfolge, Kette) weitere 5 KB;
+          # darüber deutet ein Sprung auf ungenutzte Klassen in der Safelist.
+          assert groesse < 89_000, f"styles.css hat {groesse} Bytes (Grenze 89.000) – ungenutzte Klassen in der Safelist?"
           print(f"OK: {len(needles)} Klassen im CSS vorhanden, {groesse} Bytes")
           EOF
 
@@ -286,7 +287,7 @@ jobs:
               "/barrierefreiheit/": (["teilweise konform mit der BITV 2.0"], ["Letzte Prüfung:", "Wir sind ehrlich"]),
               "/mitmachen/": (["Such dir aus, was zu dir passt"], ["100 % Open Source", "IONOS"]),
               "/preise/": (["Pilotkommunen erhalten Sonderkonditionen", "Betrieb in Deutschland"], ["Pilot-Phase 2026", "IONOS"]),
-              "/kommunen/": (["Drei Bausteine", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
+              "/kommunen/": (["Einmal erfasst, bis zur Niederschrift verwendet.", "Pilotkommunen gestalten mit."], ["Kurze Wege für die Datenschutzprüfung"]),
               "/quellen/": (["mandari aggregiert", "mandari nutzt", "mandari nimmt"], ["Mandari "]),
           }
           errors = []

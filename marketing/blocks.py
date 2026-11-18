@@ -1330,6 +1330,65 @@ class DownloadsBlock(StructBlock):
         label = "Download-Leiste (M10)"
 
 
+# ── M11 Bildschirme im Raster ─────────────────────────────────────────────
+
+
+class TagBlock(StructBlock):
+    wann = CharBlock(help_text="Zeitpunkt auf der Achse, z. B. 'Montag'")
+    kurz = CharBlock(help_text="Beschriftung auf der Achse, z. B. 'Die Fraktion tagt'")
+    titel = CharBlock()
+    text = TextBlock()
+    bild = CharBlock(help_text="Schlüssel eines Bildschirms aus marketing/bildschirme.py, z. B. 'work-start'")
+
+    class Meta:
+        icon = "date"
+        label = "Tag"
+
+
+class TagesfolgeBlock(StructBlock):
+    """M11b: mehrere Bildschirme entlang einer Zeitachse; ab 1024 px wählt die Achse einen Tag."""
+
+    header = SectionHeaderBlock(required=False)
+    produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Achse und der Bildflächen")
+    tage = ListBlock(TagBlock(), min_num=2, max_num=4)
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(required=False)
+
+    class Meta:
+        template = "marketing/blocks/tagesfolge.html"
+        icon = "date"
+        label = "Tagesfolge mit Bildschirmen (M11b)"
+
+
+class KettenSchrittBlock(StructBlock):
+    titel = CharBlock()
+    ort = CharBlock(required=False, help_text="Klein unter dem Titel, z. B. 'mit der Frist des Gremiums'")
+    text = RichTextBlock(features=LINK_FEATURES)
+    ergebnis = CharBlock(help_text="Was aus dem Schritt entsteht")
+
+    class Meta:
+        icon = "list-ol"
+        label = "Schritt"
+
+
+class KetteBlock(StructBlock):
+    """M11c: Aussage und ein Bildschirm, darunter nummerierte Schritte mit ihrem Ergebnis."""
+
+    header = SectionHeaderBlock(required=False)
+    produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Nummern und der Bildfläche")
+    bild = CharBlock(help_text="Schlüssel eines Bildschirms aus marketing/bildschirme.py, z. B. 'work-start'")
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(required=False)
+    spalten = ListBlock(CharBlock(), min_num=3, max_num=3, help_text="Schritt, Tätigkeit, Ergebnis")
+    schritte = ListBlock(KettenSchrittBlock(), min_num=2)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/kette.html"
+        icon = "list-ol"
+        label = "Kette: Bildschirm und Schritte mit Ergebnis (M11c)"
+
+
 # ─────────────────────── Composite block container ──────────────────────
 
 
@@ -1377,6 +1436,8 @@ class MarketingStreamBlock(StreamBlock):
     zahlensatz = ZahlensatzBlock()
     nullen = NullenBlock()
     downloads = DownloadsBlock()
+    tagesfolge = TagesfolgeBlock()
+    kette = KetteBlock()
 
     class Meta:
         block_counts = {}  # No max-restrictions

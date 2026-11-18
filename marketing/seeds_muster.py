@@ -198,6 +198,27 @@ def downloads(title, label, url, *, subline="", hinweis="", anchor="", dateien=N
                           "dateien": [{"label": l, "url": u} for l, u in (dateien or [])]})
 
 
+# ── M11 ─────────────────────────────────────────────────────────────────────
+
+def tag(wann, kurz, titel, text, bild):
+    return {"wann": wann, "kurz": kurz, "titel": titel, "text": text, "bild": bild}
+
+
+def tagesfolge(title, tage, *, produkt, subline="", anchor="", link_label="", link_url=""):
+    return ("tagesfolge", {"header": kopf(title, subline, anchor), "produkt": produkt, "tage": list(tage),
+                           "link_label": link_label, "link_url": link_url})
+
+
+def kettenschritt(titel, text, ergebnis, *, ort=""):
+    return {"titel": titel, "ort": ort, "text": _p(text), "ergebnis": ergebnis}
+
+
+def kette(title, schritte, *, produkt, bild, spalten, subline="", anchor="", link_label="", link_url="", note=""):
+    return ("kette", {"header": kopf(title, subline, anchor), "produkt": produkt, "bild": bild,
+                      "link_label": link_label, "link_url": link_url, "spalten": list(spalten),
+                      "schritte": list(schritte), "note": note})
+
+
 def begriffe_aus_html(title, html, *, subline="", anchor=""):
     """Rich Text mit h3-Zwischenüberschriften als Begriffe (Überschrift links, Inhalt rechts)."""
     import re

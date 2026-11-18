@@ -314,6 +314,12 @@ marketing-website/
   `curl -sI -H 'Accept-Encoding: br' https://mandari.de/wstatic/css/styles.<hash>.css` zeigt `content-encoding: br`.
 - **Hero-Bilder** liegen je Breite als AVIF und WebP vor; vorgeladen wird das AVIF. Neue oder geänderte Bilder:
   WebP wie bisher ablegen, dann `python scripts/hero_avif.py` (Pillow mit AVIF, Vorlagen siehe Skript).
+- **Bildschirme** in den Abschnitten (`static/images/bildschirme`, Liste in `marketing/bildschirme.py`,
+  Vorlage `marketing/muster/_bildschirm.html`) sind Ausschnitte aus der öffentlichen Demo oder dem Bürgerportal:
+  nur der Inhaltsbereich ohne Seitenleiste, doppelte Pixeldichte, heller Modus. Unter jedem Bild steht, woher
+  die Daten stammen. Neues Bild: PNG aufnehmen, mit Größe, Alternativtext und Herkunft in die Liste eintragen,
+  dann `python scripts/bildschirme.py name=pfad.png` (schreibt je Breite AVIF und WebP). Sie laden mit
+  `loading="lazy"`; in der Tagesfolge holt der Browser nur das Bild des gewählten Tages.
 - **Spamschutz.** Altcha lädt erst, wenn jemand ein Kontaktformular betritt (`static/js/kontakt.js`).
 
 ### Sicherheits-Header und Fehlerseiten
@@ -426,6 +432,9 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   | Einladung | Schlussband mit den direkten Wegen rechts | `gradient_cta` (Feld „Wege“) | jede Seite |
   | Zusage | große Aussage, rechts die Bedingungen (höchstens einmal je Seite) | `zusage`, `leitsatz` | Safe Harbor, Warrant Canary |
   | Produkte | Bildschirm in der Kennfläche des Produkts, rechts und unten angeschnitten bis an den Fensterrand; alle Produkte gleich (Text links, Bild rechts) | `produktbilder` | /produkte/ |
+  | Ablauf über mehrere Produkte | Weg: Halte entlang einer Linie, je Halt Zeitpunkt, Aussage, Stand und ein echter Bildschirm | `landing.html` (`weg-halt`) | Startseite |
+  | Ablauf in einem Produkt | Tagesfolge: Zeitachse wählt einen von bis zu vier Bildschirmen (ab 1024 px, darunter alle untereinander; ohne Skript) | `tagesfolge` | /fraktionen/ |
+  | Schritte mit Ergebnis | Kette: Aussage und ein Bildschirm, darunter nummerierte Schritte, in der dritten Spalte das Ergebnis | `kette` | /kommunen/ |
   | Optionen | Vergleichstabelle Kriterien × Optionen (mehr als zwei Optionen: Tabelle erst ab 1024 px) | `vergleich` | Selbst hosten, Anbindung, Partner |
   | Zahlen | Zahl im Satz, Null mit Aufschlüsselung | `zahlensatz`, `nullen` | Transparenz, Presse |
   | Dateien | Download-Leiste: ein Button rechts, Vorschauen nach Rang | `downloads`, `company/_logopaket.html` | Presse, Preisliste |
@@ -438,8 +447,9 @@ Gestaltungssystem (Kopfkommentar in `static/css/input.css`), damit Seitenwechsel
   aus `marketing/muster_daten.py`.
 - **Produktfarben:** Session Petrol `#0F5E8C` (vom Blau in Session abgeleitet,
   bewusst vom Indigo abgesetzt), Work Indigo `#4F46E5` (Standardfarbe in Work),
-  Insight Grün `#17703F`. Startseite und `/produkte/` zeigen jedes Produkt als eigene Fläche
-  (`_produkt.html`): hell zart getönt, dunkel neutral mit Namen und Link in der Kennfarbe.
+  Insight Grün `#17703F`. Die Kennfarbe trägt Punkt, Zeitpunkt und Bildfläche eines Produkts (Weg auf der
+  Startseite, Tagesfolge, Kette); Flächen je Produkt (`_produkt.html`) sind hell zart getönt, dunkel neutral
+  mit Namen und Link in der Kennfarbe.
   Überall dieselbe Reihenfolge: Session, Work, Insight (auch Funktionsübersicht und Preise).
 - **Formulare** (`/kontakt/`): ein Umschalter „Termin | Nachricht“, beide Formulare im selben
   Raster, alle Felder 48 px (Klasse `feld`), ein gefüllter Aufruf je Formular.
