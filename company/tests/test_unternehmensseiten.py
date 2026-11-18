@@ -190,7 +190,7 @@ class SeedBefehleTests(TestCase):
 
         call_command("refresh_seeded_page", "kontakt", "--force", stdout=StringIO())
         page.refresh_from_db()
-        self.assertEqual(page.seo_title, "Kontakt")
+        self.assertEqual(page.seo_title, "Kontakt aufnehmen und Erstgespräch vereinbaren")
         self.assertTrue(page.search_description.startswith("Erstgespräch mit mandari vereinbaren"))
 
     def test_bestand_mit_alter_ueber_uns_seite(self):

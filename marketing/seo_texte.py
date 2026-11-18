@@ -81,6 +81,17 @@ SEO_TEXTE = {
     },
 }
 
+# Suchtitel für Rechtstexte und Quellennachweise. Diese Seiten haben im Seed keinen SEO-Titel (ihr Inhalt kommt aus
+# ``.legal-content/``), „AGB | mandari“ oder „Impressum | mandari“ meldeten die Bing Webmaster Tools als zu kurz
+# (17.11.2026). Der Suchtitel gilt, solange im CMS kein eigener SEO-Titel steht (``marketing.seo.page_title``); die
+# Überschrift der Seite bleibt, wie sie ist. Mit „ | mandari“ 30 bis 60 Zeichen.
+SUCHTITEL = {
+    "impressum": "Impressum und Anbieterkennzeichnung",
+    "datenschutz": "Datenschutzerklärung für Website und Dienste",
+    "agb": "Allgemeine Geschäftsbedingungen (AGB)",
+    "quellen": "Quellennachweise: Daten, Lizenzen, Komponenten",
+}
+
 # Felder, die ``SEO_TEXTE`` setzen darf (alles andere bleibt Sache der Seed-Definition).
 FELDER = ("seo_title", "search_description")
 

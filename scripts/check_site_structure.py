@@ -108,8 +108,13 @@ FUSSZEILE = {
     ],
 }
 
-# Mit dem Suchbegriff Ratsinformationssystem (Issue mandari#939); für die Startseite gilt kein Längenziel (unten).
-STARTSEITE_TITEL = "mandari – Ratsinformationssystem und Software für die offene Verwaltung"
+# Mit dem Suchbegriff Ratsinformationssystem (Issue mandari#939). Für die Startseite gilt das Längenziel der
+# Unterseiten nicht, aber die Obergrenze der Suchmaschinen: Ab 71 Zeichen meldet Bing „Title too long“.
+STARTSEITE_TITEL = "mandari: Ratsinformationssystem und Software für die offene Verwaltung"
+TITEL_HOECHSTENS = 70
+# Untergrenze für alle Seiten, auch Rechtstexte und Kontakt (ohne Längenziel): Bing meldete Titel mit 13 bis 19
+# Zeichen als „Title too short“ („AGB | mandari“, „Kontakt | mandari“, „Impressum | mandari“)
+TITEL_MINDESTENS = 25
 
 # TODO(Relaunch-Abnahme): Diese Ziele legen die parallelen Relaunch-PRs an (Produkte/Fraktionen,
 # Unternehmen/Karriere, neue Startseite). Solange sie fehlen, meldet der Test Warnungen statt Fehler.
@@ -410,6 +415,10 @@ def main() -> int:
             bericht.fehler_(f"{pfad}: Titel '{t}' hat nicht die Form '<Titel> | mandari'")
         if "Mandari" in t:
             bericht.fehler_(f"{pfad}: Titel '{t}' schreibt die Marke groß")
+        if not TITEL_MINDESTENS <= len(t) <= TITEL_HOECHSTENS:
+            bericht.fehler_(
+                f"{pfad}: Titel hat {len(t)} Zeichen (erlaubt {TITEL_MINDESTENS}–{TITEL_HOECHSTENS}): '{t}'"
+            )
 
         d = " ".join((html.description or "").split())
         if pfad not in OHNE_LAENGENZIEL and pfad != "/":

@@ -10,6 +10,8 @@ from django.test import SimpleTestCase, TestCase
 
 from marketing import seo, seo_texte
 from marketing.management.commands.setup_initial_pages import (
+    CONTACT_PAGE_META,
+    HOME_PAGE_META,
     MARKETING_PAGE_META,
     RELEASE_INDEX_LEGACY,
     RELEASE_INDEX_META,
@@ -40,6 +42,22 @@ class LaengenTests(SimpleTestCase):
         for slug, texte in seo_texte.SEO_TEXTE.items():
             self.pruefen(slug, texte.get("seo_title"), texte.get("search_description"))
         self.pruefen("releases", RELEASE_INDEX_META["seo_title"], RELEASE_INDEX_META["search_description"])
+
+    def test_suchtitel_der_rechtstexte_und_kontakt_im_zielbereich(self):
+        # Bing Webmaster Tools, 17.11.2026: „AGB | mandari“, „Impressum | mandari“ und „Kontakt | mandari“ zu kurz
+        for slug, titel in seo_texte.SUCHTITEL.items():
+            self.pruefen(slug, titel)
+        self.pruefen("kontakt", CONTACT_PAGE_META["seo_title"])
+        for slug in ("impressum", "agb", "datenschutz"):
+            self.assertIn(slug, seo_texte.SUCHTITEL)
+
+    def test_startseitentitel_hoechstens_70_zeichen(self):
+        # Ab 71 Zeichen meldet Bing „Title too long“; der Suchbegriff bleibt im Titel
+        titel = seo.full_title(HOME_PAGE_META["seo_title"], is_home=True)
+        self.assertLessEqual(len(titel), 70, titel)
+        self.assertIn("Ratsinformationssystem", titel)
+        self.assertIn("Software für die offene Verwaltung", titel)
+        self.assertTrue(titel.startswith("mandari"), titel)
 
     def test_aufgabenliste_des_nachtrags_ist_abgedeckt(self):
         # Kurze Titel aus den SEO-Prüfungen und Descriptions unter 120 Zeichen (Issue mandariOSS/mandari#914)
@@ -177,12 +195,12 @@ class NurMetaTests(TestCase):
         kontakt.save()
         kontakt.save_revision().publish()
         call_command("refresh_seeded_page", "kontakt", "--nur-meta", stdout=StringIO())
-        self.assertEqual(ContactPage.objects.get().seo_title, "Kontakt")
+        self.assertEqual(ContactPage.objects.get().seo_title, "Kontakt aufnehmen und Erstgespräch vereinbaren")
         ausgabe = StringIO()
         call_command("refresh_seeded_page", "startseite", "--nur-meta", stdout=ausgabe)
         self.assertIn("bereits auf dem Stand", ausgabe.getvalue())
         self.assertEqual(HomePage.objects.get().seo_title,
-                         "mandari – Ratsinformationssystem und Software für die offene Verwaltung")
+                         "mandari: Ratsinformationssystem und Software für die offene Verwaltung")
 
     def test_fehler(self):
         with self.assertRaisesMessage(CommandError, "schließen sich aus"):

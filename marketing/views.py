@@ -173,6 +173,9 @@ Disallow: /*?subject=
 Disallow: /insight/?body=
 Disallow: /insight/kommunen/?
 
+# Umschalter „Kommune wählen“: merkt die Kommune und leitet weiter, hat keinen eigenen Inhalt
+Disallow: /insight/kommune/
+
 # Unser eigener Abruf: Die Demo-Quelle liegt auf diesem Host, ihre Dateien tragen ?download=1
 User-agent: mandari-ingestor
 Allow: /

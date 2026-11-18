@@ -200,7 +200,7 @@ class SeitenTests(TestCase):
         html = self.seite("/")
         self.assertEqual(links(hauptteil(html), "/ratsinformationssystem/"), [])
         self.assertEqual(head(html, r"<title>([^<]+)</title>"),
-                         "mandari – Ratsinformationssystem und Software für die offene Verwaltung")
+                         "mandari: Ratsinformationssystem und Software für die offene Verwaltung")
 
     def test_neue_seite(self):
         html = self.seite("/ratsinformationssystem/")
