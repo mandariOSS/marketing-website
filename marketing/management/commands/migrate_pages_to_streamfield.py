@@ -744,10 +744,10 @@ def get_marketing_definitions() -> dict:
                 "number": "2", "anchor": "subprocessors",
                 "title": "Unterauftragsverarbeiter",
                 "body": (
-                    "<p>Vollständige Liste der Unterauftragsverarbeiter, die wir heute einsetzen. Es gibt keine "
-                    "weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Alle haben ihren Sitz in der EU. "
-                    "Betrieb und Sicherungen bleiben in der EU; den Verarbeitungsort der KI-Funktionen nennen wir in "
-                    "der Zeile zu Nebius.</p>"
+                    "<p>Vollständige Liste der Unterauftragsverarbeiter und Empfänger, die wir heute einsetzen. Es "
+                    "gibt keine weiteren, insbesondere keine Tracker und keine Analytics-Dienste. Betrieb und "
+                    "Sicherungen bleiben in der EU. Die beiden KI-Dienste verarbeiten auch außerhalb der EU; den Ort "
+                    "nennen wir in ihren Zeilen.</p>"
                 ),
             }),
             m.register(
@@ -758,20 +758,27 @@ def get_marketing_definitions() -> dict:
                             "Sicherungen auf Hetzner Storage Boxen in Falkenstein (Deutschland) und Helsinki "
                             "(Finnland, EU). AVV nach Art. 28 DSGVO besteht.",
                             ort="Industriestr. 25, 91710 Gunzenhausen (DE)"),
-                    m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Zusammenfassungen öffentlicher "
-                            "Ratsdokumente, Ortsangaben aus öffentlichen Vorlagen für die Karte und KI-Recherche im "
-                            "Bürgerportal, KI-Assistent in mandari Work (nur auf Aufruf der Nutzer:innen, auf Wunsch "
-                            "je Organisation abschaltbar). Verarbeitungsort: je nach Modell innerhalb und außerhalb "
-                            "der EU, auch in den USA, laut Liste der Unterauftragsverarbeiter von Nebius.",
+                    m.zeile("Nebius B.V.", "KI-Funktionen über Nebius Token Factory: Ortsangaben aus öffentlichen "
+                            "Vorlagen für die Karte und KI-Recherche im Bürgerportal, KI-Assistent in mandari Work "
+                            "(nur auf Aufruf der Nutzer:innen, auf Wunsch je Organisation abschaltbar). "
+                            "Verarbeitungsort: je nach Modell innerhalb und außerhalb der EU, auch in den USA, laut "
+                            "Liste der Unterauftragsverarbeiter von Nebius.",
                             ort="Schiphol Boulevard 165, 1118 BG Schiphol (NL/EU)"),
-                    m.zeile("GoCardless SAS", "Einzug per SEPA-Lastschrift für mandari Work, nur wenn Sie diese "
-                            "Zahlart wählen (Name, E-Mail, Anschrift, Kontoinhaber, IBAN).",
-                            ort="7 rue de Madrid, 75008 Paris (FR/EU)"),
+                    m.zeile("Anthropic, PBC", "Zusammenfassungen öffentlicher Ratsdokumente im Bürgerportal und "
+                            "Prüfung ihrer Ortsangaben über die Claude API. Übermittelt werden nur Texte öffentlicher "
+                            "Dokumente der Kommunen, keine Angaben über Besucher:innen und keine Inhalte aus mandari "
+                            "Work. Verarbeitungsort: weltweit, auch in den USA.",
+                            ort="548 Market Street, PMB 90375, San Francisco, CA 94104 (USA)"),
+                    m.zeile("Qonto SA", "Geschäftskonto. Um Zahlungen den Rechnungen zuzuordnen, ruft das "
+                            "Kundenportal die Zahlungseingänge ab (Name und IBAN der zahlenden Stelle, Betrag, Datum, "
+                            "Verwendungszweck).",
+                            ort="6 impasse Bonne Nouvelle, 75010 Paris (FR/EU)"),
                     m.zeile("Haufe-Lexware GmbH & Co. KG", "Rechnungsstellung und Buchhaltung (lexware office).",
                             ort="Munzinger Str. 9, 79111 Freiburg (DE)"),
                 )],
                 spalten=["Unternehmen und Sitz", "Wofür"],
-                note="<p><strong>Andere KI-Anbieter:</strong> In unserem Betrieb ist heute nur Nebius freigegeben. "
+                note="<p><strong>Andere KI-Anbieter:</strong> In unserem Betrieb sind heute Nebius und, nur für die "
+                     "Zusammenfassungen öffentlicher Ratsdokumente, Anthropic freigegeben. "
                      "Ein anderer OpenAI-kompatibler Anbieter lässt sich erst einrichten, wenn wir ihn als Betreiber "
                      "freigegeben haben; ohne Freigabe bleiben die KI-Funktionen aus. Die Texterkennung (OCR) läuft "
                      "auf unseren eigenen Systemen, ohne externen Anbieter.</p>"
@@ -1573,7 +1580,7 @@ def get_legal_definitions() -> dict:
             ("richtext_section", {
                 "header": hdr(title="KI-Komponenten"),
                 "background": "gray",
-                "body": "<p>Die KI-Funktionen nutzen Sprachmodelle mit offenen Gewichten (Open-Weight-LLMs) über <strong>Nebius Token Factory</strong> (Nebius B.V., Niederlande):</p><ul><li>Zusammenfassungen öffentlicher Ratsdokumente und KI-Recherche im Bürgerportal, als KI-erstellt gekennzeichnet</li><li>KI-Assistent in mandari Work, nur auf Aufruf der Nutzer:innen</li></ul><p>Der Verarbeitungsort liegt je nach Modell innerhalb und außerhalb der EU, auch in den USA (Liste der Unterauftragsverarbeiter von Nebius). Die Texterkennung (OCR) läuft auf unseren eigenen Systemen. Ein selbst betriebenes Sprachmodell ist für die geplanten KI-Funktionen im Sitzungsdienst vorgesehen (2027). Alle Unterauftragsverarbeiter mit Zweck und Sitz stehen im <a href=\"/trust/#subprocessors\">Trust Center</a>.</p>",
+                "body": "<p>Die KI-Funktionen nutzen zwei Dienste:</p><ul><li><strong>Claude API</strong> (Anthropic, PBC, USA): Zusammenfassungen öffentlicher Ratsdokumente im Bürgerportal, als KI-erstellt gekennzeichnet</li><li><strong>Nebius Token Factory</strong> (Nebius B.V., Niederlande) mit Sprachmodellen mit offenen Gewichten (Open-Weight-LLMs): KI-Recherche und Ortsangaben im Bürgerportal, KI-Assistent in mandari Work, nur auf Aufruf der Nutzer:innen</li></ul><p>Anthropic verarbeitet weltweit, auch in den USA; bei Nebius liegt der Verarbeitungsort je nach Modell innerhalb und außerhalb der EU, auch in den USA (Liste der Unterauftragsverarbeiter von Nebius). Die Texterkennung (OCR) läuft auf unseren eigenen Systemen. Ein selbst betriebenes Sprachmodell ist für die geplanten KI-Funktionen im Sitzungsdienst vorgesehen (2027). Alle Unterauftragsverarbeiter mit Zweck und Sitz stehen im <a href=\"/trust/#subprocessors\">Trust Center</a>.</p>",
             }),
             ("richtext_section", {
                 "header": hdr(title="Software-Lizenzen"),
