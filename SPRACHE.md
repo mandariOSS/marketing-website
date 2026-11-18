@@ -51,6 +51,8 @@ Nicht: Beta-Phase, Pilot-Phase, General Availability.
 - Fraktionen: der Aufruf aus `WORK_AUFRUF` in `marketing/management/commands/migrate_pages_to_streamfield.py`.
 - Schriftliche Anfrage: **Nachricht schreiben** (`/kontakt/#nachricht`).
 - Presse: **Presseanfrage stellen**. Partner: **Partnergespräch vereinbaren**.
+- Ausprobieren: **Demo öffnen** (`DEMO_URL`). Eine Testphase versprechen wir nicht pauschal; sie ist nach
+  Absprache möglich, höchstens 14 Tage.
 - Textlinks nennen ihr Ziel („Bürgerportal öffnen“, „Roadmap ansehen“).
 
 ## Überschriften

@@ -30,6 +30,8 @@ from wagtail.blocks import StreamValue
 # "https://kunden.mandari.de/kunden/buchen" eintragen, dann /fraktionen/ und /preise/ neu seeden.
 WORK_AUFRUF = "mandari Work anfragen"
 WORK_AUFRUF_URL = "/kontakt/?subject=mandari-Work#nachricht"
+# Ausprobieren: die öffentliche Demo. Eine Testphase gibt es nur nach Absprache (höchstens 14 Tage).
+DEMO_URL = "https://demo.mandari.de/"
 
 
 def cta(label, url, icon="", style="primary"):
@@ -132,15 +134,15 @@ def get_marketing_definitions() -> dict:
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "Transparenzbericht", "title_highlight": "2026",
                 "subline": "Behördenanfragen, Sicherheitsvorfälle und die Reichweite des Bürgerportals: Was Sie über unseren Betrieb wissen sollten, legen wir offen.",
-                "subline_secondary": "Berichtszeitraum: 1. Januar bis 31. Dezember 2026 · Veröffentlicht: 26. April 2026 · Aktualisiert: 20. Juli 2026 · Nächste Aktualisierung: Oktober 2026",
+                "subline_secondary": "Berichtszeitraum 1. Januar bis 31. Dezember 2026. Veröffentlicht am 26. April 2026, zuletzt aktualisiert am 18. November 2026, nächste Aktualisierung im Januar 2027.",
                 "ctas": [], "background_color": "primary",
             }),
             # Muster 6a: die eine Aussage der Seite, direkt unter dem Kopf
             m.zusage(
-                "Bis zum 20. Juli 2026 wurden wir nicht verpflichtet, Auskünfte unter Geheimhaltung zu erteilen.",
+                "Bis zum 18. November 2026 wurden wir nicht verpflichtet, Auskünfte unter Geheimhaltung zu erteilen.",
                 grundlage="Warrant Canary: keine Geheimhalteanordnung, etwa nach § 95 GWB oder § 100b StPO.",
                 bedingungen_titel="So lesen Sie diese Erklärung",
-                bedingungen=["Wir erneuern sie vierteljährlich, die nächste Fassung folgt im Oktober 2026.",
+                bedingungen=["Wir erneuern sie vierteljährlich, die nächste Fassung folgt im Januar 2027.",
                              "Verschwindet sie oder veraltet sie, interpretieren Sie das entsprechend."],
                 anchor="warrant-canary",
             ),
@@ -161,7 +163,7 @@ def get_marketing_definitions() -> dict:
                         ("Gemeldete CVEs", "veröffentlichte Schwachstellen mit CVE-Kennung", "0"),
                     ]),
                 ],
-                text="Stand 20. Juli 2026, Berichtszeitraum seit 1. Januar 2026. Wir aktualisieren vierteljährlich; "
+                text="Stand 18. November 2026, Berichtszeitraum seit 1. Januar 2026. Wir aktualisieren vierteljährlich; "
                      "jede Zahl über null erläutern wir an dieser Stelle.",
                 spalten=("Art", "Was dazu zählt", "2026"), anchor="anfragen",
             ),
@@ -315,6 +317,8 @@ def get_marketing_definitions() -> dict:
                      "answer": "<p>Der Zugang zu kommunalpolitischen Informationen gehört allen. Das Bürgerportal finanziert sich über mandari Work und mandari Session, so bleibt es für Bürger:innen dauerhaft kostenlos.</p>"},
                     {"question": "Wie viele Personen können mit mandari Work arbeiten?",
                      "answer": "<p><strong>Alle Mitglieder Ihrer Organisation, ohne Obergrenze.</strong> Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Mitarbeitende und sachkundige Bürger:innen: Der Preis bleibt gleich.</p><p>Dazu kommen <strong>25 Gäste inklusive</strong>. Gäste sind Personen außerhalb Ihrer Organisation, etwa aus einer Koalitionsfraktion oder Fachleute für ein Thema. Sie sehen nur, was Sie für sie freigeben. Brauchen Sie mehr, sprechen Sie uns an.</p>"},
+                    {"question": "Können wir mandari Work vorab ausprobieren?",
+                     "answer": "<p>Ja. In der <a href=\"https://demo.mandari.de/\">Demo</a> arbeiten Sie sofort mit den Daten einer erfundenen Stadt, mit einem Klick und ohne Registrierung. Möchten Sie mandari Work mit Ihrer eigenen Fraktion kennenlernen, vereinbaren wir auf Wunsch eine Testphase von bis zu 14 Tagen.</p>"},
                     {"question": "Sind die Preise inkl. MwSt.?",
                      "answer": "<p>Ja, alle hier genannten Preise verstehen sich inkl. 19 % deutscher Mehrwertsteuer. Für Angebotsvergleiche in Vergabeverfahren weisen wir den Nettopreis zusätzlich aus, zum Beispiel 39,90 € brutto entsprechen 33,53 € netto.</p>"},
                     {"question": "Wie verdient mandari Geld?",
@@ -331,9 +335,10 @@ def get_marketing_definitions() -> dict:
             }),
             m.einladung(
                 "Probieren Sie es aus.",
-                "Die ersten 14 Tage mit mandari Work sind kostenfrei.",
-                WORK_AUFRUF, WORK_AUFRUF_URL,
-                link_label="Erstgespräch vereinbaren", link_url="/kontakt/#termin",
+                "In der Demo arbeiten Sie mit mandari Work und mandari Session in einer erfundenen Stadt: ein Klick, "
+                "keine Registrierung. Eine Testphase mit Ihrer eigenen Fraktion vereinbaren wir auf Wunsch.",
+                "Demo öffnen", DEMO_URL,
+                link_label=WORK_AUFRUF, link_url=WORK_AUFRUF_URL,
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
                       ("Selbst betreiben", "Quellcode auf GitHub", "https://github.com/mandariOSS/mandari"),
                       ("Für Vergabestellen", "Unterlagen für die Vergabeakte", "/vergabe/")],
@@ -602,7 +607,7 @@ def get_marketing_definitions() -> dict:
                 WORK_AUFRUF, WORK_AUFRUF_URL,
                 link_label="Preise und Zusatzleistungen ansehen", link_url="/preise/",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
-                      ("Ausprobieren", "14 Tage kostenfrei", WORK_AUFRUF_URL),
+                      ("Ausprobieren", "Demo öffnen", DEMO_URL),
                       ("Alle Funktionen", "Funktionsübersicht", "/produkte/#funktionen")],
             ),
         ],
