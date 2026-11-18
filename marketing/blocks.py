@@ -43,10 +43,11 @@ def sichere_adresse(wert):
     """Prüfung für Linkfelder: relative Pfade, Sprungmarken sowie http, https, mailto und tel.
 
     Die Felder stehen unverändert im ``href``. Ein Ziel wie ``javascript:…`` liefe beim Klick als Skript im Namen
-    der Website; die automatische Maskierung von HTML hält das nicht auf. Browser ignorieren Leerraum und
-    Steuerzeichen im Schema, deshalb werden sie vor der Prüfung entfernt.
+    der Website; die automatische Maskierung von HTML hält das nicht auf. Gelesen wird das Schema wie im Browser:
+    Steuerzeichen und Leerzeichen am Rand fallen weg, Tabulator und Zeilenumbruch an jeder Stelle. Ein Leerzeichen
+    mitten im Text bleibt stehen, deshalb gilt ein Pfad mit Leerzeichen und Doppelpunkt nicht als Schema.
     """
-    bereinigt = re.sub(r"[\x00-\x20]+", "", str(wert or ""))
+    bereinigt = re.sub(r"[\t\n\r]", "", str(wert or "").strip("".join(map(chr, range(0x21)))))
     treffer = _SCHEMA.match(bereinigt)
     if treffer and treffer.group(1).lower() not in ERLAUBTE_SCHEMATA:
         raise ValidationError(
@@ -428,7 +429,10 @@ class GradientCTABlock(StructBlock):
         StructBlock([
             ("label", CharBlock(help_text="Kleine Zeile, z. B. 'E-Mail' oder 'Für Vergabestellen'")),
             ("wert", CharBlock(help_text="Adresse, Angabe oder Linktext")),
-            ("url", CharBlock(required=False, help_text="Optionaler Link; E-Mail-Adressen werden automatisch verlinkt")),
+            ("url", CharBlock(
+                validators=[sichere_adresse], required=False,
+                help_text="Optionaler Link; E-Mail-Adressen werden automatisch verlinkt",
+            )),
         ]),
         required=False,
         default=[],
@@ -1376,7 +1380,7 @@ class TagBlock(StructBlock):
 class TagesfolgeBlock(StructBlock):
     """M11b: mehrere Bildschirme entlang einer Zeitachse; ab 1024 px wählt die Achse einen Tag."""
 
-    header = SectionHeaderBlock(required=False)
+    header = SectionHeaderBlock()
     produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Achse und der Bildflächen")
     tage = ListBlock(TagBlock(), min_num=2, max_num=4)
     link_label = CharBlock(required=False)
@@ -1402,7 +1406,7 @@ class KettenSchrittBlock(StructBlock):
 class KetteBlock(StructBlock):
     """M11c: Aussage und ein Bildschirm, darunter nummerierte Schritte mit ihrem Ergebnis."""
 
-    header = SectionHeaderBlock(required=False)
+    header = SectionHeaderBlock()
     produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Nummern und der Bildfläche")
     bild = CharBlock(
         validators=[bekannter_bildschirm],

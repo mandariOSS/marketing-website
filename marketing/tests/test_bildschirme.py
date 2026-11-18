@@ -14,9 +14,16 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import RequestFactory, SimpleTestCase, TestCase
 from PIL import Image
+from wagtail.blocks import CharBlock, URLBlock
 
 from marketing.bildschirme import BILDSCHIRME, BREITEN, ORDNER, bekannter_bildschirm, bildschirm, breiten
-from marketing.blocks import KetteBlock, TagesfolgeBlock, sichere_adresse
+from marketing.blocks import (
+    GradientCTABlock,
+    KetteBlock,
+    MarketingStreamBlock,
+    TagesfolgeBlock,
+    sichere_adresse,
+)
 from marketing.management.commands.migrate_pages_to_streamfield import get_legal_definitions, get_marketing_definitions
 from marketing.templatetags.muster import laufnummer
 
@@ -91,15 +98,40 @@ class PruefungenTests(SimpleTestCase):
 
     def test_linkziele_ohne_ausfuehrbares_schema(self):
         for ziel in ("/kommunen/", "/kontakt/?subject=Session-Angebot#termin", "#anbindung", "https://demo.mandari.de/",
-                     "http://beispiel.de/a:b", "mailto:hello@mandari.de", "tel:+4925112345", "seite/unterseite:1", ""):
+                     "http://beispiel.de/a:b", "mailto:hello@mandari.de", "tel:+4925112345", "seite/unterseite:1", "",
+                     # Ein Leerzeichen mitten im Text beendet das Schema: ein Pfad, kein „unbekanntes Schema“
+                     "Seite mit Leerzeichen: Teil 2", "java script:alert(1)"):
             sichere_adresse(ziel)
         for ziel in ("javascript:alert(1)", "JavaScript:alert(1)", " javascript:alert(1)", "java\tscript:alert(1)",
+                     "\x01javascript:alert(1)", "java\nscript:alert(1)", "javascript:alert(1) ",
                      "vbscript:msgbox(1)", "data:text/html,<script>alert(1)</script>", "file:///etc/passwd"):
             with self.assertRaises(ValidationError, msg=ziel):
                 sichere_adresse(ziel)
         for block in (TagesfolgeBlock(), KetteBlock()):
             with self.assertRaises(ValidationError):
                 block.child_blocks["link_url"].clean("javascript:alert(1)")
+        # Auch die direkten Wege der Einladung (Liste im Baustein) tragen die Prüfung
+        weg = GradientCTABlock().child_blocks["wege"].child_block.child_blocks["url"]
+        self.assertEqual(weg.clean(""), "")
+        with self.assertRaises(ValidationError):
+            weg.clean("javascript:alert(1)")
+
+    def test_jedes_linkfeld_der_bausteine_traegt_die_pruefung(self):
+        # Ein neues Feld namens url oder *_url ohne Prüfung fiele sonst erst bei der nächsten Durchsicht auf
+        ohne = []
+
+        def durchsuchen(block, pfad):
+            for name, kind in getattr(block, "child_blocks", {}).items():
+                ist_link = name == "url" or name.endswith("_url")
+                if ist_link and isinstance(kind, CharBlock) and not isinstance(kind, URLBlock):
+                    if sichere_adresse not in kind.field.validators:
+                        ohne.append(f"{pfad}.{name}")
+                durchsuchen(kind, f"{pfad}.{name}")
+            if hasattr(block, "child_block"):
+                durchsuchen(block.child_block, pfad + "[]")
+
+        durchsuchen(MarketingStreamBlock(), "body")
+        self.assertEqual(ohne, [])
 
     def test_alle_linkziele_der_seeds_bestehen_die_pruefung(self):
         # Die Prüfung gilt für jedes Linkfeld der Bausteine; kein vorhandener Inhalt darf daran scheitern
@@ -110,6 +142,18 @@ class PruefungenTests(SimpleTestCase):
         self.assertGreater(len(ziele), 100)
         for ziel in ziele:
             sichere_adresse(ziel)
+
+    def test_zwei_tagesfolgen_auf_einer_seite_haben_getrennte_gruppen(self):
+        block = TagesfolgeBlock()
+        tage = [{"wann": w, "kurz": "Kurz", "titel": "Titel", "text": "Text", "bild": "work-start"} for w in "AB"]
+        wert = block.to_python({"header": {"title": "Ablauf"}, "produkt": "work", "tage": tage})
+        kontext = {"request": RequestFactory().get("/")}
+        html = [block.render(wert, context=dict(kontext)) for _ in range(2)]
+        gruppen = [set(re.findall(r'<input type="radio" name="([^"]+)"', seite)) for seite in html]
+        self.assertEqual([len(g) for g in gruppen], [1, 1])
+        self.assertNotEqual(gruppen[0], gruppen[1])
+        for seite in html:
+            self.assertEqual(len(re.findall(r'<input type="radio" name="[^"]+" checked>', seite)), 1)
 
     def test_laufnummer_zaehlt_je_seitenaufruf(self):
         # Zwei Tagesfolgen auf einer Seite brauchen getrennte Gruppen von Auswahlfeldern
