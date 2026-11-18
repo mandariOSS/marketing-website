@@ -1,0 +1,31 @@
+{% load wagtailcore_tags baender muster %}
+{# M11b Tagesfolge: Bildschirme entlang einer Zeitachse. Unter 1024 px stehen die Tage untereinander, darüber wählt die Achse einen Tag (Auswahlfelder in den Beschriftungen, ohne Skript; static/css/input.css). #}
+{% laufnummer as nr %}
+<section class="{% abschnitt band band_anfang band_ende %} produkt-{{ self.produkt }}">
+    <div class="wrap">
+        <div{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %} class="kopf scroll-mt-24">
+            <h2 class="t-h2 m-tinte">{{ self.header.title }}</h2>
+            {% if self.header.subline %}<p class="t-lead mt-5 m-text">{{ self.header.subline }}</p>{% endif %}
+        </div>
+        <div class="tf">
+            <div class="tf-achse" role="radiogroup" aria-label="{{ self.header.title }}" style="--anzahl:{{ self.tage|length }}">
+                {% for t in self.tage %}
+                <label><input type="radio" name="tf-{{ nr }}"{% if forloop.first %} checked{% endif %}><span class="wann">{{ t.wann }}</span><span class="tf-was">{{ t.kurz }}</span></label>
+                {% endfor %}
+            </div>
+            <div>
+                {% for t in self.tage %}
+                <article class="tf-tag">
+                    <div>
+                        <p class="wann">{{ t.wann }}: {{ t.kurz }}</p>
+                        <h3 class="t-h2-dok m-tinte mt-1.5">{{ t.titel }}</h3>
+                        <p class="t-body m-text mt-3">{{ t.text }}</p>
+                    </div>
+                    {% include "marketing/muster/_bildschirm.html" with name=t.bild %}
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+        {% if self.link_label and self.link_url %}<p class="mt-8"><a class="textlink" href="{{ self.link_url }}">{{ self.link_label }}</a></p>{% endif %}
+    </div>
+</section>

@@ -552,34 +552,52 @@ def get_marketing_definitions() -> dict:
                 "ctas": [cta(WORK_AUFRUF, WORK_AUFRUF_URL),
                          cta("Alle Funktionen im Überblick", "/produkte/#funktionen", style="outline")],
             }),
-            # Muster 5b: sechs Vorteile als Begriffe (das Bild von Work steht schon im Kopf)
-            m.begriffe(
-                "Was Ihre Fraktion gewinnt",
+            # Muster 11b: eine Sitzungswoche entlang der Zeit, je Tag ein echter Bildschirm aus der Demo
+            m.tagesfolge(
+                "Eine Sitzungswoche mit mandari Work.",
                 [
-                    m.begriff("Sitzungen gemeinsam vorbereiten",
-                              "Tagesordnung, Vorlagen und Beratungsfolge kommen aus dem Ratsinformationssystem. Ihre "
-                              "Fraktion kommentiert, verteilt Zuständigkeiten und hält Positionen fest – an einem Ort statt "
-                              "in zehn Mailverläufen."),
-                    m.begriff("Anträge mit Fristen und Freigaben",
-                              "Anträge und Anfragen entstehen gemeinsam, mit Versionen, Vorlagen und Schreiben in "
-                              "Echtzeit. Wer freigeben muss, sieht es; welche Frist läuft, steht daneben."),
-                    m.begriff("Eigene Sitzungen, sauber dokumentiert",
-                              "Einladung, Tagesordnung, Anwesenheit, interne Abstimmungen und Protokoll Ihrer "
-                              "Fraktionssitzungen – an einem Ort und für alle Mitglieder auffindbar."),
-                    m.begriff("Recherche im ganzen Bestand",
-                              "Volltextsuche über alle öffentlichen Ratsdokumente Ihrer Kommune, auch in gescannten PDFs, "
-                              "dazu KI-gestützte Recherche."),
-                    m.begriff("Ihre Termine auf Ihrer Webseite",
-                              "Öffentliche Sitzungstermine der Fraktion per Schnittstelle und Kalender-Feed – für Ihre "
-                              "Webseite und die Kalender Ihrer Mitglieder.",
-                              link_label="Anleitung zur Fraktions-API", link_url="https://docs.mandari.de/work/fraktions-api/"),
-                    m.begriff("Vertrauliches bleibt vertraulich",
-                              "Jede Organisation arbeitet in einem eigenen, verschlüsselten Bereich, mit Rollen, Rechten "
-                              "und Zwei-Faktor-Anmeldung. Ihre Daten exportieren Sie jederzeit vollständig.",
-                              link_label="Sicherheit im Trust Center", link_url="/trust/"),
+                    m.tag("Mittwoch", "Die Ladung ist da", "Die Tagesordnung liegt schon in Work.",
+                          "Work übernimmt Tagesordnung und Vorlagen automatisch aus dem Ratsinformationssystem Ihrer "
+                          "Kommune. Die Startseite zeigt, welche Sitzungen anstehen und wie weit die Vorbereitung "
+                          "ist.", "work-start"),
+                    m.tag("Bis Montag", "Alle bereiten sich vor", "Jeder Punkt bekommt eine Position.",
+                          "Links die Vorlage, rechts Begründung, Notizen und die Diskussion Ihrer Fraktion. Die "
+                          "Position legen Sie mit einem Klick fest: Zustimmung, Ablehnung, Enthaltung oder noch "
+                          "offen.", "work-vorbereitung"),
+                    m.tag("Montag", "Die Fraktion tagt", "Die Fraktionssitzung übernimmt die Punkte aus dem Rat.",
+                          "Work lädt zur Fraktionssitzung ein und übernimmt die Punkte der Ratssitzung auf die "
+                          "Tagesordnung. Anwesenheit, Abstimmungen und Protokoll entstehen in der Sitzung.",
+                          "work-fraktionssitzung"),
+                    m.tag("Mittwoch", "Ratssitzung", "Im Rat liegt alles bereit.",
+                          "Die Zusammenfassung zeigt, wie Ihre Fraktion zu jedem Punkt steht, mit Begründung und den "
+                          "geplanten Redebeiträgen.", "work-zusammenfassung"),
                 ],
-                subline="Weniger Abstimmung per Mail, weniger Suchen in PDF-Stapeln, mehr Zeit für Politik.",
-                anchor="funktionen",
+                produkt="work",
+                subline="Von der Ladung bis zur Abstimmung im Rat: So bereitet sich eine Fraktion vor.",
+                anchor="funktionen", link_label="Demo öffnen", link_url=DEMO_URL,
+            ),
+            # Muster 3: was außerhalb der Sitzungswoche dazugehört, als Register statt sechs Textblöcken
+            m.register(
+                "Anträge, Aufgaben und Recherche gehören dazu.",
+                [m.gruppe("",
+                    m.zeile("Anträge und Anfragen", "Sie schreiben gemeinsam und in Echtzeit, mit Versionen und "
+                            "Vorlagen. Der Ablauf führt vom Entwurf über Abstimmung und Freigabe bis zur Einreichung, "
+                            "die Frist steht daneben.", ort="mit Fristen und Freigaben"),
+                    m.zeile("Aufgaben", "Wer bis wann was erledigt, hält die Fraktion direkt am Tagesordnungspunkt "
+                            "fest."),
+                    m.zeile("Recherche", "Volltextsuche über alle öffentlichen Ratsdokumente Ihrer Kommune, auch in "
+                            "gescannten PDFs, dazu KI-gestützte Recherche.", ort="im ganzen Bestand"),
+                    m.zeile("Termine auf Ihrer Website", "Öffentliche Sitzungstermine der Fraktion per Schnittstelle "
+                            "und Kalender-Feed, für Ihre Website und die Kalender Ihrer Mitglieder.",
+                            zusatz="<a href=\"https://docs.mandari.de/work/fraktions-api/\">Anleitung zur "
+                                   "Fraktions-API</a>"),
+                    m.zeile("Vertraulichkeit", "Jede Organisation arbeitet in einem eigenen, verschlüsselten Bereich, "
+                            "mit Rollen, Rechten und Zwei-Faktor-Anmeldung. Ihre Daten exportieren Sie jederzeit "
+                            "vollständig.", zusatz="<a href=\"/trust/\">Sicherheit im Trust Center</a>"),
+                )],
+                spalten=["Funktion", "Was sie leistet", "Mehr dazu"],
+                subline="Was Ihre Fraktion außerhalb der Sitzungswoche braucht.",
+                anchor="mehr",
             ),
             # Muster 8: zwei Wege nach denselben Kriterien
             m.vergleich(
@@ -1110,30 +1128,37 @@ def get_marketing_definitions() -> dict:
                          cta("Wechsel vom bisherigen RIS", "/migration/", "move-right", "secondary")],
                 "background_color": "primary",
             }),
-            # Muster 5b: drei Bausteine als Begriffe (das Bild von Session steht schon im Kopf)
-            m.begriffe(
-                "Drei Bausteine, ein Ziel: weniger Aufwand, mehr Transparenz",
+            # Muster 11c: der Sitzungsdienst als Kette, jeder Schritt mit dem, was daraus entsteht
+            m.kette(
+                "Einmal erfasst, bis zur Niederschrift verwendet.",
                 [
-                    m.begriff("Die ganze Sitzung in einem System",
-                              "Von der Sitzungsplanung bis zum Protokoll in einem System: Tagesordnungen, Einladungen "
-                              "digital und auf Papier, Vorlagen und die Abrechnung des Sitzungsgelds. Was einmal erfasst "
-                              "ist, wird nicht noch einmal abgetippt. Das spart Zeit im Ratsbüro und vermeidet Fehler.",
-                              marke="mandari Session (Pilotphase)", link_label="Angebot anfragen",
-                              link_url="/kontakt/?subject=Session-Angebot"),
-                    m.begriff("Veröffentlichung ohne Zusatzaufwand",
-                              "Nach Ihrer Freigabe erscheinen Beschlüsse und Sitzungsunterlagen automatisch nach dem "
-                              "offenen OParl-Standard, maschinenlesbar statt in einer Insellösung. Transparenzpflichten erfüllen Sie im laufenden "
-                              "Betrieb, und Presse wie Zivilgesellschaft können die Daten direkt weiterverwenden.",
-                              marke="OParl 1.1", link_label="Zur OParl-Schnittstelle",
-                              link_url="/oparl-schnittstelle/"),
-                    m.begriff("Bürgernähe, die keine Arbeit macht",
-                              "Bürger:innen finden Beschlüsse, Vorlagen und Abstimmungen selbst: mit "
-                              "Volltextsuche über die Dokumente, ohne Anmeldung und ohne Tracking. Das entlastet "
-                              "Verwaltung und Rat von Einzelanfragen, und für Ihre Kommune ist das Portal inklusive.",
-                              marke="Bürgerportal mandari Insight", link_label="Bürgerportal öffnen", link_url="/insight/"),
+                    m.kettenschritt("Vorlage", "Sachverhalt, Beschlussvorschlag und finanzielle Auswirkungen erfassen, "
+                                    "mitzeichnen und die Beratungsfolge durch die Gremien festlegen.",
+                                    "Drucksache mit Nummer und Beratungsfolge", ort="Fachamt und Sitzungsdienst"),
+                    m.kettenschritt("Tagesordnung", "Vorlagen und Anträge auf die Sitzung setzen, den öffentlichen vom "
+                                    "nichtöffentlichen Teil trennen und die Reihenfolge ändern.",
+                                    "Tagesordnung als PDF, Sitzungsmappe mit allen Unterlagen"),
+                    m.kettenschritt("Ladung", "Der Empfängerkreis ergibt sich aus der Besetzung des Gremiums. Session "
+                                    "zeigt, bis wann die Ladung versandt sein muss, und versendet sie per E-Mail oder "
+                                    "als Serienbrief.",
+                                    "E-Mail mit Tagesordnung, Kalendertermin und Empfangsbestätigung, Serienbrief für "
+                                    "den Postweg", ort="mit der Frist des Gremiums"),
+                    m.kettenschritt("Sitzung", "Im Cockpit Tagesordnungspunkte aufrufen, Anwesenheit festhalten und "
+                                    "Abstimmungen erfassen.", "Beschlüsse mit Abstimmungsergebnis, Anwesenheitsliste"),
+                    m.kettenschritt("Niederschrift", "Niederschrift schreiben und freigeben. Die Beschlusskontrolle "
+                                    "zeigt Zuständigkeit, Frist und Stand der Umsetzung.",
+                                    "Niederschrift, Beschlussauszüge als PDF"),
+                    m.kettenschritt("Veröffentlichung und Abrechnung", "Sitzungen, Vorlagen und Beschlüsse erscheinen "
+                                    "im <a href=\"/insight/\">Bürgerportal</a> und über die "
+                                    "<a href=\"/oparl-schnittstelle/\">OParl-Schnittstelle</a>. Das Sitzungsgeld "
+                                    "rechnen Sie aus der Anwesenheit ab.", "Bürgerportal, OParl 1.1, SEPA-Datei",
+                                    ort="nach Ihrer Freigabe"),
                 ],
-                subline="Was im Verwaltungsalltag zählt – vom Ratsbüro bis zur Frage aus der Bürgerschaft.",
-                anchor="bausteine",
+                produkt="session", bild="session-sitzung",
+                spalten=["Schritt", "In mandari Session", "Daraus entsteht"],
+                subline="Jeder Schritt Ihres Sitzungsdienstes baut auf dem vorigen auf. Was einmal eingegeben ist, "
+                        "tippt niemand ein zweites Mal ab.",
+                anchor="bausteine", link_label="Angebot anfragen", link_url="/kontakt/?subject=Session-Angebot",
                 note="<p>Ein <a href=\"/ratsinformationssystem/\">Ratsinformationssystem</a> deckt die ganze digitale "
                      "Gremienarbeit ab: das <a href=\"/sitzungsmanagement/\">Sitzungsmanagement</a> der Verwaltung, "
                      "das Gremieninformationssystem für Ratsmitglieder und das "

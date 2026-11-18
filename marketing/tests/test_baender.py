@@ -121,16 +121,16 @@ class SeitenTests(TestCase):
             for links, rechts in zip(baender, baender[1:]):
                 self.assertNotEqual(links, rechts, f"{url}: zweimal {links} nebeneinander ({baender})")
 
-    def test_startseite_zeigt_drei_produktflaechen(self):
+    def test_startseite_zeigt_drei_halte_in_der_kennfarbe(self):
+        # Muster 11a: je Produkt ein Halt auf dem Weg einer Ratssitzung, in fester Reihenfolge und gleich gebaut
+        # (Zeitpunkt, Aussage, ein Bildschirm)
         html = self.seite("/")
-        for produkt in ["session", "work", "insight"]:
-            self.assertEqual(html.count(f'class="produkt produkt-{produkt} '), 1, produkt)
-        # Alle drei Flächen gleich gebaut: die Bildschirme stehen im Hero, keine Fläche trägt ein eigenes Bild
-        flaechen = html[html.find('class="produkt produkt-session'):]
-        flaechen = flaechen[:flaechen.find("</section>")]
-        self.assertNotIn("<img", flaechen)
-        self.assertLess(html.find("produkt-session "), html.find("produkt-work "))
-        self.assertLess(html.find("produkt-work "), html.find("produkt-insight "))
+        halte = re.findall(r'<li class="weg-halt produkt-(\w+)">(.*?)</li>', html, re.S)
+        self.assertEqual([produkt for produkt, _ in halte], ["session", "work", "insight"])
+        for produkt, halt in halte:
+            self.assertEqual(halt.count('<p class="wann">'), 1, produkt)
+            self.assertEqual(halt.count("<img"), 1, produkt)
+            self.assertEqual(halt.count('class="textlink"'), 1, produkt)
 
     def test_produkte_zeigen_bildschirme_angeschnitten(self):
         # Muster 7: je Produkt Text im Raster und ein echter Bildschirm bis an den Fensterrand, alle gleich (Bild
@@ -245,6 +245,6 @@ class SeitenTests(TestCase):
         self.assertGreaterEqual(html.count('class="feld"'), 14)
 
     def test_eintrag_mit_produktbezug_traegt_die_kennfarbe(self):
-        html = self.seite("/kommunen/")
-        self.assertRegex(html, r'<dt class="lg:col-span-5 produkt-insight">')
+        # Begriffe (Muster 5b) mit einer Marke, die ein Produkt nennt („mit mandari Session“)
+        html = self.seite("/buergerinformationssystem/")
         self.assertRegex(html, r'<dt class="lg:col-span-5 produkt-session">')

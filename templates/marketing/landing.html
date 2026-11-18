@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load baender muster %}
+{% load baender muster kennzahlen %}
 
 {# Titel und Meta-Description kommen aus den Seitenfeldern seo_title und search_description (Quelle: HOME_PAGE_META, base.html) #}
 
@@ -23,21 +23,48 @@
     </div>
 </section>
 
-{# Drei Seiten des Ratssaals: je Zielgruppe ein Produkt als eigene Fläche in seiner Kennfarbe (Name, Zielgruppe, ein Satz, ein Weg). Die Bildschirme stehen schon im Hero. #}
+{# Muster 11a Weg: eine Ratssitzung aus drei Blickwinkeln. Je Halt ein Produkt in seiner Kennfarbe mit Zeitpunkt, Aussage, Stand und einem echten Bildschirm (marketing/muster/_bildschirm.html); beim dritten Halt die Zahlen des Bürgerportals mit ihrem Stand. #}
 <section class="band-grau abschnitt">
     <div class="wrap">
         <div class="kopf">
-            <h2 class="t-h2 text-gray-900 dark:text-white">Eine Plattform für alle Seiten des Ratssaals.</h2>
+            <h2 class="t-h2 text-gray-900 dark:text-white">Eine Ratssitzung, drei Blickwinkel.</h2>
             <p class="t-lead text-gray-600 dark:text-gray-300 mt-5">
-                Verwaltung, Politik und Öffentlichkeit arbeiten mit denselben Ratsdaten – jede Seite mit dem Werkzeug, das zu ihrem Alltag passt.
+                Verwaltung, Politik und Öffentlichkeit arbeiten mit denselben Ratsdaten. So läuft eine Sitzung durch mandari.
             </p>
         </div>
 
-        <div class="space-y-5 lg:space-y-6">
-            {% include "marketing/blocks/_produkt.html" with produkt="session" name="mandari Session" zielgruppe="Für Verwaltungen" status="Pilotphase" text="Das Ratsinformationssystem für Ihren Sitzungsdienst – von der Tagesordnung bis zur freigegebenen Niederschrift, ohne Medienbruch." link_label="mandari Session ansehen" link_url="/kommunen/" %}
-            {% include "marketing/blocks/_produkt.html" with produkt="work" name="mandari Work" zielgruppe="Für Fraktionen und Mandatsträger:innen" status="Offene Beta" text="Sitzungsvorbereitung, Anträge und Fristen Ihrer Fraktion an einem Ort, der die Ratsdaten schon kennt." link_label="mandari Work ansehen" link_url="/fraktionen/" %}
-            {% include "marketing/blocks/_produkt.html" with produkt="insight" name="mandari Insight" zielgruppe="Für Bürger:innen" status="Im Einsatz" text="Beschlüsse Ihrer Kommune im Volltext finden und auf der Karte sehen – kostenlos und ohne Anmeldung." link_label="Bürgerportal öffnen" link_url="/insight/" %}
-        </div>
+        <ol>
+            <li class="weg-halt produkt-session">
+                <div>
+                    <p class="wann">Bis zur Ladungsfrist</p>
+                    <h3 class="t-h2-dok m-tinte mt-1.5">Die Verwaltung stellt die Tagesordnung.</h3>
+                    <p class="t-body m-text mt-3">Vorlagen und Anträge kommen mit ihrer Beratungsfolge auf die Tagesordnung. Ladung, Sitzungsmappe und Niederschrift entstehen aus denselben Daten, ohne Abtippen.</p>
+                    <p class="mt-4 text-base m-leise">mandari Session, in der Pilotphase</p>
+                    <p class="mt-4"><a class="textlink" href="/kommunen/">mandari Session für Verwaltungen</a></p>
+                </div>
+                {% include "marketing/muster/_bildschirm.html" with name="session-tagesordnung" %}
+            </li>
+            <li class="weg-halt produkt-work">
+                <div>
+                    <p class="wann">Bis zur Sitzung</p>
+                    <h3 class="t-h2-dok m-tinte mt-1.5">Die Fraktion bereitet sich vor.</h3>
+                    <p class="t-body m-text mt-3">Dieselbe Tagesordnung liegt schon in mandari Work. Die Fraktion legt je Punkt ihre Position fest, sammelt Notizen und verteilt Aufgaben.</p>
+                    <p class="mt-4 text-base m-leise">mandari Work, in der offenen Beta</p>
+                    <p class="mt-4"><a class="textlink" href="/fraktionen/">mandari Work für Fraktionen</a></p>
+                </div>
+                {% include "marketing/muster/_bildschirm.html" with name="work-start" %}
+            </li>
+            <li class="weg-halt produkt-insight">
+                <div>
+                    <p class="wann">Nach der Sitzung</p>
+                    <h3 class="t-h2-dok m-tinte mt-1.5">Alle lesen nach, was beschlossen wurde.</h3>
+                    <p class="t-body m-text mt-3">{% filter kennzahlen %}Im Bürgerportal stehen Beschlüsse, Vorlagen und Abstimmungen im Volltext, kostenlos und ohne Anmeldung. Heute sind [vorgaenge] Vorgänge und [sitzungen] Sitzungen aus [kommunen] Kommunen durchsuchbar.{% endfilter %}</p>
+                    <p class="mt-4 text-base m-leise">{% filter kennzahlen %}mandari Insight, im Einsatz. Stand [kennzahlen-stand]{% endfilter %}</p>
+                    <p class="mt-4"><a class="textlink" href="/insight/">Bürgerportal öffnen</a></p>
+                </div>
+                {% include "marketing/muster/_bildschirm.html" with name="insight-beschluesse" %}
+            </li>
+        </ol>
     </div>
 </section>
 

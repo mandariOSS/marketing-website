@@ -54,7 +54,7 @@ class RhythmusTests(SimpleTestCase):
     def test_jede_seite_hat_ein_nicht_text_element(self):
         nicht_text = {"zeitskala", "dauerbalken", "quartalsachse", "register", "vergleich", "zahlensatz", "nullen",
                       "produktbilder", "feature_matrix", "market_matrix", "comparison_table", "pricing_table",
-                      "zusage", "leitsatz", "downloads", "schrittfolge"}
+                      "zusage", "leitsatz", "downloads", "schrittfolge", "tagesfolge", "kette"}
         for slug, bloecke in get_marketing_definitions().items():
             if slug in RUHEND:
                 continue

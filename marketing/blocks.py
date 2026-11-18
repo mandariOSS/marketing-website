@@ -16,6 +16,7 @@ Color palette (used by ChoiceBlock fields throughout):
 
 import re
 
+from django.core.exceptions import ValidationError
 from wagtail.blocks import (
     BooleanBlock,
     CharBlock,
@@ -31,6 +32,27 @@ from wagtail.blocks import (
     URLBlock,
 )
 from wagtail.images.blocks import ImageChooserBlock
+
+from marketing.bildschirme import bekannter_bildschirm
+
+_SCHEMA = re.compile(r"^([a-z][a-z0-9+.\-]*):", re.IGNORECASE)
+ERLAUBTE_SCHEMATA = {"http", "https", "mailto", "tel"}
+
+
+def sichere_adresse(wert):
+    """Prüfung für Linkfelder: relative Pfade, Sprungmarken sowie http, https, mailto und tel.
+
+    Die Felder stehen unverändert im ``href``. Ein Ziel wie ``javascript:…`` liefe beim Klick als Skript im Namen
+    der Website; die automatische Maskierung von HTML hält das nicht auf. Gelesen wird das Schema wie im Browser:
+    Steuerzeichen und Leerzeichen am Rand fallen weg, Tabulator und Zeilenumbruch an jeder Stelle. Ein Leerzeichen
+    mitten im Text bleibt stehen, deshalb gilt ein Pfad mit Leerzeichen und Doppelpunkt nicht als Schema.
+    """
+    bereinigt = re.sub(r"[\t\n\r]", "", str(wert or "").strip("".join(map(chr, range(0x21)))))
+    treffer = _SCHEMA.match(bereinigt)
+    if treffer and treffer.group(1).lower() not in ERLAUBTE_SCHEMATA:
+        raise ValidationError(
+            "Als Ziel sind Pfade (/seite/), Sprungmarken (#anker) sowie http, https, mailto und tel erlaubt."
+        )
 
 
 # ─────────────────────────── Color choices ────────────────────────────
@@ -53,6 +75,7 @@ class CTAButtonBlock(StructBlock):
 
     label = CharBlock(required=True, help_text="Button-Text")
     url = CharBlock(
+        validators=[sichere_adresse],
         required=True,
         help_text="URL oder Anchor (z.B. /kontakt/ oder #faq)",
     )
@@ -129,7 +152,7 @@ class MandariCardBlock(StructBlock):
     description = TextBlock(required=False)
     bullets = ListBlock(CardBulletBlock(), required=False, default=[])
     cta_label = CharBlock(required=False)
-    cta_url = CharBlock(required=False)
+    cta_url = CharBlock(validators=[sichere_adresse], required=False)
     cta_icon = CharBlock(required=False, default="arrow-right")
 
     class Meta:
@@ -406,7 +429,10 @@ class GradientCTABlock(StructBlock):
         StructBlock([
             ("label", CharBlock(help_text="Kleine Zeile, z. B. 'E-Mail' oder 'Für Vergabestellen'")),
             ("wert", CharBlock(help_text="Adresse, Angabe oder Linktext")),
-            ("url", CharBlock(required=False, help_text="Optionaler Link; E-Mail-Adressen werden automatisch verlinkt")),
+            ("url", CharBlock(
+                validators=[sichere_adresse], required=False,
+                help_text="Optionaler Link; E-Mail-Adressen werden automatisch verlinkt",
+            )),
         ]),
         required=False,
         default=[],
@@ -430,7 +456,7 @@ class SplitRowBlock(StructBlock):
     )
     text = RichTextBlock(required=True, features=["bold", "italic", "link"])
     link_label = CharBlock(required=False, help_text="Text des einen Links, sagt, was passiert")
-    link_url = CharBlock(required=False, help_text="Ziel des Links, z. B. /kommunen/")
+    link_url = CharBlock(validators=[sichere_adresse], required=False, help_text="Ziel des Links, z. B. /kommunen/")
     anchor_id = CharBlock(required=False, help_text="Optionale HTML-id für Sprungmarken (ohne #, z. B. 'insight')")
 
     class Meta:
@@ -480,7 +506,7 @@ PRODUKT_CHOICES = [("session", "mandari Session"), ("work", "mandari Work"), ("i
 
 class LinkBlock(StructBlock):
     label = CharBlock()
-    url = CharBlock()
+    url = CharBlock(validators=[sichere_adresse])
 
     class Meta:
         icon = "link"
@@ -675,7 +701,7 @@ class PricingTierBlock(StructBlock):
     features = ListBlock(CardBulletBlock(), required=False)
     is_highlighted = BooleanBlock(required=False, help_text="Mit Empfohlen-Sticker + shadow")
     cta_label = CharBlock(required=False)
-    cta_url = CharBlock(required=False)
+    cta_url = CharBlock(validators=[sichere_adresse], required=False)
 
     class Meta:
         icon = "tag"
@@ -827,7 +853,10 @@ class MarketMatrixColumnBlock(StructBlock):
     """Spaltenkopf der Marktübersicht, optional mit Link auf den Einzelvergleich."""
 
     name = CharBlock(required=True, help_text="z. B. 'mandari' oder 'Somacos'")
-    url = CharBlock(required=False, help_text="Optionaler Link, z. B. /vergleich/mandari-vs-somacos/")
+    url = CharBlock(
+        validators=[sichere_adresse], required=False,
+        help_text="Optionaler Link, z. B. /vergleich/mandari-vs-somacos/",
+    )
 
     class Meta:
         icon = "link"
@@ -990,7 +1019,7 @@ class AchsenEintragBlock(StructBlock):
     status = CharBlock(required=False, help_text="'Zugesagt', 'Geplant' oder 'In Prüfung'")
     text = TextBlock(required=False)
     link_label = CharBlock(required=False)
-    link_url = CharBlock(required=False)
+    link_url = CharBlock(validators=[sichere_adresse], required=False)
 
     class Meta:
         icon = "list-ul"
@@ -1041,7 +1070,7 @@ class SchrittfolgeBlock(StructBlock):
     ergebnis_titel = CharBlock(required=False)
     ergebnis_text = TextBlock(required=False)
     ergebnis_link_label = CharBlock(required=False)
-    ergebnis_link_url = CharBlock(required=False)
+    ergebnis_link_url = CharBlock(validators=[sichere_adresse], required=False)
     note = RichTextBlock(required=False, features=LINK_FEATURES)
 
     class Meta:
@@ -1055,7 +1084,7 @@ class SchrittfolgeBlock(StructBlock):
 
 class RegisterZeileBlock(StructBlock):
     titel = CharBlock()
-    url = CharBlock(required=False)
+    url = CharBlock(validators=[sichere_adresse], required=False)
     ort = CharBlock(required=False, help_text="Klein unter dem Titel, z. B. 'im Trust Center'")
     text = RichTextBlock(required=False, features=LINK_FEATURES)
     zusatz = RichTextBlock(required=False, features=LINK_FEATURES, help_text="Dritte Spalte bei vier Spalten")
@@ -1131,7 +1160,7 @@ class BegriffBlock(StructBlock):
     marke = CharBlock(required=False, help_text="Kleine Zeile unter dem Begriff, z. B. Datum oder Status")
     text = RichTextBlock(features=LINK_FEATURES + ["ul"])
     link_label = CharBlock(required=False)
-    link_url = CharBlock(required=False)
+    link_url = CharBlock(validators=[sichere_adresse], required=False)
     anchor_id = CharBlock(required=False)
 
     class Meta:
@@ -1204,7 +1233,7 @@ class ProduktbildBlock(StructBlock):
     text = TextBlock()
     fakten = ListBlock(BegriffWertBlock(), required=False, default=[])
     link_label = CharBlock(required=False)
-    link_url = CharBlock(required=False)
+    link_url = CharBlock(validators=[sichere_adresse], required=False)
     anchor_id = CharBlock(required=False)
 
     class Meta:
@@ -1320,7 +1349,7 @@ class DownloadsBlock(StructBlock):
 
     header = SectionHeaderBlock(required=False)
     label = CharBlock()
-    url = CharBlock()
+    url = CharBlock(validators=[sichere_adresse])
     hinweis = CharBlock(required=False, help_text="Format und Inhalt, z. B. 'Webseite im Kundenportal, tagesaktuell'")
     dateien = ListBlock(LinkBlock(), required=False, default=[])
 
@@ -1328,6 +1357,71 @@ class DownloadsBlock(StructBlock):
         template = "marketing/blocks/downloads.html"
         icon = "download"
         label = "Download-Leiste (M10)"
+
+
+# ── M11 Bildschirme im Raster ─────────────────────────────────────────────
+
+
+class TagBlock(StructBlock):
+    wann = CharBlock(help_text="Zeitpunkt auf der Achse, z. B. 'Montag'")
+    kurz = CharBlock(help_text="Beschriftung auf der Achse, z. B. 'Die Fraktion tagt'")
+    titel = CharBlock()
+    text = TextBlock()
+    bild = CharBlock(
+        validators=[bekannter_bildschirm],
+        help_text="Schlüssel eines Bildschirms aus marketing/bildschirme.py, z. B. 'work-start'",
+    )
+
+    class Meta:
+        icon = "date"
+        label = "Tag"
+
+
+class TagesfolgeBlock(StructBlock):
+    """M11b: mehrere Bildschirme entlang einer Zeitachse; ab 1024 px wählt die Achse einen Tag."""
+
+    header = SectionHeaderBlock()
+    produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Achse und der Bildflächen")
+    tage = ListBlock(TagBlock(), min_num=2, max_num=4)
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(validators=[sichere_adresse], required=False)
+
+    class Meta:
+        template = "marketing/blocks/tagesfolge.html"
+        icon = "date"
+        label = "Tagesfolge mit Bildschirmen (M11b)"
+
+
+class KettenSchrittBlock(StructBlock):
+    titel = CharBlock()
+    ort = CharBlock(required=False, help_text="Klein unter dem Titel, z. B. 'mit der Frist des Gremiums'")
+    text = RichTextBlock(features=LINK_FEATURES)
+    ergebnis = CharBlock(help_text="Was aus dem Schritt entsteht")
+
+    class Meta:
+        icon = "list-ol"
+        label = "Schritt"
+
+
+class KetteBlock(StructBlock):
+    """M11c: Aussage und ein Bildschirm, darunter nummerierte Schritte mit ihrem Ergebnis."""
+
+    header = SectionHeaderBlock()
+    produkt = ChoiceBlock(choices=PRODUKT_CHOICES, help_text="Kennfarbe der Nummern und der Bildfläche")
+    bild = CharBlock(
+        validators=[bekannter_bildschirm],
+        help_text="Schlüssel eines Bildschirms aus marketing/bildschirme.py, z. B. 'work-start'",
+    )
+    link_label = CharBlock(required=False)
+    link_url = CharBlock(validators=[sichere_adresse], required=False)
+    spalten = ListBlock(CharBlock(), min_num=3, max_num=3, help_text="Schritt, Tätigkeit, Ergebnis")
+    schritte = ListBlock(KettenSchrittBlock(), min_num=2)
+    note = RichTextBlock(required=False, features=LINK_FEATURES)
+
+    class Meta:
+        template = "marketing/blocks/kette.html"
+        icon = "list-ol"
+        label = "Kette: Bildschirm und Schritte mit Ergebnis (M11c)"
 
 
 # ─────────────────────── Composite block container ──────────────────────
@@ -1377,6 +1471,8 @@ class MarketingStreamBlock(StreamBlock):
     zahlensatz = ZahlensatzBlock()
     nullen = NullenBlock()
     downloads = DownloadsBlock()
+    tagesfolge = TagesfolgeBlock()
+    kette = KetteBlock()
 
     class Meta:
         block_counts = {}  # No max-restrictions

@@ -1,0 +1,30 @@
+{% load wagtailcore_tags baender muster %}
+{# M11c Kette: links die Aussage, rechts ein Bildschirm; darunter die Schritte als Register über die volle Breite, nummeriert, in der dritten Spalte das Ergebnis jedes Schritts. #}
+<section class="{% abschnitt band band_anfang band_ende %} produkt-{{ self.produkt }}">
+    <div class="wrap">
+        <div{% if self.header.anchor_id %} id="{{ self.header.anchor_id }}"{% endif %} class="beleg scroll-mt-24">
+            <div>
+                <h2 class="t-h2 m-tinte">{{ self.header.title }}</h2>
+                {% if self.header.subline %}<p class="t-body m-text mt-4 max-w-[28rem]">{{ self.header.subline }}</p>{% endif %}
+                {% if self.link_label and self.link_url %}<p class="mt-6"><a class="textlink" href="{{ self.link_url }}">{{ self.link_label }}</a></p>{% endif %}
+            </div>
+            {% include "marketing/muster/_bildschirm.html" with name=self.bild %}
+        </div>
+        <div class="kette mt-10 lg:mt-14 min-w-0">
+            <table class="reg">
+                <caption class="sr-only">{{ self.header.title }}</caption>
+                <thead><tr>{% for s in self.spalten %}<th scope="col"{% if forloop.first %} style="width:24%"{% elif forloop.last %} style="width:30%"{% endif %}>{{ s }}</th>{% endfor %}</tr></thead>
+                <tbody>
+                    {% for s in self.schritte %}
+                    <tr>
+                        <td><span class="reg-titel"><span class="kette-nr">{{ forloop.counter }}</span>{{ s.titel }}</span>{% if s.ort %}<span class="reg-ort">{{ s.ort }}</span>{% endif %}</td>
+                        <td class="richtext">{{ s.text|richtext }}</td>
+                        <td data-spalte="{{ self.spalten|last }}">{{ s.ergebnis }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if self.note %}<div class="mt-8 max-w-[45rem] text-base m-text richtext">{{ self.note|richtext }}</div>{% endif %}
+    </div>
+</section>

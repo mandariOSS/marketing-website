@@ -179,8 +179,8 @@ class SeitenTests(TestCase):
         text = sichtbarer_text(hauptteil(html))
         for begriff in ("Sitzungsmanagement", "Gremieninformationssystem", "digitale Gremienarbeit"):
             self.assertIn(begriff, text)
-        # Inhalte bleiben: alle Abschnitte von vorher
-        for abschnitt in ("Drei Bausteine, ein Ziel", "Betrieb, den Ihre IT und Ihr Datenschutz mittragen",
+        # Die Abschnitte der Seite: die Kette des Sitzungsdienstes, Betrieb, Anbindung, Einladung
+        for abschnitt in ("Einmal erfasst, bis zur Niederschrift verwendet.", "Betrieb, den Ihre IT und Ihr Datenschutz mittragen",
                           "Zwei Wege zur Anbindung", "Pilotkommunen gestalten mit."):
             self.assertIn(abschnitt, text)
 
