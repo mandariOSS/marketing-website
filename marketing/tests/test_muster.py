@@ -87,6 +87,19 @@ class ZeitskalaTests(SimpleTestCase):
                     if frueher["pos"] + frueher["breite"] > spaeter["pos"]:
                         self.assertGreater(spaeter["stufe"], frueher["stufe"], f"{name}: {spaeter['frist']}")
 
+    def test_marke_am_rechten_ende_steht_ueber_den_marken_darunter(self):
+        # Die Beschriftung am rechten Ende steht links ihrer Linie; reicht sie über frühere Marken, stehen diese tiefer
+        for name, wert in self.zeitskalen():
+            marken = zeitskala_plan(wert)["marken"]
+            for i, marke in enumerate(marken):
+                if not marke["rechts"]:
+                    continue
+                links = marke["pos"] - marke["breite"]
+                for frueher in marken[:i]:
+                    ende = frueher["pos"] if frueher["rechts"] else frueher["pos"] + frueher["breite"]
+                    if frueher["pos"] >= links or ende > links:
+                        self.assertGreater(frueher["stufe"], marke["stufe"], f"{name}: {frueher['frist']}")
+
     def test_massstab_und_bruch(self):
         plan = zeitskala_plan(muster_daten.DISCLOSURE_ZEITSKALA)
         lagen = {m["frist"]: round(m["pos"], 1) for m in plan["marken"]}

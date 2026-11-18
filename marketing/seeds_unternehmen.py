@@ -199,7 +199,7 @@ def get_company_page_definitions() -> dict:
                     m.marke(0, "Januar", "Der erste öffentliche Commit"),
                     m.marke(185, "Juli", "mandari 0.9 geht online"),
                     m.marke(269, "September", "mandari 0.11"),
-                    m.marke(320, "November", "mandari 0.13"),
+                    m.marke(305, "November", "mandari 0.13"),
                     m.marke(365, "2027", "Version 1.0", offen=True),
                 ],
                 skala=[m.skalenpunkt(0, "Januar 2026"), m.skalenpunkt(90, "April"), m.skalenpunkt(181, "Juli"),
