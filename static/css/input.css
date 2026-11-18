@@ -341,7 +341,8 @@
 /* Schriftstufen: eine Schrift (Inter), feste Größen, linksbündig. Als Utilities, damit sie Varianten annehmen
    (/kontakt/: text-base sm:t-body); Klassen aus @layer components kennt Tailwind 4 nicht als Utilities.
    Skala am Desktop: 17 (Text) – 20 (H3) – 24 (H2 im Dokument) – 32 (H2) – 44 (H1), mandariOSS/mandari#1481.
-   Größer wird nur der Leitsatz (60 px). Begriffe, Spaltenköpfe und Schritttitel nutzen t-h3, keine freie Größe. */
+   Größer sind nur der Leitsatz (60 px) und die große Zahl (72 px). Begriffe, Spaltenköpfe und Schritttitel nutzen
+   t-h3, keine freie Größe. */
 @utility t-h1 {
   font-size: clamp(1.875rem, 1.4rem + 1.7vw, 2.75rem);   /* Handy 30 px, ab 1280 px 44 px */
   line-height: 1.1;
