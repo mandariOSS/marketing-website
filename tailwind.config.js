@@ -23,8 +23,9 @@ const grau = farben.gray;
 
 // Prosa ohne Rundungsfehler: Tailwind 4 verkleinert mit Lightning CSS, das Zahlen auf sechs gültige Stellen kürzt. Aus
 // 1.3333333em (Plugin) würde 1.33333em, bei 18 px also 23,99994 statt 24 px; der Browser rundet Abstände ab, Text
-// rutscht um einen Pixel und zweispaltige Listen brechen anders um. prose-lg hat die Grundgröße 18 px (1.125rem),
-// darum stehen ihre Abstände hier in rem: dieselben Werte wie im Plugin, nur exakt (18 px × 1.3333333 = 24 px = 1.5rem).
+// rutscht um einen Pixel und zweispaltige Listen brechen anders um. Die Abstände von prose-lg stehen hier in rem:
+// die Werte des Plugins für 18 px, nur exakt (18 px × 1.3333333 = 24 px = 1.5rem). Der Text selbst hat seit der
+// kleineren Schriftskala 17 px wie t-body (unten, typography.lg); die Abstände bleiben, damit Absätze Luft behalten.
 // Zeilenhöhen ohne Einheit in prose: auf sechs Stellen aufgerundet (40 px statt 39,99996 px). Die Einrückung der
 // Listenpunkte (0.4444444em) bleibt beim Plugin: Gekürzt landet sie wie bisher auf demselben Bildpunkt.
 const exakt = {
@@ -35,9 +36,9 @@ const exakt = {
   },
   lg: {
     p: { marginTop: '1.5rem', marginBottom: '1.5rem' }, // 1.3333333em
-    '[class~="lead"]': { fontSize: '1.375rem', marginTop: '1.5rem', marginBottom: '1.5rem' }, // 1.2222222em, 1.0909091em
+    '[class~="lead"]': { fontSize: '1.1875rem', marginTop: '1.5rem', marginBottom: '1.5rem' }, // wie t-lead (19 px)
     blockquote: { marginTop: '1.875rem', marginBottom: '1.875rem' }, // 1.6666667em
-    h1: { fontSize: '3rem', marginBottom: '2.5rem' }, // 2.6666667em, 0.8333333em
+    h1: { fontSize: '2.75rem', marginBottom: '2rem' }, // wie t-h1 (44 px)
     img: { marginTop: '2rem', marginBottom: '2rem' }, // 1.7777778em
     picture: { marginTop: '2rem', marginBottom: '2rem' },
     video: { marginTop: '2rem', marginBottom: '2rem' },
@@ -98,8 +99,9 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'Inter Ersatz', 'Inter Ersatz Roboto', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
-      // Rich Text (Prosa) auf der Skala des Gestaltungssystems: Text #4B5563, Überschriften 28/22/18 px,
-      // Aufzählungspunkte wie in den Bausteinen. Links gestaltet static/css/input.css (eine Linkgestalt).
+      // Rich Text (Prosa) auf der Skala des Gestaltungssystems: Text #4B5563 in 17 px wie t-body, Überschriften
+      // 24/20/17 px (h2 wie t-h2-dok, h3 wie t-h3), Aufzählungspunkte wie in den Bausteinen. Links gestaltet
+      // static/css/input.css (eine Linkgestalt). Zeilenhöhe 28 px (28 / 17, auf sechs Stellen aufgerundet).
       // Die übrigen Prosa-Farben nimmt das Plugin aus der neuen Palette; hier stehen sie mit den Grautönen von oben.
       typography: {
         DEFAULT: {
@@ -139,9 +141,11 @@ module.exports = {
         lg: {
           css: {
             ...exakt.lg,
-            h2: { fontSize: '1.75rem', lineHeight: '1.2', letterSpacing: '-0.02em', fontWeight: '630', marginTop: '2.25em', marginBottom: '0.75em' },
-            h3: { fontSize: '1.375rem', lineHeight: '1.3', letterSpacing: '-0.014em', fontWeight: '620', marginTop: '1.75em', marginBottom: '0.5em' },
-            h4: { fontSize: '1.125rem', lineHeight: '1.4', fontWeight: '620', marginTop: '1.5em', marginBottom: '0.5em' },
+            fontSize: '1.0625rem',
+            lineHeight: '1.64706',
+            h2: { fontSize: 'clamp(1.3125rem, 1.25rem + 0.3vw, 1.5rem)', lineHeight: '1.25', letterSpacing: '-0.02em', fontWeight: '630', marginTop: '2.25em', marginBottom: '0.75em' },
+            h3: { fontSize: '1.25rem', lineHeight: '1.35', letterSpacing: '-0.014em', fontWeight: '620', marginTop: '1.75em', marginBottom: '0.5em' },
+            h4: { fontSize: '1.0625rem', lineHeight: '1.4', fontWeight: '620', marginTop: '1.5em', marginBottom: '0.5em' },
           },
         },
       },

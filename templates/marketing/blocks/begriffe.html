@@ -12,7 +12,7 @@
             {% for e in self.eintraege %}
             <div{% if e.anchor_id %} id="{{ e.anchor_id }}"{% endif %} class="grid gap-y-2 lg:grid-cols-12 lg:gap-x-10 py-6 lg:py-7 scroll-mt-24">
                 {% with p=e.marke|produkt %}<dt class="lg:col-span-5{% if p %} produkt-{{ p }}{% endif %}">
-                    <span class="block text-xl lg:text-2xl font-semibold tracking-tight m-tinte">{{ e.begriff }}</span>
+                    <span class="block t-h3 m-tinte">{{ e.begriff }}</span>
                     {% if e.marke %}<span class="block mt-1 text-base {% if p %}kenn font-semibold{% else %}m-leise{% endif %}">{{ e.marke }}</span>{% endif %}
                 </dt>{% endwith %}
                 <dd class="lg:col-span-6 lg:col-start-7 t-body m-text">

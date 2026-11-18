@@ -34,7 +34,7 @@
             <div id="{{ k.anker }}" class="grid gap-y-2 py-6 border-t m-linie scroll-mt-24 lg:grid-cols-12 lg:gap-x-10 lg:py-7">
                 <dt class="text-base m-leise lg:col-span-3 lg:pt-1">{{ k.begriff }}</dt>
                 <dd class="min-w-0 lg:col-span-9">
-                    {% if k.url %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words"><a class="textlink" href="{{ k.url }}">{{ k.wert }}</a></p>{% else %}<p class="font-mono text-lg lg:text-2xl m-tinte break-words select-all">{{ k.wert }}</p>{% endif %}
+                    {% if k.url %}<p class="font-mono text-lg lg:text-xl m-tinte break-words"><a class="textlink" href="{{ k.url }}">{{ k.wert }}</a></p>{% else %}<p class="font-mono text-lg lg:text-xl m-tinte break-words select-all">{{ k.wert }}</p>{% endif %}
                     <p class="mt-2 text-base m-text max-w-[45rem]">{{ k.notiz }}</p>
                 </dd>
             </div>
