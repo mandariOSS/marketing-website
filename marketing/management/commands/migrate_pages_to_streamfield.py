@@ -227,7 +227,8 @@ def get_marketing_definitions() -> dict:
                      "badge": "Beta-Phase", "price_main": "39,90 €", "price_unit": "/Monat inkl. MwSt.",
                      "price_net": "33,53 € netto zzgl. 19 % USt",
                      "price_alt": "oder 399 € pro Jahr (335,29 € netto) – zwei Monate gespart",
-                     "price_note": "Beta-Kunden erhalten dauerhaft vergünstigte Konditionen",
+                     "price_note": "Preis der Beta-Phase. Ab Version 1.0 nach Fraktionsgröße ab 49,90 € – "
+                                   "Beta-Kunden behalten ihren Preis.",
                      "description": "Professionelle Sitzungsvorbereitung mit Team, KI und Antragsdatenbank.",
                      "features": [bullet("Alles aus Insight"), bullet("Team-Workspaces & Notizen"),
                                   bullet("Antragsdatenbank & Vorlagen"), bullet("Interne Abstimmungen & Termine"),
@@ -247,24 +248,35 @@ def get_marketing_definitions() -> dict:
                      "is_highlighted": False, "cta_label": "Angebot anfragen", "cta_url": "/kontakt/?subject=Session-Angebot"},
                 ],
             }),
-            # Muster 3 als Preisliste
+            # Muster 3 als Preisliste: ein Register, sonst folgt dasselbe Muster zweimal
             m.register(
-                "Addons und Zusatzleistungen",
+                "mandari Work ab Version 1.0 und Zusatzleistungen",
                 [
-                    m.gruppe("Addon, monatlich kündbar",
+                    m.gruppe("Ab Version 1.0: Preis je Fraktion oder Gruppe nach gewählten Mandatsträger:innen",
+                             m.zeile("Kleine Fraktion", "bis einschließlich 9 Mitglieder, netto 41,93 € bzw. 419,33 €",
+                                     stand="49,90 € im Monat oder 499 € im Jahr", status="zahl"),
+                             m.zeile("Mittlere Fraktion", "10 bis 24 Mitglieder, netto 75,55 € bzw. 755,46 €",
+                                     stand="89,90 € im Monat oder 899 € im Jahr", status="zahl"),
+                             m.zeile("Große Fraktion", "ab 25 Mitgliedern, netto 109,16 € bzw. 1.091,60 €",
+                                     stand="129,90 € im Monat oder 1.299 € im Jahr", status="zahl")),
+                    m.gruppe("Addon",
                              m.zeile("Eigene Domain", "Ihr Arbeitsportal unter eigener Adresse, z. B. mandari.fraktion.de – "
-                                     "die Einrichtung übernehmen wir. Monatlich kündbar zum Monatsende.",
-                                     stand="5,00 € im Monat", status="zahl")),
+                                     "die Einrichtung übernehmen wir. Nur jährlich, in Kürze buchbar.",
+                                     stand="14,99 € im Jahr", status="zahl")),
                     m.gruppe("Zusatzleistungen auf Anfrage, Abrechnung nach Angebot",
-                             m.zeile("Schulung digital", "Online-Schulung für Ihre Fraktion, Termin nach Absprache.",
-                                     stand="ab 250 €", status="zahl"),
-                             m.zeile("Schulung vor Ort", "Präsenz-Schulung bei Ihnen, inklusive Vor- und Nachbereitung.",
-                                     stand="ab 500 €", status="zahl"),
+                             m.zeile("Online-Schulung", "90 Minuten per Videokonferenz, Termin nach Absprache.",
+                                     stand="290 €", status="zahl"),
+                             m.zeile("Schulungstag vor Ort", "Ein Tag bei Ihnen, für bis zu 12 Personen.",
+                                     stand="1.190 €", status="zahl"),
                              m.zeile("Einrichtungsassistent", "Wir richten mandari Work komplett für Sie ein: Struktur, "
                                      "Mitglieder, Vorlagen.", stand="ab 99 €", status="zahl")),
                 ],
                 spalten=["Leistung", "Was enthalten ist", "Preis inkl. MwSt."],
-                subline="Erweitern Sie mandari Work bei Bedarf. Alle Preise brutto inklusive Mehrwertsteuer.",
+                subline="Mit Version 1.0 endet die Beta-Phase. Dann richtet sich der Preis nach der Zahl der gewählten "
+                        "Mitglieder Ihrer Fraktion. Mitarbeitende, sachkundige Bürger:innen und Gäste zählen nicht mit "
+                        "und nutzen mandari Work weiter ohne Limit. Addons und Zusatzleistungen erweitern mandari Work "
+                        "bei Bedarf. Alle Preise brutto inklusive Mehrwertsteuer.",
+                note="<p>Wer in der Beta-Phase bucht, behält seinen Preis, solange das Abonnement ununterbrochen läuft.</p>",
                 anchor="addons",
             ),
             ("feature_matrix", {
@@ -327,7 +339,7 @@ def get_marketing_definitions() -> dict:
                               "Schulen, Universitäten, NGOs, Studierende — wer Demokratie stärkt, soll keine "
                               "kommerziellen Preise zahlen. Vergünstigungen auf Anfrage."),
                 ],
-                subline="Andere SaaS verstecken ihre Kalkulation. Wir nicht. Hier ist, woraus sich 39,90 € zusammensetzen.",
+                subline="Andere SaaS verstecken ihre Kalkulation. Wir nicht. Hier ist, woraus sich unsere Preise zusammensetzen.",
                 anchor="kalkulation",
             ),
             ("accordion_faq", {
@@ -343,7 +355,9 @@ def get_marketing_definitions() -> dict:
                     {"question": "Warum ist Insight kostenlos?",
                      "answer": "<p>Zugang zu kommunalpolitischen Informationen ist ein Grundrecht — nicht ein Premium-Feature. Insight finanziert sich quer über Work und Session. So bleibt der Bürger:innen-Zugang dauerhaft frei.</p>"},
                     {"question": "Wie viele Nutzer:innen sind in einem Tarif enthalten?",
-                     "answer": "<p><strong>Unbegrenzt viele.</strong> Ein mandari-Work-Tarif gilt pauschal pro Organisation und hat kein Nutzer-Limit.</p><p>Ob Ihre Fraktion 3 oder 30 Mandatsträger:innen hat, dazu Büromitarbeitende und sachkundige Bürger:innen: Der Pauschalpreis bleibt gleich.</p>"},
+                     "answer": "<p><strong>Unbegrenzt viele.</strong> Ein mandari-Work-Tarif gilt pro Organisation und hat kein Nutzer-Limit.</p><p>In der Beta-Phase gilt ein Pauschalpreis, egal wie groß Ihre Fraktion ist. Ab Version 1.0 richtet sich der Preis nach der Zahl der gewählten Mandatsträger:innen: bis 9, ab 10 und ab 25 Mitgliedern. Büromitarbeitende, sachkundige Bürger:innen und Gäste zählen nie mit.</p>"},
+                    {"question": "Was ändert sich mit Version 1.0?",
+                     "answer": "<p>Mit Version 1.0 endet die Beta-Phase, geplant für 2027. Dann kostet mandari Work 49,90 € im Monat für kleine Fraktionen bis einschließlich 9 Mitglieder, 89,90 € ab 10 und 129,90 € ab 25 Mitgliedern, jährlich 499 €, 899 € oder 1.299 €.</p><p>Wer vorher bucht, behält seinen Beta-Preis, solange das Abonnement ununterbrochen läuft.</p>"},
                     {"question": "Sind die Preise inkl. MwSt.?",
                      "answer": "<p>Ja, alle hier genannten Preise verstehen sich inkl. 19 % deutscher Mehrwertsteuer. Für Angebotsvergleiche in Vergabeverfahren weisen wir den Nettopreis zusätzlich aus, zum Beispiel 39,90 € brutto entsprechen 33,53 € netto.</p>"},
                     {"question": "Was kostet mandari, wenn wir selbst hosten?",
@@ -626,8 +640,9 @@ def get_marketing_definitions() -> dict:
             ),
             m.einladung(
                 "Starten Sie mit Ihrer Fraktion.",
-                "39,90 € im Monat inklusive Mehrwertsteuer, pauschal für die ganze Fraktion – ohne Nutzerlimit, "
-                "Mitarbeitende und sachkundige Bürger:innen eingeschlossen.",
+                "In der Beta-Phase 39,90 € im Monat inklusive Mehrwertsteuer, pauschal für die ganze Fraktion – ohne "
+                "Nutzerlimit, Mitarbeitende und sachkundige Bürger:innen eingeschlossen. Wer jetzt bucht, behält diesen "
+                "Preis auch nach Version 1.0.",
                 "mandari Work buchen", "https://kunden.mandari.de/kunden/buchen",
                 link_label="Preise und Zusatzleistungen ansehen", link_url="/preise/",
                 wege=[("E-Mail", "hello@mandari.de", ""), ("Gespräch", "per Video, am Telefon oder in Münster", ""),
