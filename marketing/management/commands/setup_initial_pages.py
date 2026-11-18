@@ -169,7 +169,7 @@ MARKETING_PAGE_META = [
         "seo_title": "Ratsinformationssysteme im Vergleich",
         "search_description": (
             "mandari im sachlichen Vergleich mit Somacos, Sternberg, ALLRIS und regisafe: "
-            "48 Funktionen mit Quellen, dazu offen, was mandari noch fehlt. Stand Oktober 2026."
+            "48 Funktionen mit Quellen und was mandari auszeichnet. Stand Oktober 2026."
         ),
     },
     {
@@ -179,8 +179,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "SD.NET-Alternative? mandari vs. Sternberg im Vergleich",
         "search_description": (
-            "mandari und Sternberg SD.NET im sachlichen Vergleich: 48 Funktionen mit Quellen, "
-            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
+            "mandari und Sternberg SD.NET im Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari anders macht. Stand Oktober 2026."
         ),
     },
     {
@@ -190,8 +190,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "ALLRIS-Alternative? mandari vs. ALLRIS im Vergleich",
         "search_description": (
-            "mandari und ALLRIS (CC e-gov) im sachlichen Vergleich: 48 Funktionen mit Quellen, "
-            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
+            "mandari und ALLRIS (CC e-gov) im Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari anders macht. Stand Oktober 2026."
         ),
     },
     {
@@ -201,8 +201,8 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "SessionNet-Alternative? mandari vs. Somacos Session",
         "search_description": (
-            "mandari und Somacos Session im sachlichen Vergleich: 48 Funktionen mit Quellen, "
-            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
+            "mandari und Somacos Session im Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari anders macht. Stand Oktober 2026."
         ),
     },
     {
@@ -212,24 +212,24 @@ MARKETING_PAGE_META = [
         "show_in_menus": False,
         "seo_title": "regisafe-Alternative? mandari vs. regisafe im Vergleich",
         "search_description": (
-            "mandari und regisafe im sachlichen Vergleich: 48 Funktionen mit Quellen, "
-            "von Sitzungsdienst bis KI, und was mandari noch fehlt. Stand Oktober 2026."
+            "mandari und regisafe im Vergleich: 48 Funktionen mit Quellen, "
+            "von Sitzungsdienst bis KI, und was mandari anders macht. Stand Oktober 2026."
         ),
     },
 
     # ── Vertrauen ─────────────────────────────────────────────────────
     # /sicherheit/ wurde in /trust/ integriert (komplette Doppelung)
     {
-        "title": "Vergabe & Unterlagen",
+        "title": "Vergabe und Unterlagen",
         "slug": "vergabe",
-        "seo_title": "Vergabe & Unterlagen – Dokumente für Beschaffung und Prüfung | mandari",
-        "search_description": "Muster-AVV, TOM, Löschkonzept, Subprozessoren, SBOM, Barrierefreiheitserklärung und Funktionsübersicht für Vergabestellen, IT-Leitungen und Datenschutzbeauftragte.",
+        "seo_title": "Vergabe und Unterlagen: Dokumente für Beschaffung und Prüfung | mandari",
+        "search_description": "Muster-AVV, TOM, Löschkonzept, Unterauftragsverarbeiter, SBOM, Erklärung zur Barrierefreiheit und Funktionsübersicht für Vergabestellen und IT-Leitungen.",
     },
     {
         "title": "Trust Center",
         "slug": "trust",
-        "seo_title": "Trust Center – Sicherheit, DPA, Subprocessoren",
-        "search_description": "Komplette Sicherheits- & Vertrauensübersicht: AVV nach Art. 28 DSGVO, Subprocessor-Liste, Hosting-Stack, Backup, SLA, Audits.",
+        "seo_title": "Trust Center: Datenschutz, Betrieb und Sicherheit",
+        "search_description": "Trust Center von mandari: Auftragsverarbeitung nach Art. 28 DSGVO, Unterauftragsverarbeiter, Betrieb in Deutschland, Sicherung und Fahrplan der Nachweise.",
         # Dokumentseite (Musterkatalog M4): Inhaltsleiste, Text, Randspalte mit Eckdaten
         "custom_template": "marketing/dokument.html",
     },
@@ -237,7 +237,7 @@ MARKETING_PAGE_META = [
         "title": "Transparenzbericht",
         "slug": "transparenz",
         "seo_title": "Transparenzbericht 2026",
-        "search_description": "Behördenanfragen, Sicherheitsvorfälle, aktive Kommunen, Finanztransparenz, Open-Source-Beiträge.",
+        "search_description": "Behördenanfragen, Sicherheitsvorfälle und die Reichweite des Bürgerportals.",
     },
     {
         "title": "Barrierefreiheit",

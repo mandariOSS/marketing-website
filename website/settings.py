@@ -36,6 +36,10 @@ STATUS_PAGE_URL = os.environ.get("STATUS_PAGE_URL", "https://status.mandari.de/"
 OPARL_UEBERSICHT_URL = os.environ.get("OPARL_UEBERSICHT_URL", "" if DEBUG else "https://oparl.mandari.de/oparl/")
 OPARL_DOKU_URL = os.environ.get("OPARL_DOKU_URL", "https://docs.mandari.de/insight/oparl-api/")
 
+# Öffentliche Statistik der Anwendung: Kennzahlen des Bürgerportals auf /presse/, /transparenz/ und
+# /buergerinformationssystem/ (marketing/kennzahlen.py). Leer schaltet den Abruf ab, dann gilt der Stand im Code.
+KENNZAHLEN_URL = os.environ.get("KENNZAHLEN_URL", "" if DEBUG else "https://mandari.de/api/stats/")
+
 # SEITENHINWEIS: kurzer Hinweis über der Kopfzeile auf allen Seiten, etwa bei Störungen außerhalb von mandari
 # (leer = aus). Ein- und Ausschalten nur über die Umgebung, ohne Deploy: .env ändern, Container neu erstellen.
 SEITENHINWEIS = os.environ.get("SEITENHINWEIS", "").strip()

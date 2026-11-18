@@ -8,7 +8,7 @@ Die Seite erklärt den Begriff Bürgerinformationssystem (BIS) und zeigt das Bü
   im Schlussband,
 * keine Aussagen zu KI (Anbieter noch nicht freigegeben, mandariOSS/mandari#950), deshalb ohne die
   Zusammenfassungen im Bürgerportal und ohne das Bild des Bürgerportals (sein Menü zeigt den KI-Assistenten),
-* keine Kommunen als Kunden; Zahlen nur mit Stand (``KENNZAHLEN`` in ``marketing/seeds_unternehmen.py``, dieselben
+* keine Kommunen als Kunden; Zahlen nur mit Stand (Platzhalter aus ``marketing/kennzahlen.py``, dieselben
   wie auf /presse/ und /transparenz/),
 * Faktentreue vor Glanz: nur Funktionen, die das Bürgerportal in Produktion heute hat (Dokumentation
   docs.mandari.de/insight/). Die Ratsfragen sind pausiert, Abos zu Suchbegriffen und Nachbarschaft ausgeschaltet;
@@ -29,10 +29,6 @@ KONTAKT = "/kontakt/?subject=Buergerinformationssystem-Demo#termin"
 def seite():
     """Blockliste von /buergerinformationssystem/."""
     from marketing.management.commands.migrate_pages_to_streamfield import cta
-    from marketing.seeds_unternehmen import KENNZAHLEN, KENNZAHLEN_STAND
-
-    dokumente, vorgaenge, sitzungen, kommunen = (wert for wert, _ in KENNZAHLEN)
-
     return [
         ("hero", {
             "badge_text": "", "badge_icon": "", "badge_color": "primary",
@@ -128,10 +124,9 @@ def seite():
         # Muster 9a: das Bürgerportal im Einsatz, Zahlen mit Stand (ohne Bild, siehe oben)
         m.zahlensatz(
             "Das Bürgerportal im Einsatz",
-            f"Am {KENNZAHLEN_STAND} machte das Bürgerportal <b>{dokumente}</b> Dokumente, <b>{vorgaenge}</b> "
-            f"Vorgänge und Vorlagen und <b>{sitzungen}</b> Sitzungen aus <b>{kommunen}</b> Kommunen und "
-            "Körperschaften im Volltext durchsuchbar.",
-            rand="<p><strong>So zählen wir:</strong> den Bestand im Bürgerportal am Stichtag, nicht Besuche. Ist "
+            "Das Bürgerportal macht <b>[vorgaenge]</b> Vorgänge und Vorlagen und <b>[sitzungen]</b> Sitzungen aus "
+            "<b>[kommunen]</b> Kommunen und Körperschaften durchsuchbar.",
+            rand="<p><strong>So zählen wir:</strong> den Bestand im Bürgerportal, Stand [kennzahlen-stand], nicht Besuche. Ist "
                  "eine Quelle länger nicht erreichbar, nennt das Portal den Datenstand.</p>"
                  "<p><a href=\"/insight/\">Bürgerportal öffnen</a></p>",
             anchor="im-einsatz",

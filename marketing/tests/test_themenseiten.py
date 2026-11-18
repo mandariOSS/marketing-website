@@ -13,7 +13,6 @@ from django.test import SimpleTestCase, TestCase, override_settings
 from marketing import seo
 from marketing.management.commands.migrate_pages_to_streamfield import get_marketing_definitions
 from marketing.management.commands.setup_initial_pages import HOME_PAGE_META, MARKETING_PAGE_META
-from marketing.seeds_unternehmen import KENNZAHLEN_STAND
 from marketing.tests.test_ris_seo import DU, hauptteil, head, links, sichtbarer_text
 
 STARTSEITE_TITEL = "mandari – Ratsinformationssystem und Software für die offene Verwaltung"
@@ -118,7 +117,8 @@ class SeedTests(SimpleTestCase):
         # Das Bild des Bürgerportals zeigt den KI-Assistenten im Menü; die Seite kommt ohne Bild aus (Prüfstufe)
         bloecke = dict(get_marketing_definitions()["buergerinformationssystem"])
         self.assertNotIn("produktbilder", bloecke)
-        self.assertIn(KENNZAHLEN_STAND, bloecke["zahlensatz"]["satz"])
+        self.assertIn("[kommunen]", bloecke["zahlensatz"]["satz"])
+        self.assertIn("[kennzahlen-stand]", bloecke["zahlensatz"]["rand"])
 
     def test_session_mit_etikett_pilotphase(self):
         bloecke = dict(get_marketing_definitions()["sitzungsmanagement"])

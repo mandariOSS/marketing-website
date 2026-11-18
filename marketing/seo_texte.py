@@ -35,8 +35,8 @@ SEO_TEXTE = {
     },
     "transparenz": {
         "search_description": (
-            "Transparenzbericht von mandari: Behördenanfragen, Sicherheitsvorfälle, Einnahmen und Ausgaben, Reichweite "
-            "des Bürgerportals, vierteljährlich aktualisiert."
+            "Transparenzbericht von mandari: Behördenanfragen, Sicherheitsvorfälle und die Reichweite des "
+            "Bürgerportals, jede Angabe mit ihrem Stand."
         ),
     },
     "barrierefreiheit": {
@@ -54,8 +54,8 @@ SEO_TEXTE = {
     "open-source": {
         "seo_title": "Open Source: öffentliches Geld, öffentlicher Code",
         "search_description": (
-            "mandari steht vollständig unter AGPL-3.0: freie Anbieterwahl, Prüfbarkeit bis zur letzten Zeile und "
-            "dauerhafte Verfügbarkeit für Ihre Verwaltung."
+            "mandari Session, Work und Insight stehen unter AGPL-3.0: freie Anbieterwahl, Prüfbarkeit bis zur "
+            "letzten Zeile und dauerhafte Verfügbarkeit."
         ),
     },
     # Community-Seite in Du-Form (Leitfaden mandari-texte)

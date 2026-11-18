@@ -72,14 +72,29 @@ class DatenTests(SimpleTestCase):
                 name = sv.ANBIETER[slug]["spalte"]
                 self.assertEqual(name in vorhanden, sv.anbieter_voll(luecke, slug), f"{luecke['key']}/{name}: {label}")
 
-    def test_hoechstens_acht_zeilen_je_gruppe(self):
-        # Ein Register mit zwei Gruppen (zugesagt und geplant, in Prüfung), je höchstens acht Zeilen
+    def test_staerken_folgen_aus_den_daten(self):
+        # Am Anfang jeder Vergleichsseite: nur Funktionen, die mandari bietet und der Anbieter nicht vollständig nennt
         for slug in [None, *sv.ANBIETER]:
-            bloecke = sv.luecken_bloecke(slug)
+            funktionen = sv.staerken(slug)
+            self.assertGreater(len(funktionen), 0, slug)
+            for key, _ in funktionen:
+                self.assertEqual(sv.MANDARI[key][0], "yes", f"{slug}/{key}")
+                for anbieter in ([slug] if slug else sv.ANBIETER):
+                    self.assertNotEqual(sv.zelle(anbieter, key)[0], "yes", f"{slug}/{key}/{anbieter}")
+            bloecke = sv.staerken_block(slug)
             self.assertEqual([typ for typ, _ in bloecke], ["register"], slug)
-            for gruppe in bloecke[0][1]["gruppen"]:
-                self.assertLessEqual(len(gruppe["zeilen"]), 8, slug)
-                self.assertGreater(len(gruppe["zeilen"]), 0, slug)
+            zeilen = bloecke[0][1]["gruppen"][0]["zeilen"]
+            self.assertLessEqual(len(zeilen), 12, slug)
+            for zeile in zeilen:
+                # Über Anbieter behaupten wir nie, dass etwas fehlt
+                self.assertRegex(zeile["zusatz"], r"^<p>(keine öffentliche Angabe|Teilweise)", zeile["zusatz"])
+
+    def test_roadmap_register_hoechstens_acht_zeilen(self):
+        bloecke = sv.roadmap_luecken()
+        self.assertEqual([typ for typ, _ in bloecke], ["register"])
+        for gruppe in bloecke[0][1]["gruppen"]:
+            self.assertLessEqual(len(gruppe["zeilen"]), 8)
+            self.assertGreater(len(gruppe["zeilen"]), 0)
 
 
 class SeitenTests(TestCase):
@@ -93,9 +108,11 @@ class SeitenTests(TestCase):
         for slug in sv.ANBIETER:
             self.assertIn(f'href="/vergleich/{slug}/"', html)
         self.assertIn("Alle Funktionen auf einen Blick", html)
-        self.assertIn('id="fehlt"', html)
-        self.assertIn("Was mandari noch fehlt", html)
-        self.assertIn("In Prüfung, ohne Termin", html)
+        # Die Seite beginnt mit dem, was mandari auszeichnet; offene Funktionen stehen in der Tabelle und der Roadmap
+        self.assertIn('id="staerken"', html)
+        self.assertIn("Was mandari auszeichnet", html)
+        self.assertLess(html.index('id="staerken"'), html.index('id="uebersicht"'))
+        self.assertNotIn("Was mandari noch fehlt", html)
         for kuerzel in sv.QUELLEN:
             self.assertIn(f"[{kuerzel}]", html)
         # Kürzel in den Lücken (auch die weiteren Anbieter) stehen im Quellenverzeichnis der Seite.
@@ -124,7 +141,7 @@ class SeitenTests(TestCase):
     def test_roadmap_fuehrt_die_luecken(self):
         html = self.client.get("/roadmap/").content.decode("utf-8")
         self.assertIn('id="marktvergleich"', html)
-        self.assertIn('href="/vergleich/#fehlt"', html)
+        self.assertIn('href="/vergleich/#uebersicht"', html)
         self.assertNotIn("Aus dem Marktvergleich: zugesagt und geplant", html)
         for luecke in sv.LUECKEN:
             if luecke["art"] == "pruefung":
