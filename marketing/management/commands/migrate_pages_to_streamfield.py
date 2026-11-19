@@ -592,6 +592,12 @@ def get_marketing_definitions() -> dict:
                             "Antwortentwurf mit den Fundstellen aus den Ratsdaten als Fußnoten. Sie prüfen und "
                             "versenden selbst.", ort="mit Quellenverzeichnis",
                             zusatz="<a href=\"/anfragen-beantworten/\">Von der Anfrage zur Antwort</a>"),
+                    # Kalender, eigene Termine und Terminumfrage (mandariOSS/mandari#1489)
+                    m.zeile("Kalender und Terminumfrage", "Sitzungen der Gremien, interne Sitzungen, eigene Termine "
+                            "und Fristen stehen in einem Kalender. In der Terminumfrage sieht jede Person, was an dem "
+                            "Tag schon ansteht, etwa der Bauausschuss.", ort="im eigenen Kalender abonnierbar",
+                            zusatz="<a href=\"https://docs.mandari.de/work/kalender/\">Kalender, Termine und "
+                                   "Terminumfrage</a>"),
                     m.zeile("Termine auf Ihrer Website", "Öffentliche Sitzungstermine der Fraktion per Schnittstelle "
                             "und Kalender-Feed, für Ihre Website und die Kalender Ihrer Mitglieder.",
                             zusatz="<a href=\"https://docs.mandari.de/work/fraktions-api/\">Anleitung zur "
