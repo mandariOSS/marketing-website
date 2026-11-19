@@ -28,6 +28,7 @@ ABSCHNITTE: tuple[tuple[str, tuple[str, ...]], ...] = (
             "/kommunen/",
             "/buergerinformationssystem/",
             "/fraktionen/",
+            "/anfragen-beantworten/",
             "/oparl-schnittstelle/",
         ),
     ),
