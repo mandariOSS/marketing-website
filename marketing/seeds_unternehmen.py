@@ -351,7 +351,7 @@ def get_company_page_definitions() -> dict:
                 "Das Bürgerportal mandari Insight macht <b>[vorgaenge]</b> Vorgänge und Vorlagen und "
                 "<b>[sitzungen]</b> Sitzungen aus <b>[kommunen]</b> Kommunen und Körperschaften durchsuchbar.",
                 rand="<p>Stand [kennzahlen-stand], gezählt im Datenbestand des Bürgerportals.</p>"
-                     "<p><strong>Aktuelle Version:</strong> mandari 0.13.0 vom 17. November 2026, "
+                     "<p><strong>Aktuelle Version:</strong> mandari 0.13.1 vom 20. November 2026, "
                      "<a href=\"/releases/\">Releases</a></p>"
                      "<p><strong>Quellcode:</strong> <a href=\"https://github.com/mandariOSS/mandari\">GitHub</a></p>",
                 anchor="fakten",

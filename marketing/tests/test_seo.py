@@ -124,16 +124,19 @@ class ReleaseUndSitemapTests(TestCase):
         body = self.client.get("/releases/").content.decode()
         # 0.12.1 und 0.11.2 (wie 0.12.0 und 0.11.1) erschienen am selben Tag: die höhere Version steht oben
         stellen = [body.index(f">{titel}</a>") for titel in
-                   ("mandari 0.13", "mandari 0.12.1", "mandari 0.11.2", "mandari 0.12", "mandari 0.11.1",
+                   ("mandari 0.13.1", "mandari 0.13", "mandari 0.12.1", "mandari 0.11.2", "mandari 0.12", "mandari 0.11.1",
                     "mandari 0.11", "mandari 0.9 (Beta)")]
         self.assertEqual(stellen, sorted(stellen))
 
     def test_release_seite_mit_nachbarversion(self):
+        body = self.client.get("/releases/mandari-0-13-1/").content.decode()
+        self.assertIn("v0.13.1", body)
+        self.assertIn("Vorherige Version", body)
+        self.assertIn("mandari 0.13", body)
+        self.assertNotIn("Neuere Version", body)
         body = self.client.get("/releases/mandari-0-13/").content.decode()
         self.assertIn("v0.13.0", body)
-        self.assertIn("Vorherige Version", body)
-        self.assertIn("mandari 0.12.1", body)
-        self.assertNotIn("Neuere Version", body)
+        self.assertIn("Neuere Version", body)
         body = self.client.get("/releases/mandari-0-11/").content.decode()
         self.assertIn("Vorherige Version", body)
         self.assertIn("mandari 0.9 (Beta)", body)
