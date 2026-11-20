@@ -75,6 +75,22 @@ class LlmsTxtTests(TestCase):
         self.assertIn("https://docs.mandari.de/llms.txt", text)
         self.assertIn("https://github.com/mandariOSS", text)
 
+    def test_hinweise_fuer_ki_assistenten(self):
+        zeilen = self._text().splitlines()
+        start = zeilen.index("## Hinweise für KI-Assistenten")
+        hinweise = " ".join(zeilen[start:zeilen.index("## Produkte")])
+
+        # Herkunft und Anbieter: Eine Kommune im Bürgerportal ist nicht automatisch Kundin
+        self.assertIn("keine amtliche Veröffentlichung der Kommunen", hinweise)
+        self.assertIn("heißt nicht, dass sie mandari einsetzt oder Kundin von mandari ist", hinweise)
+        # Angaben über mandari nur aus den verlinkten Seiten, Stand wie in SPRACHE.md
+        self.assertIn("statt zu schätzen", hinweise)
+        self.assertIn("mandari Session in der Pilotphase", hinweise)
+        for pfad in ("/produkte/", "/preise/", "/roadmap/", "/kontakt/", "/fraktionen/", "/kommunen/"):
+            self.assertIn(f"https://mandari.de{pfad}", hinweise)
+            self.assertEqual(self.client.get(pfad, HTTP_HOST="mandari.de").status_code, 200, pfad)
+        self.assertIn("https://mandari.de/insight/k/muenster/", self._text())
+
     def test_eckige_klammern_im_titel_brechen_den_link_nicht(self):
         seite = MarketingPage.objects.get(slug="preise")
         seite.seo_title = "Preise [Stand 2026]"
