@@ -103,6 +103,10 @@ class SeitenTests(TestCase):
         self.assertTrue(organisation["logo"].startswith("https://mandari.de/"))
         self.assertIn("Ratsinformationssystem", organisation["knowsAbout"])
         self.assertEqual(organisation["contactPoint"]["url"], "https://mandari.de/kontakt/")
+        self.assertIn("knowsAbout", self.knoten("/unternehmen/", "Organization")[0])
+        # Sonst nur die Grundangaben: Der Kopf jeder Seite bleibt klein (scripts/check_kritisches_css.py)
+        for url in ["/kontakt/", "/preise/", "/ingestor/"]:
+            self.assertNotIn("contactPoint", self.knoten(url, "Organization")[0], url)
         # Rechtsform und Anschrift folgen dem Stufenschalter Vorgründung/Gesellschaft, nicht den Strukturdaten
         for feld in ("legalName", "address", "foundingDate", "vatID", "email", "telephone"):
             self.assertNotIn(feld, organisation)

@@ -48,6 +48,10 @@ DOKUMENTATION = "https://docs.mandari.de"
 #: Worin sich mandari auskennt (``knowsAbout``): die Begriffe, unter denen man uns finden soll
 FACHGEBIETE = ["Ratsinformationssystem", "Sitzungsdienst", "Fraktionsarbeit", "Bürgerinformationssystem", "OParl",
                "Open Government", "Kommunalpolitik"]
+#: Seiten, auf denen die Organisation ausführlich steht (Fachgebiete, Gebiet, Kontaktweg), neben der Startseite. Auf allen
+#: übrigen Seiten nur die Grundangaben: Jedes Byte im Kopf zählt gegen die Grenze der ersten TCP-Pakete
+#: (scripts/check_kritisches_css.py)
+ORGANISATION_SEITEN = {"unternehmen"}
 #: Seiten mit allen Produkten (Slugs)
 UEBERSICHTEN = {"produkte", "ratsinformationssystem"}
 #: Seiten mit dem Quellcode (Slugs)
@@ -178,14 +182,6 @@ def graph(page=None) -> list[dict]:
             "logo": seo.absolute_url(static(LOGO)),
             "sameAs": SAME_AS,
             "description": BESCHREIBUNG,
-            "knowsAbout": FACHGEBIETE,
-            "areaServed": {"@type": "Country", "name": "Deutschland"},
-            "contactPoint": {
-                "@type": "ContactPoint",
-                "contactType": "Erstgespräch und Beratung",
-                "url": seo.absolute_url("/kontakt/"),
-                "availableLanguage": "de",
-            },
         },
         {
             "@type": "WebSite",
@@ -199,6 +195,17 @@ def graph(page=None) -> list[dict]:
     if page is None:
         return knoten
     slug = getattr(page, "slug", "")
+    if getattr(page, "depth", 0) == 2 or slug in ORGANISATION_SEITEN:
+        knoten[0].update({
+            "knowsAbout": FACHGEBIETE,
+            "areaServed": {"@type": "Country", "name": "Deutschland"},
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "Erstgespräch und Beratung",
+                "url": seo.absolute_url("/kontakt/"),
+                "availableLanguage": "de",
+            },
+        })
     if slug in SOFTWARE_SEITEN:
         knoten.append({
             "@type": "SoftwareApplication",
