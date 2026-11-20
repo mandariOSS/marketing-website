@@ -1340,7 +1340,7 @@ def get_marketing_definitions() -> dict:
             ("hero", {
                 "badge_text": "", "badge_icon": "", "badge_color": "primary",
                 "title": "mandari", "title_highlight": "Roadmap",
-                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 17. November 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
+                "subline": "Was wir bauen, wann es kommt und wie verbindlich das ist. Stand 20. November 2026, die nächste Aktualisierung folgt im Dezember; Verschiebungen nennen wir offen.",
                 "subline_secondary": "Drei Verbindlichkeitsstufen: Zugesagt (im Angebot referenzierbar), Geplant (Zeitraum genannt, Änderungen möglich), In Prüfung (Idee ohne Termin).",
                 "ctas": [cta("Meilensteine auf GitHub", "https://github.com/mandariOSS/mandari/milestones", "github", "primary"),
                          cta("Releases", "/releases/", "tag", "secondary")],
@@ -1350,6 +1350,13 @@ def get_marketing_definitions() -> dict:
             m.register(
                 "Neu seit Juli 2026",
                 [m.gruppe("",
+                    m.zeile("Was kostet das? Kosten von Vorlagen", "Das Bürgerportal zeigt bei Vorlagen Kosten, "
+                            "Fördergeld, Anteil der Kommune, Zahlungen je Jahr und was danach jedes Jahr bleibt, "
+                            "aus den Dokumenten gelesen und geprüft. Seit mandari 0.13.1.",
+                            url="/releases/mandari-0-13-1/", ort="Release-Notes", stand="Insight"),
+                    m.zeile("Kalender, Termine und Terminumfragen", "Work zeigt Sitzungen, Fristen und Aufgaben in "
+                            "einem Kalender; eigene Termine mit Einladungen und Terminumfragen. Seit mandari 0.13.1.",
+                            url="/releases/mandari-0-13-1/", ort="Release-Notes", stand="Work"),
                     m.zeile("Vorlagen in einfacher Sprache", "Das Bürgerportal fasst Vorgänge oben in zwei "
                             "bis vier Sätzen zusammen und bietet die Zusammenfassung auch in Einfacher Sprache "
                             "an, klar als KI-erstellt gekennzeichnet. Seit mandari 0.13.",
@@ -1503,6 +1510,7 @@ def get_marketing_definitions() -> dict:
                 (
                     "<h3>November 2026</h3>"
                     "<ul>"
+                    "<li><strong>Kosten von Vorlagen und Kalender:</strong> neu geliefert mit mandari 0.13.1, außerhalb des Zwei-Wochen-Takts.</li>"
                     "<li><strong>Vorlagen in einfacher Sprache:</strong> geliefert statt „In Prüfung, nach 1.0“. Seit mandari 0.13 zeigt das Bürgerportal oben auf dem Vorgang eine KI-Kurzfassung und auf Wunsch eine Fassung in Einfacher Sprache.</li>"
                     "<li><strong>Release-Takt:</strong> Ab mandari 0.13 erscheint alle zwei Wochen eine neue Version; die erste Version jedes Quartals ist eine Pflegeversion mit sechs Monaten Sicherheitskorrekturen.</li>"
                     "</ul>"
@@ -1631,6 +1639,78 @@ def get_release_definitions() -> dict:
     """
 
     return {
+        # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-13-1/ — mandari 0.13.1, 20.11.2026 (außerhalb des Zwei-Wochen-Takts)
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-13-1": {
+            "meta": {
+                "title": "mandari 0.13.1",
+                "version": "0.13.1",
+                "release_type": "patch",
+                "release_date": "2026-11-20",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.13.1",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.13.1 – Release-Notes",
+                "search_description": (
+                    "mandari 0.13.1 vom 20. November 2026: Was kostet das? Kosten von Vorlagen im Bürgerportal, "
+                    "Kalender mit eigenen Terminen und Terminumfragen in Work, vollständigere Tagesordnungen."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.13.1 erscheint außerhalb des Zwei-Wochen-Takts. Das Bürgerportal zeigt bei "
+                    "Vorlagen, was ein Vorhaben kostet. Fraktionen planen ihre Termine direkt im Kalender von "
+                    "mandari Work. Und Vorlagen und Unterlagen kommen an den Tagesordnungspunkten vollständiger "
+                    "an.</p>"
+                    "<p>Alle Neuerungen liefen vor der Veröffentlichung bereits in unserem Betrieb.</p>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<ul>"
+                    "<li>„Was kostet das?“: Auf der Seite einer Vorlage steht in ersten Kommunen, was ein "
+                    "Vorhaben insgesamt kostet, wie viel davon Fördergeld ist, was die Kommune selbst zahlt, "
+                    "wann gezahlt wird und was danach jedes Jahr bleibt, mit kleinen Grafiken. Eine KI liest "
+                    "die Zahlen aus den Dokumenten der Vorlage, ein Programm prüft jede Zahl gegen die "
+                    "Dokumente. Der Bereich ist als KI-Ergebnis gekennzeichnet.</li>"
+                    "<li>Dokumente, die das Ratsinformationssystem direkt an einen Tagesordnungspunkt hängt, "
+                    "etwa Anträge ohne eigene Vorlage, stehen jetzt auf der Seite der Sitzung.</li>"
+                    "<li>Sitzungen, die das Ratsinformationssystem nur „Sitzung“ nennt, heißen wieder nach "
+                    "ihrem Gremium.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<ul>"
+                    "<li>Der Kalender zeigt alles an einem Ort: Sitzungen der Gremien, interne Sitzungen, "
+                    "Fristen der Dokumente und fällige Aufgaben.</li>"
+                    "<li>Eigene Termine mit Einladungen, Zu- und Absagen. Terminumfragen finden den passenden "
+                    "Zeitpunkt; das Ergebnis wird ein Termin oder gleich eine interne Sitzung.</li>"
+                    "<li>Den persönlichen Kalender abonnieren Sie in Google Kalender, Outlook, Thunderbird "
+                    "oder auf dem iPhone.</li>"
+                    "<li>„Anfrage beantworten“: Aus einer Bürger- oder Presseanfrage entsteht ein Antwortentwurf "
+                    "aus den öffentlichen Ratsdaten, mit Quellen und als Dokument übernehmbar.</li>"
+                    "<li>Tagesordnungspunkte zeigen ihre Vorlagen und Unterlagen vollständiger, auch Anträge, "
+                    "die direkt am Punkt hängen.</li>"
+                    "<li>Tastaturkürzel, „Neu“ in der Seitenleiste und Zahlen an der Navigation; die "
+                    "Dokumentliste filtert mit einem Klick. Der Bereich „Fraktionssitzungen“ heißt jetzt "
+                    "„Interne Sitzungen“.</li>"
+                    "<li>Hochgeladene PDF-Anhänge öffnen im Browser, und beim Export mit Briefkopf trägt jede "
+                    "Seite wieder ihren eigenen Inhalt.</li>"
+                    "</ul>"
+                )),
+                _release_section("Datenqualität und Betrieb", (
+                    "<p>Der Abgleich mit den Ratsinformationssystemen ist robuster: Fehlende Beratungen lädt "
+                    "mandari einzeln nach, veraltete markiert es, und ein unterbrochener Vollabgleich setzt "
+                    "dort fort, wo er stand. Ein neuer täglicher Datenabgleich vergleicht unseren Bestand mit "
+                    "der OParl-Schnittstelle jeder Kommune und meldet Lücken, bevor sie auffallen.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.13.1\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
         # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-13/ — mandari 0.13, 17.11.2026 (erste Version im Zwei-Wochen-Takt)
         # ════════════════════════════════════════════════════════════
