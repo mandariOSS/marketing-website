@@ -49,6 +49,15 @@
                 </dd>
             </div>
             {% endif %}
+            {% if mcp_url %}
+            <div id="ki-assistenten" class="grid gap-y-2 py-6 border-t m-linie lg:grid-cols-12 lg:gap-x-10 lg:py-7 scroll-mt-24">
+                <dt class="text-base m-leise lg:col-span-3 lg:pt-1">Für KI-Assistenten (MCP-Server)</dt>
+                <dd class="min-w-0 lg:col-span-9">
+                    <p class="font-mono text-lg m-tinte break-all">{{ mcp_url }}</p>
+                    <p class="mt-2 text-base m-text max-w-[45rem]">Dieselben Ratsinformationen über das Model Context Protocol, lesend und ohne Anmeldung. In Claude tragen Sie die Adresse unter Einstellungen → Connectors als eigenen Connector ein; danach beantwortet der Assistent Fragen wie „Was steht in der nächsten Ratssitzung in Münster an?“ mit Daten aus mandari und verlinkt die Seiten des Bürgerportals. Andere Assistenten mit MCP-Unterstützung nehmen dieselbe Adresse.</p>
+                </dd>
+            </div>
+            {% endif %}
         </dl>
         <p class="mt-8 t-body m-text max-w-[45rem]">
             Die Listen sind nach dem Zeitpunkt der letzten Änderung sortiert und in Seiten geteilt; den Link zur nächsten Seite nennt <code class="font-mono">links.next</code>.

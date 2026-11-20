@@ -13,8 +13,10 @@ from marketing import offene_daten
 
 OPARL = "https://oparl.mandari.example/oparl"
 KENNUNG = "3ae1b038-cf57-5305-a49b-83108c0d6b96"
+MCP = "https://mandari.example/insight/mcp"
 UEBERSICHT = {
     "system": f"{OPARL}/v1/system",
+    "mcp": MCP,
     "bodyIndex": [
         {
             "name": "Stadt Köln",
@@ -84,6 +86,12 @@ class AuswertenTests(SimpleTestCase):
         self.assertEqual([k.anzeige for k in verzeichnis.kommunen], ["Köln", "Münster", "Gemeinde Ohne"])
         ohne = verzeichnis.kommunen[2]
         self.assertEqual((ohne.slug, ohne.adresse), ("", ohne.kennung))
+
+    def test_mcp_server_nur_als_vollstaendige_adresse(self):
+        self.assertEqual(offene_daten.auswerten(UEBERSICHT, f"{OPARL}/").mcp, MCP)
+        ohne = {k: v for k, v in UEBERSICHT.items() if k != "mcp"}
+        self.assertEqual(offene_daten.auswerten(ohne, f"{OPARL}/").mcp, "")
+        self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": "javascript:alert(1)"}, f"{OPARL}/").mcp, "")
 
     def test_antwort_ohne_bodyindex_ist_kein_verzeichnis(self):
         self.assertIsNone(offene_daten.auswerten({"name": "etwas"}, f"{OPARL}/"))
@@ -171,6 +179,20 @@ class SeitenTests(TestCase):
         self.assertIn('href="/offene-daten/koeln/"', html)
         self.assertNotIn("Kaputt", html)
         self.assertNotIn("javascript:", html)
+
+    def test_uebersicht_nennt_den_mcp_server_fuer_ki_assistenten(self):
+        _, html = self.seite("/offene-daten/")
+
+        self.assertIn('id="ki-assistenten"', html)
+        self.assertIn(f">{MCP}</p>", html)
+        self.assertIn("Connectors", html)
+
+    def test_ohne_mcp_server_kein_abschnitt_fuer_ki_assistenten(self):
+        ohne = {k: v for k, v in UEBERSICHT.items() if k != "mcp"}
+        with _abruf(ohne):
+            html = self.client.get("/offene-daten/").content.decode("utf-8")
+
+        self.assertNotIn('id="ki-assistenten"', html)
 
     def test_uebersicht_traegt_den_datenkatalog(self):
         _, html = self.seite("/offene-daten/")

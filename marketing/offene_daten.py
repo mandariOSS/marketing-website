@@ -89,6 +89,8 @@ class Verzeichnis:
     system: str
     uebersicht: str
     kommunen: tuple[Kommune, ...]
+    #: MCP-Server für KI-Assistenten (Feld ``mcp`` der Übersicht); leer, solange der Betrieb ihn nicht nennt
+    mcp: str = ""
 
     def kommune(self, slug: str) -> Kommune | None:
         return next((k for k in self.kommunen if k.slug == slug), None)
@@ -140,7 +142,7 @@ def auswerten(daten: object, uebersicht: str) -> Verzeichnis | None:
         return None
     kommunen = [k for k in (_kommune(e) for e in daten["bodyIndex"] if isinstance(e, dict)) if k is not None]
     system = _adresse(daten.get("system")) or uebersicht.rstrip("/") + "/v1/system"
-    return Verzeichnis(system=system, uebersicht=uebersicht, kommunen=tuple(kommunen))
+    return Verzeichnis(system=system, uebersicht=uebersicht, kommunen=tuple(kommunen), mcp=_adresse(daten.get("mcp")))
 
 
 def _abrufen(adresse: str) -> Verzeichnis | None:
