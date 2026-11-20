@@ -10,6 +10,10 @@ Jede Seite trägt genau ein ``<script type="application/ld+json">`` mit einem ``
   ihm nie widersprechen.
 * **SoftwareApplication** auf den Seiten in ``SOFTWARE_SEITEN`` – bewusst ohne ``offers``: Preise stehen nur
   auf /preise/ und in der Preisliste, nicht in Daten, die Suchmaschinen als Angebot auswerten.
+* Je Produkt (mandari Session, Work, Insight) eine eigene **SoftwareApplication** auf seiner Seite und auf den
+  Übersichten (``PRODUKTE``), mit Zielgruppe und Stand aus ``SPRACHE.md`` („Stand der Produkte“). So ordnen
+  Suchmaschinen und KI-Suchen jedes Produkt mit eigenem Namen ein, statt Angaben zu raten (mandari#1309).
+* **SoftwareSourceCode** mit dem Repository auf /open-source/ und /produkte/.
 * **FAQPage** aus jedem Baustein ``accordion_faq`` der Seite (Frage und Antwort als Klartext).
 * **BreadcrumbList** auf Unterseiten, etwa /vergleich/mandari-vs-allris/.
 
@@ -39,6 +43,51 @@ SOFTWARE_SEITEN = {"ratsinformationssystem", "kommunen", "produkte",
                    "sitzungsmanagement", "buergerinformationssystem", "oparl-schnittstelle"}
 SOFTWARE_URL = "/produkte/"
 LIZENZ = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+REPOSITORY = "https://github.com/mandariOSS/mandari"
+DOKUMENTATION = "https://docs.mandari.de"
+#: Worin sich mandari auskennt (``knowsAbout``): die Begriffe, unter denen man uns finden soll
+FACHGEBIETE = ["Ratsinformationssystem", "Sitzungsdienst", "Fraktionsarbeit", "Bürgerinformationssystem", "OParl",
+               "Open Government", "Kommunalpolitik"]
+#: Seiten mit allen Produkten (Slugs)
+UEBERSICHTEN = {"produkte", "ratsinformationssystem"}
+#: Seiten mit dem Quellcode (Slugs)
+QUELLCODE_SEITEN = {"produkte", "open-source"}
+#: Die drei Produkte: Kennung (Teil der ``@id``), Name, eigene Seite, Seiten (Slugs), Beschreibung, Zielgruppe und
+#: Stand. Beschreibungen nach den Texten der Produktseiten, Stand wie in SPRACHE.md; keine Preise.
+PRODUKTE = (
+    {
+        "kennung": "session",
+        "name": "mandari Session",
+        "url": "/kommunen/",
+        "seiten": {"kommunen", "sitzungsmanagement"},
+        "description": "Sitzungsdienst für Kommunalverwaltungen: Sitzungen, Ladung, Vorlagen, Niederschrift und "
+                       "Beschlusskontrolle in einem System, mit offener OParl-Schnittstelle.",
+        "zielgruppe": "Kommunalverwaltungen und ihr Sitzungsdienst",
+        "stand": "Pilotphase",
+    },
+    {
+        "kennung": "work",
+        "name": "mandari Work",
+        "url": "/fraktionen/",
+        "seiten": {"fraktionen"},
+        "description": "Fraktionssoftware: Sitzungen im Team vorbereiten, Anträge mit Fristen und Freigaben führen, "
+                       "mit den Ratsdaten der eigenen Kommune.",
+        "zielgruppe": "Fraktionen, Ratsmitglieder und Fraktionsgeschäftsstellen",
+        "stand": "Offene Beta",
+    },
+    {
+        "kennung": "insight",
+        "name": "mandari Insight",
+        "url": "/buergerinformationssystem/",
+        "seiten": {"buergerinformationssystem"},
+        "description": "Bürgerportal mit den öffentlichen Ratsinformationen der Kommunen: Sitzungen, Vorlagen und "
+                       "Beschlüsse im Volltext finden und auf der Karte sehen, ohne Anmeldung.",
+        "zielgruppe": "Bürger:innen, Presse und Zivilgesellschaft",
+        "stand": "Im Einsatz",
+        # Das Bürgerportal ist kostenlos (/preise/); das ist eine Eigenschaft, kein Angebot mit Preis
+        "kostenlos": True,
+    },
+)
 
 _ESCAPES = {ord("<"): "\\u003C", ord(">"): "\\u003E", ord("&"): "\\u0026"}
 _ABSATZENDE = re.compile(r"<(?:/p|/li|br\s*/?|/h\d)\s*>", re.IGNORECASE)
@@ -94,6 +143,28 @@ def brotkrumen(page) -> list[dict]:
     return eintraege
 
 
+def _produkt(produkt: dict, basis: str, organisation: str) -> dict:
+    """Ein Produkt als ``SoftwareApplication``, Teil von mandari (``#software``)."""
+    knoten = {
+        "@type": "SoftwareApplication",
+        "@id": f"{basis}#{produkt['kennung']}",
+        "name": produkt["name"],
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": seo.absolute_url(produkt["url"]),
+        "license": LIZENZ,
+        "description": produkt["description"],
+        "audience": {"@type": "Audience", "audienceType": produkt["zielgruppe"]},
+        "creativeWorkStatus": produkt["stand"],
+        "softwareHelp": {"@type": "CreativeWork", "url": DOKUMENTATION},
+        "isPartOf": {"@id": basis + "#software"},
+        "publisher": {"@id": organisation},
+    }
+    if produkt.get("kostenlos"):
+        knoten["isAccessibleForFree"] = True
+    return knoten
+
+
 def graph(page=None) -> list[dict]:
     """Alle Knoten für eine Seite (``page`` ist ``None`` bei Django-Seiten wie /ingestor/)."""
     basis = seo.absolute_url("/")
@@ -107,6 +178,14 @@ def graph(page=None) -> list[dict]:
             "logo": seo.absolute_url(static(LOGO)),
             "sameAs": SAME_AS,
             "description": BESCHREIBUNG,
+            "knowsAbout": FACHGEBIETE,
+            "areaServed": {"@type": "Country", "name": "Deutschland"},
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "Erstgespräch und Beratung",
+                "url": seo.absolute_url("/kontakt/"),
+                "availableLanguage": "de",
+            },
         },
         {
             "@type": "WebSite",
@@ -119,7 +198,8 @@ def graph(page=None) -> list[dict]:
     ]
     if page is None:
         return knoten
-    if getattr(page, "slug", "") in SOFTWARE_SEITEN:
+    slug = getattr(page, "slug", "")
+    if slug in SOFTWARE_SEITEN:
         knoten.append({
             "@type": "SoftwareApplication",
             "@id": basis + "#software",
@@ -129,6 +209,21 @@ def graph(page=None) -> list[dict]:
             "url": seo.absolute_url(SOFTWARE_URL),
             "license": LIZENZ,
             "description": BESCHREIBUNG,
+            "publisher": {"@id": organisation},
+            "hasPart": [{"@id": f"{basis}#{produkt['kennung']}"} for produkt in PRODUKTE],
+        })
+    for produkt in PRODUKTE:
+        if slug in UEBERSICHTEN or slug in produkt["seiten"]:
+            knoten.append(_produkt(produkt, basis, organisation))
+    if slug in QUELLCODE_SEITEN:
+        knoten.append({
+            "@type": "SoftwareSourceCode",
+            "@id": basis + "#quellcode",
+            "name": seo.BRAND,
+            "codeRepository": REPOSITORY,
+            "programmingLanguage": "Python",
+            "license": LIZENZ,
+            "targetProduct": {"@id": basis + "#software"},
             "publisher": {"@id": organisation},
         })
     fragen = faq(page)

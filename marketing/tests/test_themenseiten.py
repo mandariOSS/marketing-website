@@ -236,8 +236,12 @@ class SeitenTests(TestCase):
 
     def test_strukturdaten_wie_auf_der_ris_seite(self):
         for slug in SEITEN:
-            typen = [k["@type"] for k in json_ld(self.seite(f"/{slug}/"))]
-            self.assertEqual(typen.count("SoftwareApplication"), 1, slug)
+            knoten = json_ld(self.seite(f"/{slug}/"))
+            typen = [k["@type"] for k in knoten]
+            # Einmal mandari selbst; das Produkt der Seite steht daneben (strukturdaten.PRODUKTE, mandari#1510)
+            software = [k["@id"] for k in knoten if k["@type"] == "SoftwareApplication"]
+            self.assertEqual(software.count("https://mandari.de/#software"), 1, slug)
+            self.assertLessEqual(len(software), 2, slug)
             self.assertEqual(typen.count("FAQPage"), 1, slug)
             self.assertNotIn("BreadcrumbList", typen, slug)
 

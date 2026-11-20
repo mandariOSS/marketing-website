@@ -101,6 +101,8 @@ class SeitenTests(TestCase):
         self.assertEqual(organisation["description"], "mandari ist ein Open-Source-Ratsinformationssystem für "
                                                       "Verwaltungen, Fraktionen und Bürger:innen.")
         self.assertTrue(organisation["logo"].startswith("https://mandari.de/"))
+        self.assertIn("Ratsinformationssystem", organisation["knowsAbout"])
+        self.assertEqual(organisation["contactPoint"]["url"], "https://mandari.de/kontakt/")
         # Rechtsform und Anschrift folgen dem Stufenschalter Vorgründung/Gesellschaft, nicht den Strukturdaten
         for feld in ("legalName", "address", "foundingDate", "vatID", "email", "telephone"):
             self.assertNotIn(feld, organisation)
@@ -109,7 +111,7 @@ class SeitenTests(TestCase):
 
     def test_software_nur_auf_den_produktseiten_und_ohne_angebot(self):
         for url in ["/ratsinformationssystem/", "/kommunen/", "/produkte/"]:
-            software = self.knoten(url, "SoftwareApplication")
+            software = [k for k in self.knoten(url, "SoftwareApplication") if k["@id"].endswith("#software")]
             self.assertEqual(len(software), 1, url)
             s = software[0]
             self.assertEqual(s["name"], "mandari")
@@ -118,8 +120,42 @@ class SeitenTests(TestCase):
             self.assertTrue(s["url"].startswith("https://mandari.de/"))
             self.assertIn("AGPL-3.0-or-later", s["license"])
             self.assertNotIn("offers", s)
-        for url in ["/", "/preise/", "/vergleich/", "/fraktionen/"]:
+            self.assertEqual(len(s["hasPart"]), 3)
+        for url in ["/", "/preise/", "/vergleich/"]:
             self.assertEqual(self.knoten(url, "SoftwareApplication"), [], url)
+
+    def test_jedes_produkt_mit_eigenem_namen_zielgruppe_und_stand(self):
+        def produkte(url):
+            return {k["name"]: k for k in self.knoten(url, "SoftwareApplication") if k["name"] != "mandari"}
+
+        alle = produkte("/produkte/")
+        self.assertEqual(set(alle), {"mandari Session", "mandari Work", "mandari Insight"})
+        self.assertEqual(set(produkte("/ratsinformationssystem/")), set(alle))
+        # Auf der eigenen Seite nur das eigene Produkt
+        self.assertEqual(set(produkte("/kommunen/")), {"mandari Session"})
+        self.assertEqual(set(produkte("/fraktionen/")), {"mandari Work"})
+        self.assertEqual(set(produkte("/buergerinformationssystem/")), {"mandari Insight"})
+        # Stand wie in SPRACHE.md, damit KI-Suchen ihn nicht raten
+        self.assertEqual({n: k["creativeWorkStatus"] for n, k in alle.items()},
+                         {"mandari Session": "Pilotphase", "mandari Work": "Offene Beta",
+                          "mandari Insight": "Im Einsatz"})
+        for name, knoten in alle.items():
+            self.assertEqual(knoten["isPartOf"], {"@id": "https://mandari.de/#software"}, name)
+            self.assertEqual(knoten["publisher"], {"@id": "https://mandari.de/#organisation"}, name)
+            self.assertTrue(knoten["audience"]["audienceType"], name)
+            self.assertIn("AGPL-3.0-or-later", knoten["license"], name)
+            self.assertEqual(self.client.get(knoten["url"].removeprefix("https://mandari.de")).status_code, 200)
+        # Kostenlos ist nur das Bürgerportal, und das ohne Preisangabe
+        self.assertIs(alle["mandari Insight"]["isAccessibleForFree"], True)
+        self.assertNotIn("isAccessibleForFree", alle["mandari Work"])
+
+    def test_quellcode_mit_repository(self):
+        for url in ["/open-source/", "/produkte/"]:
+            code = self.knoten(url, "SoftwareSourceCode")
+            self.assertEqual(len(code), 1, url)
+            self.assertEqual(code[0]["codeRepository"], "https://github.com/mandariOSS/mandari")
+            self.assertEqual(code[0]["targetProduct"], {"@id": "https://mandari.de/#software"})
+        self.assertEqual(self.knoten("/kommunen/", "SoftwareSourceCode"), [])
 
     def test_faq_aus_jedem_akkordeon(self):
         definitionen = get_marketing_definitions()
