@@ -123,6 +123,7 @@ def get_marketing_definitions() -> dict:
     from marketing import seeds_muster as m  # Abschnittsmuster (Musterkatalog)
     from marketing import seeds_ris  # Sachseite /ratsinformationssystem/
     from marketing import seeds_buergerinformationssystem, seeds_oparl, seeds_sitzungsmanagement  # Sachseiten (#939)
+    from marketing import seeds_anfragen  # /anfragen-beantworten/ (mandari#1488)
     from marketing.seeds_unternehmen import get_company_page_definitions
 
     return {
@@ -587,6 +588,10 @@ def get_marketing_definitions() -> dict:
                             "fest."),
                     m.zeile("Recherche", "Volltextsuche über alle öffentlichen Ratsdokumente Ihrer Kommune, auch in "
                             "gescannten PDFs, dazu KI-gestützte Recherche.", ort="im ganzen Bestand"),
+                    m.zeile("Anfragen beantworten", "Aus einer Bürger- oder Presseanfrage entsteht ein "
+                            "Antwortentwurf mit den Fundstellen aus den Ratsdaten als Fußnoten. Sie prüfen und "
+                            "versenden selbst.", ort="mit Quellenverzeichnis",
+                            zusatz="<a href=\"/anfragen-beantworten/\">Von der Anfrage zur Antwort</a>"),
                     m.zeile("Termine auf Ihrer Website", "Öffentliche Sitzungstermine der Fraktion per Schnittstelle "
                             "und Kalender-Feed, für Ihre Website und die Kalender Ihrer Mitglieder.",
                             zusatz="<a href=\"https://docs.mandari.de/work/fraktions-api/\">Anleitung zur "
@@ -1111,6 +1116,12 @@ def get_marketing_definitions() -> dict:
         "sitzungsmanagement": seeds_sitzungsmanagement.seite(),
         "buergerinformationssystem": seeds_buergerinformationssystem.seite(),
         "oparl-schnittstelle": seeds_oparl.seite(),
+
+        # ════════════════════════════════════════════════════════════
+        # /anfragen-beantworten/ — Antwortentwurf mit Fundstellen in
+        # mandari Work (mandari#1488); Inhalt in marketing/seeds_anfragen.py
+        # ════════════════════════════════════════════════════════════
+        "anfragen-beantworten": seeds_anfragen.seite(),
 
         # ════════════════════════════════════════════════════════════
         # /kommunen/ — Für Kommunen & Verwaltungen (Zielgruppen-Seite)

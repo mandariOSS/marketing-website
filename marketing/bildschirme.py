@@ -50,6 +50,14 @@ BILDSCHIRME = {
         "alt": "Zusammenfassung der Vorbereitung in mandari Work: Positionen je Tagesordnungspunkt und geplante "
                "Redebeiträge",
     },
+    "work-anfrage": {
+        # Kein Ausschnitt der Demo (dort sind die KI-Funktionen aus): das Briefblatt des Entwurfs aus der Anwendung mit
+        # den Musterdaten ihrer Tests. Schmaler als die Fläche und in ihrer Breite gezeigt, damit keine Zeile rechts
+        # abgeschnitten wird: Der Brief soll sich lesen lassen.
+        "groesse": (1568, 956), "herkunft": "Musterdaten: Musterfraktion in der Stadt Musterstadt", "anzeige": "100%",
+        "alt": "Antwortentwurf in mandari Work als Brief: drei Fußnoten an den Aussagen, ein zur Prüfung markierter "
+               "Absatz mit dem Grund darunter und ein Platzhalter für die Position der Fraktion",
+    },
     "insight-beschluesse": {
         "groesse": (1656, 1168), "herkunft": "Echte Daten: Stadt Münster im Bürgerportal",
         "alt": "Beschlüsse der Stadt Münster im Bürgerportal, nach Sitzung geordnet, mit Ergebnis je Vorgang",

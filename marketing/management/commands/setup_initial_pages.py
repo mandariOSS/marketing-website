@@ -127,6 +127,17 @@ MARKETING_PAGE_META = [
             "führen – mit den Ratsdaten Ihrer Kommune."
         ),
     },
+    # Antwortentwurf mit Fundstellen in mandari Work (mandariOSS/mandari#1488); Inhalt in marketing/seeds_anfragen.py,
+    # ohne Preise, verlinkt aus dem Register auf /fraktionen/
+    {
+        "title": "Anfragen beantworten",
+        "slug": "anfragen-beantworten",
+        "seo_title": "Bürger- und Presseanfragen beantworten",
+        "search_description": (
+            "Mit mandari Work wird aus einer Bürger- oder Presseanfrage ein Antwortentwurf, der seine Fundstellen "
+            "aus den Ratsdaten Ihrer Kommune als Fußnoten nennt."
+        ),
+    },
     {
         "title": "Preise",
         "slug": "preise",
