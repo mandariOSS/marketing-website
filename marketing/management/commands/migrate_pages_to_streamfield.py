@@ -1640,6 +1640,69 @@ def get_release_definitions() -> dict:
 
     return {
         # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-13-2/ — mandari 0.13.2, 21.11.2026
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-13-2": {
+            "meta": {
+                "title": "mandari 0.13.2",
+                "version": "0.13.2",
+                "release_type": "patch",
+                "release_date": "2026-11-21",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.13.2",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.13.2 – Release-Notes",
+                "search_description": (
+                    "mandari 0.13.2 vom 21. November 2026: Der Kostencheck im Bürgerportal trennt Bau, "
+                    "Zahlungsjahre und Haushaltsbelastung, der Beratungsverlauf zeigt geplante Beratungen, "
+                    "der Kalender in mandari Work wird ein eigener Bereich."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.13.2 baut zwei Neuerungen aus 0.13.1 aus. Der Kostencheck im Bürgerportal "
+                    "liest mehr aus den Anlagen einer Vorlage und erklärt die Kosten in vier klaren Schritten. "
+                    "Der Kalender in mandari Work wird ein eigener Bereich und unterscheidet die eigenen Gremien "
+                    "von allen anderen. Dazu zeigt der Beratungsverlauf, wann eine Vorlage voraussichtlich wo "
+                    "beraten wird.</p>"
+                    "<p>Alle Neuerungen liefen vor der Veröffentlichung bereits in unserem Betrieb.</p>"
+                )),
+                _release_section("Für Bürger:innen: das Bürgerportal", (
+                    "<ul>"
+                    "<li>„Was kostet das?“ liest deutlich mehr aus den Anlagen, auch Finanzpläne und "
+                    "Folgekostenberechnungen. Getrennt steht da, was der Bau kostet und wer ihn zahlt, wann das "
+                    "Geld fließt und wie stark das Vorhaben den Haushalt jedes Jahr belastet. Der Anteil der "
+                    "Kommune am Bau wird dabei nicht doppelt gezählt. Fördergeld, das noch nicht zugesagt ist, "
+                    "ist schraffiert. Darunter steht, was noch offen ist, etwa eine fehlende Förderzusage oder "
+                    "ein älterer Kostenstand. Ein Programm rechnet die Summen nach.</li>"
+                    "<li>Der Beratungsverlauf zeigt geplante Beratungen an der richtigen Stelle und mit ihrem "
+                    "Gremium, dazu die Sitzung, in der sie voraussichtlich stattfinden. Beratungen, die die "
+                    "Kommune gestrichen hat, verschwinden aus dem Verlauf.</li>"
+                    "<li>Sitzungen heißen zuerst nach ihrem Gremium, ein eigener Name steht dahinter, etwa "
+                    "„Rat: Sondersitzung zum Haushalt“.</li>"
+                    "</ul>"
+                )),
+                _release_section("Für Fraktionen: mandari Work", (
+                    "<ul>"
+                    "<li>Der Kalender ist ein eigener Bereich der Seitenleiste, direkt unter „Start“.</li>"
+                    "<li>Sitzungen der eigenen Gremien und weiterer Gremien sehen unterschiedlich aus und lassen "
+                    "sich einzeln ausblenden. Als eigen gelten die Gremien Ihrer Mitglieder, Ihrer Organisation "
+                    "und die, denen Sie folgen.</li>"
+                    "<li>Sitzungen einer Reihe stehen zu ihrer festen Zeit im Kalender, auch wenn sie erst nach "
+                    "Mitternacht endeten.</li>"
+                    "<li>Weitere Aktionen in den Kopfzeilen, etwa „PDF importieren“ oder „Gast einladen“, sind "
+                    "jetzt Knöpfe mit Symbol statt Textlinks.</li>"
+                    "</ul>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.13.2\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-13-1/ — mandari 0.13.1, 20.11.2026 (außerhalb des Zwei-Wochen-Takts)
         # ════════════════════════════════════════════════════════════
         "mandari-0-13-1": {
