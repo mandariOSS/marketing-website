@@ -258,6 +258,8 @@ def offene_daten_view(request):
             "beispiel": beispiel,
             "beispiel_vorlagen": beispiel.liste("paper") if beispiel else None,
             "beispiel_seit": _beispiel_seit(),
+            # Ältere Stände im Zwischenspeicher kennen das Feld noch nicht
+            "mcp_url": getattr(verzeichnis, "mcp", ""),
             "doku_url": settings.OPARL_DOKU_URL,
             "strukturdaten_zusatz": [katalog],
         },

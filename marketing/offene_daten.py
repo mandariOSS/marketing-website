@@ -20,6 +20,7 @@ import http.client
 import json
 import logging
 import re
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 
@@ -51,7 +52,8 @@ LISTEN = {
     "person": ("people", "Personen"),
 }
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_ADRESSE = re.compile(r"https?://[^\s<>\"']+\Z")
+#: Vollständige http(s)-Adresse: mit Host (nicht „https:///…“), ohne Leerraum und Zeichen, die aus einem Link ausbrechen
+_ADRESSE = re.compile(r"https?://[^\s<>\"'/?#]+[^\s<>\"']*\Z")
 
 
 @dataclass(frozen=True)
@@ -62,6 +64,16 @@ class Liste:
     adresse: str
     #: Gültige Adresse mit der UUID
     kennung: str
+
+    @property
+    def ohne_fragment(self) -> str:
+        """Adresse ohne ``#…``: Ein weiterer Parameter (``modified_since``) gehört vor das Fragment."""
+        return self.adresse.split("#", 1)[0]
+
+    @property
+    def trenner(self) -> str:
+        """Zeichen vor einem weiteren Parameter (``modified_since``): ``&``, wenn die Adresse schon eine Abfrage hat."""
+        return "&" if "?" in self.ohne_fragment else "?"
 
 
 @dataclass(frozen=True)
@@ -89,6 +101,8 @@ class Verzeichnis:
     system: str
     uebersicht: str
     kommunen: tuple[Kommune, ...]
+    #: MCP-Server für KI-Assistenten (Feld ``mcp`` der Übersicht); leer, solange der Betrieb ihn nicht nennt
+    mcp: str = ""
 
     def kommune(self, slug: str) -> Kommune | None:
         return next((k for k in self.kommunen if k.slug == slug), None)
@@ -100,9 +114,16 @@ def quelle() -> str:
 
 
 def _adresse(wert: object) -> str:
-    """Nur vollständige http(s)-Adressen ohne Leerraum: Die Werte landen in Links."""
+    """Nur vollständige http(s)-Adressen ohne Leerraum, mit Host und gültigem Port: Die Werte landen in Links."""
     text = wert.strip() if isinstance(wert, str) else ""
-    return text if _ADRESSE.match(text) else ""
+    if not _ADRESSE.match(text):
+        return ""
+    try:
+        teile = urllib.parse.urlsplit(text)
+        _ = teile.port  # ValueError bei einem Port, der keine Zahl oder zu groß ist
+    except ValueError:
+        return ""
+    return text if teile.hostname else ""
 
 
 def _kommune(eintrag: dict) -> Kommune | None:
@@ -140,7 +161,7 @@ def auswerten(daten: object, uebersicht: str) -> Verzeichnis | None:
         return None
     kommunen = [k for k in (_kommune(e) for e in daten["bodyIndex"] if isinstance(e, dict)) if k is not None]
     system = _adresse(daten.get("system")) or uebersicht.rstrip("/") + "/v1/system"
-    return Verzeichnis(system=system, uebersicht=uebersicht, kommunen=tuple(kommunen))
+    return Verzeichnis(system=system, uebersicht=uebersicht, kommunen=tuple(kommunen), mcp=_adresse(daten.get("mcp")))
 
 
 def _abrufen(adresse: str) -> Verzeichnis | None:
