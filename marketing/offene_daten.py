@@ -20,6 +20,7 @@ import http.client
 import json
 import logging
 import re
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 
@@ -113,9 +114,16 @@ def quelle() -> str:
 
 
 def _adresse(wert: object) -> str:
-    """Nur vollständige http(s)-Adressen ohne Leerraum: Die Werte landen in Links."""
+    """Nur vollständige http(s)-Adressen ohne Leerraum, mit Host und gültigem Port: Die Werte landen in Links."""
     text = wert.strip() if isinstance(wert, str) else ""
-    return text if _ADRESSE.match(text) else ""
+    if not _ADRESSE.match(text):
+        return ""
+    try:
+        teile = urllib.parse.urlsplit(text)
+        _ = teile.port  # ValueError bei einem Port, der keine Zahl oder zu groß ist
+    except ValueError:
+        return ""
+    return text if teile.hostname else ""
 
 
 def _kommune(eintrag: dict) -> Kommune | None:

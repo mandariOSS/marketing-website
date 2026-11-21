@@ -92,7 +92,8 @@ class AuswertenTests(SimpleTestCase):
         ohne = {k: v for k, v in UEBERSICHT.items() if k != "mcp"}
         self.assertEqual(offene_daten.auswerten(ohne, f"{OPARL}/").mcp, "")
         self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": "javascript:alert(1)"}, f"{OPARL}/").mcp, "")
-        for ohne_host in ("https:///mcp", "https://", "https://?x=1"):
+        unbrauchbar = ("https:///mcp", "https://", "https://?x=1", "https://:443/mcp", "https://user@/mcp")
+        for ohne_host in (*unbrauchbar, "https://example.org:abc/mcp", "https://example.org:99999/mcp"):
             self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": ohne_host}, f"{OPARL}/").mcp, "", ohne_host)
 
     def test_weiterer_parameter_nach_vorhandener_abfrage_mit_und(self):
@@ -178,6 +179,17 @@ class SeitenTests(TestCase):
         with _abruf():
             antwort = self.client.get(pfad)
         return antwort, antwort.content.decode("utf-8")
+
+    def test_beispiel_setzt_modified_since_in_die_abfrage_vor_das_fragment(self):
+        ohne_slug = {
+            "system": f"{OPARL}/v1/system",
+            "bodyIndex": [{"name": "Ohne", "body": f"{OPARL}/v1/body/1", "paper": f"{OPARL}/v1/papers?body=1#teil"}],
+        }
+        with _abruf(ohne_slug):
+            html = self.client.get("/offene-daten/").content.decode("utf-8")
+
+        self.assertIn(f'href="{OPARL}/v1/papers?body=1&amp;modified_since=', html)
+        self.assertNotIn("#teil&amp;modified_since", html)
 
     def test_uebersicht_nennt_einstieg_und_jede_kommune_mit_kurzadresse(self):
         antwort, html = self.seite("/offene-daten/")
