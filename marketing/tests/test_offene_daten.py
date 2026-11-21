@@ -102,6 +102,9 @@ class AuswertenTests(SimpleTestCase):
         }
         verzeichnis = offene_daten.auswerten(mit_abfrage, f"{OPARL}/")
         self.assertEqual(verzeichnis.kommunen[0].liste("paper").trenner, "&")
+        mit_abfrage["bodyIndex"][0]["paper"] += "#abschnitt"
+        liste = offene_daten.auswerten(mit_abfrage, f"{OPARL}/").kommunen[0].liste("paper")
+        self.assertEqual((liste.ohne_fragment, liste.trenner), (f"{OPARL}/v1/papers?body=1", "&"))
         self.assertEqual(offene_daten.auswerten(UEBERSICHT, f"{OPARL}/").kommune("muenster").liste("paper").trenner, "?")
 
     def test_antwort_ohne_bodyindex_ist_kein_verzeichnis(self):

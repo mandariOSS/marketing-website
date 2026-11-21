@@ -65,9 +65,14 @@ class Liste:
     kennung: str
 
     @property
+    def ohne_fragment(self) -> str:
+        """Adresse ohne ``#…``: Ein weiterer Parameter (``modified_since``) gehört vor das Fragment."""
+        return self.adresse.split("#", 1)[0]
+
+    @property
     def trenner(self) -> str:
         """Zeichen vor einem weiteren Parameter (``modified_since``): ``&``, wenn die Adresse schon eine Abfrage hat."""
-        return "&" if "?" in self.adresse else "?"
+        return "&" if "?" in self.ohne_fragment else "?"
 
 
 @dataclass(frozen=True)
