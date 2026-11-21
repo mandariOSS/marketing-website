@@ -92,6 +92,8 @@ class AuswertenTests(SimpleTestCase):
         ohne = {k: v for k, v in UEBERSICHT.items() if k != "mcp"}
         self.assertEqual(offene_daten.auswerten(ohne, f"{OPARL}/").mcp, "")
         self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": "javascript:alert(1)"}, f"{OPARL}/").mcp, "")
+        for ohne_host in ("https:///mcp", "https://", "https://?x=1"):
+            self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": ohne_host}, f"{OPARL}/").mcp, "", ohne_host)
 
     def test_antwort_ohne_bodyindex_ist_kein_verzeichnis(self):
         self.assertIsNone(offene_daten.auswerten({"name": "etwas"}, f"{OPARL}/"))

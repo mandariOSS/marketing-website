@@ -51,7 +51,8 @@ LISTEN = {
     "person": ("people", "Personen"),
 }
 _SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
-_ADRESSE = re.compile(r"https?://[^\s<>\"']+\Z")
+#: Vollständige http(s)-Adresse: mit Host (nicht „https:///…“), ohne Leerraum und Zeichen, die aus einem Link ausbrechen
+_ADRESSE = re.compile(r"https?://[^\s<>\"'/?#]+[^\s<>\"']*\Z")
 
 
 @dataclass(frozen=True)
