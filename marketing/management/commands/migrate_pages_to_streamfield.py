@@ -1640,6 +1640,53 @@ def get_release_definitions() -> dict:
 
     return {
         # ════════════════════════════════════════════════════════════
+        # /releases/mandari-0-13-3/ — mandari 0.13.3, 21.11.2026
+        # ════════════════════════════════════════════════════════════
+        "mandari-0-13-3": {
+            "meta": {
+                "title": "mandari 0.13.3",
+                "version": "0.13.3",
+                "release_type": "patch",
+                "release_date": "2026-11-21",
+                "github_url": "https://github.com/mandariOSS/mandari/releases/tag/v0.13.3",
+                "breaking_changes": False,
+                "seo_title": "mandari 0.13.3 – Release-Notes",
+                "search_description": (
+                    "mandari 0.13.3 vom 21. November 2026: KI-Assistenten finden die offenen Ratsinformationen "
+                    "des Bürgerportals jetzt von selbst, mit MCP-Server, Katalog für KI-Agenten und WebMCP."
+                ),
+            },
+            "blocks": [
+                _release_section("Das Wichtigste in Kürze", (
+                    "<p>mandari 0.13.3 macht die offenen Ratsinformationen für KI-Assistenten auffindbar. Wer "
+                    "Claude, ChatGPT oder einen anderen Assistenten nach Beschlüssen und Sitzungen seiner Kommune "
+                    "fragt, soll Antworten aus den Originaldaten bekommen, mit Link zur Quelle im Bürgerportal.</p>"
+                    "<p>Alle Neuerungen liefen vor der Veröffentlichung bereits in unserem Betrieb.</p>"
+                )),
+                _release_section("Für KI-Assistenten: offene Ratsinformationen", (
+                    "<ul>"
+                    "<li>Unser MCP-Server stellt eine Visitenkarte nach dem Standard des Model Context Protocol "
+                    "bereit. KI-Werkzeuge lesen daraus, wie sie sich verbinden.</li>"
+                    "<li>Ein Katalog für KI-Agenten nennt den MCP-Server und die offene OParl-Schnittstelle an einer "
+                    "festen Adresse. So finden Agenten beides, ohne dass jemand es ihnen vorher sagt.</li>"
+                    "<li>Die Schnittstelle selbst und die Seite <a href=\"/offene-daten/\">Offene Daten</a> nennen "
+                    "den MCP-Server jetzt ebenfalls.</li>"
+                    "<li>KI-Agenten im Browser können die Suche und die Kommunensuche des Bürgerportals direkt "
+                    "bedienen und landen auf der Ergebnisseite.</li>"
+                    "</ul>"
+                    "<p>Wie Sie mandari als Connector in Claude eintragen, steht in der "
+                    "<a href=\"https://docs.mandari.de/insight/oparl-api/#connector-in-claude\">Dokumentation</a>.</p>"
+                )),
+                _release_section("Alle Änderungen im Detail", (
+                    "<p>Die vollständige Liste steht im "
+                    "<a href=\"https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md\">Changelog</a>. "
+                    "Wenn Sie mandari selbst betreiben, finden Sie die Hinweise für das Update in den "
+                    "<a href=\"https://github.com/mandariOSS/mandari/releases/tag/v0.13.3\">Release-Notes "
+                    "auf GitHub</a>.</p>"
+                )),
+            ],
+        },
+        # ════════════════════════════════════════════════════════════
         # /releases/mandari-0-13-2/ — mandari 0.13.2, 21.11.2026
         # ════════════════════════════════════════════════════════════
         "mandari-0-13-2": {
