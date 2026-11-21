@@ -64,6 +64,11 @@ class Liste:
     #: Gültige Adresse mit der UUID
     kennung: str
 
+    @property
+    def trenner(self) -> str:
+        """Zeichen vor einem weiteren Parameter (``modified_since``): ``&``, wenn die Adresse schon eine Abfrage hat."""
+        return "&" if "?" in self.adresse else "?"
+
 
 @dataclass(frozen=True)
 class Kommune:

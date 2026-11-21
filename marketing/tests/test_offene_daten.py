@@ -95,6 +95,15 @@ class AuswertenTests(SimpleTestCase):
         for ohne_host in ("https:///mcp", "https://", "https://?x=1"):
             self.assertEqual(offene_daten.auswerten({**UEBERSICHT, "mcp": ohne_host}, f"{OPARL}/").mcp, "", ohne_host)
 
+    def test_weiterer_parameter_nach_vorhandener_abfrage_mit_und(self):
+        mit_abfrage = {
+            "system": f"{OPARL}/v1/system",
+            "bodyIndex": [{"name": "Ohne Slug", "body": f"{OPARL}/v1/body/1", "paper": f"{OPARL}/v1/papers?body=1"}],
+        }
+        verzeichnis = offene_daten.auswerten(mit_abfrage, f"{OPARL}/")
+        self.assertEqual(verzeichnis.kommunen[0].liste("paper").trenner, "&")
+        self.assertEqual(offene_daten.auswerten(UEBERSICHT, f"{OPARL}/").kommune("muenster").liste("paper").trenner, "?")
+
     def test_antwort_ohne_bodyindex_ist_kein_verzeichnis(self):
         self.assertIsNone(offene_daten.auswerten({"name": "etwas"}, f"{OPARL}/"))
         self.assertIsNone(offene_daten.auswerten(["liste"], f"{OPARL}/"))
