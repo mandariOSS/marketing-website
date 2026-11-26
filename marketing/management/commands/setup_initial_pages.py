@@ -369,9 +369,9 @@ RELEASE_INDEX_META = {
         "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
         "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
         '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
-        "<p>Alle zwei Wochen erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die erste "
-        "Version jedes Quartals ist eine Pflegeversion und erhält sechs Monate lang Sicherheitskorrekturen; "
-        "so können Verwaltungen seltener aktualisieren. Die Regeln stehen in der "
+        "<p>Alle zwei Wochen erscheint eine neue Version, die Nummern folgen Semantic Versioning. Unterstützt "
+        "wird immer die jüngste Version, und jede Aktualisierung lässt sich ohne Handarbeit einspielen. Die "
+        "Regeln stehen in der "
         '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>'
     ),
 }
@@ -393,6 +393,14 @@ RELEASE_INDEX_LEGACY = {
         '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
         "<p>Alle zwei Monate erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die "
         "vorherige Version erhält noch sechs Monate lang Sicherheitskorrekturen. Die Regeln stehen in der "
+        '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>',
+        # bis 26.11.2026: Pflegeversion je Quartal mit sechs Monaten (Sven: „Viel zu lang! Keine LTS!“)
+        "<p>Was sich in mandari ändert: jede Version mit den wichtigsten Neuerungen für Verwaltung, "
+        "Fraktionen und Bürgerportal. Den vollständigen Änderungsverlauf finden Sie im "
+        '<a href="https://github.com/mandariOSS/mandari/blob/main/CHANGELOG.md">Changelog auf GitHub</a>.</p>'
+        "<p>Alle zwei Wochen erscheint eine neue Version, die Nummern folgen Semantic Versioning. Die erste "
+        "Version jedes Quartals ist eine Pflegeversion und erhält sechs Monate lang Sicherheitskorrekturen; "
+        "so können Verwaltungen seltener aktualisieren. Die Regeln stehen in der "
         '<a href="https://docs.mandari.de/entwicklung/release-politik/">Release- und Support-Politik</a>.</p>',
     },
 }
