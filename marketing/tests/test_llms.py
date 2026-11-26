@@ -72,6 +72,7 @@ class LlmsTxtTests(TestCase):
         self.assertIn("https://oparl.mandari.de/oparl/ (JSON, Feld bodyIndex)", text)
         self.assertIn("https://mandari.de/offene-daten/ ", text)
         self.assertIn("https://oparl.mandari.de/oparl/v1/body/muenster/papers", text)
+        self.assertIn("MCP-Server für KI-Assistenten (lesend, ohne Anmeldung): https://mandari.de/insight/mcp", text)
         self.assertIn("https://docs.mandari.de/llms.txt", text)
         self.assertIn("https://github.com/mandariOSS", text)
 

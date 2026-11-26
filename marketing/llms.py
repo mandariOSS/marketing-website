@@ -67,6 +67,12 @@ GRUNDDATEN = (
     "(je Kommune {basis}/offene-daten/<name>/, etwa {basis}/offene-daten/muenster/)",
     "In den Adressen der Schnittstelle darf der Name der Kommune stehen, etwa "
     "https://oparl.mandari.de/oparl/v1/body/muenster/papers und https://oparl.mandari.de/oparl/v1/body/muenster/meetings",
+    # Wie auf /offene-daten/ (Abschnitt „Für KI-Assistenten“, marketing-website#58): Der Connector ist der zuverlässige
+    # Weg, weil KI-Assistenten im Web meist nur Adressen aus Suchtreffern abrufen dürfen (mandariOSS/mandari#1309)
+    "MCP-Server für KI-Assistenten (lesend, ohne Anmeldung): {basis}/insight/mcp, in Claude unter Einstellungen → "
+    "Connectors als eigener Connector einzutragen, ebenso in anderen Assistenten mit MCP-Unterstützung; liefert "
+    "Sitzungen, Tagesordnungen, Vorlagen, Beschlüsse, Gremien, Personen und Dokumentausschnitte mit Links ins "
+    "Bürgerportal",
     "Dokumentation: https://docs.mandari.de, eigene Übersicht für Sprachmodelle: https://docs.mandari.de/llms.txt",
     "Quellcode: https://github.com/mandariOSS",
     "Wie mandari öffentliche Ratsinformationen abruft (Kennung, Takt, Kontakt): {basis}/ingestor/",
