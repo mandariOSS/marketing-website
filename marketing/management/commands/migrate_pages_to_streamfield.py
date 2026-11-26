@@ -1510,9 +1510,10 @@ def get_marketing_definitions() -> dict:
                 (
                     "<h3>November 2026</h3>"
                     "<ul>"
+                    "<li><strong>Release-Politik:</strong> Unterstützt wird immer die jüngste Version. Pflegeversionen und Langzeitversionen (LTS) gibt es nicht mehr; eine neue Hauptversion kündigen wir mindestens drei Monate vorher an.</li>"
                     "<li><strong>Kosten von Vorlagen und Kalender:</strong> neu geliefert mit mandari 0.13.1, außerhalb des Zwei-Wochen-Takts.</li>"
                     "<li><strong>Vorlagen in einfacher Sprache:</strong> geliefert statt „In Prüfung, nach 1.0“. Seit mandari 0.13 zeigt das Bürgerportal oben auf dem Vorgang eine KI-Kurzfassung und auf Wunsch eine Fassung in Einfacher Sprache.</li>"
-                    "<li><strong>Release-Takt:</strong> Ab mandari 0.13 erscheint alle zwei Wochen eine neue Version; die erste Version jedes Quartals ist eine Pflegeversion mit sechs Monaten Sicherheitskorrekturen.</li>"
+                    "<li><strong>Release-Takt:</strong> Ab mandari 0.13 erscheint alle zwei Wochen eine neue Version.</li>"
                     "</ul>"
                     "<h3>Oktober 2026</h3>"
                     "<ul>"
@@ -1900,10 +1901,10 @@ def get_release_definitions() -> dict:
                     "<a href=\"/releases/mandari-0-11-2/\">mandari 0.11.2</a> erschienen sind, und weitere "
                     "aus derselben internen Prüfung. Eine Ausnutzung ist uns nicht bekannt. Wenn Sie mandari "
                     "selbst betreiben, aktualisieren Sie bitte zügig.</p>"
-                    "<p>Ab jetzt erscheint alle zwei Wochen eine neue Version. Die erste Version jedes "
-                    "Quartals ist eine Pflegeversion mit sechs Monaten Sicherheitskorrekturen. Die Regeln "
-                    "stehen in der <a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- "
-                    "und Support-Politik</a>.</p>"
+                    "<p>Ab jetzt erscheint alle zwei Wochen eine neue Version. Die Regeln stehen in der "
+                    "<a href=\"https://docs.mandari.de/entwicklung/release-politik/\">Release- und "
+                    "Support-Politik</a>. Nachtrag vom 26. November 2026: Pflegeversionen mit sechs Monaten "
+                    "Sicherheitskorrekturen gibt es nicht mehr. Unterstützt wird die jüngste Version.</p>"
                 )),
                 _release_section("Alle Änderungen im Detail", (
                     "<p>Die vollständige Liste steht im "
